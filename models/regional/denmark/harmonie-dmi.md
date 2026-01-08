@@ -20,9 +20,9 @@ It is based on the HARMONIE modeling system and is run operationally by Denmark.
 
 ## Basic details
 - **Model type:** Regional (HARMONIE-based)
-- **Typical resolution:** ~5 km
-- **Forecast length:** Up to ~72 hours
-- **Update frequency:** 4× daily
+- **Typical resolution:** ~2 km
+- **Forecast length:** Up to ~48 hours
+- **Update frequency:** 8× daily
 
 ---
 
