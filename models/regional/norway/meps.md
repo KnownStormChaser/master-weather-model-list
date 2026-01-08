@@ -8,8 +8,8 @@ It runs multiple forecasts with small variations to estimate forecast uncertaint
 ---
 
 ## Who runs it
-- **Organization:** : MET Norway
-- **Country / region:** Norway (in cooperation with Nordic partners)
+- **Organization:** MET Norway (MetCoOp collaboration with FMI, SMHI, DMI)
+- **Country / region:** Nordic and Baltic countries
 
 ---
 
