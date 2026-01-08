@@ -6,7 +6,7 @@ A global weather forecast model that predicts weather conditions such as tempera
 ---
 
 ## Who runs it
-- **Organization:** : Deutscher Wetterdienst (DWD)
+- **Organization:** : DWD (Deutscher Wetterdienst)
 - **Country / region:** Germany
 
 ---
