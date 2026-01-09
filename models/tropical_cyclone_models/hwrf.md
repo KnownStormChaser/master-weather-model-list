@@ -1,33 +1,33 @@
-# HWRF (Hurricane Weather Research and Forecasting Model) — Legacy
+# HWRF (Hurricane Weather Research and Forecasting Model)
 
 ## What this model is
-The Hurricane Weather Research and Forecasting (HWRF) model was a **specialized tropical cyclone prediction model** used operationally by NOAA for forecasting hurricane track, intensity, and structure.
+The Hurricane Weather Research and Forecasting (HWRF) model is a **specialized tropical cyclone prediction model** used by NOAA for forecasting hurricane track, intensity, and structure.
 
-It used storm-centered moving nests to provide high-resolution forecasts focused on active tropical cyclones.
+It uses storm-centered moving nests to provide high-resolution forecasts focused on active tropical cyclones.
 
 ---
 
-## Who ran it
+## Who runs it
 - **Organization:** : National Centers for Environmental Prediction
 - **Country / region:** United States
 
 ---
 
-## When this model ran
-HWRF ran **only when an active tropical cyclone existed**.
+## When this model runs
+HWRF runs **only when an active tropical cyclone exists**.
 
-Each forecast was centered on an individual storm rather than a fixed geographic region.
+Each forecast is centered on an individual storm rather than a fixed geographic region.
 
 ---
 
-## What area it covered
+## What area it covers
 - **Coverage:** Storm-centered domains following active tropical cyclones  
   (Atlantic and Eastern/Central Pacific basins)
 
 ---
 
 ## Basic details
-- **Model type:** Tropical cyclone NWP model (legacy)
+- **Model type:** Tropical cyclone NWP model
 - **Core system:** WRF-based
 - **Horizontal resolution:**  
   - Outer domain: ~13 km  
@@ -37,7 +37,7 @@ Each forecast was centered on an individual storm rather than a fixed geographic
 
 ---
 
-## What it predicted
+## What it predicts
 - Tropical cyclone track
 - Storm intensity (maximum winds, central pressure)
 - Wind fields
@@ -47,14 +47,14 @@ Each forecast was centered on an individual storm rather than a fixed geographic
 ---
 
 ## Relationship to other models
-HWRF was one of NOAA’s primary operational hurricane models for many years and has been **retired and replaced by HAFS**.
+HWRF was one of NOAA’s primary operational hurricane models for many years.
 
-It is retained here for historical reference and comparison.
+While **HAFS is now NOAA’s primary next-generation tropical cyclone forecast system**, HWRF **continues to produce forecasts** and remains available for operational and reference use.
 
 ---
 
 ## Data availability
-- **Is the data free?** Yes (historical archives)
+- **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download locations:**  
@@ -63,8 +63,7 @@ It is retained here for historical reference and comparison.
 ---
 
 ## Notes
-HWRF is no longer operational.  
-Users should rely on **HAFS** for current tropical cyclone forecasting.
+HWRF output should be interpreted as **supplementary tropical cyclone guidance**, alongside newer systems such as HAFS.
 
 ---
 
