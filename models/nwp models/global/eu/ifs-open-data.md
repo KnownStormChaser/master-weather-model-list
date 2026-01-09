@@ -8,7 +8,7 @@ This entry refers specifically to the **publicly available open-data version** o
 ---
 
 ## Who runs it
-- **Organization:** : ECMWF (European Centre for Medium-Range Weather Forecasts)
+- **Organization:** : European Centre for Medium-Range Weather Forecasts
 - **Country / region:** European Union / international
 
 ---
