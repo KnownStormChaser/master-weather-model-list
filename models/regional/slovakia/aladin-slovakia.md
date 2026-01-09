@@ -8,7 +8,7 @@ It is designed for short-range forecasting and performs well in complex terrain 
 ---
 
 ## Who runs it
-- **Organization:** : SHMÚ
+- **Organization:** : Slovak Hydrometeorological Institute
 - **Country / region:** Slovakia
 
 ---
