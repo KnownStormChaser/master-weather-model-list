@@ -8,7 +8,7 @@ It is optimized for short-range forecasting over the Netherlands and neighboring
 ---
 
 ## Who runs it
-- **Organization:** : KNMI
+- **Organization:** : Royal Netherlands Meteorological Institute
 - **Country / region:** Netherlands
 
 ---
