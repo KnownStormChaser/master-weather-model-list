@@ -8,7 +8,7 @@ It is a limited-area model based on the **ALADIN** modeling system and is design
 ---
 
 ## Who runs it
-- **Organization:** : ČHMÚ
+- **Organization:** : Czech Hydrometeorological Institute
 - **Country / region:** Czechia
 
 ---
