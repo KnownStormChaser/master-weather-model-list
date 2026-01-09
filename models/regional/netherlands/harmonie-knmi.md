@@ -8,7 +8,7 @@ It is based on the HARMONIE modeling system and is run operationally by the Neth
 ---
 
 ## Who runs it
-- **Organization:** : KNMI
+- **Organization:** : Royal Netherlands Meteorological Institute
 - **Country / region:** Netherlands
 
 ---
