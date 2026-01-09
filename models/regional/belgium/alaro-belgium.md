@@ -8,7 +8,7 @@ It is designed for short-range forecasting and performs well in complex weather 
 ---
 
 ## Who runs it
-- **Organization:** : RMI
+- **Organization:** : Royal Meteorological Institute of Belgium
 - **Country / region:** Belgium
 
 ---
