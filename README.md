@@ -2,7 +2,7 @@
 
 This repository is a **simple, human-readable catalog of publicly available weather forecast models**.
 
-It focuses on **numerical weather prediction (NWP) models** whose forecast data can be **freely downloaded** by anyone.
+It focuses on **numerical weather prediction (NWP) models** and related forecast systems whose data can be **freely downloaded** by anyone.
 
 The goal is to make it easy to discover:
 - which weather models exist
@@ -15,24 +15,29 @@ No meteorology background is required to use this repository.
 ---
 
 ## What this repository includes
-- **NWP (weather forecast) models only**
+- **Numerical Weather Prediction (NWP) models**
+- **Wave forecast models**
 - **Free and publicly downloadable data**
 - Models provided by government or publicly funded institutions
-- Both **global** and **regional** models
+- **Global**, **regional**, and **coastal** forecast systems
+- (Planned) **Ensemble forecast models**
 
 ---
 
 ## What this repository does NOT include
 - Paid, restricted, or licensed-only models
 - Models that only provide maps or viewers without downloadable data
-- Climate reanalysis, ocean, wave, or air-quality models (for now)
+- Research-only, experimental, or one-off model runs
+- Climate reanalysis or historical-only datasets
+- Air-quality, chemistry, or ocean circulation models (for now)
 
 ---
 
 ## Repository structure
 
 Models are organized by:
-- **Global models** vs **regional models**
+- **Model category** (e.g. global, regional, wave, ensemble)
+- **Geographic scope** (global vs regional)
 - **Country or organization of origin**
 
 Each model has its own file describing:
@@ -72,4 +77,4 @@ Corrections, additions, and improvements are welcome.
 If you add a model, please ensure:
 - the data is genuinely free and downloadable
 - links point to official sources
-- descriptions remain simple and factual
+- descriptions remain simple, factual, and non-promotional
