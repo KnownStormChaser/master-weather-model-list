@@ -8,7 +8,7 @@ It is based on the HARMONIE modeling system and is run operationally by Denmark.
 ---
 
 ## Who runs it
-- **Organization:** : DMI
+- **Organization:** : Danish Meteorological Institute
 - **Country / region:** Denmark
 
 ---
