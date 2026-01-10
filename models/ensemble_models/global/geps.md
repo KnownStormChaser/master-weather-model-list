@@ -8,7 +8,7 @@ It generates multiple forecast scenarios to represent the nonlinear (chaotic) be
 ---
 
 ## Who runs it
-- **Organization:** Environment and Climate Change Canada (Canadian Meteorological Centre)
+- **Organization:** Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
