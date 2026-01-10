@@ -1,28 +1,44 @@
-# HARMONIE KNMI
+# HARMONIE Europe (KNMI – DINI)
 
 ## What this model is
-A regional weather forecast model that predicts weather conditions such as temperature, wind, precipitation, and pressure over large parts of Europe and the North Atlantic.
+HARMONIE Europe is a **regional numerical weather prediction (NWP) model** operated by the Royal Netherlands Meteorological Institute (KNMI) for north-western Europe.
 
-It is based on the HARMONIE modeling system and is run operationally by the Netherlands.
+It is based on the **HARMONIE modeling system (Cycle 43)** and provides medium-resolution deterministic forecasts over a large European domain.
 
 ---
 
 ## Who runs it
-- **Organization:** : Royal Netherlands Meteorological Institute
+- **Organization:** Royal Netherlands Meteorological Institute (KNMI)
 - **Country / region:** Netherlands
 
 ---
 
 ## What area it covers
-- **Coverage:** Large parts of Europe and the North Atlantic
+- **Coverage:** Large parts of north-western and central Europe
+- **Domain name:** DINI (Denmark–Ireland–Netherlands–Iceland)
 
 ---
 
 ## Basic details
-- **Model type:** Regional (HARMONIE-based)
-- **Typical resolution:** ~5 km
-- **Forecast length:** Up to ~72 hours
-- **Update frequency:** 4× daily
+- **Model type:** Regional deterministic NWP
+- **Model system:** HARMONIE
+- **Model version:** Cycle 43 (Cy43)
+- **Primary dataset:** P3
+- **Horizontal resolution:** **0.05° (~5.5 km)**  
+  *(rotated latitude/longitude grid)*
+- **Forecast length:** Up to **~60 hours**
+- **Temporal output resolution:** 1 hour
+- **Run type:** Deterministic
+
+---
+
+## Model characteristics
+- Designed for synoptic-scale and mesoscale weather systems
+- Suitable for:
+  - frontal precipitation
+  - large-scale wind events
+  - regional temperature and pressure patterns
+- Ensemble versions are provided as separate datasets
 
 ---
 
@@ -36,11 +52,10 @@ It is based on the HARMONIE modeling system and is run operationally by the Neth
 ---
 
 ## Notes
-KNMI runs its own HARMONIE configuration with a large domain that extends well beyond the Netherlands.
-
-The model is used for regional forecasting and research purposes.
+All KNMI HARMONIE products (Netherlands, Europe, Caribbean) are based on the **same HARMONIE Cy43 modeling system** and differ only by **domain, resolution, and published dataset**.
 
 ---
 
 ## Official documentation
 - https://www.knmi.nl/research/weather-climate-models
+- https://dataplatform.knmi.nl
