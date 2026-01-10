@@ -1,28 +1,49 @@
 # MEPS (MetCoOp Ensemble Prediction System)
 
 ## What this model is
-A regional ensemble weather forecast system that predicts weather conditions such as temperature, wind, precipitation, and pressure over Scandinavia and nearby regions.
+MEPS (MetCoOp Ensemble Prediction System) is a **high-resolution, convection-permitting regional ensemble numerical weather prediction (NWP) system**.
 
-It runs multiple forecasts with small variations to estimate forecast uncertainty.
+It is designed to provide **short-range probabilistic forecasts** and quantify forecast uncertainty for high-impact weather such as precipitation, wind, and convection.
 
 ---
 
 ## Who runs it
-- **Organization:** MET Norway (MetCoOp collaboration with FMI, SMHI, DMI)
-- **Country / region:** Nordic and Baltic countries
+- **Organization:** MetCoOp collaboration  
+  (primarily MET Norway and SMHI, with participation from FMI and DMI)
+- **Country / region:** Nordic countries
 
 ---
 
 ## What area it covers
-- **Coverage:** Scandinavia and Finland
+- **Coverage:** Norway, Sweden, Denmark, Finland, and surrounding marine areas  
+  (including parts of the North Sea and Baltic Sea)
 
 ---
 
 ## Basic details
-- **Model type:** Regional (ensemble, AROME-based)
-- **Typical resolution:** ~2.5 km
-- **Forecast length:** Up to ~61 hours
-- **Update frequency:** 4× daily
+- **Model type:** Regional ensemble (convection-permitting)
+- **Model system:** HARMONIE-AROME
+- **Horizontal resolution:** ~2.5 km
+- **Vertical levels:** 65
+- **Ensemble size:** 10 perturbed members + 1 control (11 total)
+- **Forecast length:** Up to 66 hours
+- **Update frequency:** 8× daily (every 3 hours)
+
+---
+
+## What it provides
+Probabilistic forecasts of:
+- temperature
+- wind
+- precipitation
+- pressure
+- humidity
+- cloud and hydrometeor fields
+
+Ensemble output enables:
+- probability forecasts
+- ensemble means and spread
+- uncertainty assessment for short-range weather events
 
 ---
 
@@ -36,12 +57,14 @@ It runs multiple forecasts with small variations to estimate forecast uncertaint
 ---
 
 ## Notes
-MEPS is part of the **MetCoOp** collaboration between Nordic national weather services and is widely used for operational forecasting in Scandinavia.
+MEPS is produced under the **MetCoOp** framework, a long-standing Nordic collaboration on operational numerical weather prediction.
 
-The ensemble approach helps assess forecast uncertainty, especially for precipitation and wind.
+It is the primary **short-range ensemble forecasting system** used operationally across the Nordic meteorological services.
 
 ---
 
 ## Official documentation
-- https://www.met.no/en/projects/metcoop
-- https://github.com/metno/NWPdocs/wiki
+- MEPS dataset documentation:  
+  https://github.com/metno/NWPdocs/wiki/MEPS-dataset
+- MetCoOp project overview:  
+  https://www.met.no/en/projects/metcoop
