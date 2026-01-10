@@ -1,14 +1,14 @@
 # GEPS (Global Ensemble Prediction System)
 
 ## What this model is
-The Global Ensemble Prediction System (GEPS) is Canada’s **global ensemble weather forecast model**, designed to represent uncertainty in medium-range weather forecasts.
+The Global Ensemble Prediction System (GEPS) is Canada’s **global ensemble weather forecast system**, designed to produce probabilistic forecasts and quantify uncertainty in medium- to extended-range weather prediction.
 
-It produces multiple forecasts from perturbed initial conditions to provide probabilistic guidance rather than a single deterministic outcome.
+It generates multiple forecast scenarios to represent the nonlinear (chaotic) behaviour of the atmosphere.
 
 ---
 
 ## Who runs it
-- **Organization:** : Environment and Climate Change Canada
+- **Organization:** Environment and Climate Change Canada (Canadian Meteorological Centre)
 - **Country / region:** Canada
 
 ---
@@ -21,8 +21,11 @@ It produces multiple forecasts from perturbed initial conditions to provide prob
 ## Basic details
 - **Model type:** Global ensemble (atmospheric)
 - **Number of members:** 20 perturbation members + 1 control
-- **Typical resolution:** ~0.5° (varies by forecast range)
-- **Forecast length:** Up to ~16 days
+- **Typical resolution:** ~0.5° (~39 km)
+- **Vertical levels:** ~15
+- **Forecast length:**  
+  - Up to 16 days (operational)  
+  - Up to ~39 days (twice weekly at 00 UTC for anomaly guidance)
 - **Update frequency:** 2× daily
 
 ---
@@ -32,16 +35,27 @@ It produces multiple forecasts from perturbed initial conditions to provide prob
   - temperature
   - wind
   - precipitation
-  - pressure
+  - cloud cover
+  - humidity
 - Ensemble mean and spread
-- Inputs for probabilistic weather guidance and risk assessment
+- Extended-range anomaly guidance (limited cycles)
+
+---
+
+## Ensemble methodology
+GEPS ensemble members differ through:
+- perturbations to initial conditions
+- stochastic physics parameter perturbations (SPP)
+- stochastic kinetic energy perturbations
+
+A control member without perturbations is also produced.
 
 ---
 
 ## Relationship to other models
-GEPS is the ensemble companion to Canada’s **GEM Global** deterministic weather model.
+GEPS is the ensemble companion to Canada’s **GDPS (GEM Global)** deterministic forecast system.
 
-It complements deterministic forecasts by quantifying forecast uncertainty.
+It complements deterministic guidance by explicitly representing forecast uncertainty.
 
 ---
 
@@ -49,15 +63,16 @@ It complements deterministic forecasts by quantifying forecast uncertainty.
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
+- **Grid:** Global latitude–longitude grid (0.5°)
 - **Official download location:**  
   https://eccc-msc.github.io/open-data/msc-data/nwp_geps/readme_geps-datamart_en/
 
 ---
 
 ## Notes
-GEPS is widely used in Canada for medium-range forecasting and contributes to multi-model ensemble systems.
+GEPS is used operationally in Canada for medium-range probabilistic forecasting and contributes to multi-model ensemble systems.
 
-As with all ensemble systems, GEPS outputs should be interpreted probabilistically rather than as a single forecast.
+As with all ensemble systems, GEPS output should be interpreted probabilistically rather than as a single forecast.
 
 ---
 
