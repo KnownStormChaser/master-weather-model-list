@@ -1,37 +1,57 @@
 # RDWPS (Regional Deterministic Wave Prediction System)
 
 ## What this model is
-The Regional Deterministic Wave Prediction System (RDWPS) is a regional wave forecast model that predicts ocean wave conditions such as significant wave height, wave period, and wave direction.
+The Regional Deterministic Wave Prediction System (RDWPS) is Canada’s **operational regional wave forecast system**, designed to provide high-resolution wave guidance over coastal waters and the Great Lakes.
 
-It provides higher-resolution wave forecasts than Canada’s global wave model and is intended for regional marine forecasting.
+It is based on the third-generation spectral wave model **WaveWatch III® (WW3)** and produces deterministic short-range wave forecasts.
 
 ---
 
 ## Who runs it
-- **Organization:** : Environment and Climate Change Canada
+- **Organization:** Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
 
 ## What area it covers
-- **Coverage:** Regional ocean domains surrounding Canada  
-  (including the Atlantic, Pacific, and Arctic regions)
+- **Coverage:** Regional marine domains of Canada, including:
+  - Lake Superior  
+  - Lake Huron–Michigan  
+  - Lake Erie  
+  - Lake Ontario  
+  - Atlantic North-West  
+  - Pacific North-East
 
 ---
 
 ## Basic details
-- **Model type:** Wave model
-- **Typical resolution:** ~0.1° (varies by region)
-- **Forecast length:** Up to ~48 hours
+- **Model type:** Deterministic wave model (regional)
+- **Core model:** WaveWatch III® (WW3)
+- **Typical resolution:** ~0.1° (varies by domain)
+- **Forecast length:** Up to 48 hours
 - **Update frequency:** 2× daily
+
+---
+
+## Forcing and coupling
+RDWPS is forced by:
+- **10 m winds** from the High-Resolution Deterministic Prediction System (HRDPS)
+
+Ice forecasts are used to modify wave growth:
+- **Great Lakes:** Ice forecasts from the Water Cycle Prediction System of the Great Lakes (WCPS)  
+  - Wave growth attenuated for 25–75% ice concentration  
+  - Wave growth suppressed above 75%
+- **Ocean domains:** Ice forecasts from the Regional Ice Ocean Prediction System (RIOPS)  
+  - Northeast Pacific: waves propagate freely below 50% ice concentration, no propagation above  
+  - Northwest Atlantic: same ice–wave logic as the Great Lakes
 
 ---
 
 ## What it predicts
 - Significant wave height
-- Wave period
-- Wave direction
-- Wind-wave and swell components (varies by product)
+- Peak wave period
+- Partitioned wave parameters
+- Additional wind-wave and swell characteristics (by domain)
 
 ---
 
@@ -39,15 +59,15 @@ It provides higher-resolution wave forecasts than Canada’s global wave model a
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2, NetCDF
-- **Official download location:**  
+- **Official documentation and access:**  
   https://eccc-msc.github.io/open-data/msc-data/nwp_rdwps/readme_rdwps-datamart_en/
 
 ---
 
 ## Notes
-RDWPS is based on the WAVEWATCH III (WW3) model and is driven by winds from Canada’s regional atmospheric forecast systems.
+RDWPS provides higher-resolution regional and coastal wave guidance than **GDWPS**, particularly for the Great Lakes and Canadian coastal waters.
 
-It provides more detailed coastal and regional wave information than the global GDWPS model.
+It serves as the regional counterpart to Canada’s global wave prediction system.
 
 ---
 
