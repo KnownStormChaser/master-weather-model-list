@@ -1,28 +1,36 @@
 # HRDPS (High-Resolution Deterministic Prediction System)
 
 ## What this model is
-A high-resolution regional weather forecast model designed to predict small-scale and rapidly changing weather conditions, such as thunderstorms, local wind patterns, and heavy precipitation.
+The High-Resolution Deterministic Prediction System (HRDPS) is a **convection-allowing deterministic numerical weather prediction system** designed to forecast small-scale and rapidly evolving weather phenomena such as thunderstorms, localized wind patterns, and heavy precipitation.
 
-It is the highest-resolution operational weather model run by Canada.
+It produces raw numerical forecasts of atmospheric elements including temperature, wind, precipitation, cloud cover, and humidity.
 
 ---
 
 ## Who runs it
-- **Organization:** : CMC / Environment and Climate Change Canada
+- **Organization:** Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
 
 ## What area it covers
-- **Coverage:** Canada (multiple regional domains)
+- **Coverage:** Most of Canada (high-resolution regional domains)
 
 ---
 
 ## Basic details
-- **Model type:** Regional
+- **Model type:** Deterministic (high-resolution regional)
 - **Typical resolution:** ~2.5 km
+- **Vertical levels:** ~31
 - **Forecast length:** Up to 48 hours
-- **Update frequency:** 4× daily
+- **Update frequency:** Up to 4× daily
+
+---
+
+## Relationship to other models
+HRDPS is Canada’s **highest-resolution operational deterministic weather model**.
+
+It complements **RDPS** and **GDPS** by providing convection-permitting guidance at local scales.
 
 ---
 
@@ -31,12 +39,12 @@ It is the highest-resolution operational weather model run by Canada.
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download location:**  
-  https://dd.weather.gc.ca/today/model_hrdps/
+  https://eccc-msc.github.io/open-data/msc-data/nwp_hrdps/readme_hrdps-datamart_en/
 
 ---
 
 ## Notes
-HRDPS provides convection-allowing forecasts similar in purpose to the US HRRR, but with less frequent updates and a slightly longer forecast range.
+HRDPS provides convection-allowing forecasts similar in purpose to the US **HRRR**, but with a longer forecast range and less frequent update cycles.
 
 ---
 
