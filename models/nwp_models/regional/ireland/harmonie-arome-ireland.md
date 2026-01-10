@@ -1,14 +1,14 @@
 # HARMONIE-AROME Ireland
 
 ## What this model is
-A high-resolution regional weather forecast model designed to predict small-scale and rapidly changing weather conditions such as showers, thunderstorms, and local wind patterns.
+HARMONIE-AROME Ireland is a **high-resolution, convection-permitting regional numerical weather prediction (NWP) model** operated by Met Éireann.
 
-It is well suited for short-range forecasting over Ireland and nearby areas.
+It is designed to forecast small-scale and rapidly evolving weather phenomena such as showers, thunderstorms, local wind patterns, and fog.
 
 ---
 
 ## Who runs it
-- **Organization:** : Met Éireann
+- **Organization:** Met Éireann
 - **Country / region:** Ireland
 
 ---
@@ -19,10 +19,24 @@ It is well suited for short-range forecasting over Ireland and nearby areas.
 ---
 
 ## Basic details
-- **Model type:** Regional
-- **Typical resolution:** ~2.5 km
-- **Forecast length:** Up to ~54 hours
-- **Update frequency:** 8× daily
+- **Model type:** Regional convection-permitting deterministic NWP
+- **Model system:** HARMONIE-AROME
+- **Horizontal resolution:** ~2.5 km
+- **Horizontal grid:** ~1000 × 900 grid points
+- **Vertical levels:** 65
+- **Forecast length:** Up to 54 hours
+- **Update frequency:** 8× daily (every 3 hours from 00 UTC)
+
+---
+
+## What it provides
+- High-resolution forecasts of:
+  - temperature
+  - wind
+  - precipitation
+  - pressure
+  - humidity
+  - cloud fields
 
 ---
 
@@ -36,9 +50,9 @@ It is well suited for short-range forecasting over Ireland and nearby areas.
 ---
 
 ## Notes
-HARMONIE-AROME Ireland is part of the HARMONIE-AROME model system used by several European national weather services.
+Met Éireann operates HARMONIE-AROME primarily as part of its **ensemble system**, known as **IREPS (Irish Regional Ensemble Prediction System)**.
 
-The open data provides a selected set of forecast variables suitable for public and research use.
+This entry describes the **deterministic HARMONIE-AROME configuration**; IREPS should be documented separately under regional ensemble models.
 
 ---
 
