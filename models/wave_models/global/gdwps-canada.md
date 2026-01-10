@@ -1,14 +1,14 @@
 # GDWPS (Global Deterministic Wave Prediction System)
 
 ## What this model is
-The Global Deterministic Wave Prediction System (GDWPS) is a global wave forecast model that predicts ocean wave conditions such as significant wave height, wave period, and wave direction.
+The Global Deterministic Wave Prediction System (GDWPS) is Canada’s **global operational wave forecast system**, used to predict ocean wave conditions worldwide.
 
-It is Canada’s primary operational wave forecasting system and is driven by wind forecasts from Canada’s global atmospheric model.
+It is based on the third-generation spectral wave model **WaveWatch III® (WW3)** and produces deterministic wave forecasts for marine applications.
 
 ---
 
 ## Who runs it
-- **Organization:** : Environment and Climate Change Canada
+- **Organization:** Environment and Climate Change Canada (Canadian Meteorological Centre)
 - **Country / region:** Canada
 
 ---
@@ -19,18 +19,30 @@ It is Canada’s primary operational wave forecasting system and is driven by wi
 ---
 
 ## Basic details
-- **Model type:** Wave model
+- **Model type:** Deterministic wave model
+- **Core model:** WaveWatch III® (WW3)
 - **Typical resolution:** ~0.25°
-- **Forecast length:** Up to ~10 days
+- **Forecast length:** Up to 240 hours (~10 days)
 - **Update frequency:** 2× daily
+
+---
+
+## Forcing and coupling
+GDWPS is forced by:
+- **10 m winds** from the Global Deterministic Prediction System (GDPS)
+- **Sea-ice concentration** from GDPS
+
+Sea-ice concentration is used to:
+- attenuate wave growth in regions with 25–75% ice coverage
+- suppress wave growth in regions with ice concentration above 75%
 
 ---
 
 ## What it predicts
 - Significant wave height
-- Wave period
-- Wave direction
-- Wind-wave and swell components (varies by product)
+- Peak wave period
+- Primary swell height, direction, and period
+- Additional wind-wave and swell parameters (by product)
 
 ---
 
@@ -38,15 +50,15 @@ It is Canada’s primary operational wave forecasting system and is driven by wi
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2, NetCDF
-- **Official download location:**  
+- **Official documentation and access:**  
   https://eccc-msc.github.io/open-data/msc-data/nwp_gdwps/readme_gdwps-datamart_en/
 
 ---
 
 ## Notes
-GDWPS is based on the WAVEWATCH III (WW3) model and is closely coupled to Canada’s global atmospheric forecasting system.
+GDWPS provides global deterministic wave guidance and is widely used for marine forecasting in the North Atlantic, North Pacific, and Arctic regions.
 
-It is widely used for marine forecasting in the North Atlantic, North Pacific, and Arctic regions.
+It serves as the wave counterpart to Canada’s **GDPS** atmospheric forecasting system.
 
 ---
 
