@@ -1,28 +1,34 @@
 # RDPS (Regional Deterministic Prediction System)
 
 ## What this model is
-A regional weather forecast model that predicts weather conditions such as temperature, wind, precipitation, and pressure over Canada and nearby regions.
+The Regional Deterministic Prediction System (RDPS) is a **deterministic numerical weather prediction system** used to forecast atmospheric conditions such as temperature, wind, precipitation, cloud cover, and humidity.
 
-It provides higher resolution forecasts than Canada’s global model and is used for short- to medium-range forecasting.
+It provides higher-resolution short- to medium-range forecasts over North America.
 
 ---
 
 ## Who runs it
-- **Organization:** : CMC / Environment and Climate Change Canada
+- **Organization:** Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
 
 ## What area it covers
-- **Coverage:** Canada and surrounding areas
+- **Coverage:** Canada and the United States (North American domain)
 
 ---
 
 ## Basic details
-- **Model type:** Regional
+- **Model type:** Deterministic (regional-domain configuration)
 - **Typical resolution:** ~10 km
+- **Vertical levels:** ~33
 - **Forecast length:** Up to 84 hours
 - **Update frequency:** 4× daily
+
+---
+
+## Relationship to other models
+RDPS is now produced as a **regional-domain component of Canada’s Global Deterministic Prediction System (GDPS)** at 10 km resolution, focused on North America.
 
 ---
 
@@ -31,12 +37,12 @@ It provides higher resolution forecasts than Canada’s global model and is used
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download location:**  
-  https://dd.weather.gc.ca/model_gem_regional/
+  https://eccc-msc.github.io/open-data/msc-data/nwp_rdps/readme_rdps-datamart_en/
 
 ---
 
 ## Notes
-RDPS is the main regional forecast model used by the Canadian weather service and serves a similar role to the NAM in the United States.
+RDPS serves a similar operational role to the **NAM** in the United States, providing higher-resolution deterministic guidance than global models for short-range forecasting.
 
 ---
 
