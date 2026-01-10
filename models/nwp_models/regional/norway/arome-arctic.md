@@ -1,28 +1,46 @@
 # AROME-Arctic
 
 ## What this model is
-A high-resolution regional weather forecast model designed to predict weather conditions over Arctic regions, including temperature, wind, precipitation, and pressure.
+AROME-Arctic is a **high-resolution, convection-permitting regional deterministic numerical weather prediction (NWP) model** operated by the Norwegian Meteorological Institute (MET Norway).
 
-It is optimized for polar environments and high-latitude weather phenomena.
+It is specifically designed for **high-latitude and polar environments**, with improved representation of Arctic boundary layers, sea ice interaction, and mesoscale weather systems such as polar lows.
 
 ---
 
 ## Who runs it
-- **Organization:** : MET Norway
+- **Organization:** Norwegian Meteorological Institute (MET Norway)
 - **Country / region:** Norway
 
 ---
 
 ## What area it covers
-- **Coverage:** Svalbard and surrounding Arctic regions
+- **Coverage:** Arctic regions, including Svalbard, surrounding Arctic Ocean areas, the Barents Sea, and nearby land and marine regions
 
 ---
 
 ## Basic details
-- **Model type:** Regional (AROME-based)
-- **Typical resolution:** ~2.5 km
-- **Forecast length:** Up to ~66 hours
-- **Update frequency:** 4× daily
+- **Model type:** Regional deterministic NWP (convection-permitting)
+- **Model system:** AROME
+- **Horizontal resolution:** ~2.5 km
+- **Vertical levels:** 65
+- **Forecast length:** Up to 48 hours
+- **Update frequency:** 8× daily (every 3 hours)
+
+---
+
+## What it provides
+Deterministic high-resolution forecasts of:
+- temperature
+- wind
+- precipitation
+- pressure
+- humidity
+- cloud and hydrometeor fields
+
+The model is optimized for:
+- polar boundary layer processes
+- sea ice and cold-surface interactions
+- strong winds and polar low development
 
 ---
 
@@ -36,11 +54,14 @@ It is optimized for polar environments and high-latitude weather phenomena.
 ---
 
 ## Notes
-AROME-Arctic is specifically designed for Arctic forecasting and is widely used for research and operational purposes in polar regions.
+AROME-Arctic is a **deterministic model** and should not be confused with **MEPS**, which is an ensemble system based on HARMONIE-AROME.
 
-It performs well in conditions involving sea ice, strong winds, and extreme cold.
+It is widely used for both **operational forecasting** and **research applications** in the Arctic.
 
 ---
 
 ## Official documentation
-- https://github.com/metno/NWPdocs/wiki
+- MET Norway NWPdocs (AROME-Arctic dataset):  
+  https://github.com/metno/NWPdocs/wiki/AROME-Arctic-dataset
+- MET Norway public model description:  
+  https://www.met.no/en/projects/the-weather-model-arome-arctic
