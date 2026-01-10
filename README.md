@@ -1,11 +1,11 @@
 # master-weather-model-list
 
-This repository is a **simple, human-readable catalog of publicly available weather forecast models**.
+This repository is a **simple, human-readable catalog of publicly available forecast models**.
 
-It focuses on **numerical weather prediction (NWP) models** and related forecast systems whose data can be **freely downloaded** by anyone.
+It focuses on **numerical weather prediction (NWP)** and related forecast systems whose data can be **freely downloaded** by anyone.
 
 The goal is to make it easy to discover:
-- which weather models exist
+- which forecast models exist
 - who produces them
 - what regions they cover
 - and where their data can be downloaded
@@ -15,12 +15,13 @@ No meteorology background is required to use this repository.
 ---
 
 ## What this repository includes
-- **Numerical Weather Prediction (NWP) models**
+- **Numerical Weather Prediction (NWP) models** (deterministic)
+- **Ensemble forecast models** (global and regional)
 - **Wave forecast models**
+- **Tropical cyclone / hurricane models**
 - **Free and publicly downloadable data**
 - Models provided by government or publicly funded institutions
-- **Global**, **regional**, and **coastal** forecast systems
-- (Planned) **Ensemble forecast models**
+- **Global**, **regional**, **coastal**, and **storm-centered** forecast systems
 
 ---
 
@@ -36,7 +37,7 @@ No meteorology background is required to use this repository.
 ## Repository structure
 
 Models are organized by:
-- **Model category** (e.g. global, regional, wave, ensemble)
+- **Model type** (weather, ensemble, wave, tropical cyclone)
 - **Geographic scope** (global vs regional)
 - **Country or organization of origin**
 
@@ -51,7 +52,7 @@ Each model has its own file describing:
 
 ## Why this exists
 
-Information about weather models is often:
+Information about forecast models is often:
 - scattered across many websites
 - written for experts only
 - difficult to compare or discover
