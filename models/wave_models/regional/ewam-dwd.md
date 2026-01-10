@@ -1,53 +1,60 @@
 # EWAM (European Wave Model)
 
 ## What this model is
-EWAM is a regional wave forecast model operated by the German Weather Service that predicts ocean wave conditions over European seas.
+EWAM is a **regional deterministic wave prediction model** operated by the German Weather Service (DWD), focused on European seas.
 
-It provides higher-resolution wave forecasts than the global model and is designed for regional marine forecasting.
+It refines global wave forecasts for regional marine forecasting and acts as an intermediate nest between global and coastal wave models.
 
 ---
 
 ## Who runs it
-- **Organization:** : Deutscher Wetterdienst
+- **Organization:** Deutscher Wetterdienst
 - **Country / region:** Germany
 
 ---
 
 ## What area it covers
-- **Coverage:** European seas  
-  (including the North Sea, Baltic Sea, and parts of the North Atlantic)
+- **Coverage:** European seas, including the North Sea, Baltic Sea, and adjacent Atlantic regions
 
 ---
 
 ## Basic details
-- **Model type:** Wave model
-- **Typical resolution:** ~0.05°–0.1°
-- **Forecast length:** Up to ~5 days
+- **Model type:** Regional deterministic wave model
+- **Core wave model:** WAVEWATCH III® (WW3)
+- **Horizontal resolution:** ~0.1°
+- **Forecast length:** Up to 120 hours (5 days)
 - **Update frequency:** 2× daily
 
 ---
 
-## What it predicts
-- Significant wave height
-- Mean and peak wave period
-- Mean wave direction
-- Wind-sea and swell components
+## Forcing and nesting
+- **Atmospheric forcing:** ICON-EU 10 m winds
+- **Nested inside:** GWAM
+- **Parent model for:** CWAM (Coastal Wave Model)
+
+---
+
+## What it provides
+Deterministic regional wave forecasts including:
+- significant wave height
+- wave period and direction
+- swell characteristics
 
 ---
 
 ## Data availability
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2, NetCDF
+- **Data formats:** GRIB2
 - **Official download location:**  
-  https://opendata.dwd.de/weather/maritime/wave_models/ewam/
+  https://opendata.dwd.de/weather/marine/wave/
 
 ---
 
 ## Notes
-EWAM bridges the gap between global and coastal wave forecasting and is widely used for marine services in European waters.
+EWAM bridges the scale gap between global wave forecasts and very high-resolution coastal wave modeling.
 
 ---
 
 ## Official documentation
-- https://www.dwd.de/EN/specialusers/shipping/seegangsvorhersagesystem_en.html
+- DWD marine forecasting system documentation
