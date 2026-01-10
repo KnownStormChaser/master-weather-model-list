@@ -1,14 +1,14 @@
-# UKMO Global (Unified Model – Global)
+# UKMO Global (Unified Model – Global Deterministic)
 
 ## What this model is
-A global weather forecast model that predicts weather conditions such as temperature, wind, precipitation, and pressure for the entire Earth.
+The UKMO Global model is the **global deterministic numerical weather prediction system** operated by the UK Met Office.
 
-This model is part of the Met Office **Unified Model** system.
+It is a global configuration of the Met Office **Unified Model**, providing short- to medium-range deterministic forecasts of atmospheric conditions worldwide.
 
 ---
 
 ## Who runs it
-- **Organization:** : Met Office
+- **Organization:** Met Office
 - **Country / region:** United Kingdom
 
 ---
@@ -19,25 +19,29 @@ This model is part of the Met Office **Unified Model** system.
 ---
 
 ## Basic details
-- **Model type:** Global
-- **Typical resolution:** ~10 km
-- **Forecast length:** Up to 7 days (longer periods available for some datasets)
-- **Update frequency:** 4× daily
+- **Model type:** Global deterministic NWP
+- **Core system:** Unified Model
+- **Typical resolution:** ~10 km (10 km class)
+- **Forecast length:**  
+  - Up to 168 hours (7 days) for 00Z and 12Z runs  
+  - Up to ~66 hours for 06Z and 18Z runs
+- **Update frequency:** 4× daily (cycle-dependent forecast length)
 
 ---
 
 ## Data availability
-- **Is the data free?** Yes
+- **Is the data free?** Yes (Open Data subset)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
+- **Data formats:** NetCDF (CF-compliant)
 - **Official download location:**  
   https://registry.opendata.aws/met-office-global-deterministic/
 
 ---
 
 ## Notes
-The Met Office provides free access to selected global forecast outputs via its open data programme.  
-The full operational model and all variables are not publicly available.
+The Met Office Global deterministic model is the flagship short-range forecasting system of the UK Met Office.
+
+Only a subset of variables and forecast fields are publicly available via the Met Office Open Data programme.
 
 ---
 
