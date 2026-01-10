@@ -1,12 +1,14 @@
-# GEM Global (Global Environmental Multiscale)
+# GDPS (Global Deterministic Prediction System)
 
 ## What this model is
-A global weather forecast model that predicts weather conditions such as temperature, wind, precipitation, and pressure for the entire Earth.
+The Global Deterministic Prediction System (GDPS) is a **coupled deterministic numerical weather prediction system** operated by Canada.
+
+It combines the **GEM atmospheric model** with **NEMO–CICE ocean and sea ice models** to produce global forecasts of atmospheric and surface conditions.
 
 ---
 
 ## Who runs it
-- **Organization:** : CMC / Environment and Climate Change Canada
+- **Organization:** Canadian Meteorological Centre / Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
@@ -17,10 +19,18 @@ A global weather forecast model that predicts weather conditions such as tempera
 ---
 
 ## Basic details
-- **Model type:** Global
+- **Model type:** Deterministic (global, coupled atmosphere–ocean–ice)
 - **Typical resolution:** ~15 km
+- **Vertical levels:** ~30
 - **Forecast length:** Up to 10 days
 - **Update frequency:** 2× daily
+
+---
+
+## Relationship to other models
+GDPS is Canada’s primary **global deterministic forecast system**.
+
+The **Regional Deterministic Prediction System (RDPS)** is now produced as a **regional-domain component of GDPS** at ~10 km resolution over North America.
 
 ---
 
@@ -28,13 +38,16 @@ A global weather forecast model that predicts weather conditions such as tempera
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
+- **Grid:** Global latitude–longitude grid (~0.15°)
 - **Official download location:**  
-  https://dd.weather.gc.ca/today/model_gem_global/15km/grib2/lat_lon/
+  https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-datamart_en/
 
 ---
 
 ## Notes
-This is Canada’s primary global weather forecast model and is used operationally by the Canadian weather service.
+Variable availability and output frequency depend on forecast lead time.
+
+GDPS provides the large-scale deterministic guidance that underpins Canada’s regional and ensemble prediction systems.
 
 ---
 
