@@ -1,28 +1,53 @@
-# ICON-IL
+# ICON-IL (ICON-LAM Israel)
 
 ## What this model is
-A regional weather forecast model that predicts weather conditions such as temperature, wind, precipitation, and pressure over a very large domain covering much of Europe and the Middle East.
+ICON-IL is a **regional deterministic limited-area numerical weather prediction (NWP) model** operated by the Israel Meteorological Service (IMS).
 
-It is based on the ICON modeling system and adapted for use by Israel.
+It is based on the **ICON (ICOsahedral Nonhydrostatic) modeling system** and is run as a limited-area configuration (ICON-LAM) with a very large domain extending well beyond Israel to capture upstream weather systems.
 
 ---
 
 ## Who runs it
-- **Organization:** : Israel Meteorological Service
+- **Organization:** Israel Meteorological Service (IMS)
 - **Country / region:** Israel
 
 ---
 
 ## What area it covers
-- **Coverage:** Large parts of Europe and the Middle East
+- **Coverage:** Large regional domain spanning much of Europe and the Middle East  
+  - Approximate bounds: **4°E – 45.5°E**, **25.5°N – 53°N**
+  - Domain size: ~41.5° × 27.5°  
+  - ~1.78 million triangular grid cells
 
 ---
 
 ## Basic details
-- **Model type:** Regional (ICON-based)
-- **Typical resolution:** ~2.8 km
-- **Forecast length:** Up to ~90 hours
-- **Update frequency:** 2× daily
+- **Model type:** Regional deterministic limited-area NWP
+- **Model system:** ICON-LAM
+- **Horizontal resolution:** ~2.5 km (R2B10 grid)
+- **Vertical levels:** 65
+- **Model top:** ~23 km
+- **Forecast length:** Up to 90 hours
+- **Update frequency:** 2× daily (00Z, 12Z)
+
+---
+
+## Initial and boundary conditions
+- **Initial conditions:** ECMWF deterministic IFS
+- **Lateral boundary conditions:** ECMWF deterministic IFS
+- **Boundary update frequency:** Every 3 hours
+- **Data assimilation:** None (no local DA cycle)
+
+---
+
+## What it provides
+Deterministic forecasts of:
+- temperature
+- wind
+- precipitation
+- pressure
+- humidity
+- cloud and hydrometeor fields
 
 ---
 
@@ -36,9 +61,9 @@ It is based on the ICON modeling system and adapted for use by Israel.
 ---
 
 ## Notes
-ICON-IL uses a very large regional domain, bridging the gap between global and national-scale models.
+ICON-IL is run on **ECMWF computing infrastructure** as part of the **SEE-MHEWS project**.
 
-Its wide coverage makes it useful for tracking weather systems affecting Israel from far upstream.
+The unusually large regional domain allows the model to explicitly resolve upstream synoptic-scale features that influence weather over Israel.
 
 ---
 
