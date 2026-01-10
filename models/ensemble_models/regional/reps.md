@@ -1,20 +1,20 @@
 # REPS (Regional Ensemble Prediction System)
 
 ## What this model is
-The Regional Ensemble Prediction System (REPS) is Canada’s **regional ensemble weather forecast system**, designed to quantify forecast uncertainty at regional scales.
+The Regional Ensemble Prediction System (REPS) is Canada’s **regional ensemble weather forecast system**, designed to produce probabilistic forecasts and quantify uncertainty at regional scales.
 
-REPS produces multiple forecasts with perturbed initial conditions to provide probabilistic guidance for short- to medium-range weather forecasting over Canada.
+It generates multiple forecast scenarios to represent the uncertainty inherent in short-range weather prediction.
 
 ---
 
 ## Who runs it
-- **Organization:** : Environment and Climate Change Canada
+- **Organization:** Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
 
 ## What area it covers
-- **Coverage:** Canada and surrounding regions
+- **Coverage:** Canada and the United States (regional North American domain)
 
 ---
 
@@ -22,7 +22,8 @@ REPS produces multiple forecasts with perturbed initial conditions to provide pr
 - **Model type:** Regional ensemble (atmospheric)
 - **Number of members:** 20 perturbation members + 1 control
 - **Typical resolution:** ~10 km
-- **Forecast length:** Up to ~72 hours
+- **Vertical levels:** 24
+- **Forecast length:** Up to 3 days (~72 hours)
 - **Update frequency:** 4× daily
 
 ---
@@ -32,16 +33,27 @@ REPS produces multiple forecasts with perturbed initial conditions to provide pr
   - temperature
   - wind
   - precipitation
-  - pressure
+  - cloud cover
+  - humidity
 - Ensemble mean and spread
-- Regional uncertainty guidance for weather-sensitive decision making
+- Short-range regional uncertainty guidance
+
+---
+
+## Ensemble methodology
+REPS ensemble members differ through perturbations to:
+- initial conditions
+- boundary conditions
+- physical tendencies
+
+A control member without perturbations is also produced.
 
 ---
 
 ## Relationship to other models
-REPS is the ensemble companion to Canada’s **RDPS** deterministic regional model.
+REPS is the ensemble companion to Canada’s **RDPS** deterministic regional forecast system.
 
-It complements both RDPS and **GEPS** by providing probabilistic guidance at regional scales.
+It complements **RDPS** and **GEPS** by providing probabilistic guidance at regional scales.
 
 ---
 
@@ -49,15 +61,15 @@ It complements both RDPS and **GEPS** by providing probabilistic guidance at reg
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
-- **Official download location:**  
+- **Official documentation and access:**  
   https://eccc-msc.github.io/open-data/msc-data/nwp_reps/readme_reps-datamart_en/
 
 ---
 
 ## Notes
-REPS is used operationally by Environment and Climate Change Canada for regional probabilistic forecasting.
+REPS is used operationally by Environment and Climate Change Canada for short-range regional probabilistic forecasting.
 
-As with all ensemble systems, REPS outputs should be interpreted probabilistically rather than as deterministic forecasts.
+As with all ensemble systems, REPS output should be interpreted probabilistically rather than as deterministic forecasts.
 
 ---
 
