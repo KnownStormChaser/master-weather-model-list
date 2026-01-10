@@ -1,14 +1,14 @@
 # MOGREPS-G (Met Office Global and Regional Ensemble Prediction System – Global)
 
 ## What this model is
-MOGREPS-G is the **global ensemble weather forecast system** operated by the UK Met Office. It produces multiple forecasts to represent uncertainty in medium-range weather predictions.
+MOGREPS-G is the **global ensemble numerical weather prediction system** operated by the UK Met Office.
 
-Instead of a single deterministic forecast, MOGREPS-G generates an ensemble of plausible future atmospheric states.
+It produces multiple forecast scenarios to represent uncertainty in medium-range weather prediction, rather than a single deterministic outcome.
 
 ---
 
 ## Who runs it
-- **Organization:** : Met Office
+- **Organization:** Met Office
 - **Country / region:** United Kingdom
 
 ---
@@ -19,11 +19,12 @@ Instead of a single deterministic forecast, MOGREPS-G generates an ensemble of p
 ---
 
 ## Basic details
-- **Model type:** Global ensemble (atmospheric)
-- **Number of members:** 17 perturbation members + 1 control
-- **Typical resolution:** ~0.83° × 0.56° (Open Data subset; varies by forecast range)
-- **Forecast length:** Up to ~8 days
-- **Update frequency:** 4× daily
+- **Model type:** Global ensemble NWP
+- **Core system:** Unified Model (ensemble configuration)
+- **Number of members:** 17 perturbed members + 1 control
+- **Typical resolution:** ~20 km (global latitude–longitude grid)
+- **Forecast length:** Up to 8 days
+- **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
 
 ---
 
@@ -34,30 +35,30 @@ Instead of a single deterministic forecast, MOGREPS-G generates an ensemble of p
   - precipitation
   - pressure
 - Ensemble mean and spread
-- Uncertainty guidance for medium-range forecasting
+- Medium-range forecast uncertainty guidance
 
 ---
 
 ## Relationship to other models
-MOGREPS-G is the ensemble companion to the UK Met Office’s **Global Deterministic Model (UKMO Global)**.
+MOGREPS-G is the ensemble companion to the **UK Met Office Global Deterministic Model**.
 
-The openly available data represents a **subset** of the full operational ensemble.
+The openly available data represents a **subset of the full operational ensemble**, with reduced parameter availability.
 
 ---
 
 ## Data availability
 - **Is the data free?** Yes (Open Data subset)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
+- **Data formats:** NetCDF (CF-compliant)
 - **Official download location:**  
   https://registry.opendata.aws/met-office-global-ensemble/
 
 ---
 
 ## Notes
-MOGREPS-G is used operationally by the UK Met Office to assess forecast uncertainty and supports probabilistic decision-making.
+MOGREPS-G runs four times daily, with all cycles producing forecasts out to 8 days.
 
-Users should note that only a reduced subset of parameters and resolution is publicly available.
+Ensemble output should be interpreted probabilistically rather than as deterministic forecasts.
 
 ---
 
