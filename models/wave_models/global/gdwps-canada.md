@@ -1,14 +1,14 @@
 # GDWPS (Global Deterministic Wave Prediction System)
 
 ## What this model is
-The Global Deterministic Wave Prediction System (GDWPS) is Canada’s **global operational wave forecast system**, used to predict ocean wave conditions worldwide.
+The Global Deterministic Wave Prediction System (GDWPS) is Canada’s operational global wave forecasting system, designed to predict ocean surface wave conditions worldwide.
 
-It is based on the third-generation spectral wave model **WaveWatch III® (WW3)** and produces deterministic wave forecasts for marine applications.
+GDWPS provides deterministic forecasts of wave height, period, direction, and related parameters and serves as the primary source of global wave guidance and boundary conditions for Canada’s regional wave models.
 
 ---
 
 ## Who runs it
-- **Organization:** Environment and Climate Change Canada (Canadian Meteorological Centre)
+- **Organization:** Canadian Meteorological Centre (CMC) / Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
@@ -19,46 +19,60 @@ It is based on the third-generation spectral wave model **WaveWatch III® (WW3)*
 ---
 
 ## Basic details
-- **Model type:** Deterministic wave model
-- **Core model:** WaveWatch III® (WW3)
-- **Typical resolution:** ~0.25°
-- **Forecast length:** Up to 240 hours (~10 days)
-- **Update frequency:** 2× daily
+- **Model type:** Deterministic global wave model
+- **Wave model:** WAVEWATCH III
+- **Horizontal resolution:**  
+  ~0.25° (global), implemented using multiple overlapping grids
+- **Forecast length:**  
+  Up to ~243 hours (~10 days)
+- **Update frequency / cycles:**  
+  - Pseudo-analysis cycles: 4× daily (00, 06, 12, 18 UTC)  
+  - Forecast cycles: 2× daily (00, 12 UTC)
+- **Temporal output resolution:**  
+  Typically 3-hourly
 
 ---
 
-## Forcing and coupling
-GDWPS is forced by:
-- **10 m winds** from the Global Deterministic Prediction System (GDPS)
-- **Sea-ice concentration** from GDPS
+## Model configuration
+GDWPS uses three overlapping global grids to provide consistent coverage across different latitude bands. This multi-grid configuration improves numerical stability and accuracy at high latitudes.
 
-Sea-ice concentration is used to:
-- attenuate wave growth in regions with 25–75% ice coverage
-- suppress wave growth in regions with ice concentration above 75%
+The system includes a short pseudo-analysis phase prior to forecast integration, allowing the wave state to adjust dynamically to the most recent wind and ice forcing.
 
 ---
 
-## What it predicts
+## Forcing and inputs
+- **Wind forcing:**  
+  GDPS near-surface winds
+- **Sea ice forcing:**  
+  GDPS sea-ice concentration and extent
+- **Ice treatment:**  
+  Wave growth and propagation are progressively attenuated in partially ice-covered waters and suppressed in areas of high ice concentration.
+
+---
+
+## What it provides
+Deterministic global forecasts of:
 - Significant wave height
-- Peak wave period
-- Primary swell height, direction, and period
-- Additional wind-wave and swell parameters (by product)
+- Wave period and direction
+- Wind wave and swell components
+- Wave energy spectra (for selected products)
+
+GDWPS output is used directly for marine forecasting and as boundary conditions for Canada’s regional wave prediction systems.
 
 ---
 
 ## Data availability
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2, NetCDF
-- **Official documentation and access:**  
+- **Data formats:** GRIB2
+- **Official download location:**  
   https://eccc-msc.github.io/open-data/msc-data/nwp_gdwps/readme_gdwps-datamart_en/
 
 ---
 
 ## Notes
-GDWPS provides global deterministic wave guidance and is widely used for marine forecasting in the North Atlantic, North Pacific, and Arctic regions.
-
-It serves as the wave counterpart to Canada’s **GDPS** atmospheric forecasting system.
+- GDWPS is tightly coupled to Canada’s global atmospheric prediction systems through wind and ice forcing.
+- The system plays a central role in Canada’s marine forecasting and wave modeling hierarchy.
 
 ---
 
