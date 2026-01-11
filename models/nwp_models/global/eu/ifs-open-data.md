@@ -8,7 +8,7 @@ This entry refers specifically to the **publicly available open-data version** o
 ---
 
 ## Who runs it
-- **Organization:** : European Centre for Medium-Range Weather Forecasts
+- **Organization:** European Centre for Medium-Range Weather Forecasts
 - **Country / region:** European Union / international
 
 ---
@@ -31,7 +31,7 @@ This entry refers specifically to the **publicly available open-data version** o
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download location:**  
-  https://www.ecmwf.int/en/forecasts/datasets/open-data
+  https://data.ecmwf.int/forecasts/
 
 ---
 
