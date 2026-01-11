@@ -29,7 +29,9 @@ A high-resolution regional weather forecast model designed for short-range forec
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download location:**  
-  https://www.ncei.noaa.gov/products/weather-climate-models/high-resolution-rapid-refresh
+  https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/
+
+  https://registry.opendata.aws/noaa-hrrr-pds/
 
 ---
 
@@ -39,4 +41,4 @@ HRRR is a convection-allowing model and is widely used for short-term forecastin
 ---
 
 ## Official documentation
-- https://www.weather.gov/sti/stimodeling_hrrr
+- https://rapidrefresh.noaa.gov/hrrr/
