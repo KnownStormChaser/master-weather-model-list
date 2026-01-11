@@ -8,7 +8,7 @@ It is tightly coupled to ECMWF’s atmospheric forecasts and is widely regarded 
 ---
 
 ## Who runs it
-- **Organization:** : European Centre for Medium-Range Weather Forecasts
+- **Organization:** European Centre for Medium-Range Weather Forecasts
 - **Country / region:** International (European consortium)
 
 ---
@@ -40,7 +40,7 @@ It is tightly coupled to ECMWF’s atmospheric forecasts and is widely regarded 
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download location:**  
-  https://www.ecmwf.int/en/forecasts/datasets/open-data
+  https://data.ecmwf.int/forecasts/
 
 ---
 
