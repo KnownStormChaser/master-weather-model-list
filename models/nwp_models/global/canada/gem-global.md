@@ -1,14 +1,14 @@
 # GDPS (Global Deterministic Prediction System)
 
 ## What this model is
-The Global Deterministic Prediction System (GDPS) is a **coupled deterministic numerical weather prediction system** operated by Canada.
+The Global Deterministic Prediction System (GDPS) is Canada’s primary global numerical weather prediction system, providing deterministic forecasts of atmospheric conditions worldwide.
 
-It combines the **GEM atmospheric model** with **NEMO–CICE ocean and sea ice models** to produce global forecasts of atmospheric and surface conditions.
+GDPS is based on the Global Environmental Multiscale (GEM) atmospheric model and operates as part of a coupled Earth-system framework, supplying large-scale guidance and boundary conditions for Canada’s regional and high-resolution forecast systems.
 
 ---
 
 ## Who runs it
-- **Organization:** Canadian Meteorological Centre / Environment and Climate Change Canada
+- **Organization:** Canadian Meteorological Centre (CMC) / Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
@@ -19,18 +19,29 @@ It combines the **GEM atmospheric model** with **NEMO–CICE ocean and sea ice m
 ---
 
 ## Basic details
-- **Model type:** Deterministic (global, coupled atmosphere–ocean–ice)
-- **Typical resolution:** ~15 km
-- **Vertical levels:** ~30
-- **Forecast length:** Up to 10 days
-- **Update frequency:** 2× daily
+- **Model type:** Deterministic global NWP
+- **Model system / core:** GEM (Global Environmental Multiscale)
+- **Horizontal resolution:**  
+  ~15 km (quasi-uniform Yin–Yang grid)
+- **Vertical levels:** 84 hybrid staggered levels
+- **Model top:** ~0.1 hPa
+- **Forecast length:**  
+  Up to ~10 days
+- **Update frequency / cycles:**  
+  2× daily (00, 12 UTC)
+- **Temporal output resolution:**  
+  Typically 3-hourly
 
 ---
 
-## Relationship to other models
-GDPS is Canada’s primary **global deterministic forecast system**.
+## What it provides
+Deterministic global forecasts of:
+- Atmospheric temperature, wind, humidity, and pressure
+- Surface and near-surface weather variables
+- Large-scale circulation patterns
+- Boundary and initial conditions for downstream systems
 
-The **Regional Deterministic Prediction System (RDPS)** is now produced as a **regional-domain component of GDPS** at ~10 km resolution over North America.
+GDPS provides the large-scale deterministic guidance that underpins Canada’s regional (RDPS) and high-resolution (HRDPS) deterministic prediction systems.
 
 ---
 
@@ -38,16 +49,15 @@ The **Regional Deterministic Prediction System (RDPS)** is now produced as a **r
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
-- **Grid:** Global latitude–longitude grid (~0.15°)
 - **Official download location:**  
   https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-datamart_en/
 
 ---
 
 ## Notes
-Variable availability and output frequency depend on forecast lead time.
-
-GDPS provides the large-scale deterministic guidance that underpins Canada’s regional and ensemble prediction systems.
+- GDPS uses a global **Yin–Yang grid**, a distinctive feature of modern GEM configurations.
+- Data assimilation is performed using a **4D ensemble–variational (4DEnVar)** system, with background-error covariances derived from the GEPS ensemble.
+- GDPS is part of a tightly integrated suite of Canadian operational prediction systems.
 
 ---
 
