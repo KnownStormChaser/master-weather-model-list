@@ -1,57 +1,75 @@
-# HMON (Hurricane Multi-scale Ocean-coupled Non-hydrostatic Model)
+# HMON (Hurricanes in a Multi-scale Ocean-coupled Non-hydrostatic Model)
 
 ## What this model is
-The Hurricane Multi-scale Ocean-coupled Non-hydrostatic (HMON) model is a **specialized tropical cyclone forecast model** developed by NOAA to complement other hurricane prediction systems.
+HMON (Hurricanes in a Multi-scale Ocean-coupled Non-hydrostatic Model) is a specialized tropical cyclone numerical weather prediction system developed by NOAA to forecast hurricane track and intensity.
 
-It emphasizes ocean–atmosphere coupling to better represent storm intensity changes.
+HMON was introduced as a replacement for the legacy GFDL Hurricane Model and served as an intermediate step toward the unification of NOAA’s operational models within the NOAA Environmental Modeling System (NEMS) framework. 
 
 ---
 
 ## Who runs it
-- **Organization:** : National Centers for Environmental Prediction
+- **Organization:** NOAA / National Weather Service (NCEP Environmental Modeling Center)
 - **Country / region:** United States
 
 ---
 
 ## When this model runs
-HMON runs **only when an active tropical cyclone exists** within its supported basins.
+HMON is run on demand for individual tropical cyclones when triggered by the National Hurricane Center (NHC).
 
-Forecasts are generated for individual storms using storm-centered moving domains.
+Each forecast is storm-centered rather than tied to a fixed geographic domain.
 
 ---
 
 ## What area it covers
-- **Coverage:** Storm-centered domains following active tropical cyclones  
-  (Atlantic and Eastern/Central Pacific basins)
+- **Coverage:** Storm-centered domains following active tropical cyclones
+- **Basins:**  
+  Atlantic, Eastern Pacific, and Central Pacific
 
 ---
 
 ## Basic details
-- **Model type:** Tropical cyclone NWP model
-- **Core system:** FV3-based
+- **Model type:** Tropical cyclone NWP (deterministic)
+- **Model system / core:**  
+  NMMB (Non-hydrostatic Multi-scale Model on a B grid)
 - **Horizontal resolution:**  
-  - Outer domain: ~13 km  
+  - Parent domain: ~13 km  
   - Inner moving nest(s): ~3 km
-- **Forecast length:** Up to ~126 hours
-- **Update frequency:** Every 6 hours (per active storm)
+- **Vertical levels:** 43
+- **Model top:** ~50 hPa
+- **Forecast length:**  
+  Up to 126 hours
+- **Update frequency / cycles:**  
+  4× daily (00, 06, 12, 18 UTC), per active storm
+- **Temporal output resolution:**  
+  Typically 3-hourly
 
 ---
 
-## What it predicts
+## Ocean coupling
+HMON includes atmosphere–ocean coupling:
+- Coupled to the HYCOM ocean model for Eastern and Central Pacific basins
+- Operates uncoupled in the Atlantic basin
+
+This coupling was intended to improve representation of air–sea interaction and intensity change.
+
+---
+
+## What it provides
+Deterministic storm-scale forecasts of:
 - Tropical cyclone track
-- Storm intensity (maximum winds, central pressure)
-- Wind fields
-- Precipitation
-- Storm structure and evolution
-- Ocean–atmosphere interaction effects
+- Maximum winds and central pressure
+- Storm structure and size
+- Rainfall distribution
+- Near-storm wind fields
+
+HMON demonstrated skill improvements over the legacy GFDL Hurricane Model in track and intensity forecasts across multiple basins.
 
 ---
 
 ## Relationship to other models
-HMON operated alongside HWRF as part of NOAA’s tropical cyclone modeling suite.
+HMON replaced the discontinued GFDL Hurricane Model and operated alongside HWRF as part of NOAA’s tropical cyclone modeling suite.
 
-As of **31 October 2025**, no new HMON forecast runs have been released.  
-It is **unclear whether this reflects model retirement or a lack of qualifying storms** during this period.
+It has since been superseded by the Hurricane Analysis and Forecast System (HAFS), which incorporates newer infrastructure and modeling approaches.
 
 ---
 
@@ -59,17 +77,17 @@ It is **unclear whether this reflects model retirement or a lack of qualifying s
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
-- **Official download locations:**  
+- **Official download location:**  
   https://nomads.ncep.noaa.gov/pub/data/nccf/com/hmon/prod/
 
 ---
 
 ## Notes
-Users should verify the availability of HMON forecasts for specific storms and dates.
-
-For current operational guidance, NOAA primarily relies on **HAFS**, but historical and archived HMON output remains accessible.
+- HMON does not include a dedicated data assimilation system.
+- The model uses storm-following, two-way interactive nested grids.
+- While no longer NOAA’s primary hurricane system, HMON remains an important transitional model in the evolution of U.S. operational tropical cyclone forecasting.
 
 ---
 
 ## Official documentation
-- 
+- NOAA / NCEP HMON description
