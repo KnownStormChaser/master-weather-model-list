@@ -1,36 +1,49 @@
 # HRDPS (High-Resolution Deterministic Prediction System)
 
 ## What this model is
-The High-Resolution Deterministic Prediction System (HRDPS) is a **convection-allowing deterministic numerical weather prediction system** designed to forecast small-scale and rapidly evolving weather phenomena such as thunderstorms, localized wind patterns, and heavy precipitation.
+The High-Resolution Deterministic Prediction System (HRDPS) is Canada’s convection-permitting numerical weather prediction system, designed to forecast small-scale and rapidly evolving weather phenomena such as thunderstorms, localized wind patterns, and heavy precipitation.
 
-It produces raw numerical forecasts of atmospheric elements including temperature, wind, precipitation, cloud cover, and humidity.
+HRDPS provides high-resolution deterministic guidance to complement Canada’s global (GDPS) and regional (RDPS) forecast systems.
 
 ---
 
 ## Who runs it
-- **Organization:** Environment and Climate Change Canada
+- **Organization:** Canadian Meteorological Centre (CMC) / Environment and Climate Change Canada
 - **Country / region:** Canada
 
 ---
 
 ## What area it covers
-- **Coverage:** Most of Canada (high-resolution regional domains)
+- **Coverage:** Most of Canada
+- **Domain details:**  
+  High-resolution regional domains focused on populated and meteorologically active areas
 
 ---
 
 ## Basic details
-- **Model type:** Deterministic (high-resolution regional)
-- **Typical resolution:** ~2.5 km
-- **Vertical levels:** ~31
-- **Forecast length:** Up to 48 hours
-- **Update frequency:** Up to 4× daily
+- **Model type:** Deterministic NWP (convection-permitting)
+- **Model system / core:** GEM
+- **Horizontal resolution:**  
+  ~2.5 km
+- **Vertical levels:** 84 hybrid staggered levels
+- **Model top:** ~0.1 hPa
+- **Forecast length:**  
+  Up to ~48 hours
+- **Update frequency / cycles:**  
+  Multiple daily cycles (up to 4× daily, depending on domain)
+- **Temporal output resolution:**  
+  Typically hourly
 
 ---
 
-## Relationship to other models
-HRDPS is Canada’s **highest-resolution operational deterministic weather model**.
+## What it provides
+Deterministic high-resolution forecasts of:
+- Convective precipitation and thunderstorms
+- Near-surface wind, temperature, and humidity
+- Localized hazardous weather
+- Boundary-layer and terrain-driven effects
 
-It complements **RDPS** and **GDPS** by providing convection-permitting guidance at local scales.
+HRDPS is Canada’s highest-resolution operational deterministic forecast system and is used for short-range, local-scale forecasting.
 
 ---
 
@@ -44,7 +57,9 @@ It complements **RDPS** and **GDPS** by providing convection-permitting guidance
 ---
 
 ## Notes
-HRDPS provides convection-allowing forecasts similar in purpose to the US **HRRR**, but with a longer forecast range and less frequent update cycles.
+- HRDPS operates in the convection-permitting regime and does not rely on deep convection parameterization.
+- It complements RDPS by resolving smaller-scale features at the expense of forecast range.
+- HRDPS plays a role broadly comparable to the U.S. **HRRR**, though with different update frequency and domain strategy.
 
 ---
 
