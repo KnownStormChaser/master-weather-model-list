@@ -52,11 +52,21 @@ Deterministic forecasts of:
 ---
 
 ## Data availability
-- **Is the data free?** Yes
+- **Is the data free?** Yes (upon request)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
+- **Data formats:** N/A
 - **Official download location:**  
   https://ims.gov.il/en/node/179
+
+---
+
+## Access requirements
+Users who wish to gain access to IMS open model data must **sign the official Terms of Use PDF** and send the completed form to:
+
+**ims@ims.gov.il**
+
+- **Terms of Use (PDF):**  
+  https://ims.gov.il/sites/default/files/2023-05/terms%20of%20use.pdf
 
 ---
 
