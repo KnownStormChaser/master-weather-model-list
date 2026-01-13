@@ -3,7 +3,7 @@
 ## What this model is
 COSMO-IL is a **high-resolution regional deterministic numerical weather prediction (NWP) model** operated by the Israel Meteorological Service (IMS).
 
-It is based on the **COSMO (Consortium for Small-scale Modeling)** system and is specifically adapted for the **East Mediterranean / Levant region**, with a strong focus on short-range and high-impact weather.
+It is based on the **COSMO (Consortium for Small-scale Modeling)** system and is specifically adapted for the **Eastern Mediterranean / Levant region**, with a strong focus on short-range and high-impact weather.
 
 ---
 
@@ -25,7 +25,7 @@ It is based on the **COSMO (Consortium for Small-scale Modeling)** system and is
 - **Vertical levels:** 60
 - **Model top:** ~23 km
 - **Forecast length:**  
-  - Up to 90 hours (main operational runs)
+  - Up to 90 hours (main operational runs)  
   - Up to 12 hours (rapid-update runs during active weather)
 - **Update frequency:**  
   - 2× daily (00Z, 12Z) for full-range forecasts  
@@ -60,11 +60,21 @@ Deterministic forecasts of:
 ---
 
 ## Data availability
-- **Is the data free?** Yes
+- **Is the data free?** Yes (upon request)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
+- **Data formats:** N/A
 - **Official download location:**  
   https://ims.gov.il/en/node/179
+
+---
+
+## Access requirements
+Users who wish to gain access to IMS open model data must **sign the official Terms of Use PDF** and send the completed form to:
+
+**ims@ims.gov.il**
+
+- **Terms of Use (PDF):**  
+  https://ims.gov.il/sites/default/files/2023-05/terms%20of%20use.pdf
 
 ---
 
