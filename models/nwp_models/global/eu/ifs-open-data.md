@@ -32,6 +32,7 @@ This entry refers specifically to the **publicly available open-data version** o
 - **Data formats:** GRIB2
 - **Official download location:**  
   https://data.ecmwf.int/forecasts/
+  https://registry.opendata.aws/ecmwf-forecasts/
 
 ---
 
