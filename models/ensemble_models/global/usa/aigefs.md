@@ -8,7 +8,7 @@ It uses machine-learning techniques trained on historical numerical weather pred
 ---
 
 ## Who runs it
-- **Organization:** : National Centers for Environmental Prediction
+- **Organization:** National Centers for Environmental Prediction
 - **Country / region:** United States
 
 ---
