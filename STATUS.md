@@ -41,8 +41,8 @@ Retirement covers all convection-allowing nested domains.
 ### [HREF](./models/ensemble_models/regional/usa/href.md)
 Full replacement by REFS, which extends forecasts from 48 h to 60 h.
 
-### HiresW (not in repo)
-Full retirement except the Guam domain.
+### HiresW
+   All HiresW domains retired except Guam. See [HiresW Guam](./models/nwp_models/regional/usa/hiresw-guam.md) for the surviving domain.
 
 ### NARRE (not in repo)
 Full retirement; replaced by REFS.
