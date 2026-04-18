@@ -8,7 +8,7 @@ It produces multiple forecasts from slightly different initial conditions to rep
 ---
 
 ## Who runs it
-- **Organization:** : European Centre for Medium-Range Weather Forecasts
+- **Organization:** European Centre for Medium-Range Weather Forecasts
 - **Country / region:** International (European consortium)
 
 ---
