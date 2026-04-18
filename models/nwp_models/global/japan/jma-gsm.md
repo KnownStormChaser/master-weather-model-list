@@ -6,7 +6,7 @@ A global weather forecast model that predicts weather conditions such as tempera
 ---
 
 ## Who runs it
-- **Organization:** : JMA (Japan Meteorological Agency)
+- **Organization:** JMA (Japan Meteorological Agency)
 - **Country / region:** Japan
 
 ---
