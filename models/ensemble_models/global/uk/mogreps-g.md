@@ -21,10 +21,15 @@ It produces multiple forecast scenarios to represent uncertainty in medium-range
 ## Basic details
 - **Model type:** Global ensemble NWP
 - **Core system:** Unified Model (ensemble configuration)
-- **Number of members:** 17 perturbed members + 1 control
+- **Number of members:** 17 perturbed members + 1 control (per cycle)
 - **Typical resolution:** ~20 km (global latitude–longitude grid)
-- **Forecast length:** Up to 8 days
+- **Forecast length:**  
+  - Up to ~198 hours (~8 days) historically  
+  - Extended to ~246 hours (~10 days) for runs from late January 2026 onward
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
+- **Temporal output resolution:**  
+  - Hourly out to 54 hours (or 132 hours, parameter-dependent)  
+  - 3-hourly thereafter
 
 ---
 
@@ -56,9 +61,11 @@ The openly available data represents a **subset of the full operational ensemble
 ---
 
 ## Notes
-MOGREPS-G runs four times daily, with all cycles producing forecasts out to 8 days.
+MOGREPS-G runs four times daily and publishes a curated subset of operational ensemble parameters on AWS as NetCDF files. The dataset is offered on a non-operational, unsupported basis.
 
-Ensemble output should be interpreted probabilistically rather than as deterministic forecasts.
+Data published from late January 2026 onward includes additional parameters, extended forecast range to 246 hours, and changes to existing parameters (for example, `height_asl_on_pressure_levels` was replaced by `geopotential_height_on_pressure_levels`).
+
+MOGREPS-G's underlying data assimilation uses a hybrid 4D-EnVar system applied to a larger ensemble of 44 perturbed members; the 17 perturbed + 1 control figure above refers specifically to the forecast ensemble distributed per cycle. Ensemble output should be interpreted probabilistically rather than as a deterministic forecast.
 
 ---
 
