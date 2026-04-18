@@ -8,7 +8,7 @@ Instead of a single forecast, GEFS runs many slightly different simulations to s
 ---
 
 ## Who runs it
-- **Organization:** : National Centers for Environmental Prediction
+- **Organization:** National Centers for Environmental Prediction
 - **Country / region:** United States
 
 ---
