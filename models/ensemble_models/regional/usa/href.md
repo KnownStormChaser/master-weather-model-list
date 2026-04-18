@@ -10,7 +10,7 @@ HREF combines forecasts from multiple high-resolution numerical weather models t
 ---
 
 ## Who runs it
-- **Organization:** : National Centers for Environmental Prediction
+- **Organization:** National Centers for Environmental Prediction
 - **Country / region:** United States
 
 ---
