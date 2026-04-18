@@ -10,7 +10,7 @@ It is a nested, higher-resolution configuration of the NAM system, designed to b
 ---
 
 ## Who runs it
-- **Organization:** : NOAA / National Weather Service
+- **Organization:** NOAA / National Weather Service
 - **Country / region:** United States
 
 ---
