@@ -8,7 +8,7 @@ It merges the members of the physical GEFS with the members of the AI-based AIGE
 ---
 
 ## Who runs it
-- **Organization:** : National Centers for Environmental Prediction
+- **Organization:** National Centers for Environmental Prediction
 - **Country / region:** United States
 
 ---
