@@ -6,7 +6,7 @@ WW3-MARO is a high-resolution regional wave forecast system based on **WAVEWATCH
 ---
 
 ## Who runs it
-- **Organization:** : Météo-France
+- **Organization:** Météo-France
 - **Country / region:** France
 
 ---
