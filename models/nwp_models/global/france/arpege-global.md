@@ -8,7 +8,7 @@ ARPEGE uses a variable-resolution grid, with higher resolution over Europe and F
 ---
 
 ## Who runs it
-- **Organization:** : Météo-France
+- **Organization:** Météo-France
 - **Country / region:** France
 
 ---
