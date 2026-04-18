@@ -6,7 +6,7 @@ A high-resolution version of the **Météo-France WW3-based wave model (MFWAM)**
 ---
 
 ## Who runs it
-- **Organization:** : Météo-France
+- **Organization:** Météo-France
 - **Country / region:** France
 
 ---
