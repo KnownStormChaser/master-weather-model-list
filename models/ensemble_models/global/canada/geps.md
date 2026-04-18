@@ -27,8 +27,8 @@ GEPS generates multiple realizations of future atmospheric states using perturbe
 - **Vertical levels:** 84 hybrid staggered levels
 - **Model top:** ~0.1 hPa
 - **Forecast length:**  
-  - Up to ~16 days (operational medium range)  
-  - Extended-range guidance produced on selected cycles
+  - Up to 16 days (384 hours) on all cycles  
+  - Extended to 39 days (936 hours) on Monday and Thursday 00 UTC runs, used for monthly forecast anomaly calculation
 - **Update frequency / cycles:**  
   2× daily (00, 12 UTC)
 - **Temporal output resolution:**  
@@ -76,6 +76,7 @@ GEPS output is used operationally for medium-range probabilistic forecasting and
 ## Notes
 - GEPS is part of Canada’s modernized IC-4 prediction framework.
 - The system is coupled within an Earth-system context, with interactions between atmosphere, ocean, and sea ice represented at global scales.
+- GEPS v8.0.0 (operational since June 11, 2024) increased horizontal resolution from 39 km to 25 km, upgraded the data assimilation to a Local Ensemble Transform Kalman Filter (LETKF) with scale-dependent localization, and extended the reforecast system.
 - As with all ensemble systems, GEPS output should be interpreted probabilistically rather than as a single forecast.
 
 ---
