@@ -8,7 +8,7 @@ This configuration is **forced by winds from the ARPEGE atmospheric model** for 
 ---
 
 ## Who runs it
-- **Organization:** : Météo-France
+- **Organization:** Météo-France
 - **Country / region:** France
 
 ---
