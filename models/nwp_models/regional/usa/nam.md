@@ -10,7 +10,7 @@ It is designed for short- to medium-range forecasting at higher resolution than 
 ---
 
 ## Who runs it
-- **Organization:** : NOAA / National Weather Service
+- **Organization:** NOAA / National Weather Service
 - **Country / region:** United States
 
 ---
