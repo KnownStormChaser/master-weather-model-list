@@ -78,6 +78,7 @@ GEPS output is used operationally for medium-range probabilistic forecasting and
 - The system is coupled within an Earth-system context, with interactions between atmosphere, ocean, and sea ice represented at global scales.
 - GEPS v8.0.0 (operational since June 11, 2024) increased horizontal resolution from 39 km to 25 km, upgraded the data assimilation to a Local Ensemble Transform Kalman Filter (LETKF) with scale-dependent localization, and extended the reforecast system.
 - As with all ensemble systems, GEPS output should be interpreted probabilistically rather than as a single forecast.
+- The acronym "GEPS" is used for two unrelated systems in operational forecasting. The Canadian GEPS described here (Global Ensemble Prediction **System**) is Environment Canada's single-center global ensemble. A separate product called [557th WW GEPS](../usa/557wg-geps.md) (Global Ensemble Prediction **Suite**) is a U.S. Air Force multi-model statistical ensemble that uses the Canadian GEPS as one of its inputs.
 
 ---
 
