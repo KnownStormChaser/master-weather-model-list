@@ -61,5 +61,15 @@ Users should note that the freely available Open Data represents a subset of the
 
 ---
 
+## Upcoming changes
+
+### IFS Cycle 50r1 — operational May 12, 2026
+ECMWF EPS is part of the IFS Cycle 50r1 upgrade scheduled for May 12, 2026. There is no change in resolution or forecast steps. Key changes relevant to ensemble users:
+- Scale-selective ensemble recentering and revised stochastic physics (SPP) are intended to reduce over-dispersion in 10 m wind.
+- ENS control forecasts move under the operational stream (archive/dissemination change; primarily affects MARS users).
+
+### IFS Cycle 50r2 — full GRIB2 transition (tentative Q4 2026)
+Cycle 50r2 completes ECMWF's migration to GRIB2-only parameter representation, affecting Open Data distribution of EPS products. See the IFS entry for migration details and test resource links.
+
 ## Official documentation
 - https://www.ecmwf.int/en/forecasts/documentation-and-support
