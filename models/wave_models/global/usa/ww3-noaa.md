@@ -8,7 +8,7 @@ It uses wind forecasts from atmospheric models to simulate how waves form, grow,
 ---
 
 ## Who runs it
-- **Organization:** : National Oceanic and Atmospheric Administration
+- **Organization:** National Oceanic and Atmospheric Administration
 - **Country / region:** United States
 
 ---
