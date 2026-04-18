@@ -71,6 +71,9 @@ RAP is commonly used for aviation forecasting and mesoscale analysis and complem
 - RAP provides the initial and lateral boundary conditions for HRRR.
 - Unlike HRRR, RAP uses a cumulus parameterization and is intended to retain synoptic-scale structure.
 
+### Future outlook
+RAP is expected to eventually be retired alongside HRRR as part of the RRFSv2 transition (MPAS-based). Unlike the NAM, HiresW, and HREF — which are covered by NWS Public Information Statement 25-41 — no formal retirement notification for RAP has been issued as of April 2026.
+
 ---
 
 ## Official documentation
