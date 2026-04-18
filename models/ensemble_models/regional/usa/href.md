@@ -1,5 +1,7 @@
 # HREF (High-Resolution Ensemble Forecast)
 
+> ⚠️ **Scheduled for retirement.** HREF is proposed for discontinuation and full replacement by [REFS](./refs.md) (the RRFS Ensemble Forecast System) per [NWS Public Information Statement 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025).
+
 ## What this model is
 The High-Resolution Ensemble Forecast (HREF) is a **regional, convection-allowing ensemble weather forecast system** designed to capture uncertainty in short-range, high-impact weather such as thunderstorms, heavy rainfall, and severe weather.
 
@@ -61,5 +63,15 @@ Because it blends multiple high-resolution models, the exact member composition 
 
 ---
 
+## Status
+- Proposed for full retirement in NWS Public Information Statement 25-41 (June 26, 2025).
+- Replaced by REFS, which provides probabilistic convection-allowing guidance across CONUS, Alaska, Hawaii, and Puerto Rico.
+- Key differences from HREF:
+  - REFS extends forecasts to 60 hours (HREF: 48 hours)
+  - REFS provides 00, 06, 12, and 18 UTC cycles for all regions; HREF only ran 2× daily for non-CONUS domains
+- Originally targeted for retirement in early 2026 alongside RRFSv1 operational implementation; timeline has slipped.
+
 ## Official documentation
-- 
+- https://www.spc.noaa.gov/exper/href/
+- https://www.emc.ncep.noaa.gov/users/meg/href/
+- HREF-to-REFS product changes: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/href_product_changes.txt
