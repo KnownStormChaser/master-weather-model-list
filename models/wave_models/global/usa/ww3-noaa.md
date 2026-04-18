@@ -38,9 +38,16 @@ It uses wind forecasts from atmospheric models to simulate how waves form, grow,
 ## Data availability
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2, NetCDF
-- **Official download location:**  
-  https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/
+- **Data formats:** GRIB2
+- **Official download locations:**  
+  - NOAA WW3 download hub:  
+    https://polar.ncep.noaa.gov/waves/download.shtml  
+  - NCEP production FTP (GFS-coupled wave output, recent runs):  
+    https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/  
+  - NCEP production FTP (GEFS-coupled wave ensemble):  
+    https://ftpprd.ncep.noaa.gov/data/nccf/com/gens/prod/  
+  - NOMADS:  
+    https://nomads.ncep.noaa.gov/
 
 ---
 
