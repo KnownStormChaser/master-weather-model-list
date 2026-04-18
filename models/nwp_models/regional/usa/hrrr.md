@@ -77,6 +77,9 @@ HRRR is primarily intended for surface, boundary-layer, and storm-scale analysis
 - It is tightly coupled with RAP, which supplies its initial and boundary conditions.
 - Experimental variants exist (e.g., HRRR-Smoke, HRRR-DAS), but this entry describes the primary deterministic operational system.
 
+### Future outlook
+HRRR is expected to eventually be retired as part of NOAA's broader consolidation of regional convection-allowing guidance under the Unified Forecast System. Unlike the NAM, HiresW, and HREF — which are covered by NWS Public Information Statement 25-41 and scheduled for retirement alongside RRFSv1 — HRRR is expected to continue operating until the RRFSv2 transition (based on the MPAS dynamical core). No formal retirement notification has been issued as of April 2026.
+
 ---
 
 ## Official documentation
