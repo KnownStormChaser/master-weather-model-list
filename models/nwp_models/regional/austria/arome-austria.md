@@ -8,7 +8,7 @@ It is especially well suited for mountainous terrain like the Alps.
 ---
 
 ## Who runs it
-- **Organization:** : GeoSphere Austria
+- **Organization:** GeoSphere Austria
 - **Country / region:** Austria
 
 ---
