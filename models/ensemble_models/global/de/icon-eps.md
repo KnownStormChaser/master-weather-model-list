@@ -25,8 +25,8 @@ ICON-EPS generates 40 ensemble members on a global grid with a two-way-nested hi
 - **Number of ensemble members:** 40
 - **Horizontal resolution:** ~40 km (R2B06 icosahedral grid) globally; ~20 km (R2B07) over the European nest
 - **Vertical levels:** 90 levels to a height of 75 km
-- **Forecast length:** +180 hours (7.5 days) for 00 and 12 UTC runs, +120 hours for 06 and 18 UTC runs, shorter for intermediate runs
-- **Update frequency:** 8× daily (every 3 hours: 00, 03, 06, 09, 12, 15, 18, 21 UTC)
+- **Forecast length:** +180 hours (7.5 days) for 00 and 12 UTC runs; +120 hours (5 days) for 06 and 18 UTC runs
+- **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:**
   - Hourly up to +78 hours
   - 3-hourly from +81 to +120 hours
