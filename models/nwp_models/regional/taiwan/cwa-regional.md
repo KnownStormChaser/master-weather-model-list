@@ -20,10 +20,12 @@ They are designed for short-range forecasting and provide higher detail than glo
 
 ## Basic details
 - **Model type:** Regional
-- **Typical resolution:**  
-  - **~15 km** (larger regional domain)  
+- **Model system / core:** WRF
+- **Typical resolution:**
+  - **~15 km** (larger regional domain)
   - **~3 km** (high-resolution nested domain)
-- **Forecast length:** Up to ~72 hours
+- **Forecast length:** Up to 84 hours
+- **Temporal output resolution:** 6-hourly
 - **Update frequency:** 4× daily
 
 ---
@@ -32,17 +34,22 @@ They are designed for short-range forecasting and provide higher detail than glo
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2, NetCDF
-- **Official download location:**  
-  https://data.gov.tw/en/datasets/58977
+- **Official download location:**
+  - AWS Open Data Registry: https://registry.opendata.aws/cwa_opendata/
+  - S3 bucket: `s3://cwaopendata/Model/`
+  - AWS region: `ap-northeast-1`
+  - CLI: `aws s3 ls --no-sign-request s3://cwaopendata/Model/`
+- **License:** https://data.gov.tw/en/license
 
 ---
 
 ## Notes
 The higher-resolution 3 km configuration is convection-allowing and is particularly useful for forecasting typhoons, heavy rainfall, and complex terrain effects.
 
-CWA provides open access to selected forecast outputs through its national open data portal.
+CWA distributes operational model data through an AWS S3 bucket in the `ap-northeast-1` region as part of Taiwan's national open data programme. Older references to `data.gov.tw` point to the same underlying CWA open data system.
 
 ---
 
 ## Official documentation
+- CWA developer documentation: https://opendata.cwa.gov.tw/devManual/insrtuction
 - https://www.cwa.gov.tw/eng/
