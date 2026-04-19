@@ -26,7 +26,7 @@ ICON-EU-EPS is the probabilistic counterpart of DWD's deterministic ICON-EU mode
 - **Horizontal resolution:** ~20 km (R2B07 icosahedral grid)
 - **Vertical levels:** 60 levels to a height of 22.5 km
 - **Forecast length:** Up to +120 hours (5 days) for the main runs
-- **Update frequency:** Aligned with ICON-EPS (multiple runs per day)
+- **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** Hourly up to +78 hours, 3-hourly thereafter
 
 ---
