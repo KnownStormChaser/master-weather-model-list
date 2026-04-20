@@ -69,6 +69,16 @@ These products are optimized for coastal forecasting, marine safety, and environ
 
 ---
 
+## Relationship to other wave models in the Baltic
+SWAN-EST and BALWAM (Finnish Meteorological Institute, distributed via Copernicus Marine) are complementary rather than redundant:
+
+- SWAN-EST is based on the SWAN nearshore wave model and is optimized for shallow-water processes and high-resolution coastal dynamics along the Estonian coastline. SWAN explicitly represents depth-induced breaking, bottom friction, and triad wave-wave interactions that matter in shallow water.
+- BALWAM is WAM-based and optimized for basin-wide wave propagation across the entire Baltic. It provides uniform 1 nautical mile coverage and is coupled to a full Baltic Sea ocean physics system.
+
+Users needing high-fidelity nearshore wave dynamics in Estonian waters should look to SWAN-EST; users needing basin-wide wave conditions with ocean-physics coupling should look to BALWAM.
+
+---
+
 ## Notes
 - SWAN-EST focuses on coastal and nearshore wave dynamics rather than deep-ocean wave forecasting.
 - Model configuration and spatial resolution may vary across different Baltic Sea sub-domains.
