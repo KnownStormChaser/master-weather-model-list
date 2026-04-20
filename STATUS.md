@@ -26,6 +26,24 @@ NOAA's next-generation convection-allowing system for North America. Delayed fro
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
 - **Authority:** NWS PNS 25-41
 
+### GFSv17 and GDASv17 — proposed upgrade targeted for October 2026
+NOAA/NWS published PNS 26-29 (April 15, 2026) proposing an upgrade of the operational GFS and GDAS from v16 to v17 in October 2026. A companion notice, PNS 26-30 (April 16, 2026), covers the legacy products slated for removal as part of the cutover.
+
+This is a **proposal open for public comment**, not a scheduled implementation. Comments on the science changes are accepted through May 15, 2026; comments on product removals through May 16, 2026. If NOAA proceeds, a formal Service Change Notice will be issued 30 days before the implementation date.
+
+Headline changes in the proposal:
+- Transition from atmosphere-centric to **fully coupled Earth-system model** (atmosphere, land, ocean, sea ice, waves)
+- Deterministic atmospheric resolution increase from C768 (~13 km) to **C1152 (~9 km)** on the FV3 dynamical core
+- **MOM6** ocean component and **CICE6** sea-ice component, both on a 0.25° tripolar grid
+- **WAVEWATCH III** wave component with a new unstructured grid and two-way coupling
+- Replacement of Noah LSM with Noah-MP; replacement of GFDL microphysics with Thompson-Eidhammer two-moment scheme
+- **GDASv17** introduces JEDI-based data assimilation for ocean, sea ice, and snow; GSI 4DEnVar atmospheric DA upgraded to multi-scale with scale-dependent localization
+- Several product families slated for removal, including NetCDF history files, 0.5° and 1.0° GRIB2 products, GRIB1 CONUS Grid 211 products, synthetic GOES-R GRIB2 files, and specific offshore wave buoy points
+
+- **Entry:** [GFS](./models/nwp_models/global/usa/gfs.md)
+- **Authority:** NWS PNS 26-29, PNS 26-30
+- **Caveat:** Exact implementation date within October 2026 is not yet published, and the planned folder/file naming changes have not been released.
+
 ---
 
 ## Scheduled retirements (first wave — with RRFSv1)
