@@ -74,6 +74,21 @@ This repository aims to provide a **clear, neutral, and beginner-friendly index*
 
 ---
 
+## Supporting this project
+
+This repository is maintained as independent research. Everything stays free and openly accessible — no paywalls, accounts, ads, or affiliate links.
+
+If you've found the catalog useful in your work or research, you can optionally support ongoing maintenance through any of the following:
+
+- [GitHub Sponsors](https://github.com/sponsors/KnownStormChaser)
+- [Ko-fi](https://ko-fi.com/knownstormchaser)
+- [Buy Me a Coffee](https://buymeacoffee.com/sebastianpd)
+- [Liberapay](https://liberapay.com/KnownStormChaser)
+
+Sponsorship helps support the time this takes: tracking operational changes, verifying sources, documenting upgrades and retirements, and adding new models as they become publicly available. Even small contributions are meaningful and appreciated — but the catalog will always be free for everyone.
+
+---
+
 ## Disclaimer
 
 This repository is for **information and discovery only**.
