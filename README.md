@@ -99,6 +99,33 @@ Always consult the official provider's documentation for:
 
 ---
 
+## A note on accuracy
+
+I try to document each model as accurately as possible based on official product
+user manuals, technical documentation, agency publications, and peer-reviewed
+references. However, **information in this repository may be incomplete, out of
+date, or inaccurate.** This is particularly true for:
+
+- Models with limited English-language documentation
+- Models operated by agencies that do not publish detailed technical
+  specifications publicly
+- Recent operational upgrades that may not yet be reflected in published
+  documentation
+- Data distribution details (access URLs, file formats, update schedules) that
+  change without announcement
+
+Operational NWP systems evolve continuously. Resolution changes, physics
+upgrades, ensemble size changes, and distribution channel changes can happen
+with little public notice, and the gap between documented and operational
+configurations can be months or years for some models.
+
+If you spot an error, know of a more recent version of a model's documentation,
+or have corrections to contribute, please see the [Contributions](#contributions)
+section — corrections and updates are genuinely welcome and are the main way this
+catalogue stays useful over time.
+
+---
+
 ## Contributions
 
 Corrections, additions, and improvements are welcome.
