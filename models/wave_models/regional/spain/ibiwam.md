@@ -183,6 +183,13 @@ IBIWAM, [MFWAM Copernicus (global)](../../global/france/mfwam-copernicus.md), an
 
 Together, IBIWAM (IBI), MEDWAM (Med), and BALWAM (Baltic) form the core set of coupled / data-assimilating Copernicus Marine regional wave products, each run by a different national institute.
 
+### Historical link to the NWS wave product (2023–2025)
+Between September 2023 and November 2025, the Copernicus Marine North-West European Shelf wave product (`NWSHELF_ANALYSISFORECAST_WAV_004_014`) was operationally an **extraction of the IBI system** cropped to the NWS domain. Users pulling NWS wave data in that period were receiving IBIWAM output under a different product identifier — including the November 2024 upgrade to 1/36° resolution and the addition of SWOT-NADIR and HY2B altimetric data assimilation.
+
+In November 2025, the NWS wave product was re-introduced by the UK Met Office as a genuinely independent system based on WAVEWATCH III v7.1 coupled to NEMO AMM15 (see the [AMM15-WW3 entry](../uk/amm15-ww3-uk.md)). From that point forward, IBIWAM and the NWS wave product are separate operational systems with different operators, different model cores, and different methodologies.
+
+The IBI domain continues to extend from 19°W–5°E, 26°N–56°N, which still overlaps geographically with the southern portion of the NWS domain (Bay of Biscay, Celtic Sea, Irish Sea approaches, western English Channel). Users working in this overlap region now have two separate operational wave products to choose from.
+
 ---
 
 ## Notes
@@ -191,6 +198,7 @@ Together, IBIWAM (IBI), MEDWAM (Med), and BALWAM (Baltic) form the core set of c
 - The operator pairing of Nologin + CESGA is unusual for operational NWP and oceanographic distribution: Nologin provides the operational suite while CESGA (a public supercomputing centre in Galicia) provides the compute infrastructure. Both are Spanish entities.
 - The product uses the same underlying MFWAM code base as Météo-France's global wave product (ECWAM-IFS-47R1), but with separately tuned physics, different resolution, and a different DA configuration specific to the IBI region.
 - IBI-V8 (November 2024) includes some of the newest altimeter missions in its DA: SWOT-NADIR (launched 2022, NASA/CNES) and HaiYang-2B (Chinese altimetry mission). This reflects an active effort to ingest the newest available satellite wave observations.
+- From September 2023 to November 2025, IBIWAM's operational output was also re-distributed under the Copernicus NWS wave product identifier (`NWSHELF_ANALYSISFORECAST_WAV_004_014`) as an extraction cropped to the NWS domain. The NWS product has since been taken over by the UK Met Office as an independent system. See the [AMM15-WW3 entry](../uk/amm15-ww3-uk.md) for the current NWS system and the historical transition.
 
 ---
 
