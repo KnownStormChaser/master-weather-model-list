@@ -115,6 +115,8 @@ Looking across this portfolio surfaces a few patterns worth knowing:
 
 CAMS is the atmospheric composition branch of Copernicus, coordinated by ECMWF. Products are distributed through the Atmosphere Data Store (ADS) rather than the Marine Data Store.
 
+CAMS runs global atmospheric composition production in **two separate operational modes**: one for reactive gases and aerosols (CAMS Global), and one for long-lived greenhouse gases (CAMS Global GHG Forecasts). Both share the IFS model base but are distinct production systems with different data assimilation configurations, resolutions, and delivery schedules. A third regional production (CAMS Regional) covers European air quality via an 11-model ensemble.
+
 ### Global
 
 #### [CAMS Global](./models/air_quality_models/global/eu/cams-global.md)
@@ -125,6 +127,17 @@ CAMS is the atmospheric composition branch of Copernicus, coordinated by ECMWF. 
 - **Data assimilation:** 4D-Var with satellite composition retrievals (AOD, O3, CO, NO2, SO2)
 - **Coupling:** Chemistry online-coupled within IFS
 - **Product note:** Not a product identifier in the CMEMS sense — distributed through the ADS
+
+#### [CAMS Global Greenhouse Gas Forecasts](./models/air_quality_models/global/eu/cams-ghg-global.md)
+- **Production Unit:** ECMWF (on behalf of the EU)
+- **Model core:** IFS (Integrated Forecasting System) with greenhouse gas modules
+- **Resolution:** ~9 km forecast (~0.10°) / ~25 km analysis (~0.25°)
+- **Forecast length:** 5 days, once daily
+- **Data assimilation:** 4D-Var with GOSAT/TANSO and METOP-C/IASI satellite column retrievals (CO₂ and CH₄)
+- **Coupling:** GHG tracers online-coupled within IFS; biogenic CO₂ fluxes coupled via ECLand/CHTESSEL
+- **Tracers:** CO₂ and CH₄ (long-lived greenhouse gases)
+- **Distribution:** Atmosphere Data Store (ADS), dataset `cams-global-greenhouse-gas-forecasts`
+- **Note:** Separate operational production from CAMS Global. The two systems share the IFS base but assimilate different observations and are distributed as distinct products. The GHG forecast is initialized from a 4-day forecast of the analysis experiment rather than the analysis directly, due to the 2–4 day latency of satellite column retrievals.
 
 ### Regional
 
@@ -139,6 +152,15 @@ CAMS is the atmospheric composition branch of Copernicus, coordinated by ECMWF. 
 - **Countries:** France, Denmark, Norway, Germany, Poland, Netherlands, Sweden, Italy, Spain, Finland
 
 Note that CAMS Regional is structurally very different from the other Copernicus products in this index: it's an ensemble of eleven independent models rather than a single system, with each contributing model being an operational product in its own right at its home institute.
+
+### Observations at a glance
+
+The CAMS product portfolio in this index surfaces a few patterns worth knowing:
+
+- **Shared IFS base, separate production systems.** CAMS Global and CAMS Global GHG Forecasts both run on ECMWF's IFS but are operationally separate — different observations assimilated, different grids, different delivery cadences. They are not different variables of a single forecast.
+- **Regional is structurally different.** CAMS Regional is a median ensemble of 11 independent national models rather than a single forecast system. Its architecture doesn't parallel the global products.
+- **Reanalysis and inversion products are separate families.** The operational forecasts documented here have reanalysis and flux inversion counterparts (CAMS EGG4, CAMS inversion-optimised fluxes) that are outside this repository's operational-forecast scope but are part of the same broader CAMS product family.
+- **N₂O is not in the operational forecast.** The CAMS Global GHG Forecast covers only CO₂ and CH₄. Nitrous oxide (N₂O) is produced as part of the CAMS global inversion product instead.
 
 ---
 
