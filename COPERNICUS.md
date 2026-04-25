@@ -111,6 +111,35 @@ Looking across this portfolio surfaces a few patterns worth knowing:
 
 ---
 
+## Copernicus Marine ocean physics products
+
+The Copernicus Marine ocean physics products provide global and regional 3D ocean state forecasts — temperature, salinity, currents, sea level, mixed layer depth, and sea ice fields. These are distinct from the wave products (which forecast surface wave fields) and from the biogeochemistry products (which forecast nutrients, carbon, plankton, and oxygen).
+
+### Global
+
+#### [GLO12 (Mercator Global Ocean Physical Analysis and Forecast)](./models/ocean_models/global/france/glo12.md)
+- **Production Unit:** Mercator Ocean International
+- **Country:** France
+- **Model core:** NEMO v3.6
+- **Sea ice model:** LIM3 (11-category, EVP rheology)
+- **Resolution:** 1/12° (~8 km), 50 vertical z-levels
+- **Forecast length:** 10 days, daily updates
+- **Data assimilation:** SAM2 (SEEK Kernel) 4D + IAU + 3D-Var bias correction; assimilates SST, SLA, sea ice concentration, and in-situ T/S profiles
+- **Coupling:** Online to LIM3 sea ice; one-way wave forcing from MFWAM (added in v2.3, March 2026); one-way ECMWF IFS atmospheric forcing
+- **Distinctive feature:** Two-tier analysis (NRT-analysis upgraded to best-analysis after ~2-3 weeks); SMOC derived product combining circulation, tides, and Stokes drift
+- **Product ID:** `GLOBAL_ANALYSISFORECAST_PHY_001_024`
+
+### Observations at a glance
+
+GLO12 is currently the only ocean physics product in this index. Worth noting:
+
+- **Peer system outside Copernicus:** GLO12's direct operational peer is NOAA's [Global RTOFS](./models/ocean_models/global/us/rtofs-global.md), which uses HYCOM and CICE v4 instead of NEMO and LIM3. Together GLO12 and RTOFS form the two dominant operational global ocean physics forecasts worldwide. Both run at 1/12° resolution.
+- **Regional ocean physics products exist** within Copernicus Marine — companion products to the wave systems already documented (Mediterranean, Black Sea, Baltic, Arctic, IBI, NWS), each operated by the same Production Unit as the corresponding wave product. These are not yet in this repository but would be natural additions if ocean physics coverage is expanded beyond global.
+- **Reanalysis counterpart:** GLORYS12 is GLO12's matching reanalysis covering 1993–present. Not in this repository (operational forecasts only) but worth knowing about for users needing homogeneous long-term datasets.
+- **AI counterpart:** GLONET is Mercator's neural ocean forecast trained on GLORYS12 data; currently a research/development product, not yet a fully operational system.
+
+---
+
 ## Copernicus Atmosphere Monitoring Service (CAMS) products
 
 CAMS is the atmospheric composition branch of Copernicus, coordinated by ECMWF. Products are distributed through the Atmosphere Data Store (ADS) rather than the Marine Data Store.
@@ -175,7 +204,7 @@ Copernicus products also appear in topic-based indexes where relevant:
 
 ## What this index does not cover
 
-- **Copernicus reanalysis products** (CAMS EAC4, ERA5, etc.) — this repository focuses on operational near-real-time forecasts, not historical reanalyses
+- **Copernicus reanalysis products** (CAMS EAC4, ERA5, GLORYS12, CMEMS regional reanalyses, etc.) — this repository focuses on operational near-real-time forecasts, not historical reanalyses
 - **Copernicus Land, Climate, Emergency, or Security services** — these are outside the repository's NWP/atmospheric/wave scope
 - **Products available only through the legacy CMEMS Web API** — all products listed here are available through the current Marine Data Store or Atmosphere Data Store
 - **Copernicus Sentinel satellite data** — this is observational data, not model output
