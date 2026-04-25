@@ -18,6 +18,7 @@ No meteorology background is required to use this repository.
 - **Numerical Weather Prediction (NWP) models** (deterministic)
 - **Ensemble forecast models** (global and regional)
 - **Wave forecast models**
+- **Ocean physics models** (temperature, salinity, currents, sea level, sea ice — distinct from wave models)
 - **Tropical cyclone / hurricane models**
 - **Air quality and atmospheric composition models**
 - **AI-based and hybrid physics–AI forecast systems**
@@ -32,14 +33,13 @@ No meteorology background is required to use this repository.
 - Models that only provide maps or viewers without downloadable data
 - Research-only, experimental, or one-off model runs that are not operationally distributed
 - Climate reanalysis or historical-only datasets
-- Ocean circulation models (for now)
 
 ---
 
 ## Repository structure
 
 Models are organized by:
-- **Model type** (weather, ensemble, wave, tropical cyclone, air quality)
+- **Model type** (weather, ensemble, wave, ocean, tropical cyclone, air quality)
 - **Geographic scope** (global vs regional)
 - **Country or organization of origin**
 
