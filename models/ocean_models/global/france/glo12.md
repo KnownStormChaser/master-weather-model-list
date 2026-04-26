@@ -277,7 +277,7 @@ High-frequency total water level decomposed into:
 - **BLUElink OceanMAPS** — Australian Bureau of Meteorology operational global ocean forecast (~1/10° global).
 
 ### Companion Copernicus Marine products
-- **MFWAM (Global)** — Mercator's global wave model, now providing wave forcing to GLO12 (since March 2026). [See MFWAM Global entry](../../../wave_models/global/france/mfwam-global-france.md).
+- **MFWAM (Global, Copernicus Marine)** — Mercator's operational global wave model distributed through Copernicus Marine, now providing wave forcing to GLO12 (since March 2026). [See MFWAM Copernicus entry](../../../wave_models/global/france/mfwam-copernicus.md).
 - **GLORYS12** — Mercator's global ocean reanalysis at 1/12°. Same model lineage and resolution as GLO12 but covers the historical period 1993–present with consistent reprocessing. **Not in this repository** as the repo focuses on operational forecasts rather than reanalyses.
 - **Copernicus Marine global biogeochemistry product** (`GLOBAL_ANALYSISFORECAST_BGC_001_028`) — companion product providing nutrients, carbon, phytoplankton, and oxygen forecasts. Not currently in this repository.
 
