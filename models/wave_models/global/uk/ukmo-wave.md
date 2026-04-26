@@ -1,9 +1,9 @@
 # UK Met Office Global Wave Model
 
 ## What this model is
-The UK Met Office Global Wave Model is an **operational numerical wave forecast system** used to predict ocean wave conditions for marine forecasting and safety applications.
+The UK Met Office Global Wave Model, also known as **GloWave**, is an **operational numerical wave forecast system** used to predict ocean wave conditions for marine forecasting and safety applications.
 
-It is based on the third-generation spectral wave model **WAVEWATCH III™ (WW3)** and is forced by winds from the Met Office Global Atmospheric High-Resolution Model.
+It is based on the third-generation spectral wave model **WAVEWATCH III™ (WW3)** and is forced by winds from the Met Office Global Atmospheric High-Resolution Model. GloWave provides lateral boundary conditions for the Met Office's regional wave system [AMM15-WW3](../../regional/uk/amm15-ww3-uk.md), which downscales the global wave field over the North-West European Shelf.
 
 ---
 
@@ -46,6 +46,13 @@ It is based on the third-generation spectral wave model **WAVEWATCH III™ (WW3)
 - **Data formats:** NetCDF (CF-compliant)
 - **Official download location:**  
   https://registry.opendata.aws/met-office-global-wave/
+
+---
+
+## Relationship to other models
+GloWave is the global parent of the Met Office's regional wave system [AMM15-WW3](../../regional/uk/amm15-ww3-uk.md), providing 25 km wave spectra as lateral boundary conditions for the higher-resolution (3–1.5 km SMC grid) regional product. AMM15-WW3 is distributed through the Copernicus Marine Service rather than directly through the Met Office Open Data programme.
+
+GloWave is the wave companion to the Met Office's [global deterministic atmospheric model](../../../nwp_models/global/uk/ukmo-global.md) and [global ensemble (MOGREPS-G)](../../../ensemble_models/global/uk/mogreps-g.md), all of which are run on the Unified Model framework with shared atmospheric forcing.
 
 ---
 
