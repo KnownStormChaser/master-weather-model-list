@@ -114,6 +114,17 @@ This is a proposal open for public comment — not a scheduled implementation. T
 
 ---
 
+## Redistribution mirrors
+
+GFS is redistributed by several national meteorological services as part of their open data programmes. These mirrors carry the same NOAA-produced data, sometimes as a curated subset of cycles or resolutions, hosted closer to regional users:
+
+- **[GFS (IDEAM, Colombia)](../../regional/colombia/gfs-ideam.md)** — IDEAM redistributes selected GFS cycles (0.25° and 0.5°) for use in Colombia and surrounding regions, alongside its national WRF system.
+- **[GFS (CWA, Taiwan)](../../regional/taiwan/gfs-cwa.md)** — CWA mirrors GFS on AWS S3 in the `ap-northeast-1` region for users co-locating global and CWA regional model access in the Asia-Pacific.
+
+These are not independently run global models — CWA and IDEAM do not operate their own global NWP systems. The mirrors are operationally useful primarily for users in those regions who benefit from local hosting; users elsewhere should generally access GFS directly from NOAA NOMADS or the primary NOAA AWS bucket.
+
+---
+
 ## Official documentation
 - https://www.weather.gov/media/notification/pdfs/scn20-99gfs_v16_implementation.pdf
 - https://www.emc.ncep.noaa.gov/emc/pages/numerical_forecast_systems/gfs.php
