@@ -6,6 +6,7 @@ The available templates are:
 - [`nwp-model.template.md`](./nwp-model.template.md) — deterministic numerical weather prediction models (global and regional)
 - [`ensemble-model.template.md`](./ensemble-model.template.md) — ensemble forecast systems (global and regional)
 - [`wave-model.template.md`](./wave-model.template.md) — ocean wave forecast models
+- [`ocean-model.template.md`](./ocean-model.template.md) — ocean physics forecast models (temperature, salinity, currents, sea level, sea ice)
 - [`tropical-cyclone-model.template.md`](./tropical-cyclone-model.template.md) — tropical cyclone / hurricane forecast models
 - [`air-quality-model.template.md`](./air-quality-model.template.md) — air quality and atmospheric composition models
 
