@@ -4,6 +4,8 @@ This page tracks major lifecycle events for models documented in this repository
 
 The goal is to give users a single place to check "what is changing" without having to browse individual model entries. Each item links to the relevant entry where detailed information lives.
 
+For UFS-related transitions specifically, see [UFS.md](./UFS.md), which provides the full programme context. UFS items are listed here briefly; UFS.md has the detailed narrative.
+
 Last updated: April 2026.
 
 ---
@@ -21,67 +23,48 @@ ECMWF's physics-based and AI forecast lines upgrade on the same day. 50r1 brings
 - **Entries:** [IFS Open Data](./models/nwp_models/global/eu/ifs-open-data.md) · [ECMWF EPS](./models/ensemble_models/global/eu/ecmwf-eps.md) · [AIFS Single](./models/nwp_models/global/eu/aifs-single.md) · [AIFS ENS](./models/ensemble_models/global/eu/aifs-ens.md)
 - **Authority:** ECMWF Implementation pages
 
-### RRFSv1 and REFS — targeted early 2026 (delayed from initial target)
-NOAA's next-generation convection-allowing system for North America. Delayed from the original "early 2026" target due to the government shutdown. Pre-operational as of April 2026.
+### RRFSv1 and REFS — targeted early 2026 (delayed)
+NOAA's next-generation convection-allowing system for North America. Pre-operational as of April 2026. **See [UFS.md](./UFS.md) for the full UFS context including the wave of retirements that follows.**
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
 - **Authority:** NWS PNS 25-41
 
-### GFSv17 and GDASv17 — proposed upgrade targeted for October 2026
+### GFSv17 and GDASv17 — proposed for October 2026
 NOAA/NWS published PNS 26-29 (April 15, 2026) proposing an upgrade of the operational GFS and GDAS from v16 to v17 in October 2026. A companion notice, PNS 26-30 (April 16, 2026), covers the legacy products slated for removal as part of the cutover.
 
-This is a **proposal open for public comment**, not a scheduled implementation. Comments on the science changes are accepted through May 15, 2026; comments on product removals through May 16, 2026. If NOAA proceeds, a formal Service Change Notice will be issued 30 days before the implementation date.
-
-Headline changes in the proposal:
-- Transition from atmosphere-centric to **fully coupled Earth-system model** (atmosphere, land, ocean, sea ice, waves)
-- Deterministic atmospheric resolution increase from C768 (~13 km) to **C1152 (~9 km)** on the FV3 dynamical core
-- **MOM6** ocean component and **CICE6** sea-ice component, both on a 0.25° tripolar grid
-- **WAVEWATCH III** wave component with a new unstructured grid and two-way coupling
-- Replacement of Noah LSM with Noah-MP; replacement of GFDL microphysics with Thompson-Eidhammer two-moment scheme
-- **GDASv17** introduces JEDI-based data assimilation for ocean, sea ice, and snow; GSI 4DEnVar atmospheric DA upgraded to multi-scale with scale-dependent localization
-- Several product families slated for removal, including NetCDF history files, 0.5° and 1.0° GRIB2 products, GRIB1 CONUS Grid 211 products, synthetic GOES-R GRIB2 files, and specific offshore wave buoy points
+This is a **proposal open for public comment**, not a scheduled implementation. Comments on the science changes are accepted through May 15, 2026; comments on product removals through May 16, 2026.
 
 - **Entry:** [GFS](./models/nwp_models/global/usa/gfs.md)
 - **Authority:** NWS PNS 26-29, PNS 26-30
-- **Caveat:** Exact implementation date within October 2026 is not yet published, and the planned folder/file naming changes have not been released.
+- **Full UFS context:** See [UFS.md](./UFS.md) — GFSv17 is the largest single UFS transition planned and represents the move from atmosphere-centric to fully coupled Earth-system modeling.
+
+### RTOFS Global v3.0 — proposed (March 2026)
+NOAA published PNS 26-17 on March 12, 2026, proposing replacement of HYCOM with MOM6 and CICE4 with CICE6 in operational RTOFS. Public comment closed April 15, 2026; not yet operationally scheduled.
+- **Entry:** [RTOFS Global](./models/ocean_models/global/us/rtofs-global.md)
+- **Authority:** NWS PNS 26-17
+- **Full UFS context:** See [UFS.md](./UFS.md) — RTOFS v3.0 aligns RTOFS with the UFS ocean and ice model stack used elsewhere.
 
 ---
 
-## Scheduled retirements (first wave — with RRFSv1)
+## Scheduled retirements (NWS PNS 25-41)
 
-These systems are covered under NWS Public Information Statement 25-41 (June 26, 2025) and are scheduled for retirement once RRFSv1 is fully operational.
+These systems are covered under NWS Public Information Statement 25-41 (June 26, 2025) and are scheduled for retirement once RRFSv1 is fully operational. **See [UFS.md](./UFS.md) for the consolidation context.**
 
-### [NAM](./models/nwp_models/regional/usa/nam.md)
-Full retirement including the 12 km parent domain and all 3 km nests (CONUS, AK, HI, PR, fire weather).
-
-### [NAM Nest](./models/nwp_models/regional/usa/nam-nest.md)
-Retirement covers all convection-allowing nested domains.
-
-### [HREF](./models/ensemble_models/regional/usa/href.md)
-Full replacement by REFS, which extends forecasts from 48 h to 60 h.
-
-### HiresW
-   All HiresW domains retired except Guam. See [HiresW Guam](./models/nwp_models/regional/usa/hiresw-guam.md) for the surviving domain.
-
-### NARRE (not in repo)
-Full retirement; replaced by REFS.
+- [NAM](./models/nwp_models/regional/usa/nam.md) — full retirement (12 km parent and all 3 km nests)
+- [NAM Nest](./models/nwp_models/regional/usa/nam-nest.md) — all convection-allowing nests
+- [HREF](./models/ensemble_models/regional/usa/href.md) — replaced by REFS (extends 48h → 60h)
+- HiresW — all domains except Guam; see [HiresW Guam](./models/nwp_models/regional/usa/hiresw-guam.md) for the surviving exception
+- NARRE (not in repo) — replaced by REFS
 
 ---
 
-## Expected future retirements (second wave — with RRFSv2)
+## Expected future retirements
 
-These systems are expected to be retired as part of the later RRFSv2 transition (MPAS dynamical core). No formal retirement notification has been issued as of April 2026.
+These systems are publicly signaled but have **no formal retirement notification** as of April 2026. They are expected to be retired with RRFSv2 (MPAS-based). **See [UFS.md](./UFS.md) for the second-wave retirement context.**
 
-### [HRRR](./models/nwp_models/regional/usa/hrrr.md)
-Expected retirement with RRFSv2.
-
-### [RAP](./models/nwp_models/regional/usa/rap.md)
-Expected retirement alongside HRRR.
-
-### SREF (not in repo)
-SREF has already lost its largest downstream consumer — NBM v5.0 eliminated SREF as an input in April 2026. Expected retirement with RRFSv2.
-
-### NAM 12 km
-Parent domain expected to be retired alongside HRRR/RAP.
+- [HRRR](./models/nwp_models/regional/usa/hrrr.md) — expected with RRFSv2
+- [RAP](./models/nwp_models/regional/usa/rap.md) — expected with RRFSv2
+- NAM 12 km parent — expected with HRRR/RAP
+- SREF (not in repo) — already lost largest consumer (NBM v5.0 eliminated SREF as input); expected with RRFSv2
 
 ---
 
@@ -127,4 +110,4 @@ Extended forecast length from 198 h to 246 h; added parameters and levels; renam
 
 ## Contributing
 
-If you notice a missing status change — a new SCN, a retirement notification, an operational implementation date — please add it to the appropriate section above with a link to the authoritative source.
+If you notice a missing status change — a new SCN, a retirement notification, an operational implementation date — please add it to the appropriate section above with a link to the authoritative source. For UFS-related changes, please also update [UFS.md](./UFS.md) so the two files stay synchronized.
