@@ -54,11 +54,12 @@ Each model has its own file describing:
 
 ## Finding models by topic
 
-In addition to the directory structure, two index files make specific slices easier to discover:
+In addition to the directory structure, several index files make specific slices easier to discover:
 
 - [`AI_MODELS.md`](./AI_MODELS.md) — index of all AI-based and hybrid physics–AI forecast systems documented in the repository, organized by how AI is used (standalone deterministic, standalone ensemble, hybrid, input-consumer)
 - [`STATUS.md`](./STATUS.md) — tracker for upcoming implementations, scheduled retirements, experimental systems, version upgrades, and format changes
 - [`COPERNICUS.md`](./COPERNICUS.md) — index of all products distributed through the Copernicus Marine Service and Copernicus Atmosphere Monitoring Service, organized by operator and coverage
+- [`UFS.md`](./UFS.md) — index of all NOAA models that are part of, being consolidated into, or being retired by the Unified Forecast System, with the full programme context and rollout sequencing
 
 These exist because the country-and-type directory structure doesn't surface every useful view on its own. Users arriving with "show me all the AI models" or "what's being retired this year" can go straight to the relevant index.
 
