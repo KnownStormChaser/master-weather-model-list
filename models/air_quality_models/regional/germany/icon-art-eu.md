@@ -1,7 +1,7 @@
 # ICON-ART-EU (European Pollen Forecast)
 
 ## What this model is
-ICON-ART-EU is DWD's operational regional pollen forecast system, built on the European nest of ICON (ICON-EU) extended with the ART (Aerosols and Reactive Trace gases) module. It produces daily 6-day forecasts of airborne pollen concentrations across Europe for five allergenic species: **alder, birch, grasses, ragweed, and hazel**.
+ICON-ART-EU is DWD's operational regional pollen forecast system, built on the European nest of ICON (ICON-EU) extended with the ART (Aerosols and Reactive Trace gases) module. It produces 5-day pollen forecasts across Europe, four times daily, for five allergenic species: **alder, birch, grasses, ragweed, and hazel**.
 
 The system was developed jointly by DWD and the Karlsruhe Institute of Technology (KIT), with substantial collaboration from MeteoSwiss who use a closely related ICON-ART configuration for their own pollen forecasting service. DWD's pollen forecast became operational in **September 2021**, making it one of the earliest operational national-scale pollen forecasting systems based on online-coupled meteorology-aerosol modelling.
 
@@ -32,8 +32,9 @@ DWD shares the core ICON-ART pollen modelling capability with MeteoSwiss, who op
 - **Coupling:** Online — pollen and meteorological fields share the same grid, advection scheme, and time integration
 - **Horizontal resolution:** ~6.5 km (matching ICON-EU)
 - **Vertical levels:** 74 (matching ICON-EU)
-- **Forecast length:** 144 hours (6 days)
-- **Update frequency:** 1× daily (00 UTC)
+- **Forecast length:** 120 hours (5 days)
+- **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
+- **Temporal output resolution:** 3-hourly
 - **Operational since:** September 2021
 
 ---
@@ -51,7 +52,7 @@ ICON-ART-EU forecasts five allergenic pollen species:
 
 The five species cover the full pollen calendar for central European allergy sufferers, with substantial overlap during transition periods (e.g., late spring birch–grass overlap; late summer grass–ragweed overlap).
 
-For each species, the model produces hourly concentration forecasts driven by:
+For each species, the model produces 3-hourly concentration forecasts driven by:
 - **Plant distribution maps** for the relevant vegetation
 - **Phenological state** — bloom start dates calculated from antecedent weather (cumulative temperature, day length, precipitation)
 - **Meteorological emission drivers** — wind, humidity, precipitation
@@ -61,8 +62,8 @@ For each species, the model produces hourly concentration forecasts driven by:
 
 ## What it provides
 - 3D pollen concentration fields for each of the five species
-- Surface (near-ground) pollen counts at hourly temporal resolution
-- 144-hour forecast horizon supporting allergy planning across the medical and personal-use domains
+- Surface (near-ground) pollen counts at 3-hourly temporal resolution
+- 120-hour (5-day) forecast horizon, refreshed four times daily
 - Phenological diagnostics (e.g., calculated bloom start dates)
 - Inputs to DWD's public-facing pollen warning service
 
@@ -107,7 +108,7 @@ ICON-ART-EU is one of several pollen forecasting systems operating in Europe, wi
 - **[SILAM Global](../../global/finland/silam-global.md):** FMI's SILAM atmospheric composition model, distributed at 20 km global resolution, is used both as a contributor to CAMS Regional and as a standalone forecast.
 - **MeteoSwiss pollen forecast:** Operates ICON-ART at 2.1 km over Switzerland with the same five species. Methodologically very similar to DWD's system (same ART module, same KIT collaboration), but at higher resolution over a smaller domain.
 
-ICON-ART-EU's distinctive features in this peer group are: **online-coupling with ICON-EU NWP** (rather than offline coupling to a separate driving model), **6.5 km resolution across the full European domain** (finer than CAMS Regional's 10 km), and **6-day forecast horizon** (longer than the 4-day CAMS pollen forecast).
+ICON-ART-EU's distinctive features in this peer group are: **online-coupling with ICON-EU NWP** (rather than offline coupling to a separate driving model), **6.5 km resolution across the full European domain** (finer than CAMS Regional's 10 km), and **4× daily update frequency** (more frequent than the 1× daily CAMS pollen forecast).
 
 ### Architectural lineage
 The ART module's pollen capabilities were jointly developed by KIT, DWD, and MeteoSwiss, with the pollen emission scheme based on EMPOL (Zink et al., 2013). MeteoSwiss's operational pollen forecasting service uses the same fundamental ART pollen module, configured for Swiss conditions and species relevant to the Swiss domain.
@@ -115,7 +116,7 @@ The ART module's pollen capabilities were jointly developed by KIT, DWD, and Met
 ---
 
 ## Notes
-- The 6-day forecast horizon is a notable strength for allergy planning — most pollen forecast services provide 1–4 day horizons. Skill at extended ranges depends primarily on ICON-EU's underlying meteorological skill, since pollen behavior is largely driven by weather conditions during the bloom season.
+- The 4× daily update cadence is unusually frequent for an operational pollen forecast — most peer systems (CAMS Regional, SILAM-based national services) update once daily. This reflects ICON-ART-EU's tight integration with ICON-EU's operational cycle: each pollen forecast inherits the same atmospheric initial conditions as ICON-EU at the same cycle, so refreshing pollen four times per day adds value at a relatively low marginal cost.
 - DWD's pollen warning service uses ICON-ART-EU forecasts as its primary modeling input, combined with expert evaluation of plant readiness and observed pollen counts where available.
 - The species set (alder, birch, grasses, ragweed, hazel) is broadly aligned with what most central European allergy sufferers encounter, but does **not** include some Mediterranean species like olive (covered by CAMS Regional) or mugwort (also CAMS Regional). Users in Mediterranean regions or with specific non-listed allergens should look to additional sources.
 - Real-time pollen observation networks (notably the AutoPollen network coordinated by MeteoSwiss under EUMETNET) are providing near-real-time validation data for systems like ICON-ART-EU, with the longer-term goal of supporting pollen data assimilation. As of operational ICON-ART-EU configuration, pollen observations are not directly assimilated.
