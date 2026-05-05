@@ -22,6 +22,8 @@ NAVGEM is the U.S. Navy's primary medium-range global NWP model and is used to s
 - **Model type:** Deterministic global NWP
 - **Model system / core:**
   Semi-Lagrangian / semi-implicit (SL/SI) hydrostatic dynamical core
+- **Dynamical formulation:** Hydrostatic, spectral, with semi-Lagrangian / semi-implicit time integration
+- **Convection-allowing:** No (deep convection is parameterized at ~19 km resolution)
 - **Spectral resolution:** Triangular truncation T681
 - **Horizontal resolution:** ~19 km native; distributed on NOMADS at 0.5° (361 × 720 regular lat-lon grid)
 - **Vertical levels:** 60
