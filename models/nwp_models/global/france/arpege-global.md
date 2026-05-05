@@ -22,6 +22,8 @@ ARPEGE is jointly developed with ECMWF as part of the IFS/ARPEGE shared code bas
 
 ## Basic details
 - **Model type:** Global deterministic NWP (stretched-grid spectral)
+- **Dynamical formulation:** Hydrostatic, spectral, with semi-Lagrangian advection and semi-implicit time integration
+- **Convection-allowing:** No (deep convection is parameterized at the native variable resolution, ~5 km over France)
 - **Native horizontal resolution:** Variable — approximately 5 km over France, ~24 km over the antipodes (TL1798 stretched spectral truncation)
 - **Public distribution grids:**  
   - **0.25° global** (newer packages; 1440 × 721 regular lat–lon)  
