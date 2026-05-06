@@ -6,17 +6,17 @@ The goal is to give users a single place to check "what is changing" without hav
 
 For UFS-related transitions specifically, see [UFS.md](./UFS.md), which provides the full programme context. UFS items are listed here briefly; UFS.md has the detailed narrative.
 
-Last updated: April 2026.
+Last updated: May 2026.
 
 ---
 
 ## Imminent or recent changes
 
-### NBM v5.0 — operational April 15, 2026
+### NBM v5.0 — operational May 5, 2026
 Major upgrade to the National Blend of Models with longer hourly guidance (36 h → 48 h), new products, removed Haines Index, and new inputs including ECAIFS and AIGFS.
 - **Entry:** [NBM](./models/nwp_models/regional/usa/nbm.md)
-- **Authority:** NWS SCN 26-24
-- **Verification note:** Implementation date was April 15, 2026; verify cutover completed as scheduled if no Critical Weather Day delay was declared.
+- **Authority:** NWS SCN 26-24 (AAC revision, April 28, 2026)
+- **Verification note:** Originally targeted April 15, 2026; rescheduled to April 23, then April 30. The April 30 attempt fell within a Critical Weather Day / Enhanced Caution Event window, triggering the SCN's contingency provision and pushing actual cutover to May 5, 2026.
 
 ### IFS Cycle 50r1, AIFS Single v2, AIFS ENS v2 — scheduled May 12, 2026
 ECMWF's physics-based and AI forecast lines upgrade on the same day. 50r1 brings NEMO4-SI3 ocean/sea-ice coupling and physics improvements with no grid change. AIFS v2 adds a 10 hPa pressure level, and AIFS ENS v2 adds a new wave stream.
