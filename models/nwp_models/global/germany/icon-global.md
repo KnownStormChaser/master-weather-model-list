@@ -18,7 +18,7 @@ ICON replaced DWD's previous global model (GME) on 20 January 2015. The model co
 
 ## What area it covers
 - **Coverage:** Global
-- **Regional nest:** A two-way coupled nest covers Europe at ~6.5 km horizontal resolution; this is documented separately as [ICON-EU](./icon-eu.md). Nest boundary conditions and feedbacks are exchanged every model time step.
+- **Regional nest:** A two-way coupled nest covers Europe at ~6.5 km horizontal resolution; this is documented separately as [ICON-EU](../../regional/germany/icon-eu.md). Nest boundary conditions and feedbacks are exchanged every model time step.
 
 ---
 
@@ -91,10 +91,10 @@ The ICON modelling system became open source in **January 2024** under a permiss
 ---
 
 ## Notes
-- ICON Global and [ICON-EU](./icon-eu.md) are not separate models — they are the global parent and European nest of a single tightly-coupled two-way nested integration. This is structurally different from regional models elsewhere (e.g., ARPEGE/AROME at Météo-France) where the limited-area model is run as a separate process driven by the global model's lateral boundary conditions.
+- ICON Global and [ICON-EU](../../regional/germany/icon-eu.md) are not separate models — they are the global parent and European nest of a single tightly-coupled two-way nested integration. This is structurally different from regional models elsewhere (e.g., ARPEGE/AROME at Météo-France) where the limited-area model is run as a separate process driven by the global model's lateral boundary conditions.
 - The November 2022 vertical resolution upgrade from 90 to 120 levels (with the model top remaining at 75 km) targeted improvements in the stratosphere; the upgrade also brought ICON-EPS from 40 km to 26 km horizontal resolution and increased ICON-EU vertical levels from 60 to 74.
 - The ensemble counterpart is [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md). The European nest portion of ICON-EPS is distributed separately as [ICON-EU-EPS](../../../ensemble_models/regional/de/icon-eu-eps.md).
-- DWD's regional convection-permitting model [ICON-D2](../regional/germany/icon-d2.md) and its rapid-update variant [ICON-D2-RUC](../regional/germany/icon-d2-ruc.md) are separate limited-area systems driven by ICON-EU boundaries.
+- DWD's regional convection-permitting model [ICON-D2](../../regional/germany/icon-d2.md) and its rapid-update variant [ICON-D2-RUC](../../regional/germany/icon-d2-ruc.md) are separate limited-area systems driven by ICON-EU boundaries.
 - DWD has also developed an experimental AI-based forecasting system, **AICON**, trained on the ICON reanalysis (ICON-DREAM). AICON is in development and is not part of the operational ICON suite as of early 2026.
 
 ---
