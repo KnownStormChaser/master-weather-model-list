@@ -24,8 +24,10 @@ AROME France is one model in a wider AROME family that also includes [AROME Fran
 ---
 
 ## Basic details
-- **Model type:** Regional deterministic NWP (non-hydrostatic, convection-permitting)
+- **Model type:** Regional deterministic NWP
 - **Model system:** AROME (spectral limited-area model, ALADIN-NH dynamical core)
+- **Dynamical formulation:** Non-hydrostatic, spectral, with semi-Lagrangian advection and semi-implicit time integration
+- **Convection-allowing:** Yes (deep convection explicitly resolved at 1.3 km native resolution; shallow convection parameterized)
 - **Native horizontal resolution:** ~1.3 km
 - **Public distribution grid:** 0.025° (~2.5 km) regular latitude–longitude
 - **Vertical levels:** 90 (lowest model level at ~5 m above ground; model top at 10 hPa)
