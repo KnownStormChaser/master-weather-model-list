@@ -4,7 +4,7 @@ This page indexes all NOAA models in this repository that are part of, are being
 
 The goal of this index is to make a coherent programme visible. Right now UFS shows up across the repository as separate line items — RRFSv1 here, GFSv17 there, RTOFS v3.0 elsewhere, NAM retirement somewhere else — but they are all parts of the same consolidation effort, scheduled and sequenced together. This page exists to surface that coherence.
 
-Last updated: April 2026.
+Last updated: May 2026.
 
 ---
 
@@ -94,10 +94,10 @@ These are the most operationally significant UFS transitions that are either imm
 - **Notes:** RTOFS v3.0 represents alignment with the UFS ocean and ice model stack used elsewhere (MOM6 + CICE6 are also used in GFSv17). HAFS (which initializes from RTOFS) will inherit MOM6/CICE6 ocean state in due course.
 
 ### [NBM v5.0](./models/nwp_models/regional/usa/nbm.md)
-- **Operational since:** April 15, 2026
+- **Operational since:** May 5, 2026 (originally targeted April 15; slipped to April 23, then April 30, with the April 30 attempt deferred under the SCN's CWD/ECE contingency)
 - **UFS relationship:** NBM is not itself a UFS model — it's a statistical post-processing system. But v5.0 added UFS-relevant inputs:
   - Higher-resolution GDPS (15 km) and REPS (10 km) inputs (these are Canadian, not UFS-related)
-  - **AIGFS** (NOAA's experimental AI global model) added as input for temperature, wind speed, and QPF
+  - **AIGFS** (NOAA's operational AI global model) added as input for temperature, wind speed, and QPF
   - **ECAIFS** (ECMWF's AI/IFS hybrid) similarly added
   - **SREF eliminated** as an input — this is operationally significant because it removes a major downstream consumer of SREF, accelerating the case for SREF retirement under RRFSv2
 - **Notes:** NBM's evolving input set tracks the UFS rollout indirectly. As GFSv17, RRFSv1, and REFS go operational, expect future NBM upgrades to incorporate them and remove their predecessors.
