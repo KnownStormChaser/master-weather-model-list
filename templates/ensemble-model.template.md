@@ -64,6 +64,7 @@ Ensemble outputs such as:
 
 ## Data availability
 - **Is the data free?** Yes / No / Partial
+- **License:** <e.g., CC BY 4.0 / CC BY-SA 4.0 / Etalab Open Licence / Public domain (U.S. government work; CC0-equivalent) / KNMI Open Data licence / Copernicus Marine Service licence> (note attribution or share-alike obligations if applicable; TBD)
 - **Is the data downloadable?** Yes / No
 - **Data formats:** <GRIB2 / NetCDF / both> (include compression notes if relevant)
 - **Official download location:**  
@@ -72,9 +73,16 @@ Ensemble outputs such as:
 ---
 
 ## Notes
-- <Relationship to deterministic model (e.g., GEFS vs GFS).>
+- <Relationship to deterministic counterpart (e.g., GEFS vs GFS, ICON-EPS vs ICON).>
+- <Relationship to siblings: regional ensemble nests, multi-center combinations (NAEFS-style), AI-hybrid grand ensembles.>
 - <If public data is a subset of full ops ensemble, note it.>
-- <Anything else important: subsets, grid quirks, changes in ops, etc.>
+- <Anything else important: subsets, grid quirks, changes in ops, time-lagging conventions, etc.>
+- <For AI-based or hybrid ensembles, note the AI approach here and update [`AI_MODELS.md`](../AI_MODELS.md).>
+
+---
+
+## Recent version history (optional)
+<Include this section if the ensemble has documented operational upgrades worth tracking. See `gefs.md`, `mogreps-g.md`, `ifs-ens.md` for examples. Otherwise omit.>
 
 ---
 
