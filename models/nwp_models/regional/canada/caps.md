@@ -38,6 +38,8 @@ The unusually large pan-Arctic atmospheric coverage is one of CAPS's distinctive
 - **Model type:** Experimental regional deterministic NWP (limited-area, non-hydrostatic, convection-permitting), coupled to ocean and sea ice
 - **Model system / core:** GEM (Global Environmental Multiscale) version 5.2.0
 - **Configuration lineage:** Based on the decommissioned HRDPS-North version 2.1.0
+- **Dynamical formulation:** Non-hydrostatic primitive equations
+- **Convection-allowing:** Yes (~3 km horizontal resolution)
 - **Horizontal resolution:** ~3 km (0.02925° uniform)
 - **Grid dimensions:** 2250 × 1850 rotated latitude-longitude grid
 - **Vertical levels:** 62 staggered hybrid levels with SLEVE coordinate (Husain et al., 2020)
@@ -56,6 +58,9 @@ The unusually large pan-Arctic atmospheric coverage is one of CAPS's distinctive
 - **Grid dimensions:** 1580 × 2198
 - **Vertical sampling:** 75 z-levels
 - **Baroclinic time step:** 300 seconds
+- **Vertical mixing:** k-ε turbulent mixing scheme (Umlauf and Burchard, 2003)
+- **Tidal forcing:** 13 constituents (M2, N2, S2, K2, K1, O1, Q1, P1, M4, Mf, Mm, Mn4, Ms4) from OSU
+- **River input:** Real-time St. Lawrence River discharge from the CanHys database
 
 ---
 
@@ -83,43 +88,38 @@ This makes CAPS one of the few publicly distributed regional NWP systems with on
 
 ## Initial and boundary conditions
 
-### Atmospheric component
-- **Initial atmospheric and surface conditions:** GDPS-9.0.0 G0 component (10 km)
-- **Lateral boundary conditions:** GDPS-9.0.0 G0 forecast, refreshed hourly
-- **Hydrometeor initial fields:** Recycled from the 12-hour forecast of the previous CAPS integration
-- **Land surface:** ISBA scheme, initialized from GDPS analyses
+### Atmospheric
+- **Initial conditions:** Land surface and atmospheric initial fields from the operational GDPS-9.0.0 G0 run (10 km, GEM v5.2.0)
+- **Lateral boundary conditions:** From a 10-km forecast of the operational GDPS-9.0.0 G0 run, refreshed every hour
+- **Hydrometeor recycling:** Initial hydrometeor fields are recycled from the 12-h forecast of the previous CAPS integration
 
-### Ice-ocean component
-- **Sea ice and ocean initial conditions:**
-  - 00 UTC cycle: From RIOPS v2.4.0 analysis (which incorporates RIPS_early ice analysis with RCM-SAR data assimilated, 4-hour cutoff)
-  - 12 UTC cycle: From the previous CAPS forecast restart at lead time 12 hours
-- **Ocean lateral boundary conditions:** GDPS-G1 v9.0.0 (in the North Atlantic and North Pacific)
-- **St. Lawrence River discharge:** Real-time data from the CanHys database
-- **Tidal forcing:** 13 constituents (M2, N2, S2, K2, K1, O1, Q1, P1, M4, Mf, Mm, Mn4, Ms4) from OSU
-
----
-
-## Atmospheric physics
-
-The CAPS atmospheric component uses the same physics suite as related GEM-based ECCC systems:
-
-- **Radiation:** Li-Barker correlated k-distribution radiative transfer scheme (called every 15 minutes)
-- **Surface scheme:** Mosaic approach with 4 types (land, water, sea ice, glacier); ISBA scheme for land surface (Noilhan and Planton, 1989; Bélair et al., 2003a, 2003b)
-- **Boundary-layer turbulent mixing:** TKE-based scheme (Benoit et al., 1989; Delage, 1988a, 1988b) with statistical representation of subgrid-scale clouds (Mailhot and Bélair, 2002; Bélair et al., 2005); Blackadar mixing length; Richardson number hysteresis (McTaggart-Cowan and Zadra, 2015)
-- **Shallow convection:** Kuo Transient scheme (Bélair et al., 2005)
-- **Stable precipitation:** P3 bulk two-moment microphysics (Morrison and Milbrandt, 2015; Milbrandt and Morrison, 2016) with Bourgouin (2000) precipitation type diagnostics
-- **Deep convection:** Kain-Fritsch scheme (Kain and Fritsch, 1990, 1993)
-- **Surface roughness over continental waters:** Charnock formulation for momentum, Deacu formulation for Z0T (Deacu et al., 2012)
-
-Notably, CAPS does not include orographic gravity wave drag, non-orographic gravity wave drag, low-level blocking, or an urban scheme — reflecting its convection-permitting resolution and high-latitude focus.
+### Ice-ocean
+- **Initial conditions:** From RIOPS v2.4.0 — the 00 UTC analysis is used for the 00Z run; the 12-h forecast restart is used for the 12Z run
+- **Sea ice concentration:** Updated using a regional analysis (RIPS_early) with a 4-hour cutoff that assimilates RCM-SAR data
+- **Ocean lateral boundary conditions:** From GDPS-G1 v9.0.0
+- **Forcing outside the coupled region:** The southward extension of the ice-ocean domain (uncoupled portion in the North Atlantic and North Pacific) is forced by hourly GDPS-G0 atmospheric fields
 
 ### Ice physics (CICE 6.2.0)
-- Delta-Eddington radiation scheme (Briegleb and Light, 2007)
+- Delta-Eddington radiation scheme (Briegleb and Light, 2007) with parameters R_ice=0.0, R_pnd=0.0, R_snw=1.0
 - "Bubbly" thermal conductivity (Pringle et al., 2007)
 - Viscous-plastic rheology with 10 ice categories
 - Ice strength parameters: P* = 22.5 kN/m², C* = 15
 - Ice-ocean roughness: iceruf_ocn = 1.8 cm
 - Air-ice roughness: iceruf = 0.54 mm
+- Reduction in turbulent kinetic energy injection by wave breaking (Rascle et al., 2008)
+
+---
+
+## Surface and atmospheric physics
+
+- **Surface scheme:** Mosaic approach with 4 surface types — land, water, sea ice, glacier. **No urban scheme** (in contrast to HRDPS, which uses TEB). Land surface temperature and moisture, snow depth, snow albedo, and snow density are initialized from a GDPS analysis and predicted using the ISBA scheme (Noilhan & Planton, 1989; Bélair et al., 2003a, 2003b). Where the coupling mask indicates ice-ocean coverage, the water-tile fluxes come from the coupled ice-ocean model rather than from GEM
+- **Subgrid-scale orography:** No orographic gravity wave drag, non-orographic gravity wave drag, or low-level blocking schemes — appropriate for the convection-permitting scale where these effects are largely resolved
+- **Surface roughness over continental waters (lakes):** Charnock formulation for momentum; Deacu formulation for thermal roughness
+- **Radiation:** Li–Barker correlated-k distribution (called every 15 minutes)
+- **Boundary-layer mixing:** TKE-based (Benoit et al., 1989; Delage, 1988a, 1988b) with statistical subgrid-scale clouds (Mailhot & Bélair, 2002; Bélair et al., 2005); Blackadar mixing length; Richardson number hysteresis (McTaggart-Cowan & Zadra, 2015)
+- **Stable precipitation:** Predicted Particle Properties (P3) bulk two-moment microphysics (Morrison & Milbrandt, 2015; Milbrandt & Morrison, 2016), with diagnostic precipitation types from Bourgouin (2000)
+- **Shallow convection:** Kuo Transient scheme (Bélair et al., 2005)
+- **Deep convection:** Kain–Fritsch scheme (Kain & Fritsch, 1990, 1993) — retained despite the convection-permitting resolution, distinguishing CAPS from HRDPS-West (which omits deep convection entirely at 1 km)
 
 ---
 
@@ -130,9 +130,9 @@ Forecasts of atmospheric, ocean, and sea ice fields including:
 ### Atmospheric
 - Near-surface temperature, wind, and humidity
 - Surface and mean sea level pressure
-- Precipitation (with rain/snow phase partitioning via Bourgouin)
-- Cloud cover and hydrometeor fields
-- Boundary-layer height and other derived parameters
+- Precipitation, with diagnostic precipitation types from Bourgouin (2000)
+- Cloud cover and hydrometeor fields (rain, cloud, rime ice, total ice mass and number mixing ratios; rime volume mixing ratio)
+- Boundary-layer height, omega, QPF, and other derived parameters
 
 ### Ocean
 - 3D potential temperature, salinity, and currents
@@ -149,16 +149,16 @@ CAPS is intended for high-latitude marine and atmospheric forecasting where atmo
 ---
 
 ## Data availability
-- **Is the data free?** Yes
+- **Is the data free?** Yes (no registration required for MSC Open Data)
+- **License:** Environment and Climate Change Canada Data Servers End-use Licence (attribution required; commercial use permitted) — https://eccc-msc.github.io/open-data/licence/readme_en/
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
-- **Official download location:**  
-  https://dd.weather.gc.ca/today/model_caps/3km/
-- **Documentation:**  
-  https://eccc-msc.github.io/open-data/msc-data/nwp_caps/readme_caps_en/
-- **Changelog:**  
-  https://eccc-msc.github.io/open-data/msc-data/nwp_caps/changelog_caps_en/
-- **Viewing service:** AniMet (deployment expected by Fall 2025 per the v3.0.0 specifications document)
+- **Distribution channels:**
+  - **MSC Datamart:** Direct file access — primary download channel
+  - **AniMet:** Visualization service (deployment expected by Fall 2025 per the v3.0.0 specifications document)
+- **Official download location:** https://dd.weather.gc.ca/today/model_caps/3km/
+- **Documentation:** https://eccc-msc.github.io/open-data/msc-data/nwp_caps/readme_caps_en/
+- **Changelog:** https://eccc-msc.github.io/open-data/msc-data/nwp_caps/changelog_caps_en/
 
 ---
 
@@ -175,7 +175,7 @@ CAPS is intended for high-latitude marine and atmospheric forecasting where atmo
 ## Status
 - CAPS is distributed as **experimental data** via the standard MSC datamart (not the alpha datamart used for HRDPS-West), but is explicitly labelled as experimental in ECCC documentation.
 - It is not operationally supported in the same sense as HRDPS, RDPS, GDPS, GIOPS, or RIOPS.
-- CAPS is one of several experimental ECCC systems alongside [GDPS-SN](../../global/canada/gem-global.md#experimental-ai-hybrid-configuration-gdps-sn) and [HRDPS-West](./hrdps-west.md) — see the repository's [`STATUS.md`](../../../STATUS.md) for the current list.
+- CAPS is one of several experimental ECCC systems alongside [GDPS-EXP](../../global/canada/gdps-exp.md) and [HRDPS-West](./hrdps-west.md) — see the repository's [`STATUS.md`](../../../../STATUS.md) for the current list.
 - The system provides forecast guidance to Canadian Storm Prediction Centres, the Department of National Defence, the Canadian Coast Guard, and the Department of Fisheries and Oceans.
 
 ---
@@ -200,22 +200,28 @@ CAPS is the only ECCC system in this repository that provides **coupled atmosphe
 - The 5-minute coupling frequency between GEM and NEMO-CICE is unusually frequent for a regional forecast system — most coupled operational systems use hourly or longer coupling intervals. The tight coupling reflects the importance of high-frequency atmosphere-ice flux exchanges in polar boundary layer dynamics.
 - The ice-ocean domain extends well south of the atmospheric domain (down to 25.6°N in the Atlantic and 43.8°N in the Pacific) to maintain consistency with RIOPS. Outside the coupled region, the ice-ocean model is forced by GDPS-G0 atmospheric fields rather than by CAPS's own atmospheric component.
 - The technical specifications document for v3.0.0 contains a minor internal inconsistency, labelling some sections as "version 3.3.0." The implementation date (June 18, 2025), the official MSC documentation, and the version-3.0.0 references in the title and changelog all indicate that 3.0.0 is the correct designation.
+- Open data licensing is genuinely open — no registration required, direct file access via the Datamart. Same as GDPS, RDPS, HRDPS, GIOPS, RIOPS, and CIOPS.
 - As an experimental system, configuration, domain, resolution, coupling specifications, and product availability may change without the formal change-management process used for operational ECCC systems.
 
 ---
 
 ## Official documentation
-- CAPS open data page (English):  
-  https://eccc-msc.github.io/open-data/msc-data/nwp_caps/readme_caps_en/
-- CAPS changelog:  
-  https://eccc-msc.github.io/open-data/msc-data/nwp_caps/changelog_caps_en/
-- CAPS v3.0.0 technical specifications (Environment and Climate Change Canada, June 2025)
+- CAPS open data page (English): https://eccc-msc.github.io/open-data/msc-data/nwp_caps/readme_caps_en/
+- CAPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_caps/changelog_caps_en/
+- Technical specifications (CAPS 3.0.0): https://collaboration.cmc.ec.gc.ca/cmc/CMOI/product_guide/docs/tech_specifications/tech_specifications_CAPS_e.pdf
+- ECCC operational systems changelog: https://eccc-msc.github.io/open-data/msc-data/changelog_multisystems_en/
+- Licence: https://eccc-msc.github.io/open-data/licence/readme_en/
 - CAPS v3.0.0 technical note (in preparation as of the v3.0.0 specifications document)
 
 ### Key references
-- Côté, J., et al. (1998a, 1998b). The operational CMC-MRB Global Environmental Multiscale (GEM) model. *Mon. Wea. Rev.*, 126.
-- Husain, S.Z., et al. (2020). On the Progressive Attenuation of Finescale Orography Contributions to the Vertical Coordinate Surfaces within a Terrain-Following Coordinate System. *Mon. Wea. Rev.*, 148, 4143–4158.
+- Bélair, S., L.-P. Crevier, J. Mailhot, B. Bilodeau, and Y. Delage (2003a). Operational implementation of the ISBA land surface scheme in the Canadian regional weather forecast model. Part I: Warm season results. *J. Hydromet.*, 4, 352–370.
+- Bourgouin, P. (2000). A method to determine precipitation types. *Wea. Forecasting*, 15, 583–592.
+- Briegleb, B. P., and B. Light (2007). A Delta-Eddington multiple scattering parameterization for solar radiation in the sea ice component of the Community Climate System Model. NCAR Technical Note NCAR/TN-472+STR.
+- Côté, J., et al. (1998). The Operational CMC-MRB Global Environmental Multiscale (GEM) Model: Part I — Design Considerations and Formulation. *Mon. Wea. Rev.*, 126, 1373–1395.
+- Husain, S. Z., C. Girard, L. Separovic, A. Plante, and S. Corvec (2020). On the Progressive Attenuation of Finescale Orography Contributions to the Vertical Coordinate Surfaces within a Terrain-Following Coordinate System. *Mon. Wea. Rev.*, 148, 4143–4158.
+- Hunke, E. C., et al. (2021). CICE-Consortium/CICE: CICE Version 6.2.0. Zenodo. https://doi.org/10.5281/zenodo.4671172
 - Madec, G. (2015). NEMO ocean engine. *Note du Pôle de Modélisation*, Institut Pierre-Simon Laplace.
-- Hunke, E.C., et al. (2021). CICE-Consortium/CICE: CICE Version 6.2.0. Zenodo. https://doi.org/10.5281/zenodo.4671172
-- Morrison, H., and Milbrandt, J.A. (2015). Parameterization of cloud microphysics based on the prediction of bulk ice particle properties. Part I. *J. Atmos. Sci.*, 72, 287–311.
-- Milbrandt, J.A., and Morrison, H. (2016). Parameterization of cloud microphysics based on the prediction of bulk ice particle properties. Part III. *J. Atmos. Sci.*, 73, 975–995.
+- Milbrandt, J. A., and H. Morrison (2016). Parameterization of cloud microphysics based on the prediction of bulk ice particle properties. Part III: Introduction of multiple free categories. *J. Atmos. Sci.*, 73, 975–995.
+- Morrison, H., and J. A. Milbrandt (2015). Parameterization of cloud microphysics based on the prediction of bulk ice particle properties. Part I: Scheme description and idealized tests. *J. Atmos. Sci.*, 72, 287–311.
+- Pringle, D. J., H. Eicken, H. J. Trodahl, and L. G. E. Backstrom (2007). Thermal conductivity of landfast Antarctic and Arctic sea ice. *J. Geophys. Res. Oceans*, 112, C04017.
+- Umlauf, L., and H. Burchard (2003). A generic length-scale equation for geophysical turbulence models. *J. Mar. Res.*, 61, 235–265.
