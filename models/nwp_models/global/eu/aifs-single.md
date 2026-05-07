@@ -63,7 +63,7 @@ AIFS Single is the **deterministic AI companion** to ECMWF's physics-based [IFS]
 
 AIFS Single shares the same **initial conditions** as IFS (both start from ECMWF's operational analyses), which means their forecast differences reflect model behavior rather than initialization differences.
 
-[AIFS ENS](./aifs-ens.md) is the ensemble counterpart trained with probabilistic (CRPS-based) methods.
+[AIFS ENS](../../../ensemble_models/global/eu/aifs-ens.md) is the ensemble counterpart trained with probabilistic (CRPS-based) methods.
 
 ECMWF stops running its experimental machine learning model suite (Aurora, FourCastNet, GraphCast, Pangu-Weather) as of the joint AIFS/IFS upgrade on 12 May 2026.
 
@@ -98,7 +98,7 @@ Upgraded to address a precipitation forecast issue (point rain artefacts) caused
 Initially implemented on 31 July 2025 but reverted on 1 August due to a `stepRange` GRIB2 metadata issue affecting six accumulated parameters (`cp`, `sf`, etc.). Re-implemented on 27 August 2025 after the metadata issue was fixed. The technical paper documenting v1.1 was published in September 2025 (Moldovan et al., arXiv:2509.18994).
 
 ### AIFS Single v2 — scheduled 12 May 2026
-Major upgrade deployed jointly with [IFS Cycle 50r1](./ifs.md#upcoming-changes) and [AIFS ENS v2](./aifs-ens.md). Key changes:
+Major upgrade deployed jointly with [IFS Cycle 50r1](./ifs.md#upcoming-changes) and [AIFS ENS v2](../../../ensemble_models/global/eu/aifs-ens.md). Key changes:
 
 - **New 10 hPa pressure level** for geopotential, temperature, horizontal winds, and vertical velocity. Sudden stratospheric warmings are now represented in AIFS forecasts.
 - **New wave stream** — the first data-driven wave forecasts ECMWF has issued. Significant wave height forecasts improve by ~10% compared to the physics-based IFS Cycle 50r1 wave model.
