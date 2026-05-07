@@ -3,11 +3,11 @@
 ## What this model is
 The Global Ensemble Forecast System (GEFS) is the United States' primary global ensemble numerical weather prediction system, operated by NOAA's National Centers for Environmental Prediction (NCEP).
 
-GEFS is the ensemble counterpart to the deterministic [GFS](./gfs.md), built on the same FV3-based atmospheric model and the same Earth system framework, with 31 ensemble members (1 control + 30 perturbed) running 4× daily. It produces probabilistic medium-range forecasts for most cycles and extends to **35 days at the 00 UTC cycle**, providing the United States' operational sub-seasonal forecast guidance.
+GEFS is the ensemble counterpart to the deterministic [GFS](../../../nwp_models/global/usa/gfs.md), built on the same FV3-based atmospheric model and the same Earth system framework, with 31 ensemble members (1 control + 30 perturbed) running 4× daily. It produces probabilistic medium-range forecasts for most cycles and extends to **35 days at the 00 UTC cycle**, providing the United States' operational sub-seasonal forecast guidance.
 
 GEFS is also a contributing member to the [North American Ensemble Forecast System (NAEFS)](./naefs.md), the [557th WW GEPS](./557wg-geps.md) multi-model ensemble, and the [HGEFS](./hgefs.md) hybrid physics-AI grand ensemble — making it one of the most heavily-used ensemble forecast products in operational meteorology.
 
-The current operational version is **GEFSv12** (operational since 23 September 2020), with **GEFSv13** under development for joint deployment alongside [GFSv17](./gfs.md#upcoming-changes) (proposed for October 2026).
+The current operational version is **GEFSv12** (operational since 23 September 2020), with **GEFSv13** under development for joint deployment alongside [GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes) (proposed for October 2026).
 
 ---
 
@@ -42,7 +42,7 @@ The current operational version is **GEFSv12** (operational since 23 September 2
 ---
 
 ## Initial conditions
-GEFS is initialized from **6-hour EnKF forecasts** drawn from the **same 80-member EnKF ensemble** that informs the GFS hybrid 4DEnVar analyses (see [GDAS in the GFS entry](./gfs.md#data-assimilation)).
+GEFS is initialized from **6-hour EnKF forecasts** drawn from the **same 80-member EnKF ensemble** that informs the GFS hybrid 4DEnVar analyses (see [GDAS in the GFS entry](../../../nwp_models/global/usa/gfs.md#data-assimilation)).
 
 This shared infrastructure means GEFS benefits from the full GDAS observation suite — AMSU-A, ATMS, IASI, AIRS, CrIS, GPS-RO, scatterometer winds, atmospheric motion vectors, conventional observations — without running its own separate analysis cycle. The EnKF perturbations are recentered around the deterministic GFS analysis before being used as GEFS initial conditions.
 
@@ -82,12 +82,12 @@ GEFSv12 includes a **30-year (1989–2019) reanalysis and reforecast** dataset, 
 ---
 
 ## Relationship to other models
-- **[GFS](./gfs.md):** Deterministic counterpart, sharing the FV3 dynamical core and GDAS analysis infrastructure
+- **[GFS](../../../nwp_models/global/usa/gfs.md):** Deterministic counterpart, sharing the FV3 dynamical core and GDAS analysis infrastructure
 - **[NAEFS](./naefs.md):** Multi-center ensemble combining GEFS with Canadian GEPS and (for the 557th WW GEPS) FNMOC NAVGEM ensemble; provides bias-corrected probabilistic guidance across North America
 - **[557th WW GEPS](./557wg-geps.md):** U.S. Air Force statistical multi-model ensemble that uses GEFS as one of its three contributing single-center ensembles
 - **[HGEFS](./hgefs.md):** Hybrid grand ensemble combining the 31 GEFS members with 31 [AIGEFS](./aigefs.md) AI-based members, providing a 62-member physics-plus-AI ensemble
 - **[AIGEFS](./aigefs.md):** AI-based ensemble counterpart trained to emulate GEFS behavior
-- **[GFSv17](./gfs.md#upcoming-changes) and GEFSv13:** Co-developed; GEFSv13 will be the ensemble counterpart to the proposed coupled Earth-system GFSv17
+- **[GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes) and GEFSv13:** Co-developed; GEFSv13 will be the ensemble counterpart to the proposed coupled Earth-system GFSv17
 
 ---
 
@@ -118,13 +118,13 @@ The NOAA Big Data Program provides parallel access via AWS, Azure, and GCP — t
 ## Upcoming changes
 
 ### GEFSv13 — co-developed with GFSv17
-GEFSv13 is in development as the ensemble counterpart to the proposed [GFSv17](./gfs.md#upcoming-changes), with implementation tied to the GFSv17 timeline (proposed October 2026 per PNS 26-29). Final implementation timing depends on the GFSv17 service change notice and may shift.
+GEFSv13 is in development as the ensemble counterpart to the proposed [GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes), with implementation tied to the GFSv17 timeline (proposed October 2026 per PNS 26-29). Final implementation timing depends on the GFSv17 service change notice and may shift.
 
 **Planned major changes:**
 - **Full Earth-system coupling:** Two-way coupling of atmosphere, ocean (MOM6), sea ice (CICE6), waves (WAVEWATCH III), land (Noah-MP), and aerosols (GOCART) — the same UFS coupled framework as GFSv17
 - **All 31 members coupled with aerosols** — replacing the v12 architecture where only the unperturbed 32nd "GEFS-Aerosols" member ran with GOCART chemistry
 - **Forecast extension to 48 days** at 00 UTC (from 35 days in v12); 16 days retained at 06, 12, 18 UTC
-- **Updated initial perturbations** from a coupled EnKF analysis (atmosphere, land, ocean) — the same JEDI-based DA architecture being developed for [GDASv17](./gfs.md#upcoming-changes)
+- **Updated initial perturbations** from a coupled EnKF analysis (atmosphere, land, ocean) — the same JEDI-based DA architecture being developed for [GDASv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes)
 - **30-year reforecast** (1994–2023) generated using the GEFSv13 "replay" methodology (replaying the coupled UFS to ERA5 atmosphere and ORAS5 ocean reanalyses)
 - **Updated physics suite** matching GFSv17, including new convection schemes with stochastic cellular-automata triggering, Thompson-Eidhammer two-moment microphysics, and unified gravity wave drag
 
