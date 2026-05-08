@@ -1,82 +1,147 @@
-# HARMONIE–AROME (DMI)
+# HARMONIE (DMI – DINI and IG)
 
 ## What this model is
-HARMONIE–AROME is a high-resolution regional numerical weather prediction (NWP) model operated by the Danish Meteorological Institute (DMI) for short-range forecasting over Northern Europe and the North Atlantic.
+HARMONIE is the **convection-permitting regional deterministic numerical weather prediction (NWP) model** that the Danish Meteorological Institute (DMI) operates for short-range forecasting over Northern Europe, the North Atlantic, Iceland, and Greenland.
 
-DMI runs two closely related operational configurations of the model — **DINI** and **IG** — both based on the HARMONIE–AROME system and using convection-permitting grid spacing.
+DMI runs and distributes two configurations of the same HARMONIE-AROME cycle 43h model:
+- **DINI** — Denmark, Iceland, Netherlands, Ireland — covers Northwestern Europe and the surrounding seas. The DINI domain is the shared **UWC-West** production: the same model run is also distributed by KNMI, Met Éireann, and the Icelandic Met Office under their respective open-data platforms.
+- **IG** — Iceland and Greenland — DMI-specific configuration covering Iceland, Greenland, and the surrounding North Atlantic and Arctic seas.
+
+Both share the same dynamical core, physics, vertical grid, GRIB encoding, and output structure, and differ mainly in domain extent and forecast length. They are presented together here because DMI documents and distributes them as a single product family.
 
 ---
 
 ## Who runs it
-- **Organization:** Danish Meteorological Institute
+- **Organization:** Danish Meteorological Institute (DMI)
 - **Country / region:** Denmark
+- **Operating partnership (DINI domain only):** United Weather Centres-West (UWC-West)
+  - DMI (Denmark)
+  - KNMI (Royal Netherlands Meteorological Institute)
+  - Icelandic Met Office (Veðurstofa Íslands)
+  - Met Éireann (Ireland)
+- **Computing infrastructure:** UWC-West "Aurora" supercomputer at the Icelandic Met Office data centre in Reykjavík (operational since 2024). DMI owns and operates the supercomputer; IMO operates the site infrastructure.
 
 ---
 
-## Model configurations
+## What area it covers
 
-### DINI
-- **Coverage:** Denmark, Iceland, Netherlands, Ireland, and surrounding seas
-- **Horizontal resolution:** ~2 km
-- **Forecast length:** Up to ~60 hours
-- **Primary use:** Short-range forecasting over Northwestern Europe
+### DINI configuration
+- **Coverage:** Denmark, Iceland, Netherlands, Ireland and the surrounding seas; extends from East Greenland to southern Italy at the corners of the integration domain
+- **Approximate domain bounds:** 43°W – 40°E, 37°N – 70°N
+- **Native projection:** Lambert conformal conic, false origin 55.5°N / −8°E, single standard parallel 55.5°N, on a sphere of radius 6,371,229 m
 
-### IG
-- **Coverage:** Iceland and Greenland
-- **Horizontal resolution:** ~2 km
-- **Forecast length:** Up to ~72 hours
-- **Primary use:** High-resolution forecasting for North Atlantic and Arctic regions
-
-Both configurations use lateral boundary conditions from the ECMWF global forecasting system.
+### IG configuration
+- **Coverage:** Iceland, Greenland, and adjacent Arctic and North Atlantic waters
+- **Approximate domain bounds:** 109°W – 37°E, 56°N – 86°N
+- **Native projection:** Lambert conformal conic, false origin 72°N / −36°E, single standard parallel 72°N, on a sphere of radius 6,371,229 m
 
 ---
 
 ## Basic details
-- **Model type:** Regional deterministic NWP
-- **Model system:** HARMONIE–AROME
-- **Current cycle:** 43h
-- **Horizontal resolution:** ~2 km
-- **Update frequency / cycles:**  
-  Internally runs hourly; deterministic output distributed every 3 hours  
-  (00, 03, 06, 09, 12, 15, 18, 21 UTC)
+- **Model type:** Regional deterministic NWP (convection-permitting)
+- **Model system / core:** HARMONIE-AROME (ALADIN-NH non-hydrostatic spectral dynamical core, AROME physics, SURFEX surface scheme); cycle **43h**
+- **Dynamical formulation:** Non-hydrostatic, spectral, with two-time-level semi-implicit semi-Lagrangian discretization
+- **Convection-allowing:** Yes (deep convection explicitly resolved at 2 km; shallow convection parameterized)
+- **Horizontal resolution:** ~2 km on the native Lambert grid (both DINI and IG)
+- **Vertical levels:** 90 model (hybrid) levels, terrain-following near the surface and pressure-following higher up
+- **Model top:** 10 hPa (~30 km, standard HARMONIE-AROME configuration)
+- **Forecast length:**
+  - DINI: 60 hours from every cycle
+  - IG: 72 hours from every cycle
+- **Update frequency / cycles:** 8× daily (00, 03, 06, 09, 12, 15, 18, 21 UTC). The model itself runs hourly on the supercomputer, but DMI collects and distributes the deterministic output every third hour.
 - **Temporal output resolution:** 1 hour
+- **Boundary conditions:** ECMWF IFS (HRES global model) — provides lateral boundary conditions for both configurations.
+
+---
+
+## Configurations at a glance
+
+| Field                  | DINI                                          | IG                                          |
+|------------------------|-----------------------------------------------|---------------------------------------------|
+| Coverage               | Denmark, Iceland, Netherlands, Ireland        | Iceland, Greenland                          |
+| Forecast length        | 60 h                                          | 72 h                                        |
+| Domain bounds          | 43°W – 40°E, 37°N – 70°N                      | 109°W – 37°E, 56°N – 86°N                   |
+| Lambert false origin   | 55.5°N / −8°E                                 | 72°N / −36°E                                |
+| UWC-West shared        | Yes                                           | No (DMI-specific)                           |
+| Sibling distributions  | KNMI ([P1](../netherlands/harmonie-arome-netherlands.md) / [P3](../netherlands/harmonie-knmi.md) / [BES](../netherlands/harmonie-caribbean.md)) and others from the same model chain | None — distributed only by DMI              |
+
+All other model parameters (resolution, vertical levels, cycle, physics, output cadence, GRIB encoding, parameter list) are identical between DINI and IG.
 
 ---
 
 ## What it provides
-High-resolution forecasts optimized for mesoscale and high-impact weather, including:
-- Convective precipitation and cloudbursts
-- Strong winds and rapidly evolving storm systems
-- Near-surface temperature, wind, humidity, pressure, and cloud fields
+Output is distributed in three level-type files for each domain:
 
-HARMONIE–DMI output is also used as atmospheric forcing for DMI’s downstream marine models, including wave and storm-surge prediction systems.
+- **Surface files (sf)** — surface-scheme outputs and atmosphere-integrated fields, including 2 m temperature and dewpoint, 10 m wind components, wind gusts, total precipitation, snow depth (water equivalent), surface and mean sea level pressure, cloud cover (low/medium/high/total), cloud base and top, mixed-layer depth, CAPE and CIN, visibility, total column water vapour and cloud water/ice, radiation fluxes (short-wave, long-wave, net, downward, global), latent and sensible heat fluxes, momentum fluxes, land-sea mask, and a set of fields at 50 / 100 / 150 / 250 m above ground.
+- **Model-level files (ml)** — 3D fields on the 90 hybrid levels: temperature, specific humidity, cloud fraction and condensate, U and V wind components, and others.
+- **Pressure-level files (pl)** — selected fields interpolated to 16 standard pressure levels (1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50 hPa): temperature, U/V wind, geometric vertical velocity, geopotential, relative humidity, and pseudo-adiabatic potential temperature (the IG pressure-level set is somewhat smaller than DINI's).
+
+HARMONIE-DMI output also provides atmospheric forcing for DMI's downstream marine modelling chain — the **DKSS** storm-surge model and the **WAM** wave model.
 
 ---
 
-## Coordinate system
-- Uses a **Lambert conformal conic projection**
-- Wind components are defined relative to the rotated model grid
+## Coordinate system and wind components
+Both configurations use a Lambert conformal conic projection (different parameters per domain — see "What area it covers" above). The U and V wind components in all output files are defined **relative to the Lambert grid frame**, not true geographic east/north. Software computing wind direction in a different coordinate reference system needs to apply a rotation; DMI's Forecast EDR API does this rotation automatically when `crs=crs84` is requested.
 
 ---
 
 ## Data availability
 - **Is the data free?** Yes
+- **License:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
-- **Official open-data access:**  
-  https://registry.opendata.aws/dmi-opendata/
+- **Data formats:** GRIB2 (`gridType: lambert`)
+- **Official open-data access:**
+  - Registry of Open Data on AWS: https://registry.opendata.aws/dmi-opendata/
+  - S3 bucket: `s3://dmi-opendata/` (region `eu-north-1`, anonymous access via `aws s3 ls --no-sign-request s3://dmi-opendata/`)
+  - DMI Forecast EDR API: https://www.dmi.dk/friedata/dokumentation/forecast-data-edr-api (collections include `harmonie_dini_sf`, `harmonie_dini_ml`, `harmonie_dini_pl`, `harmonie_ig_sf`, `harmonie_ig_ml`, `harmonie_ig_pl`)
+  - DMI Forecast STAC API: https://www.dmi.dk/friedata/dokumentation/forecast-data-stac-api
+
+---
+
+## Forecast availability timing
+DMI publishes typical delays between the analysis time of a model run and when the output is available in the open-data APIs:
+
+| Product                                | First file available | Complete model available |
+|----------------------------------------|----------------------|--------------------------|
+| `harmonie_dini` surface (sf)           | +1h35m               | +2h45m                   |
+| `harmonie_dini` model levels (ml)      | +1h35m               | +3h10m                   |
+| `harmonie_dini` pressure levels (pl)   | +1h35m               | +2h30m                   |
+| `harmonie_ig` surface (sf) and pressure (pl) | +1h25m         | +2h45m                   |
+| `harmonie_ig` model levels (ml)        | +1h25m               | +3h15m                   |
+
+Output appears one time-step at a time in chronological order, so users needing only short-range forecast steps can start consuming files well before the run is complete. Surface (sf) files are smaller and arrive first; model-level (ml) files are larger and arrive last.
 
 ---
 
 ## Notes
-- DINI and IG share the same core model configuration but differ in domain extent and forecast length.
-- Model resolution and configuration are optimized for convection-permitting short-range forecasts.
-- Output availability and timing depend on operational constraints and upstream boundary data delivery.
+- **DINI is the same model run KNMI distributes as `harmonie_arome_cy43_p3`.** KNMI's [P3 European dataset](../netherlands/harmonie-knmi.md), the [P1 Dutch dataset](../netherlands/harmonie-arome-netherlands.md), and the DMI DINI distribution are all packaged independently from the same UWC-West cy43 model run on the Aurora supercomputer in Iceland. They differ in distribution grid, retained variable set, parameter encoding, and rotation conventions — but the underlying model state is identical. The Caribbean [BES domain](../netherlands/harmonie-caribbean.md) is a separate KNMI-only configuration sharing the cy43 codebase but not the DINI integration.
+- **Sibling UWC-West productions:** Met Éireann distributes its own slice of the same DINI run as part of its [HARMONIE-AROME Ireland](../ireland/harmonie-arome-ireland.md) operational chain (along with the Irish IREPS regional ensemble), and the Icelandic Met Office distributes the run via its own services. These are not duplicate forecasts; they are repackagings of the same UWC-West production.
+- **DINI vs MEPS:** Despite being run by a Nordic operator, **DMI's HARMONIE production is part of UWC-West, not MetCoOp.** [MEPS](../norway/meps.md) (MetCoOp: MET Norway, SMHI, FMI, ESTEA, LEGMC) is a separate Nordic HARMONIE-AROME ensemble production that does not include DMI.
+- **GRIB edition:** All HARMONIE-DMI output is GRIB2 (`edition = 2`). Parameters are identified by GRIB2 discipline / category / number and `typeOfStatisticalProcessing` codes; full parameter tables for each level type are available in the official documentation.
+- **DMI documentation also states that HARMONIE feeds the DKSS storm-surge and WAM wave forecast models.** If those models are documented as separate entries, they should cross-reference HARMONIE-DMI as the meteorological driver.
+- **Companion ensemble:** DMI has historically operated **COMEPS** (Continuous Mesoscale EPS), a HARMONIE-AROME-based ensemble system focused on Denmark. If documented separately, COMEPS belongs under `ensemble_models/regional/denmark/`. This entry covers only the deterministic DINI and IG productions.
+
+---
+
+## Recent version history
+
+### 2024 — UWC-West Aurora supercomputer becomes operational
+The DINI configuration migrated to the new HPE Cray "Aurora" supercomputer at the Icelandic Met Office data centre in Reykjavík, run jointly by the four UWC-West partners (DMI, KNMI, IMO, Met Éireann). The cy43 model on Aurora replaced the legacy KNMI Cy40 P3 production at KNMI on 20 June 2024 and consolidated DMI's, KNMI's, IMO's, and Met Éireann's HARMONIE production onto the same hardware and the same model run.
+
+### Earlier history (pre-2024)
+The lineage of the IG domain traces back to the **IGA** (Iceland-Greenland-Atlantic) configuration documented in DMI's 2016/2017 operational upgrade, when DMI and IMO jointly developed a high-resolution HARMONIE-AROME suite for Iceland and South Greenland, taking advantage of the Reykjavík HPC site. The DINI domain similarly evolved out of DMI's earlier **NEA** (North Europe / Atlantic) configuration. Both domains have since been brought to cycle 43h and are now produced on the UWC-West Aurora system.
 
 ---
 
 ## Official documentation
-- DMI: *Forecast Data Weather Model (HARMONIE) for DINI and IG*  
+- DMI: *Forecast Data Weather Model (HARMONIE) for DINI and IG*
   https://www.dmi.dk/friedata/dokumentation/data/forecast-data-weather-model-harmonie-for-dini-and-ig
-- Bengtsson et al. (2017): *The HARMONIE–AROME Model Configuration*  
-  https://doi.org/10.1175/MWR-D-16-0417.1
+- DMI: *Forecast Data Availability*
+  https://www.dmi.dk/friedata/dokumentation/data/forecast-data-availability
+- DMI: *Free meteorological data — overall documentation*
+  https://www.dmi.dk/friedata
+- AWS Open Data Registry: *Danish Meteorological Institute (DMI) Open Data Forecasts*
+  https://registry.opendata.aws/dmi-opendata/
+- DMI Open Data processing guide (Python notebooks):
+  https://github.com/dmidk/dmi-opendata-forecastdata-guide
+- Bengtsson et al. (2017), *The HARMONIE–AROME Model Configuration in the ALADIN–HIRLAM NWP System*, Mon. Wea. Rev., 145, 1919–1935. https://doi.org/10.1175/MWR-D-16-0417.1
