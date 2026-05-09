@@ -41,18 +41,18 @@ Internally, CHMI also generates **operational biometeorological diagnostics** (m
 ---
 
 ## Data assimilation
-- **Surface analysis:** Optimal interpolation (OI / CANARI) using SYNOP T2m and RH2m; SST treatment is by relaxation toward the LBC0 (ARPEGE) field; snow analysis with relaxation to climatology suppressed since February 2024 to retain realistic snow amounts
-- **Upper-air analysis:** **BlendVar** — digital-filter spectral blending (Brožková et al., 2001) at truncation E102 × 81, followed by **3D-Var** (Fischer et al., 2005)
+- **Surface analysis:** Optimal interpolation (CANARI) using GTS SYNOP and national SYNOP (T2m, RH2m); SST treatment is by relaxation toward the LBC0 (ARPEGE) field; snow analysis with relaxation to climatology suppressed since February 2024 to retain realistic snow amounts. The 3-hourly surface analysis is run with a CHMI-specific local tuning (sun-declination-modulated soil moisture increments, `LISSEW=T` averaging of soil-moisture increments, halved climatology relaxation `RCLIMCA=0.0225`, no snow climatology relaxation `RCLIMSN=0`); these settings live as a local modset rather than common ALADIN code.
+- **Upper-air analysis:** **BlendVar** — digital-filter spectral blending (Brožková et al., 2001) at truncation E102 × 81, followed by **3D-Var** (Fischer et al., 2005). Background-error covariance B is sampled from the **AEARP** Ensemble Data Assimilation system (Météo-France), with `REDNMC=0.5` (replacing the earlier spin-up-ensemble approach with `REDNMC=1.7`).
 - **Cycling:** Hourly analysis system (VarCan Pack); long cut-off cycle was tightened from 6 h to **3 h** in February 2024
-- **Initialisation:** Incremental DFI in the short cut-off production analysis; no DFI in the long cut-off cycle
-- **Assimilated observations:** SYNOP, TEMP, AMDAR, **Mode-S EHS** (full European coverage via EMADDC since 2022), SEVIRI (including water-vapour channels reintroduced with updated VARBC in September 2024), wind profilers, HR-AMV, ASCAT
+- **Initialisation:** Incremental DFI in the short cut-off production analysis; no DFI in the long cut-off cycle (`±1.5 h` analysis window, VARBC 24-hour cycling)
+- **Assimilated observations:** SYNOP (Ps), TEMP (t, q, u, v), AMDAR (t, u, v), **Mode-S** (MRAR data over Czechia and EHS data routed via the KNMI portal, processed under the European EMADDC service since 2022), **SEVIRI** WV channels 2 and 3 (reintroduced September 2024 after a March 2023 – September 2024 withdrawal triggered by the Meteosat-10 / Meteosat-11 swap), HR-AMV, wind profilers, ASCAT
 - **Radar reflectivity assimilation:** OPERA volume reflectivity 1D+3D-Var assimilation in e-suite ALE since February 2025
 
 ---
 
 ## Initial and boundary conditions
 - **Initial conditions:** Own BlendVar + CANARI analysis
-- **Lateral boundary conditions:** **ARPEGE** (Météo-France global model), 3-hour coupling interval, space-consistent coupling
+- **Lateral boundary conditions:** **ARPEGE** (Météo-France global model); space-consistent coupling, **1-hour coupling interval** (tightened from the earlier 3-hour interval; 1 h is documented in the 2024 RC LACE DAWD poster)
 
 ---
 
@@ -101,6 +101,10 @@ Internally CHMI also runs a richer convective-diagnostics package for forecaster
 ## Notes
 - The current high-resolution Lambert_2.3km configuration has been operational since **February 2019**, replacing the previous 4.6 km version with improved resolution, orography, and radiation diagnostics. **CZ_1km is not a separate model integration** — it is a downstream post-processing product produced by reprojecting the same Lambert_2.3km forecast onto a regular ~1 km lat-lon raster over Czechia, with a reduced parameter list (surface only).
 - **Biometeorological outputs** (mean radiant temperature, UTCI) and the richer convective-diagnostics package described in the 2023–2025 RC LACE / ACCORD posters are computed operationally inside CHMI for forecaster use (and were the subject of Novák 2021), but are **not** included in the public `opendata.chmi.cz` ALADIN feed.
+- **Near-term DA development** documented at the RC LACE Data Assimilation Working Days 2024:
+  - **Snow data assimilation** for ALARO via CANARI+ISBA (currently coded only for SURFEX) — technical validation in progress; flexible orography-based snow rejection limit (`LAOROFLEXREJSN`) under test for mountain stations.
+  - **OPERA Nimbus** reflectivity processing chain validated in parallel against the legacy OIFS chain at CHMI (most stations >95 % availability; Swiss and British radars showed nodata/undetect attribute discrepancies).
+  - **Doppler radial-wind** assimilation under development (separate from the volume-reflectivity work).
 - **Companion / related ALADIN deployments in the consortium** share much of the same code base and tunings; cross-references to other entries in this repository:
   - [ALADIN Slovakia](../slovakia/aladin-slovakia.md) — RC LACE sister system; SST treatment and L63→L87 cloud retuning developed jointly with CHMI.
   - [ALARO Belgium](../belgium/alaro-belgium.md) — RMI 1.3 km tunings provided via cooperation with CHMI.
@@ -121,7 +125,7 @@ The 18 UTC production cycle was prolonged from +54 h to +72 h, bringing all four
 The Abel & Boutle (2012) rain size distribution was implemented for simulated reflectivity diagnostics and the radar reflectivity observation operator, replacing the earlier Marshall–Palmer distribution and giving more realistic reflectivities in light rain (lower) and heavy rain (higher).
 
 ### September 2024 — SEVIRI water-vapour channels reintroduced
-SEVIRI water-vapour channels were brought back into the data-assimilation observation set with an updated VARBC bias-correction configuration.
+SEVIRI water-vapour channels (channels 2 and 3) were reintroduced into the data-assimilation observation set after an ~18-month withdrawal. SEVIRI had been **withdrawn in March 2023** following the Meteosat-10 / Meteosat-11 instrument exchange, which produced a ~1 K bias with unusually large diurnal variations. Reintroduction used a **cold-start VARBC with increased adaptivity** to absorb the persistent bias signature.
 
 ### February 2024 — long cut-off cycle to 3 h, snow / surface assimilation retuning
 The long cut-off assimilation cycle was tightened from 6 h to **3 h**. Surface analysis settings were retuned: relaxation to climatology was suppressed for snow (recovering realistic snow amounts), the snow-roughness treatment was switched to `LZ0SNOWH=T` / `RZ0_TO_HEIGHT=0.1` (improving 10 m wind bias over forested snow-covered areas), and the snow-fraction parameter `WCRIN` was raised from 4 to 10 (reducing 2 m cold bias). The Lopez evaporation parameterization and retuned auto-conversions to snow and cloud water were also introduced.
@@ -150,6 +154,7 @@ The non-hydrostatic 2.3 km, 87-level configuration with ALARO-1vB physics replac
 - Trojáková, A. et al. (2022): *Numerical Weather Prediction activities at CHMI*, ACCORD All-Staff Workshop poster.
 - Brožková, R., Bučánek, A., Mašek, J., Němec, D., Smolíková, P., Trojáková, A. (2023): *Numerical Weather Prediction activities at CHMI*, EWGLAM 2023 poster.
 - Brožková, R. et al. (2024): *Numerical Weather Prediction activities at CHMI*, ACCORD All-Staff Workshop 2024 poster.
+- Bučánek, A., Trojáková, A., Brožková, R. (2024): *Data assimilation activities CHMI*, RC LACE Data Assimilation Working Days 2024.
 - Brožková, R., Bučánek, A., Mašek, J., Němec, D., Šljivić, A., Ševčík, J., Smolíková, P., Trojáková, A. (2025): *Numerical Weather Prediction activities at CHMI*, 5th ACCORD All-Staff Workshop poster, Zalakaros.
 
 ### Key references
