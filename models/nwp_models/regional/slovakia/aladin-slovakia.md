@@ -73,7 +73,7 @@ Outputs are used operationally for **weather forecasting, warnings, aviation, hy
 
 ## Data availability
 - **Is the data free?** Yes (publicly accessible at the SHMÚ open-data portal)
-- **License:** TBD (no explicit open-data licence is stated on the SHMÚ open-data directory or the SHMÚ ALADIN documentation page; the SHMÚ website footer asserts general copyright over website content, but the open-data portal itself does not publish specific licence terms)
+- **License:** **Creative Commons Attribution 4.0 International (CC BY 4.0)**, as stated in the README at the root of the SHMÚ open-data portal (https://opendata.shmu.sk/README.txt). The licence applies to all data published under that portal, including the ALADIN/SHMÚ NWP outputs.
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download location:**  
@@ -84,7 +84,7 @@ Outputs are used operationally for **weather forecasting, warnings, aviation, hy
 
 ## Notes
 - The current operational configuration runs on the SHMÚ **NEC HPC** system (240 nodes total; Intel Xeon Gold 6230 Scalable Processors, Cascade Lake, Omni-Path, Linux), with ALADIN/SHMÚ using 40 nodes per cycle.
-- An upgrade from **L63 to L87** vertical levels is in development at SHMÚ — done in collaboration with CHMI on the cloud parameterization tuning, and motivated in part by improved suitability for GNSS ZTD assimilation. As of February 2024, scorecards comparing the L87 development version against operational L63 showed mixed (broadly neutral) impact, and the upgrade had not yet been declared operational.
+- An upgrade from **L63 to L87** vertical levels is in development at SHMÚ — done in collaboration with CHMI on the cloud parameterization tuning, and motivated in part by improved suitability for GNSS ZTD assimilation. As of February 2024, scorecards comparing the L87 development version against operational L63 showed mixed (broadly neutral) impact, and the upgrade had not yet been declared operational. The L87 development bundle also includes a retuning of the DFI blending and a switch from time-consistent (TCC) to **space-consistent (SCC) coupling**.
 - **Near-term DA development** documented at the 5th ACCORD ASW (April 2025) includes operational implementation of **ZTD GNSS** assimilation with **VARBC** (variational bias correction). Earlier plans for **SEVIRI** radiance assimilation are also under way.
 - Other ALADIN-based systems are also run at or by SHMÚ but are **not the same product** as the ALADIN/SHMÚ deterministic forecast described here, and are not openly downloadable in the same way:
   - **A-LAEF** — the ACCORD Limited Area Ensemble Forecasting system (ALARO-1vB, multi-physics + surface SPPT, 4.8 km, L60), run operationally at ECMWF under SHMÚ supervision and shared as the common RC LACE ensemble. As of 2025 it was being upgraded to CY46T1 with new ALARO multi-physics.
