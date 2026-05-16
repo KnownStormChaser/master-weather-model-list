@@ -36,18 +36,18 @@ UFS is not arriving as a single cutover. Components are being absorbed into UFS 
 1. **2023 — HAFS replaces HWRF and HMON.** The first major UFS-based operational system, replacing both legacy hurricane models simultaneously. HAFS uses FV3 atmosphere with online CMEPS coupling to ocean and waves.
 2. **2024 — AQM v7 migrates to UFS-based architecture.** The atmospheric composition component of NAQFC moved from offline-coupled GFS-CMAQ to UFS-based online-coupled atmosphere-chemistry.
 3. **2025 — RTOFS v2.5 deployed alongside HAFSv2.1.** RTOFS itself stays on HYCOM in v2.5; the UFS-relevant connection is that HAFSv2.1 is initialized from RTOFS v2.5, tightening the operational dependency between these systems.
-4. **Targeted early-to-mid 2026 — RRFSv1 + REFS replace NAM, NAM Nest, HiresW (except Guam), HREF, and NARRE.** This is the largest wave of retirements and is the first time UFS replaces multiple regional systems simultaneously.
+4. **August 31, 2026 — RRFSv1 + REFS replace NAM, NAM Nest, HiresW (except Guam), HREF, NARRE, and SREF.** This is the largest wave of retirements and the first time UFS replaces multiple regional systems simultaneously. The set is locked in by NWS SCN 26-48 (May 12, 2026) for the 12 UTC cycle on August 31, with the standard CWD/ECE contingency for postponement. Notably, SREF is included in this wave — it was previously expected to persist into the second wave under RRFSv2, but NBM v5.0's elimination of SREF as an input earlier in 2026 removed the last major operational consumer, and the SCN folded SREF retirement into the RRFSv1 cutover.
 5. **Targeted October 2026 (proposed) — GFSv17 + GDASv17.** GFS transitions from atmosphere-centric to a fully coupled Earth-system model with MOM6 ocean, CICE6 sea ice, and WAVEWATCH III waves all coupled via CMEPS. GDAS introduces JEDI-based DA for ocean, sea ice, and snow.
 6. **Proposed (March 2026 PNS) — RTOFS v3.0.** Replaces HYCOM with MOM6 and CICE4 with CICE6, aligning RTOFS with the rest of the UFS component stack.
-7. **Future — RRFSv2 (MPAS-based) replaces HRRR, RAP, NAM 12 km, and SREF.** No formal retirement notification yet for these systems; they are expected to follow once RRFSv2 is operational.
+7. **Future — RRFSv2 (MPAS-based) replaces HRRR, RAP, and NAM 12 km.** No formal retirement notification yet for these systems; they are expected to follow once RRFSv2 is operational.
 
-Each of these has slipped at least once relative to its original target date, and further slippage should be expected. The pattern of slippage is itself worth knowing about — UFS is a major undertaking and conservative scheduling is the norm rather than the exception.
+Each of these has slipped at least once relative to its original target date, and further slippage should be expected. The pattern of slippage is itself worth knowing about — UFS is a major undertaking and conservative scheduling is the norm rather than the exception. RRFSv1/REFS itself was originally targeted for "early 2026" under PNS 25-41 before slipping to the August 31 date now confirmed in SCN 26-48.
 
 ---
 
 ## Already integrated
 
-These systems already run on UFS infrastructure as of April 2026.
+These systems already run on UFS infrastructure as of May 2026.
 
 ### [HAFS — Hurricane Analysis and Forecast System](./models/tropical_cyclone_models/hafs.md)
 - **Operational since:** June 2023 (v1.0); current version v2.1 (July 2025)
@@ -65,20 +65,25 @@ These systems already run on UFS infrastructure as of April 2026.
 
 ## Active replacements (in progress or imminent)
 
-These are the most operationally significant UFS transitions that are either imminent or in late-stage pre-operational status as of April 2026.
+These are the most operationally significant UFS transitions that are either imminent or in late-stage pre-operational status as of May 2026.
 
 ### [RRFS — Rapid Refresh Forecast System](./models/nwp_models/regional/usa/rrfs.md) and [REFS — RRFS Ensemble Forecast System](./models/ensemble_models/regional/usa/refs.md)
-- **Status:** Late-stage pre-operational (April 2026); originally targeted "early 2026," delayed
+- **Status:** Scheduled for operational implementation **August 31, 2026 at 12 UTC**, subject to CWD/ECE contingency
 - **UFS components used:** FV3 dynamical core (v1); MPAS planned for v2
-- **Replaces:**
+- **Replaces (all retiring on the same day):**
   - [NAM](./models/nwp_models/regional/usa/nam.md) (12 km parent and all 3 km nests including fire weather)
   - [NAM Nest](./models/nwp_models/regional/usa/nam-nest.md)
   - [HREF](./models/ensemble_models/regional/usa/href.md) (replaced by REFS)
   - HiresW (CONUS, Alaska, Hawaii, Puerto Rico domains — see [HiresW Guam](./models/nwp_models/regional/usa/hiresw-guam.md) for the surviving exception)
-  - NARRE (not in this repository)
-- **Authority:** [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025)
-- **Domains:** CONUS, Alaska (3 km), Hawaii, Puerto Rico (2.5 km), plus a separate 1.5 km fire-weather domain
-- **Forecast extension:** REFS extends to 60 hours (HREF was 48 hours); 4× daily for all domains (HREF was 2× daily for non-CONUS)
+  - SREF (not in this repository) — replaced by REFS
+  - NARRE (not in this repository) — replaced by REFS
+  - NAM MOS (not in this repository) — retired alongside NAM
+- **Authority:** [NWS SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf) (May 12, 2026); product retirement details in companion SCN 26-47. The retirement set was originally proposed in [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025).
+- **Pre-implementation real-time feed:** On or about June 9, 2026, NOAA will publish parallel RRFS and REFS data on NOMADS at `/nccf/com/rrfs/para/` and `/nccf/com/refs/para/`. Post-implementation paths are `/nccf/com/rrfs/prod/` and `/nccf/com/refs/prod/`.
+- **Domains:** CONUS, Alaska (3 km), Hawaii, Puerto Rico (2.5 km), plus a separate 1.5 km fire-weather RRFS domain
+- **Deterministic forecast cadence:** RRFS runs hourly. The 00/06/12/18 UTC synoptic cycles run to 84 hours; the other 20 hourly cycles run to 18 hours.
+- **Ensemble forecast cadence:** REFS runs to 60 hours, 4× daily (00/06/12/18 UTC) for all domains. RRFS itself produces 5 ensemble members for those four cycles; REFS combines those with the 6-hour-old RRFS deterministic and ensemble cycles. For the CONUS and Alaska REFS domains, the HRRR contributes two additional members (current and 6 h old) — making HRRR an explicit input to a UFS-era operational system even though HRRR itself is not retired in this wave.
+- **HREF → REFS comparison:** REFS extends forecasts to 60 hours (HREF was 48 hours); REFS provides 4 cycles daily for all regions, including non-CONUS domains (HREF only ran twice daily for AK, HI, and PR).
 
 ### [GFS](./models/nwp_models/global/usa/gfs.md) and [GEFS](./models/ensemble_models/global/usa/gefs.md) — GFSv17 and GDASv17
 - **Status:** Proposed for October 2026; public comment period open through May 2026
@@ -99,37 +104,40 @@ These are the most operationally significant UFS transitions that are either imm
   - Higher-resolution GDPS (15 km) and REPS (10 km) inputs (these are Canadian, not UFS-related)
   - **AIGFS** (NOAA's operational AI global model) added as input for temperature, wind speed, and QPF
   - **ECAIFS** (ECMWF's AI/IFS hybrid) similarly added
-  - **SREF eliminated** as an input — this is operationally significant because it removes a major downstream consumer of SREF, accelerating the case for SREF retirement under RRFSv2
+  - **SREF eliminated** as an input — this is operationally significant because it removed the last major downstream consumer of SREF, and the August 31, 2026 SCN folded SREF retirement into the first wave alongside RRFSv1/REFS rather than holding it for RRFSv2
 - **Notes:** NBM's evolving input set tracks the UFS rollout indirectly. As GFSv17, RRFSv1, and REFS go operational, expect future NBM upgrades to incorporate them and remove their predecessors.
 
 ---
 
 ## Scheduled retirements (first wave — with RRFSv1)
 
-These systems are covered by NWS PNS 25-41 (June 26, 2025) and are scheduled for retirement once RRFSv1 is fully operational. Originally targeted for early 2026, slipped due to RRFSv1 delays.
+These systems are scheduled for retirement on **August 31, 2026 at 12 UTC**, on the same cycle that brings RRFSv1 and REFS into operations. The retirement set was originally proposed in NWS PNS 25-41 (June 26, 2025) and formally scheduled in NWS SCN 26-48 (May 12, 2026), with the detailed product retirement list in companion SCN 26-47. Subject to the standard CWD/ECE contingency.
 
 | Retiring system | Replacement | Notes |
 |---|---|---|
 | [NAM](./models/nwp_models/regional/usa/nam.md) | RRFSv1 (CONUS 3 km, post-processed grids) | Full retirement: 12 km parent, all 3 km nests, fire-weather nest |
 | [NAM Nest](./models/nwp_models/regional/usa/nam-nest.md) | RRFSv1 | All convection-allowing nests retired |
-| [HREF](./models/ensemble_models/regional/usa/href.md) | [REFS](./models/ensemble_models/regional/usa/refs.md) | Full replacement; REFS extends to 60h, runs 4× daily for all regions |
+| [HREF](./models/ensemble_models/regional/usa/href.md) | [REFS](./models/ensemble_models/regional/usa/refs.md) | Full replacement; REFS extends to 60 h, runs 4× daily for all regions |
 | HiresW CONUS, AK, HI, PR | RRFSv1 (3 km CONUS/AK; 2.5 km HI/PR) | Guam domain explicitly preserved — see [HiresW Guam](./models/nwp_models/regional/usa/hiresw-guam.md) |
+| SREF (not in repo) | REFS | SCN-confirmed first-wave retirement; previously expected to persist into the second wave under RRFSv2 |
 | NARRE (not in repo) | REFS | NARRE's hourly 12-h ensemble guidance replaced by REFS's 60-h forecasts |
+| NAM MOS (not in repo) | Post-processed RRFS-based statistical guidance | Retired alongside NAM |
 
 ---
 
 ## Expected future retirements (second wave — with RRFSv2)
 
-These systems are publicly signaled (through NOAA roadmap documents and NBM v5.0's elimination of SREF as an input) but have **no formal retirement notification** as of April 2026. They are expected to be retired when RRFSv2 (MPAS-based) is operational, which has no announced date.
+These systems are publicly signaled (through NOAA roadmap documents) but have **no formal retirement notification** as of May 2026. They are expected to be retired when RRFSv2 (MPAS-based) is operational, which has no announced date.
 
 | Retiring system | Replacement | Status |
 |---|---|---|
 | [HRRR](./models/nwp_models/regional/usa/hrrr.md) | RRFSv2 (MPAS) | Expected; no formal SCN |
 | [RAP](./models/nwp_models/regional/usa/rap.md) | RRFSv2 (MPAS) | Expected; no formal SCN |
 | NAM 12 km (parent domain only) | RRFSv2 large-domain configuration | Expected |
-| SREF (not in repo) | REFS / RRFSv2 ensemble | Already lost largest consumer (NBM v5.0); expected retirement |
 
 These represent the second major retirement wave under UFS. Users with operational dependencies on HRRR or RAP should plan for migration to RRFS but should not expect this to happen in 2026.
+
+Note that SREF, which was previously listed in this second-wave table, was moved to the first wave by SCN 26-48 — its retirement is now formally scheduled for August 31, 2026.
 
 ---
 
@@ -141,12 +149,12 @@ NOAA's stated goal of reducing the NCEP Production Suite from 21 to 8 reflects m
 |---|---|
 | **GFSv17** (global atmosphere + ocean + ice + wave) | GFS (v16); GDAS (v16); historically separate ocean and wave initialization paths |
 | **RRFSv1** (regional convection-allowing deterministic) | NAM, NAM Nest, HiresW (except Guam) |
-| **REFS** (regional convection-allowing ensemble) | HREF, NARRE |
+| **REFS** (regional convection-allowing ensemble) | HREF, NARRE, SREF |
 | **HAFS** (tropical cyclone) | HWRF, HMON (already retired 2023) |
 | **AQM v7 within NAQFC** (air quality) | Pre-v7 offline-coupled GFS-CMAQ chain |
 | **RTOFS v3.0** (global ocean) | RTOFS v2.5 (HYCOM); historically separate Navy/NOAA ocean initialization paths |
 | **GEFS** + **REFS** + **RRFSv2 ensemble** (future) | GEFS (continues), HREF, NARRE, SREF |
-| **RRFSv2 (MPAS, future)** | HRRR, RAP, NAM 12 km, plus SREF |
+| **RRFSv2 (MPAS, future)** | HRRR, RAP, NAM 12 km |
 
 The remaining UFS components in the 8-system target include atmospheric ensemble systems and specialized non-NWP services that are outside this repository's scope.
 
@@ -157,10 +165,13 @@ The remaining UFS components in the 8-system target include atmospheric ensemble
 Some operational models do not themselves run on UFS but incorporate UFS-derived inputs:
 
 ### [NBM (National Blend of Models)](./models/nwp_models/regional/usa/nbm.md)
-NBM is a statistical post-processor, not a UFS component. But as UFS systems become operational, NBM ingests their output and discontinues legacy inputs. NBM v5.0 (April 2026) eliminated SREF as an input and added AIGFS — a pattern that will continue as RRFSv1, REFS, and GFSv17 go operational.
+NBM is a statistical post-processor, not a UFS component. But as UFS systems become operational, NBM ingests their output and discontinues legacy inputs. NBM v5.0 (May 2026) eliminated SREF as an input and added AIGFS — a pattern that will continue as RRFSv1, REFS, and GFSv17 go operational.
 
 ### Downstream coupled systems
 [HAFS](./models/tropical_cyclone_models/hafs.md) is initialized from [RTOFS](./models/ocean_models/global/us/rtofs-global.md), so RTOFS upgrades flow into HAFS in subsequent cycles. When RTOFS migrates to MOM6/CICE6 in v3.0, HAFS's ocean initialization will follow.
+
+### REFS member contributions from non-UFS systems
+[HRRR](./models/nwp_models/regional/usa/hrrr.md) contributes two members (current and 6 h old cycles) to the CONUS and Alaska REFS domains. HRRR is not itself a UFS system and is not retired in the first wave; this makes HRRR an explicit operational input to a UFS-era ensemble during the period between RRFSv1 implementation and the eventual RRFSv2 transition that retires HRRR.
 
 ---
 
@@ -170,7 +181,7 @@ NBM is a statistical post-processor, not a UFS component. But as UFS systems bec
 - **Non-NCEP UFS users** (research configurations, university-run UFS instances)
 - **Detailed UFS architecture** — for that, see https://ufscommunity.org/
 - **Atmospheric ensemble systems unrelated to UFS** — GEFS continues to run, but its UFS-relevant changes are limited to coupling with GFSv17's analysis system
-- **AI components within UFS** — these may emerge in future versions but as of April 2026 are not part of operational UFS components. See [AI_MODELS.md](./AI_MODELS.md) for the AI-specific index.
+- **AI components within UFS** — these may emerge in future versions but as of May 2026 are not part of operational UFS components. See [AI_MODELS.md](./AI_MODELS.md) for the AI-specific index.
 
 ---
 
