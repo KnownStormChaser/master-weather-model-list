@@ -106,7 +106,7 @@ HRRR is primarily intended for **surface, boundary-layer, and storm-scale analys
 ## Relationship to other models
 - **[RAP](./rap.md):** Parent model. RAP supplies lateral boundary conditions and (for Alaska HRRR) initial conditions. RAP also provides background fields and global-scale information that flow into HRRRDAS through the partial cycling chain. The two systems share much of the same physics suite and DA infrastructure.
 - **[NBM](./nbm.md):** HRRR is one of the most heavily-weighted deterministic inputs for short-range CONUS guidance.
-- **[RRFS](./rrfs.md):** Future replacement for HRRR and RAP. RRFSv1 (proposed for early 2026) does **not** retire HRRR — HRRR retirement is tied to the future RRFSv2 (MPAS-based) timeline.
+- **[RRFS](./rrfs.md) and [REFS](../../ensemble_models/regional/usa/refs.md):** Future replacement for HRRR and RAP. RRFSv1 implements August 31, 2026 at 12 UTC under SCN 26-48 but does **not** retire HRRR — HRRR retirement is tied to the future RRFSv2 (MPAS-based) timeline. Notably, **HRRR contributes two members (current and 6 h old cycles) to the CONUS and Alaska REFS domains**, so HRRR is an explicit operational input to REFS from August 31, 2026 onward until HRRR itself is retired.
 
 ### Downstream NOAA products that depend on HRRR
 - **Localized Aviation Model Output Statistics (LAMP)** — uses HRRR cloud fields
@@ -148,9 +148,9 @@ The smoke fields are distributed alongside the standard meteorological fields in
 
 ## Future outlook
 
-HRRR is expected to be retired alongside [RAP](./rap.md) as part of the eventual transition to **RRFSv2** (the MPAS-based version of the [Rapid Refresh Forecast System](./rrfs.md)). Unlike the NAM, HiresW (non-Guam), and HREF — which are covered by [NWS Public Information Statement 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025) and slated for retirement alongside RRFSv1 — **HRRR and RAP are explicitly not part of the RRFSv1 retirement**. Both are expected to continue operating in parallel with RRFSv1 until the RRFSv2 transition.
+HRRR is expected to be retired alongside [RAP](./rap.md) as part of the eventual transition to **RRFSv2** (the MPAS-based version of the [Rapid Refresh Forecast System](./rrfs.md)). Unlike the NAM, NAM Nest, HiresW (non-Guam), HREF, and SREF — which are scheduled for retirement on August 31, 2026 under [NWS Service Change Notice 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf) (May 12, 2026, originally proposed under PNS 25-41) — **HRRR and RAP are explicitly not part of the RRFSv1 retirement wave**. Both are expected to continue operating in parallel with RRFSv1 until the RRFSv2 transition. SCN 26-48 also assigns HRRR an active role in the new REFS, contributing two members (current and 6 h old cycles) to the CONUS and Alaska domains — formalising HRRR as a continuing operational input rather than just a legacy system in maintenance.
 
-No formal Service Change Notice for HRRR retirement has been issued as of May 2026. The RRFSv2 timeline depends on resolution of issues identified in RRFSv1 evaluation (notably tropical cyclone tracking and convective precipitation behavior with the FV3 core, intended to be addressed by the MPAS dynamical core in v2). Some early evaluations suggest RRFSv1 does not yet match HRRR's skill for hurricane track forecasting, contributing to the continued need to run HRRR in parallel.
+No formal Service Change Notice for HRRR retirement has been issued as of May 2026.
 
 ---
 
