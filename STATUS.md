@@ -73,8 +73,13 @@ These systems are publicly signaled but have **no formal retirement notification
 Experimental hybrid physics–AI successor candidate to operational GDPS. GEM v5.2 atmospheric model spectrally nudged toward GEML at large scales (>2750 km) in the mid-troposphere (250–850 hPa). 15 km, 84 levels, 10-day forecast 2× daily. Beyond the AI integration, v9.0.9 also brings substantial DA, sea ice, and physics updates relative to operational GDPS 9.0.0. Distributed via the standard MSC datamart at https://dd.weather.gc.ca/today/model_gdps/. Per ECCC's own statement at that endpoint, expected to replace operational GDPS in 2026 — see "Imminent or recent changes" above. Current version 9.0.9 implemented March 5, 2025.
 
 ### [GEML (ECCC)](./models/nwp_models/global/canada/gdps-geml.md)
-Experimental standalone AI global deterministic weather model.
-Current version 1.5.0 released November 6, 2024.
+Experimental standalone AI global deterministic weather model. Graph neural network derived from Google DeepMind's GraphCast architecture, retrained by ECCC on ERA5 reanalysis (1979–2016) and ECMWF HRES analyses (2016–2021). 0.25° (~28 km) resolution, 13 pressure levels, 10-day forecast 2× daily, initialized from GDPS analysis. Serves a dual role as both a standalone forecast product (distributed at https://dd.weather.gc.ca/today/model_gdps-geml/25km/) and the spectral nudging target for GDPS-EXP. Trained model weights are publicly released via HuggingFace at https://huggingface.co/ECCC-ASTD-MRD/geml — unusual openness compared to most operational AI weather systems.
+
+### [CAPS (ECCC)](./models/nwp_models/regional/canada/caps.md)
+Experimental coupled atmosphere-ocean-sea ice prediction system at ~3 km resolution covering a large pan-Arctic domain (northern Canada, Alaska, Greenland, Iceland, Scandinavia, Baltic countries, eastern Russia). GEM atmospheric component (configuration inherited from the decommissioned HRDPS-North) two-way coupled to NEMO v3.6 ocean and CICE v6.2.0 sea ice via the GOSSIP coupler at 5-minute exchange frequency. Provides forecast guidance to Canadian Storm Prediction Centres, DND, CCG, and DFO. Distributed via the standard MSC datamart but explicitly designated as experimental. Current version 3.0.0 implemented June 18, 2025.
+
+### [HRDPS-West (ECCC)](./models/nwp_models/regional/canada/hrdps-west.md)
+Experimental kilometric-scale (~1 km) deterministic NWP system covering Southern British Columbia. GEM v5.2.0 atmospheric model piloted by HRDPS national v7.0.0, with surface initial conditions from CaLDAS. Distributed via the MSC alpha datamart (separate from the standard operational MSC datamart). Intended to better resolve mesoscale features in BC's complex topography than the operational 2.5 km HRDPS. Current version 1.5.0 released November 6, 2024.
 
 ### [GraphCastGFS (NOAA)](./models/nwp_models/global/usa/graphcastgfs.md)
 Experimental productionization of Google DeepMind's GraphCast architecture by NOAA, fine-tuned on GDAS+ERA5 data. Predecessor of the operational AIGFS, but continues to run experimentally alongside its operational descendant.
