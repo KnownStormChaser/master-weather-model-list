@@ -30,7 +30,9 @@ RRFS and REFS are scheduled to become operational on **August 31, 2026 at 12 UTC
 ## Basic details
 - **Model type:** Regional deterministic NWP (convection-allowing)
 - **Framework:** Unified Forecast System (UFS)
-- **Dynamical core (v1):** FV3 (Finite-Volume Cubed-Sphere)
+- **Dynamical core (v1):** FV3 (Finite-Volume Cubed-Sphere), in its limited-area configuration (FV3-LAM)
+- **Dynamical formulation:** Non-hydrostatic, finite-volume on the cubed-sphere limited-area grid
+- **Convection-allowing:** Yes — deep convection is explicitly resolved at all RRFS resolutions (3 km, 2.5 km, 1.5 km); no cumulus parameterization is used
 - **Horizontal resolution:**  
   - 3 km (North America, CONUS, Alaska)  
   - 2.5 km (Hawaii, Puerto Rico)  
@@ -47,7 +49,11 @@ RRFS and REFS are scheduled to become operational on **August 31, 2026 at 12 UTC
 
 ## Data assimilation
 - **Data assimilation:** Yes
-- **Method:** Hourly cycling convective-scale data assimilation built on the UFS framework
+- **Method:** Hourly cycling **GSI-based hybrid 3DEnVar** (Gridpoint Statistical Interpolation), with flow-dependent background-error covariances drawn from an associated convective-scale ensemble combined with a static background-error covariance term. The configuration follows the convective-scale DA lineage developed for HRRR and RAP, adapted to the FV3-LAM dynamical core.
+- **Cadence:** Hourly analysis updates, with the cycle continuously providing first-guess fields to the next hour.
+- **Direct radar reflectivity assimilation:** RRFS directly assimilates radar reflectivity observations within the GSI EnVar framework — distinct from the indirect cloud-analysis approach used in some prior NCEP convection-allowing systems. A non-variational complex cloud analysis is also available as an optional post-variational step (as in HRRR/RAP).
+- **Assimilated observations:** Conventional surface, aircraft, and radiosonde observations; satellite radiances; GPS radio occultation; mesonet observations; radar reflectivity; and additional convective-scale observations characteristic of the HRRR-lineage DA design.
+- **Notes:** The specific operational configuration (e.g., static/ensemble weight, localization radii, ensemble source) is documented in the EMC RRFSv1 evaluation materials and ongoing peer-reviewed literature on the GSI-based EnVar system for FV3-LAM.
 
 ---
 
