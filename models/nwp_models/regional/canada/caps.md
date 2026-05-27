@@ -175,7 +175,7 @@ CAPS is intended for high-latitude marine and atmospheric forecasting where atmo
 ## Status
 - CAPS is distributed as **experimental data** via the standard MSC datamart (not the alpha datamart used for HRDPS-West), but is explicitly labelled as experimental in ECCC documentation.
 - It is not operationally supported in the same sense as HRDPS, RDPS, GDPS, GIOPS, or RIOPS.
-- CAPS is one of several experimental ECCC systems alongside [GDPS-EXP](../../global/canada/gdps-exp.md) and [HRDPS-West](./hrdps-west.md) — see the repository's [`STATUS.md`](../../../../STATUS.md) for the current list.
+- CAPS is one of several experimental ECCC systems alongside [HRDPS-West](./hrdps-west.md) — see the repository's [`STATUS.md`](../../../../STATUS.md) for the current list.
 - The system provides forecast guidance to Canadian Storm Prediction Centres, the Department of National Defence, the Canadian Coast Guard, and the Department of Fisheries and Oceans.
 
 ---
