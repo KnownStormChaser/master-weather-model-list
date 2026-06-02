@@ -76,6 +76,26 @@ NBM guidance is the primary foundation for official NWS gridded forecasts in the
 
 ---
 
+## Planned future versions
+
+> **Status:** Unofficial. As of June 2026 there is no NWS Service Change Notice or PNS for either release below, and neither appears on the NBM versions page. The details here come from NOAA/NWS presentation decks and should be treated as a planning signal, not a commitment. No implementation date is recorded here pending a formal SCN.
+
+### NBM v5.1 (planned, not scheduled)
+Outlined in the NBM user webinar (April 15, 2026) and the WPC/HMT "NBMv5 Winter Overview" (February 10, 2026). Planned scope:
+- **12-hour winter products** added to the winter suite
+- Continued work on **remaining winter-weather guidance issues** left after v5.0
+- Fixes for **"blocky" percentile fields** and **precipitation-type (ptype) fields**
+- A **new NBM domain in the Southwest Pacific** — a coverage expansion rather than a methodology change
+
+The source decks referenced a tentative timeframe, but no date is recorded here until an SCN or the NBM versions page makes it official.
+
+### NBM v5.0.1 (interim, tied to RRFS/REFSv1)
+The same decks indicate that the RRFS/REFSv1 implementation will likely force an interim **v5.0.1**, in which the **NAM and HiResW inputs are dropped from the NBM** (the new RRFS deterministic run and REFS members take their place in the relevant suites, including winter). When the decks were prepared (Feb/Apr 2026), RRFS/REFSv1 was expected around mid-July 2026; it has since been formally scheduled for **August 31, 2026 at 12 UTC** under NWS SCN 26-48, so any v5.0.1 cutover would be expected to align with that date rather than the earlier deck estimate. The RRFS/REFS-era winter input weights were described as effectively finalized but subject to change pending evaluation of RRFS/REFS output.
+
+**Sources (presentation decks, not formal notices):**
+- NBM user webinar slides, April 15, 2026: https://www.weather.gov/media/wrn/calendar/NBMUserWebinar4-15-26.pdf
+- WPC/HMT "NBMv5 Winter Overview" slides, February 10, 2026: https://www.wpc.ncep.noaa.gov/hmt/hmt_webpages/seminars/wwe/2026/slides_20260210.pdf
+
 ## Version history
 
 ### NBM v5.0 (operational May 5, 2026)
