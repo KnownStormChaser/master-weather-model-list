@@ -5,7 +5,7 @@ The RRFS Ensemble Forecast System (REFS) is the **ensemble component** of NOAA's
 
 REFS is a regional, convection-allowing ensemble designed to provide probabilistic short-range forecast guidance for high-impact weather across North America. It is built on the UFS framework and is intended to replace the legacy HREF, SREF, and NARRE ensemble systems.
 
-REFS is scheduled to become operational on **August 31, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed is expected on NOMADS on or about June 9, 2026.
+REFS is scheduled to become operational on **August 31, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed is expected on NOMADS on or about July 7, 2026.
 
 ---
 
@@ -115,7 +115,7 @@ REFS shares similarities with HREF in product types (mean, spread, PMM, LPMM, pr
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download locations:**
-  - **NOMADS (pre-implementation parallel feed, on or about June 9, 2026):**
+  - **NOMADS (pre-implementation parallel feed, on or about July 7, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/para/
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs
   - **NOMADS (post-implementation, August 31, 2026):**
@@ -128,7 +128,7 @@ REFS shares similarities with HREF in product types (mean, spread, PMM, LPMM, pr
 - Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48.
 - Targeted for operational implementation alongside the deterministic RRFS, originally "early 2026"; slipped through pre-operational evaluation.
 - **NWS Service Change Notice 26-48 (May 12, 2026)** scheduled REFS operational implementation for August 31, 2026 at 12 UTC, with HREF, SREF, and NARRE retiring on the same day. Per SCN 26-48, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday.
-- Pre-implementation parallel data feed expected on NOMADS on or about June 9, 2026.
+- Pre-implementation parallel data feed expected on NOMADS on or about July 7, 2026.
 - 2025 NOAA Hazardous Weather Testbed Spring Forecasting Experiment evaluations indicated REFS performed competitively with HREF for Day 1 and Day 2 forecasts, and slightly better for some objective metrics including deep convection (>40 dBZ) prediction. This supported the decision to proceed with HREF→REFS replacement.
 
 ---
