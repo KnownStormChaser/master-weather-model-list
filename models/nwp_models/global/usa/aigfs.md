@@ -108,7 +108,7 @@ AIGFS is intended primarily for **synoptic-scale and large-scale forecasting**, 
 AIGFS is part of a broader family of operational productionizations of the GraphCast architecture. All share the same ~37M-parameter GNN architecture and the 13-pressure-level vertical structure, but differ in training data, fine-tuning procedures, and operational role:
 - **GraphCast** (Google DeepMind, 2023) — the original research architecture
 - **[GraphCastGFS](./graphcastgfs.md)** (NCEP, experimental) — predecessor of AIGFS
-- **[GEML](../canada/gdps-geml.md)** (ECCC, experimental) — Canadian productionization, fine-tuned on ERA5 + ECMWF HRES analyses; also serves as the spectral nudging target for ECCC's experimental hybrid [GDPS-EXP](../canada/gdps-exp.md)
+- **[GEML](../canada/gdps-geml.md)** (ECCC, experimental) — Canadian productionization, fine-tuned on ERA5 + ECMWF HRES analyses; also serves as the spectral nudging target for ECCC's operational hybrid [GDPS](../canada/gem-global.md) (since v10.0.0, May 26, 2026)
 - **AIGFS** (NOAA, operational; this entry)
 
 ### Architectural peers (different lineages)
