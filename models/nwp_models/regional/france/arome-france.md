@@ -107,7 +107,7 @@ AROME France is one of several closely related AROME configurations operated by 
 
 - **AROME France HD** — Higher-resolution version covering France at ~1.5 km (0.01°), with a smaller selection of variables. Forecast length up to 51 hours, 8× daily.
 - **AROME France PI 15min** (and HD 15min) — Rapid-update 15-minute output variants providing 6-hour forecasts updated hourly, intended for nowcasting use cases.
-- **AROME Outre-Mer** suite — Tropical and equatorial configurations covering [Antilles](./arome-antilles.md), [French Guiana](./arome-french-guiana.md), [New Caledonia](./arome-new-caledonia.md), [French Polynesia](./arome-polynesia.md), and [Réunion–Mayotte](./arome-reunion-mayotte.md), all at 0.025° (~2.5 km) public distribution.
+- **[AROME Outre-Mer](./arome-outre-mer.md)** — Tropical and equatorial configuration covering five overseas domains (Antilles, French Guiana, New Caledonia, French Polynesia, and Réunion–Mayotte), all at 0.025° (~2.5 km) public distribution.
 
 All AROME variants share the same core dynamical model, physics packages, and distribution architecture; they differ in domain, resolution, forecast range, and update cadence.
 
