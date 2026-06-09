@@ -26,8 +26,8 @@ This is the model behind the `hiresw_conusnssl` files in NSSL's THREDDS reposito
 - **Convection-allowing:** Yes — 4 km grid spacing; no cumulus parameterization
 - **Horizontal resolution:** 4 km
 - **Vertical levels:** TBD (not confirmed in current materials)
-- **Forecast length:** Historically integrated to 36 h; current repository files run hourly to forecast hour 47 (F47) — verify the current operational length
-- **Update frequency / cycles:** 1× daily at 00 UTC
+- **Forecast length:** Up to 48 hours (hourly output)
+- **Update frequency / cycles:** 2× daily (00 and 12 UTC)
 - **Temporal output resolution:** Hourly
 
 ---
@@ -38,7 +38,7 @@ This is the model behind the `hiresw_conusnssl` files in NSSL's THREDDS reposito
 ---
 
 ## Initial and boundary conditions
-- **Initial conditions:** Historically the 00 UTC [NAM](./nam.md) analysis; current source **not confirmed** in the materials reviewed (TBD). Note that NAM is itself scheduled to retire on August 31, 2026, so any NAM dependency here is worth re-checking.
+- **Initial conditions:** Historically NAM-based (the corresponding 00/12 UTC [NAM](./nam.md) analysis); current source **not confirmed** in the materials reviewed (TBD). Note that NAM is itself scheduled to retire on August 31, 2026, so any NAM dependency here is worth re-checking.
 - **Boundary conditions:** TBD (historically NAM forecasts; not confirmed)
 
 ---
@@ -62,7 +62,7 @@ Per Kain et al. and subsequent NSSL-WRF studies, the configuration has used WSM-
   - Direct download (HTTPServer): `https://data.nssl.noaa.gov/thredds/fileServer/FRDD/HREF/<YYYY>/<YYYYMMDD>/hiresw_conusnssl_<YYYYMMDDHH>f<FFF>.grib2`
     - e.g., `.../FRDD/HREF/2026/20260608/hiresw_conusnssl_2026060800f024.grib2`
   - Also exposed per file via **OpenDAP** (`/thredds/dodsC/...`) and the **NetCDF Subset Service** (`/thredds/ncss/grid/...`)
-- **File naming:** `hiresw_conusnssl_<YYYYMMDDHH>f<FFF>.grib2` (HH = `00`; FFF = zero-padded forecast hour)
+- **File naming:** `hiresw_conusnssl_<YYYYMMDDHH>f<FFF>.grib2` (HH = `00` or `12`; FFF = zero-padded forecast hour, `000`–`048`)
 - **Metadata:** ISO 19115 record available per dataset via the THREDDS `iso/` service
 
 ---
