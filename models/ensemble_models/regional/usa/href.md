@@ -121,7 +121,7 @@ HREF is **fundamentally dependent** on its constituent models. Any disruption to
 
 - **[HRRR](../../../nwp_models/regional/usa/hrrr.md):** Provides 4 of the 10 CONUS HREF members (current + time-lagged), and 4 of the 8 Alaska HREF members. HREFv3 added HRRR to the membership for the first time.
 - **[NAM Nest](../../../nwp_models/regional/usa/nam-nest.md):** Provides 2 members per domain (current + time-lagged). The 12-hour time-lagged NAM Nest is used for some HREF cycles.
-- **HiresW (ARW, FV3):** Provides the foundational 4 members per domain. The HiresW system is itself slated for retirement under PNS 25-41 except for the Guam domain (see [HiresW Guam](../../../nwp_models/regional/usa/hiresw-guam.md)).
+- **[HiresW](../../../nwp_models/regional/usa/hiresw.md) (ARW, FV3):** Provides the foundational 4 members per domain. The HiresW system is itself slated for retirement under PNS 25-41 except for the Guam domain.
 - **[REFS](./refs.md):** Replacement, operational August 31, 2026 at 12 UTC. REFS is built on the [RRFS](../../../nwp_models/regional/usa/rrfs.md) UFS infrastructure — combining current and 6 h time-lagged RRFS deterministic and ensemble cycles, plus current and 6 h time-lagged HRRR members for CONUS and Alaska — rather than the post-processing approach HREF uses. REFS runs to 60 hours (longer than HREF's 48 hours) at 4 cycles daily for all domains (HREF runs 4× daily only for CONUS; AK, HI, PR are 2× daily).
 - **[NBM](../../../nwp_models/regional/usa/nbm.md):** Uses HREF probabilistic fields as inputs for blended guidance products.
 
