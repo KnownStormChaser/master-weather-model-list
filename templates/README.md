@@ -10,6 +10,7 @@ The available templates are:
 - [`tropical-cyclone-model.template.md`](./tropical-cyclone-model.template.md) — tropical cyclone / hurricane forecast models
 - [`air-quality-model.template.md`](./air-quality-model.template.md) — air quality and atmospheric composition models
 - [`nowcasting-model.template.md`](./nowcasting-model.template.md) — nowcasting systems (observation extrapolation, seamless extrapolation–NWP blends, and ML-based 0–6 h prediction)
+- [`climate-model.template.md`](./climate-model.template.md) — long-range coupled forecast systems (sub-seasonal, seasonal, and interannual prediction)
 
 How to use:
 1. Copy the template that best fits the model category.
