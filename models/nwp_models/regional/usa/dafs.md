@@ -30,8 +30,8 @@ The Domestic Aviation Forecast System (DAFS) is NCEP's operational aviation-haza
   - IFI: F001–F018
   - GTG: F000–F018
 - **Update frequency / cycles:**
-  - CONUS: hourly (24× daily) — IFI and GTG
-  - Alaska: every 3 hours (8× daily) — IFI only
+  - CONUS: hourly (24 cycles/day, t00z–t23z) — IFI and GTG
+  - Alaska: every 3 hours (8 cycles/day: 00/03/06/09/12/15/18/21 UTC) — IFI only
 - **Temporal output resolution:** Hourly
 
 ---
@@ -68,7 +68,7 @@ HRRR-derived aviation-hazard guidance:
 - **Is the data free?** Yes
 - **License:** Public domain (U.S. government work; CC0-equivalent). NOAA requests attribution and prohibits implying NOAA endorsement.
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2 (with `.idx` index sidecars). 3 km NOMADS files use Complex3 packing with bitmap.
+- **Data formats:** GRIB2, each file accompanied by a `.idx` index sidecar (enabling byte-range subsetting). 3 km NOMADS files use Complex3 packing with bitmap.
 - **Official download location:**
   - NOMADS (HTTPS): https://nomads.ncep.noaa.gov/pub/data/nccf/com/dafs/prod/
   - FTP: ftp://ftp.ncep.noaa.gov/data/nccf/com/dafs/prod/
@@ -77,8 +77,9 @@ HRRR-derived aviation-hazard guidance:
   - `dafs.tCCz.ifi.3km.conus.fFFF.grib2` (IFI, CONUS)
   - `dafs.tCCz.ifi.3km.ak.fFFF.grib2` (IFI, Alaska)
 
-  where `CC` is the cycle hour and `FFF` is the forecast hour.
-- **Access route notes:** NOMADS is the sole open distribution channel — no AWS Open Data / Big Data Program mirror has been announced. NOMADS retention is a short rolling window; users needing a longer archive must capture files in near-real-time.
+  where `CC` is the cycle hour and `FFF` is the three-digit forecast hour.
+- **Approximate file sizes:** GTG CONUS ~150–170 MB/hour (~2.7 GB/cycle); IFI CONUS ~27–30 MB/hour (~0.5 GB/cycle); IFI Alaska ~24–26 MB/hour.
+- **Access route notes:** NOMADS is the sole open distribution channel — no AWS Open Data / Big Data Program mirror has been announced. Retention is a short rolling window of roughly two days (two date directories kept at a time), so users needing a longer archive must capture files in near-real-time.
 
 ---
 
@@ -87,8 +88,8 @@ HRRR-derived aviation-hazard guidance:
 - **Version naming.** The *system* is DAFS v1.0, but its components carry their own versions: IFI **v2.0** and GTG **v4.0**. Stating "DAFS v1.0" without the component versions can cause confusion.
 - **Replaces legacy RAP-based products.** At go-live (March 30, 2026), the previous 13 km RAP-based IFI v1.0 and GTG v3.0 were removed from NWS TGFTP. Users were directed to the 3 km DAFS GRIB2 files on NOMADS.
 - **NBM-hosted IFI discontinued.** The older AWC IFI product that was carried inside NBM core blend files is being removed (per SCN 26-09); the replacement is DAFS, not a new NBM field.
-- **Asymmetric coverage.** IFI covers CONUS (hourly) and Alaska (3-hourly); GTG covers CONUS only (hourly). The entry should not be read as implying uniform domain/cadence across both product families.
-- **Source-document discrepancy.** The plain-language NOMADS product description swaps the two forecast-hour ranges (it lists IFI as f000–f018 and GTG as f001–f018) and reads as though GTG covers Alaska. The verified ranges — IFI F001–F018 (CONUS + AK) and GTG F000–F018 (CONUS only) — are confirmed by the SCN and the NCEP NCO product inventory; the values above follow those.
+- **Asymmetric coverage and cadence.** IFI covers CONUS (hourly) and Alaska (3-hourly: 00/03/06/09/12/15/18/21 UTC); GTG covers CONUS only (hourly). The entry should not be read as implying uniform domain/cadence across both product families.
+- **Source-document discrepancy.** The plain-language NOMADS product description swaps the two forecast-hour ranges (it lists IFI as f000–f018 and GTG as f001–f018) and reads as though GTG covers Alaska. The verified ranges — IFI F001–F018 (CONUS + AK) and GTG F000–F018 (CONUS only) — are confirmed by the SCN, the NCEP NCO product inventory, and the live NOMADS file listing; the values above follow those.
 
 ---
 
