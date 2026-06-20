@@ -33,10 +33,10 @@ Internally, CHMI also generates **operational biometeorological diagnostics** (m
 - **Public distribution grids:** Lambert_2.3km (native) and CZ_1km (~1 km regular lat-lon raster, post-processing reprojection over Czechia)
 - **Vertical levels:** 87 (mean orography)
 - **Time step:** 90 s
-- **Forecast length:** Up to **+72 h** (00, 06, 12, 18 UTC cycles, all to +72 h since January 2025; previously the 18 UTC run went only to +54 h)
-- **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
+- **Forecast length:** Up to **+72 h** for the four publicly distributed cycles (00, 06, 12, 18 UTC), all to +72 h since January 2025 (previously the 18 UTC run went only to +54 h). The intermediate operational cycles (03, 09, 15, 21 UTC) run only to the end of the following day and are **not** publicly distributed — see Update frequency.
+- **Update frequency:** **Operationally 8× daily since 10 June 2025** — the four main synoptic cycles (00, 06, 12, 18 UTC, to +72 h) plus four intermediate cycles (03, 09, 15, 21 UTC, to end of the following day). **Only the four main synoptic cycles are published on the open-data portal**; the four intermediate cycles run operationally but are not openly distributed (portal directory structure exposes `{00,06,12,18}` only; confirmed against the live portal, June 2026).
 - **Temporal output resolution:** Hourly
-- **Cycle / model code version:** ALADIN cycle **46t1as_op1** (as of the 2025 ACCORD ASW poster); previous cycles documented operationally include 43t2ag (2022), 46t1mp (2023–2024)
+- **Cycle / model code version:** ALADIN cycle **48t3mas_op1** (base cycle **cy48t3**, operational since 18 December 2025); previous operational cycles: 46t1as_op1 (2024–2025), 46t1mp (2023–2024), 43t2ag (2022)
 
 ---
 
@@ -46,13 +46,13 @@ Internally, CHMI also generates **operational biometeorological diagnostics** (m
 - **Cycling:** Hourly analysis system (VarCan Pack); long cut-off cycle was tightened from 6 h to **3 h** in February 2024
 - **Initialisation:** Incremental DFI in the short cut-off production analysis; no DFI in the long cut-off cycle (`±1.5 h` analysis window, VARBC 24-hour cycling)
 - **Assimilated observations:** SYNOP (Ps), TEMP (t, q, u, v), AMDAR (t, u, v), **Mode-S** (MRAR data over Czechia and EHS data routed via the KNMI portal, processed under the European EMADDC service since 2022), **SEVIRI** WV channels 2 and 3 (reintroduced September 2024 after a March 2023 – September 2024 withdrawal triggered by the Meteosat-10 / Meteosat-11 swap), HR-AMV, wind profilers, ASCAT
-- **Radar reflectivity assimilation:** OPERA volume reflectivity 1D+3D-Var assimilation in e-suite ALE since February 2025
+- **Radar reflectivity assimilation:** OPERA volume reflectivity 1D+3D-Var assimilation (Wattrelot et al., 2014), **operational since 28 April 2025** (preceded by the e-suite ALE from February 2025)
 
 ---
 
 ## Initial and boundary conditions
 - **Initial conditions:** Own BlendVar + CANARI analysis
-- **Lateral boundary conditions:** **ARPEGE** (Météo-France global model); space-consistent coupling, **1-hour coupling interval** (tightened from the earlier 3-hour interval; 1 h is documented in the 2024 RC LACE DAWD poster)
+- **Lateral boundary conditions:** **ARPEGE** (Météo-France global model); space-consistent coupling. **⚠ Coupling-interval conflict:** the 2024 RC LACE DAWD poster documents a **1-hour** coupling interval, but the 2025 *and* 2026 ACCORD ASW national posters all state a **3-hour** coupling interval in the NWP-system box. Unresolved — the most recent (2026) poster favours 3 h; left flagged pending confirmation.
 
 ---
 
@@ -108,12 +108,27 @@ Internally CHMI also runs a richer convective-diagnostics package for forecaster
 - **Companion / related ALADIN deployments in the consortium** share much of the same code base and tunings; cross-references to other entries in this repository:
   - [ALADIN Slovakia](../slovakia/aladin-slovakia.md) — RC LACE sister system; SST treatment and L63→L87 cloud retuning developed jointly with CHMI.
   - [ALARO Belgium](../belgium/alaro-belgium.md) — RMI 1.3 km tunings provided via cooperation with CHMI.
-- Operational HPC: NEC SX Aurora TSUBASA (48 nodes, AMD EPYC 7402 + 8× NEC Vector Engines 20B per node); a NEC LX series cluster (320 Intel Broadwell nodes) was also in use through 2024. Workflow management via ecFlow.
+- Operational HPC: NEC SX Aurora TSUBASA. Since **10 March 2026** a newer system is operational — **56 nodes**, each with one AMD ROME 7443P CPU (24 cores, 512 GB RAM) + 8× NEC Vector Engine 20B (8 cores, 48 GB each); **1344 VH + 3584 VE cores** total — replacing the earlier 48-node configuration (AMD EPYC 7402; 1152 VH + 3072 VE cores). A NEC LX series cluster (320 Intel Broadwell nodes) was also in use through 2024. Workflow management via ecFlow.
 - For the parent global model that supplies LBCs, see [ARPEGE Global](../../global/france/arpege-global.md).
 
 ---
 
 ## Recent version history
+
+### March 2026 — operational switch to new HPC
+Operations moved to a newer NEC SX Aurora TSUBASA (56 nodes; AMD ROME 7443P + 8× NEC Vector Engine 20B per node; 1344 VH + 3584 VE cores) on 10 March 2026, replacing the 48-node AMD EPYC 7402 system.
+
+### December 2025 — cy48t3 model release
+The operational model was upgraded to base cycle **cy48t3** (cycle string `48t3mas_op1`, ALARO-1vB) on 18 December 2025.
+
+### September 2025 — rain size distribution reverted to Marshall–Palmer
+The Marshall–Palmer rain size distribution was reinstated in place of the Abel & Boutle (2012) distribution (reversing the October 2024 change), together with retuning of microphysics parameters and of cloudiness in the radiation scheme (23 September 2025).
+
+### June 2025 — eight production cycles per day
+Four intermediate production cycles (03, 09, 15, 21 UTC, forecasts to the end of the following day) were added to the four main synoptic cycles, bringing operations to 8 runs/day (10 June 2025). **The four intermediate cycles are not published on the open-data portal.**
+
+### April 2025 — OPERA radar reflectivity DA operational
+The 1D+3D-Var assimilation of OPERA volume radar reflectivity (Wattrelot et al., 2014) became operational on 28 April 2025, following the February 2025 e-suite (ALE).
 
 ### February 2025 — radar reflectivity DA e-suite
 The **e-suite ALE** introduced 1D+3D-Var assimilation of OPERA volume radar reflectivity, using the Wattrelot et al. (2014) method with the Abel & Boutle (2012) rain size distribution in the observation operator (consistent with the ALARO microphysics) and a threshold-method + error-inflation treatment to mitigate excessive drying from undetected pixels.
@@ -156,6 +171,7 @@ The non-hydrostatic 2.3 km, 87-level configuration with ALARO-1vB physics replac
 - Brožková, R. et al. (2024): *Numerical Weather Prediction activities at CHMI*, ACCORD All-Staff Workshop 2024 poster.
 - Bučánek, A., Trojáková, A., Brožková, R. (2024): *Data assimilation activities CHMI*, RC LACE Data Assimilation Working Days 2024.
 - Brožková, R., Bučánek, A., Mašek, J., Němec, D., Šljivić, A., Ševčík, J., Smolíková, P., Trojáková, A. (2025): *Numerical Weather Prediction activities at CHMI*, 5th ACCORD All-Staff Workshop poster, Zalakaros.
+- Brožková, R., Bučánek, A., Derková, M., Imrišek, M., Mašek, J., Němec, D., Otruba, A., Šljivić, A., Ševčík, J., Smolíková, P., Trojáková, A. (2026): *Numerical Weather Prediction activities at CHMI*, ACCORD All-Staff Workshop national poster. *(Exact workshop number/venue to confirm.)*
 
 ### Key references
 - Termonia, P. et al. (2018): *The ALADIN System and its canonical model configurations AROME CY41T1 and ALARO-0 CY40T1*, Geosci. Model Dev. 11, 257–281. https://doi.org/10.5194/gmd-11-257-2018
