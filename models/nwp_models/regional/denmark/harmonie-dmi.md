@@ -43,14 +43,23 @@ Both share the same dynamical core, physics, vertical grid, GRIB encoding, and o
 - **Dynamical formulation:** Non-hydrostatic, spectral, with two-time-level semi-implicit semi-Lagrangian discretization
 - **Convection-allowing:** Yes (deep convection explicitly resolved at 2 km; shallow convection parameterized)
 - **Horizontal resolution:** ~2 km on the native Lambert grid (both DINI and IG)
-- **Vertical levels:** 90 model (hybrid) levels, terrain-following near the surface and pressure-following higher up
+- **Vertical levels:** 90 model (hybrid) levels (MF90 — Météo France 90-level definition), terrain-following near the surface and pressure-following higher up
+- **Numerical precision:** Forecast step run in single precision (UWC-West cy43 configuration)
 - **Model top:** 10 hPa (~30 km, standard HARMONIE-AROME configuration)
 - **Forecast length:**
   - DINI: 60 hours from every cycle
   - IG: 72 hours from every cycle
 - **Update frequency / cycles:** 8× daily (00, 03, 06, 09, 12, 15, 18, 21 UTC). The model itself runs hourly on the supercomputer, but DMI collects and distributes the deterministic output every third hour.
 - **Temporal output resolution:** 1 hour
-- **Boundary conditions:** ECMWF IFS (HRES global model) — provides lateral boundary conditions for both configurations.
+- **Boundary conditions:** ECMWF IFS. The deterministic IG production and the DINI-EPS control take boundaries from IFS-HRES; the DINI-EPS perturbed members are coupled to IFS-ENS (1+30 LBCs — HRES for the control, ENS members 001–030 for the perturbed members).
+---
+
+## Data assimilation
+- **Method:** 3D-Var with a three-hour assimilation window and a one-hour cut-off, run as part of the UWC-West cy43 production
+- **Observations assimilated:** conventional (SYNOP, ship, aircraft incl. AMDAR/E-AMDAR/TAMDAR, Mode-S EHS via EMADDC, buoy, TEMP), atmospheric motion vectors (geostationary and polar), scatterometer (ASCAT Metop-B/-C), microwave sounders (AMSU-A, MHS, MWHS2 on FY-3D/-3E, ATMS on NPP/NOAA-20/-21), infrared sounders (IASI, CrIS), GPS radio occultation (COSMIC-2, KOMPSAT, Metop, PAZ, Spire, TanDEM, TerraSAR), and radar
+- **Surface/ensemble perturbations (DINI-EPS):** EDA, PERTSURF (VEG, CV, Z0, ALB, SST, TS) and SPP
+
+> Source: UWC-West / DMI ACCORD national posters (2025–2026) and UWC-West operational NWP posters. The observation set describes the shared UWC-West DINI production; the IG deterministic configuration runs the same 3D-Var scheme.
 
 ---
 
@@ -114,6 +123,8 @@ Output appears one time-step at a time in chronological order, so users needing 
 ---
 
 ## Notes
+- **DINI is operationally a continuous ensemble (DINI-EPS), not a pure deterministic run.** The UWC-West DINI production is a 1+5 continuous EPS updated hourly; DMI's open-data deterministic DINI product is the control member, collected and distributed every third hour. DMI **also distributes DINI-EPS derived products** through the Forecast EDR API — `harmonie_dini_eps_means`, `harmonie_dini_eps_percentiles`, and `harmonie_dini_eps_probabilities`. These ensemble products are out of scope for this deterministic entry and are a candidate for a separate `ensemble_models/regional/denmark/` DINI-EPS entry.
+- **Operational vs. public availability — additional DMI domains.** DMI's ACCORD national posters (2025, 2026) show DMI operationally runs several Greenland configurations beyond DINI and IG: three continuously-cycled 750 m domains (TAS/Tasiilaq, SGL/South Greenland, NUUK) and three storm-triggered on-demand domains (DB/Diskobugt, SC/Scoresbysund, QAAN/Qaanaaq). **Only `harmonie_dini_*` and `harmonie_ig_*` appear in the DMI open-data feed**, so these sub-domains are documented here for context but remain out of catalog scope unless a confirmed open feed surfaces.
 - **DINI is the same model run KNMI distributes as `harmonie_arome_cy43_p3`.** KNMI's [P3 European dataset](../netherlands/harmonie-knmi.md), the [P1 Dutch dataset](../netherlands/harmonie-arome-netherlands.md), and the DMI DINI distribution are all packaged independently from the same UWC-West cy43 model run on the Aurora supercomputer in Iceland. They differ in distribution grid, retained variable set, parameter encoding, and rotation conventions — but the underlying model state is identical. The Caribbean [BES domain](../netherlands/harmonie-caribbean.md) is a separate KNMI-only configuration sharing the cy43 codebase but not the DINI integration.
 - **Sibling UWC-West productions:** Met Éireann distributes its own slice of the same DINI run as part of its [HARMONIE-AROME Ireland](../ireland/harmonie-arome-ireland.md) operational chain (along with the Irish IREPS regional ensemble), and the Icelandic Met Office distributes the run via its own services. These are not duplicate forecasts; they are repackagings of the same UWC-West production.
 - **DINI vs MEPS:** Despite being run by a Nordic operator, **DMI's HARMONIE production is part of UWC-West, not MetCoOp.** [MEPS](../norway/meps.md) (MetCoOp: MET Norway, SMHI, FMI, ESTEA, LEGMC) is a separate Nordic HARMONIE-AROME ensemble production that does not include DMI.
@@ -125,8 +136,11 @@ Output appears one time-step at a time in chronological order, so users needing 
 
 ## Recent version history
 
-### 2024 — UWC-West Aurora supercomputer becomes operational
-The DINI configuration migrated to the new HPE Cray "Aurora" supercomputer at the Icelandic Met Office data centre in Reykjavík, run jointly by the four UWC-West partners (DMI, KNMI, IMO, Met Éireann). The cy43 model on Aurora replaced the legacy KNMI Cy40 P3 production at KNMI on 20 June 2024 and consolidated DMI's, KNMI's, IMO's, and Met Éireann's HARMONIE production onto the same hardware and the same model run.
+### Upcoming — Cycle 46 (operational October 2026)
+The UWC-West cy43 production is scheduled to be replaced by **HARMONIE-AROME cycle 46h1.1.1** in **October 2026** (configuration approved summer 2025; real-time d-suites running since September 2025). The upgrade keeps the 2 km / 90-level configuration but changes the output encoding — moving from FA to **FullPOS (WMO) GRIB2** — and introduces new physiography and lakes, scale-aware shallow convection, a windfarm parametrization, ECUME6 sea-surface fluxes, in-forecast SST/SIC updates, and assimilation of screen-level T2/RH2 and low-peaking microwave radiances. *Not yet operational as of mid-2026; this entry documents the live cy43 production.*
+
+### 2024 — UWC-West operational go-live (19 March 2024)
+UWC-West operational NWP went live on **19 March 2024** on the Aurora HPE supercomputer at the Icelandic Met Office. Pre-operational milestones: the IG deterministic suite ran from September 2023 and DINI-EPS from December 2023. (Distinct from the 20 June 2024 changeover at which the cy43 Aurora run replaced KNMI's legacy Cy40 P3 production — see below.)
 
 ### Earlier history (pre-2024)
 The lineage of the IG domain traces back to the **IGA** (Iceland-Greenland-Atlantic) configuration documented in DMI's 2016/2017 operational upgrade, when DMI and IMO jointly developed a high-resolution HARMONIE-AROME suite for Iceland and South Greenland, taking advantage of the Reykjavík HPC site. The DINI domain similarly evolved out of DMI's earlier **NEA** (North Europe / Atlantic) configuration. Both domains have since been brought to cycle 43h and are now produced on the UWC-West Aurora system.
