@@ -15,7 +15,7 @@ It is part of the **ALADIN limited-area model system** (developed within the ALA
 
 ## What area it covers
 - **Coverage:** Slovenia and surrounding Central / South-East European regions
-- **Domain details:** 432 × 432 horizontal grid points at 4.4 km spacing, centered over Slovenia and the eastern Alps / northern Adriatic
+- **Domain details:** 300 × 300 horizontal grid points at 4.4 km spacing (≈ 1320 km across) as of the April 2026 ACCORD ASW poster, centered over Slovenia and the eastern Alps / northern Adriatic. The grid was 432 × 432 (≈ 1900 km across) through at least the March 2025 ASW poster; it was reduced to 300 × 300 by April 2026 (see Notes).
 
 ---
 
@@ -25,7 +25,7 @@ It is part of the **ALADIN limited-area model system** (developed within the ALA
 - **Dynamical formulation:** Hydrostatic (ALADIN spectral limited-area dynamical core)
 - **Convection-allowing:** No (4.4 km grid; deep convection is parameterized via the ALARO physics)
 - **Horizontal resolution:** ~4.4 km
-- **Grid dimensions:** 432 × 432 horizontal grid points
+- **Grid dimensions:** 300 × 300 horizontal grid points (April 2026 ASW poster; previously 432 × 432 through at least the March 2025 poster — see Notes)
 - **Vertical levels:** 87
 - **Time step:** 180 s
 - **Forecast length:** Up to **72 hours**
@@ -46,7 +46,7 @@ It is part of the **ALADIN limited-area model system** (developed within the ALA
   - **Aircraft:** AMDAR / ACARS, Mode-S EHS / MRAR (T, U)
   - **Atmospheric motion vectors:** EUMETSAT, EUMETSAT HR (U)
   - **Radiances:** MSG SEVIRI, NOAA-19 (AMSU-A, MHS), Metop-A/B/C (AMSU-A, MHS, IASI)
-  - **Scatterometer:** ASCAT (U10m over sea)
+  - **Scatterometer:** ASCAT, OSCAT (U10m over sea)
   - **GNSS:** EGVAP ZTD (passive monitoring only)
 - **Note:** OPERA radar reflectivities are used in the ARSO 1.3 km nowcasting system (NWCRUC), **not** in ALADIN-SI itself.
 
@@ -83,12 +83,13 @@ Operationally also serves as the meteorological driver for ARSO's downstream **C
 ---
 
 ## Notes
-- This entry describes the **operational ALADIN-SI regional forecast model** (4.4 km, up to +72 h). The configuration described above is documented unchanged across ARSO operational status posters from September 2021 through September 2024; details after that date may have evolved.
+- This entry describes the **operational ALADIN-SI regional forecast model** (4.4 km, up to +72 h). The configuration was documented unchanged across ARSO operational status posters from September 2021 through the March 2025 ACCORD ASW poster (still 432 × 432). The April 2026 ACCORD ASW poster documents a reduced **300 × 300** grid at the same 4.4 km resolution — a roughly 1900 → 1320 km domain narrowing — which coincides with ARSO switching off its old HPC and moving to a self-built intermittent cluster. The poster does not state the reason for the smaller domain, so the compute-driven link is inferred (**flag for verification**).
 - ARSO additionally runs a number of related but distinct ALADIN-based systems that are **not** the same product as ALADIN-SI and are not described here:
-  - **ALARO-RUC (NWCRUC)** — a non-hydrostatic 1.3 km hourly nowcasting system over the North Adriatic (cy43t2_bf10, ALARO-1vB, 589 × 589 points, 87 vertical levels, 60 s time step). It has hourly 3D-Var + OI assimilation including OPERA radar reflectivity (ingested via the NIMBUS production lines as of 2024). The system was pre-operational from July 2021 and is operational as of ARSO's September 2023 EWGLAM poster, running 24 forecast cycles per day to +36 h. Cutoff times are 70 min after nominal time for assimilation and 35 min for production; output is provided every 5 min.
-  - **ALADIN for SEE-MHEWS-A (SEEMHEWS)** — a non-hydrostatic 2.5 km configuration on 1429 × 1141 points, 87 vertical levels, run on ECMWF Atos infrastructure as part of the South-East European Multi-Hazard Early Warning Advisory System. Uses the same model version and assimilation setup as operational ALADIN-SI; runs twice daily to +72 h with a ~10 h cut-off.
+  - **ALARO-RUC (NWCRUC)** — a non-hydrostatic 1.3 km rapid-update nowcasting system over the North Adriatic (cy43t2_bf10, ALARO-1vB, 600 × 600 points, 87 vertical levels, 60 s time step). It has hourly 3D-Var + OI assimilation including OPERA radar reflectivity (ingested via the NIMBUS production lines as of 2024). The system was pre-operational from July 2021 and operational as of ARSO's September 2023 EWGLAM poster. As of the March 2025 ASW poster it ran **+36 h forecasts every hour (24 cycles/day)**; the April 2026 ASW poster documents a reduced cadence of **+36 h forecasts every two hours (12 cycles/day)**, coinciding with the migration to the self-built intermittent cluster (the March 2025 poster noted the test machine could not meet the sub-1 h compute target for a +36 h ALARO-RUC run). Cutoff times are 70 min after nominal for assimilation and 35 min for production; output every 5 min. *(Grid was documented as 589 × 589 in earlier sources; the 2025 and 2026 posters both give 600 × 600.)*
+  - **ALADIN for SEE-MHEWS-A (SEEMHEWS)** — a non-hydrostatic 2.5 km configuration, 87 vertical levels, run on ECMWF Atos infrastructure as part of the South-East European Multi-Hazard Early Warning Advisory System. Uses the same model version and assimilation setup as operational ALADIN-SI; runs twice daily to +72 h with a ~10 h cut-off. The grid was documented as 1429 × 1141 points through the March 2025 ASW poster and as 1440 × 1152 in the April 2026 ASW poster.
+  - **CLAEF AlpeAdria (CLAEF1k / C-LAEF1k)** — a 1.0 km convection-permitting **lagged ensemble** (3D-EnVar + 3D-Var; 90 vertical levels, 1500 × 1320 points, 45 s time step, non-hydrostatic), developed jointly with **GeoSphere Austria** and **DHMZ**. Per the April 2026 ASW poster it was **to be declared operational by the end of Q2 2026**; an incremental analysis update (IAU, 5-min window) was introduced to reduce spin-up after the 3D-EnVar analysis. 3D-EnVar control-member testing (the March 2025 poster's "EnVar in Claef1k") showed promising winter-2025 results. **Not separately cataloged** — ensemble system, near-operational but not yet operational, with no confirmed open feed at the time of writing.
 - ARSO also contributes to the EU **Destination Earth (DE_330)** initiative — providing IFS-driven LBCs over a large European domain (DEOL) and observation monitoring with 30 min and 12 h cut-offs to support local DestinE digital twins. This is a separate activity from ALADIN-SI.
-- **Near-term DA development** documented in the 2024 RC LACE DA status report includes migration from cy43t2 to **cy48t3 (export)** with 3D-Var implemented via **OOPS**, cooperation with GeoSphere Austria on the **C-LAEF1k** convection-permitting ensemble (EnVar testing), and cooperation with DHMZ on **all-sky IR radiances** (IASI, IRS).
+- **Near-term development** includes migration from cy43t2 to **cy48t3 (export)** with 3D-Var via **OOPS** — the March 2025 ASW poster reports cy48t3 running ~15 % faster than cy43t2 but with hybrid MPI/OpenMP segmentation-fault issues still under investigation on the test cluster — the **CLAEF AlpeAdria** 1 km ensemble (see above), and cooperation with DHMZ on **all-sky IR radiances** (IASI, IRS).
 
 ---
 
@@ -104,3 +105,5 @@ Operationally also serves as the meteorological driver for ARSO's downstream **C
 - Cedilnik et al. (2023): *ACCORD activities at ARSO (Slovenia)* — poster, 3rd ACCORD All-Staff Workshop, March 2023
 - Cedilnik et al. (2023): *NWP activities at ARSO (Slovenia)* — poster, EWGLAM, September 2023
 - Strajnar (2024): *Data assimilation status and activities in Slovenia – 2024* — RC LACE
+- Cedilnik et al. (2025): *ACCORD activities at ARSO (Slovenia)* — poster, 5th ACCORD All-Staff Workshop, March 2025. *(Workshop number/venue to confirm.)*
+- Cedilnik et al. (2026): *ACCORD activities at ARSO (Slovenia)* — poster, ACCORD All-Staff Workshop, April 2026. *(Exact workshop number/venue to confirm.)*
