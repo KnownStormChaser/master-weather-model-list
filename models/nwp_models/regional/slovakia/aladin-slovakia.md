@@ -28,9 +28,9 @@ It is based on the **ALADIN** modeling system, in the **ALARO Canonical Model Co
 - **Physics package:** ALARO-1vB
 - **Horizontal resolution:** 4.5 km
 - **Grid dimensions:** 625 × 576 horizontal grid points
-- **Vertical levels:** 63 (an L63 → L87 upgrade is in development; see *Notes*)
+- **Vertical levels:** 87 (the L63 → L87 upgrade is now operational per the 2026 ACCORD ASW poster; see *Notes* and version history. The model ran on L63 through at least the 5th ASW / April 2025.)
 - **Time step:** 180 s
-- **Forecast length:** Up to **78 hours** in the operational suite (78/72/72/60 h at 00/06/12/18 UTC respectively); the publicly distributed open-data product is provided up to **+72 h** for all four cycles
+- **Forecast length:** Up to **102 hours** in the operational suite as of the 2026 ACCORD ASW poster — **102/72/72/72 h** at 00/06/12/18 UTC respectively (previously 78/72/72/60 h, i.e. the 00 UTC run extended from +78 h to +102 h and the 18 UTC run from +60 h to +72 h). The publicly distributed open-data product mirrors this: the **00 UTC cycle now runs to +102 h** on the open-data portal (confirmed against the live URL, June 2026), with the other three cycles at +72 h.
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** 1 hour
 - **Cut-off:** Long cut-off (operational); short cut-off LBCs are also used internally
@@ -84,16 +84,19 @@ Outputs are used operationally for **weather forecasting, warnings, aviation, hy
 
 ## Notes
 - The current operational configuration runs on the SHMÚ **NEC HPC** system (240 nodes total; Intel Xeon Gold 6230 Scalable Processors, Cascade Lake, Omni-Path, Linux), with ALADIN/SHMÚ using 40 nodes per cycle.
-- An upgrade from **L63 to L87** vertical levels is in development at SHMÚ — done in collaboration with CHMI on the cloud parameterization tuning, and motivated in part by improved suitability for GNSS ZTD assimilation. As of February 2024, scorecards comparing the L87 development version against operational L63 showed mixed (broadly neutral) impact, and the upgrade had not yet been declared operational. The L87 development bundle also includes a retuning of the DFI blending and a switch from time-consistent (TCC) to **space-consistent (SCC) coupling**.
-- **Near-term DA development** documented at the 5th ACCORD ASW (April 2025) includes operational implementation of **ZTD GNSS** assimilation with **VARBC** (variational bias correction). Earlier plans for **SEVIRI** radiance assimilation are also under way.
+- The upgrade from **L63 to L87** vertical levels — developed in collaboration with CHMI on the cloud-parameterization tuning, and motivated in part by improved suitability for GNSS ZTD assimilation — is **now operational**, confirmed by the 2026 ACCORD ASW poster (which lists ALADIN/SHMÚ at 87 levels). As of February 2024 the L87 development version had shown broadly neutral scores against operational L63 and was not yet operational; it was declared operational between then and the April 2026 poster (exact date not stated in the sources — flag). The L87 bundle also included a retuning of the DFI blending and a switch from time-consistent (TCC) to **space-consistent (SCC) coupling**.
+- **DA development:** the 5th ACCORD ASW (April 2025) reported operational **ZTD GNSS** assimilation with **VARBC** (variational bias correction); **SEVIRI** radiance assimilation was under way. The 2026 ASW poster lists **radar** and **SEVIRI** data assimilation among current R&D highlights — radar-reflectivity DA is being trialled in the 1 km RUC (the **ALA1** variant; see below) rather than in the deterministic ALADIN/SHMÚ suite.
 - Other ALADIN-based systems are also run at or by SHMÚ but are **not the same product** as the ALADIN/SHMÚ deterministic forecast described here, and are not openly downloadable in the same way:
-  - **A-LAEF** — the ACCORD Limited Area Ensemble Forecasting system (ALARO-1vB, multi-physics + surface SPPT, 4.8 km, L60), run operationally at ECMWF under SHMÚ supervision and shared as the common RC LACE ensemble. As of 2025 it was being upgraded to CY46T1 with new ALARO multi-physics.
-  - **ALA2e** — a non-hydrostatic 2 km configuration on CY48T3, with ALARO-1vB physics, L87 and a 90 s time step, downscaled from A-LAEF unperturbed control and coupled to ECMWF HRES. It became **operational in May 2024**, primarily feeding the CMAQ chemical-transport model and providing high-resolution forecaster input.
-  - **RUC1 / ALA1** — a 1 km test-mode rapid-update-cycle configuration with hourly cycling, L87, 30 s time step, CANARI + 3D-Var. Includes experimental radar reflectivity assimilation.
+  - **A-LAEF** — the ACCORD Limited Area Ensemble Forecasting system (ALARO-1vB, multi-physics + surface SPPT; 4.8 km, 1250 × 750, L60, 180 s), run operationally at ECMWF (Atos Sequana XH2000, 85 nodes) and shared as the common RC LACE ensemble. Per the 2026 ASW poster the operational version is **CY40T1bf07+** with ESDA (ensemble surface DA by CANARI) + DFI spectral blending, ECMWF-ENS-coupled (6 h, time-lagged), running 00 and 12 UTC to +72 h hourly. A **CY46T1+ e-suite** (control member running since 12 June 2025; new multiphysics + stochastic physics, inline GRIB2 fullpos) has been prepared but is not yet operational — operational implementation will probably be handled by the **IMGW** team. Following the departure of its principal developer from SHMÚ in 2025, A-LAEF emergency maintenance has since **January 2026** been shared on a weekly rotation by an RC LACE team spanning five countries (CZ, HR, PL, SI, SK).
+  - **ALA2E** — a non-hydrostatic 2 km configuration (512 × 384, L87, 90 s) on CY48T3 with ALARO-1vB physics, initialised by downscaling the A-LAEF control with DFI and coupled to ECMWF (3 h, time-lagged). **Operational since May 2024**; runs 00 and 12 UTC to +84 h with **30-minute output frequency** (per the 2026 poster's operational highlights). Primarily feeds the CMAQ chemical-transport model and provides high-resolution forecaster input.
+  - **RUC1 / ALA1** — a 1 km **test-mode** rapid-update cycle (1024 × 768, L87, 30 s) on CY46T1bf07, ARPEGE-coupled (1 h, time-lagged, SCC) with CANARI surface DA + 3D-Var upper-air and DFI initialisation, on 60 nodes; hourly cycling to +12 h (extended to +30 h at 00 UTC). **ALA1** is the variant that adds **OPERA radar-reflectivity assimilation** (RUC1 is the no-radar baseline); the 2026 poster shows ALA1's radar DA producing sharper, more localised wind-field structure than RUC1 in a Bratislava convective case. RUC1 is also being adapted for a global-radiation nowcasting project (APVV). Planned development: upgrade to **CY48T3**, AI/ML nowcasting, single precision, and severe-weather diagnostics.
 
 ---
 
 ## Recent version history
+
+### 2026 — L87 operational and 00 UTC run extended to +102 h
+By the 6th ACCORD ASW (April 2026) the long-developed **L63 → L87** vertical-level upgrade was operational, and the operational forecast ranges had become **102/72/72/72 h** at 00/06/12/18 UTC (the 00 UTC run extended from +78 h to +102 h, the 18 UTC run from +60 h to +72 h). The model remained on CY46T1_bf07 / ALARO-1vB at 4.5 km on the 625 × 576 grid.
 
 ### 2024 — SST handling change and ongoing L63 → L87 work
 SST treatment in ALADIN/SHMÚ (and RUC1) was changed from *blendsur* to **relaxation to SST from LBC0**, following the approach used at CHMI. Experimental work on increasing the vertical levels from L63 to L87 (with retuned cloud parameterization developed jointly with CHMI) continued through 2024–2025 but had not been declared operational.
@@ -118,3 +121,4 @@ The current 4.5 km, L63 configuration with **ALARO-1vB** physics replaced the pr
 - Derková, M., Imrišek, M., Neštiak, M., Simon, A. (2024): *Data assimilation activities @ SHMU*, RC LACE DA Working Days online, 5–6 September 2024
 - SHMÚ NWP team (2025): *NWP related activities in 2024–2025 @SHMU*, poster, 5th ACCORD All-Staff Workshop, Zalakaros, 31 March – 4 April 2025
 - Simon, A. et al. (2025): *Severe weather studies using high-resolution forecast applications at SHMU*, 2nd Poster Day of the Slovak Meteorological Society, Bratislava, 13 February 2025
+- SHMÚ NWP team (2026): *NWP related activities in 2025–2026 @SHMU*, poster, 6th ACCORD All-Staff Workshop, Marrakech, Morocco, 13–17 April 2026
