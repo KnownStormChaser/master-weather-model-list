@@ -83,7 +83,7 @@ Operationally also serves as the meteorological driver for ARSO's downstream **C
 ---
 
 ## Notes
-- This entry describes the **operational ALADIN-SI regional forecast model** (4.4 km, up to +72 h). The configuration was documented unchanged across ARSO operational status posters from September 2021 through the March 2025 ACCORD ASW poster (still 432 × 432). The April 2026 ACCORD ASW poster documents a reduced **300 × 300** grid at the same 4.4 km resolution — a roughly 1900 → 1320 km domain narrowing — which coincides with ARSO switching off its old HPC and moving to a self-built intermittent cluster. The poster does not state the reason for the smaller domain, so the compute-driven link is inferred (**flag for verification**).
+- This entry describes the **operational ALADIN-SI regional forecast model** (4.4 km, up to +72 h). The configuration was documented essentially unchanged across ARSO operational status posters from the 2020 EWGLAM poster (the earliest on file) through the March 2025 ACCORD ASW poster (still 432 × 432). The only observation-list change over that span is GNSS **ZTD** (passive monitoring), which is present from the April 2021 ASW poster onward and absent from the 2020 poster. The April 2026 ACCORD ASW poster documents a reduced **300 × 300** grid at the same 4.4 km resolution — a roughly 1900 → 1320 km domain narrowing — which coincides with ARSO switching off its old HPC and moving to a self-built intermittent cluster. The poster does not state the reason for the smaller domain, so the compute-driven link is inferred (**flag for verification**).
 - ARSO additionally runs a number of related but distinct ALADIN-based systems that are **not** the same product as ALADIN-SI and are not described here:
   - **ALARO-RUC (NWCRUC)** — a non-hydrostatic 1.3 km rapid-update nowcasting system over the North Adriatic (cy43t2_bf10, ALARO-1vB, 600 × 600 points, 87 vertical levels, 60 s time step). It has hourly 3D-Var + OI assimilation including OPERA radar reflectivity (ingested via the NIMBUS production lines as of 2024). The system was pre-operational from July 2021 and operational as of ARSO's September 2023 EWGLAM poster. As of the March 2025 ASW poster it ran **+36 h forecasts every hour (24 cycles/day)**; the April 2026 ASW poster documents a reduced cadence of **+36 h forecasts every two hours (12 cycles/day)**, coinciding with the migration to the self-built intermittent cluster (the March 2025 poster noted the test machine could not meet the sub-1 h compute target for a +36 h ALARO-RUC run). Cutoff times are 70 min after nominal for assimilation and 35 min for production; output every 5 min. *(Grid was documented as 589 × 589 in earlier sources; the 2025 and 2026 posters both give 600 × 600.)*
   - **ALADIN for SEE-MHEWS-A (SEEMHEWS)** — a non-hydrostatic 2.5 km configuration, 87 vertical levels, run on ECMWF Atos infrastructure as part of the South-East European Multi-Hazard Early Warning Advisory System. Uses the same model version and assimilation setup as operational ALADIN-SI; runs twice daily to +72 h with a ~10 h cut-off. The grid was documented as 1429 × 1141 points through the March 2025 ASW poster and as 1440 × 1152 in the April 2026 ASW poster.
@@ -111,12 +111,13 @@ The operational ALADIN-SI 4.4 km suite (cy43t2_bf10, ALARO-1vB, 432 × 432, 87 l
   https://meteo.arso.gov.si/uploads/meteo/help/sl/NumericniRezultatiGRIB.html
 - ARSO website — Conditions of re-use:  
   https://meteo.arso.gov.si/met/sl/about/
+- Strajnar et al. (2020): *ALADIN in Slovenia – 2020* — poster, 42nd EWGLAM & 27th SRNWP Meetings, 28 September – 2 October 2020
 - Pristov et al. (2021): *NWP activities at ARSO (Slovenia)* — poster, ALADIN/HIRLAM All-Staff Workshop / ACCORD, April 2021
 - ARSO NWP team (2021): *NWP activities at ARSO (Slovenia)* — poster, EWGLAM, September 2021
-- Strajnar et al. (2022): *NWP activities at ARSO (Slovenia)* — poster, 2nd ACCORD All-Staff Workshop, March 2022
+- Strajnar et al. (2022): *NWP activities at ARSO (Slovenia)* — poster, 2nd ACCORD All-Staff Workshop, 4–8 April 2022
 - Pristov et al. (2022): *NWP activities at ARSO (Slovenia)* — poster, EWGLAM, September 2022
 - Cedilnik et al. (2023): *ACCORD activities at ARSO (Slovenia)* — poster, 3rd ACCORD All-Staff Workshop, March 2023
 - Cedilnik et al. (2023): *NWP activities at ARSO (Slovenia)* — poster, EWGLAM, September 2023
 - Strajnar (2024): *Data assimilation status and activities in Slovenia – 2024* — RC LACE
-- Cedilnik et al. (2025): *ACCORD activities at ARSO (Slovenia)* — poster, 5th ACCORD All-Staff Workshop, March 2025. *(Workshop number/venue to confirm.)*
-- Cedilnik et al. (2026): *ACCORD activities at ARSO (Slovenia)* — poster, ACCORD All-Staff Workshop, April 2026. *(Exact workshop number/venue to confirm.)*
+- Cedilnik et al. (2025): *ACCORD activities at ARSO (Slovenia)* — poster, 5th ACCORD All-Staff Workshop, Zalakaros, 31 March – 4 April 2025
+- Cedilnik et al. (2026): *ACCORD activities at ARSO (Slovenia)* — poster, 6th ACCORD All-Staff Workshop, 13–17 April 2026. *(Workshop number inferred from the 2021–2025 sequence; venue to confirm.)*
