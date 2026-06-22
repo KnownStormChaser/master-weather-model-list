@@ -93,6 +93,19 @@ Operationally also serves as the meteorological driver for ARSO's downstream **C
 
 ---
 
+## Recent version history
+
+### April 2026 — Domain reduction to 300 × 300; migration to intermittent cluster
+The operational ALARO 4.4 km grid was reduced from **432 × 432** (≈ 1900 km across) to **300 × 300** (≈ 1320 km across), at the same 4.4 km / 87-level resolution. This coincides with ARSO switching off its decade-old SGI ICE X HPC and moving operations to a self-built intermittent AMD EPYC cluster, pending procurement of a new system. The poster does not state the reason for the smaller domain, so the compute-driven link is inferred (**flag for verification**). The 8-runs/day cadence (4 × +72 h, 4 × +36 h) is unchanged.
+
+### ~2021 — GNSS ZTD added to observation monitoring (passive)
+EGVAP ZTD appears in the assimilation observation list (passive monitoring only) from the April 2021 ASW poster onward; it is absent from the 2020 EWGLAM poster's observation list. All other assimilated observation types are stable across the 2020–2026 posters.
+
+### 2020 – March 2025 — Stable operational configuration
+The operational ALADIN-SI 4.4 km suite (cy43t2_bf10, ALARO-1vB, 432 × 432, 87 levels, 180 s, 3-hourly 3D-Var + OI, ECMWF 6 h-lag coupling, 8 runs/day) is documented essentially unchanged across every ARSO EWGLAM and ACCORD ASW poster from the 2020 EWGLAM poster through the March 2025 ASW poster.
+
+---
+
 ## Official documentation
 - ARSO operational NWP — GRIB output documentation:  
   https://meteo.arso.gov.si/uploads/meteo/help/sl/NumericniRezultatiGRIB.html
