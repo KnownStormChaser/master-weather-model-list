@@ -49,7 +49,7 @@ In Météo-France's open-data portal the system is branded **PE-ARPEGE** (and **
 - **Initial condition perturbations:** Two combined techniques —
   - **Singular vectors** computed at TL95C1 on 65 levels over seven target regions (Europe: 16 vectors; Southern Hemisphere: 10; intertropical band: 28; a complementary Northern Hemisphere domain: 10). Characteristic optimization time is 18 h for Europe/North Atlantic/tropics and 24 h elsewhere. A moist static energy norm is used for the extratropical boxes and a kinetic energy norm for the tropics, where the four tropical boxes shift with the cyclone season.
   - **AEARP ensemble:** 35 of the 50 ARPEGE ensemble-assimilation members, combined with the singular vectors across the seven regions.
-- **Model/physics perturbations:** For longer lead times, variability is added by selecting among 10 physics parameterization sets and by perturbing critical parameters of the ARPEGE physics. Two convection schemes are split across the ensemble (17 members each): **PCMT** and **Tiedtke–Bechtold** (the latter matching deterministic ARPEGE). Surface processes use SURFEX with multiple surface types per grid cell, as in the deterministic system.
+- **Model/physics perturbations:** Random perturbation of physics parameters spanning turbulent kinetic energy (TKE), gravity-wave drag (GWD), microphysics, air–sea (oceanic) fluxes, and solar radiation, combined with two deep-convection schemes split across the ensemble — **PCMT** and **Tiedtke–Bechtold** (the latter matching deterministic ARPEGE). Surface processes use SURFEX with multiple surface types per grid cell, as in the deterministic system.
 
 ---
 
@@ -93,6 +93,7 @@ Single-field retrieval via the OGC WCS "API Ciblée PE Modèles", returning one 
 - **Stretched grid:** As with ARPEGE, the published 0.25°/0.1° grids interpolate a model running at finer native resolution over Western Europe; the regridded resolution does not reflect where the integration is actually finest.
 - **Two access channels:** PEARP is distributed both as **bulk GRIB files on data.gouv.fr** (no authentication, one dataset per grid — GLOB025 and EURAT01) and via the **targeted WCS ensemble API** (single field per request, 5-day rolling retention, API key required). This parallels deterministic ARPEGE's open access, though PEARP does **not** appear on the community AWS mirror that carries the deterministic packages.
 - **2022 upgrade (chaîne 2021-01, 29 June 2022):** Resolution aligned with ARPEGE (7.5 → 5 km over Europe); ARPEGE became the PEARP control member; model-error representation revised (perturbed physics parameters + addition of the PCMT convection scheme); new GLOB025 global grid for 3-D fields; all four cycles unified to 102 h.
+- **Forthcoming (cy49t1_op1; e-suite from May 2025, operational switch targeted for autumn 2026):** singular vectors to be removed, with initial-condition perturbations of the near-surface and oceanic state (2 m temperature, 2 m humidity, and the whole ocean water column) drawn from ARPEGE-EDA instead; ARPEGE-EDA itself moving to random parameter perturbation on ~30 model parameters; uncycled ARPEGE-EPS forecasts to run in single precision. Subject to confirmation.
 
 ---
 
