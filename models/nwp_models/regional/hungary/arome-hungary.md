@@ -121,8 +121,17 @@ The 2025 ACCORD/RC LACE poster confirms **cy46t1_bf07 became operational in AROM
 ### 16 January 2024 — GNSS-ZTD assimilation in fine-resolution AROME (e-suite)
 GNSS Zenith Total Delay assimilation was activated in the fine-resolution AROME e-suite (AROME-RUC, 1.3 km) using the same whitelist as operational AROME, following a bug-fix in the PREGPSSOL preprocessor (1-hourly cycling). Improvements in 2 m relative humidity scores were demonstrated against the operational AROME 2.5 km baseline.
 
-### 2023 — AROME-EPS EDA operational
-Ensemble Data Assimilation became operational in AROME-EPS, providing improved initial conditions for the ensemble.
+### June 2023 — GNSS-ZTD whitelist update (BMEG network operational)
+The SGO1 GNSS-ZTD network's data quality dropped markedly in 2023 and was degrading forecasts; SGO1 was dropped from assimilation in April 2023. The Budapest University of Technology and Economics **BMEG** network (E-GVAP, comparable coverage to SGO1) came online in February 2023, and a new whitelist (30/34/40/11 stations from BMEG/WUEL/GF1R/ASI) became operational in **AROME/HU in June 2023**, with mainly neutral-to-positive impact and reduced early-forecast precipitation overestimation. (Source: 2023 EWGLAM/SRNWP poster.)
+
+### March 2023 — AROME-EPS EDA operational
+Ensemble Data Assimilation became operational in **AROME-EPS** in **March 2023**, introducing local perturbations (3-hourly EDA) in place of pure ECMWF-ENS downscaling and improving initial conditions for the ensemble. (Source: 2023 ACCORD poster, which states "EDA is introduced to the operational AROME-EPS in March 2023.")
+
+### February 2023 — AMV / HRWind assimilation operational in AROME/HU
+EUMETSAT AMV and NWCSAF HRWind data (with extra observations admitted between 350 and 800 hPa relative to the original ALADIN/HU blacklist) were **included in the operational AROME/HU assimilation flow from February 2023**, after cy40 and cy43t2_bf11 experiments showed mostly neutral-to-slightly-positive impact. This is the operational origin of the **AMV / HRWind** entries in the assimilated-observations list (earlier 2020–2022 posters list neither for AROME/HU). (Source: 2023 ACCORD poster.)
+
+### June 2022 — SEKF surface analysis operational
+AROME/HU's surface data assimilation was switched from **optimal interpolation (OI-main) to the Simplified Extended Kalman Filter (SEKF)** in **June 2022**. An AROME-TEST e-suite had run in parallel from November 2021 to June 2022; SEKF improved nocturnal 2 m temperature/dewpoint errors and reduced over-prediction of daily precipitation above ~7 mm. This is the operational origin of the entry's current "Surface analysis: SEKF." (Sources: 2022 EWGLAM/SRNWP poster — "SEKF was introduced in the operational AROME/HU in June"; 2022 ACCORD poster shows the e-suite still parallel to an OI-main operational run.)
 
 ### 2021 — Code-base label upgrade
 The ODP dataset description records a 2021 transition from cy40t1 to a cy43-series label. The exact branch label given in the ODP PDF (cy43t3) does not match the cy43t2_bf11 label in HungaroMet's 2024 LACE status report; the LACE document is more authoritative for the running configuration.
@@ -151,6 +160,16 @@ HungaroMet's native AROME 3D-Var atmospheric assimilation became operational, in
 - Szépszó, G., Elek, P., Jávorné Radnóczi, K., Lancz, D., Tóth, B., Tóth, H. (2025). *NWP activities at the Hungarian Meteorological Service.* ACCORD / RC LACE poster.
 - Duics-Korosecz, L., Elek, P., Homonnai, V., Lancz, D., Nagy, G., Jávorné Radnóczi, K., Tóth, H. (2024). *NWP developments in Hungary in 2024.* RC LACE annual status presentation (online DA Working Days).
 - Szintai, B., Szűcs, M., Randriamampianina, R., Kullmann, L. (2015). *Application of the AROME non-hydrostatic model at the Hungarian Meteorological Service: physical parametrizations and ensemble forecasting.* Időjárás, **119**, 241–265.
+- Homonnai, V., Jávorné Radnóczi, K., Kocsis, Zs., Szépszó, G., Tóth, H. (2021). *NWP at the Hungarian Meteorological Service.* 1st ACCORD All-Staff Workshop, online, 12–16 April 2021.
+- Lancz, D., Jávorné Radnóczi, K., Szanyi, K., Szépszó, G., Szintai, B., Tóth, B., Tóth, H., Várkonyi, A. (2022). *NWP activities at the Hungarian Meteorological Service.* 2nd ACCORD All-Staff Workshop, Ljubljana, 4–8 April 2022.
+- Szépszó, G., Baran, Á., Baran, S., Jávorné Radnóczi, K., Kardos-Várkonyi, A., Kocsis, Zs., Lancz, D., Szintai, B., Tóth, B., Tóth, G., Tóth, H. (2023). *NWP activities at the Hungarian Meteorological Service.* 3rd ACCORD All-Staff Workshop, Tallinn, 27–31 March 2023.
+- Szépszó, G., Jávorné Radnóczi, K., Kardos-Várkonyi, A., Lancz, D., Szintai, B., Tóth, G., Tóth, H. (2024). *NWP activities at the Hungarian Meteorological Service.* 4th ACCORD All-Staff Workshop, Norrköping, Sweden, 15–19 April 2024.
+- Homonnai, V., Jávorné Radnóczi, K., Kocsis, Zs., Szanyi, K., Szépszó, G., Szintai, B., Tóth, B., Tóth, G., Tóth, H. (2020). *NWP at the Hungarian Meteorological Service.* EWGLAM/SRNWP meeting, 2020 (online).
+- Baran, Á., Baran, S., Homonnai, V., Kocsis, Zs., Kornyik, M., Szépszó, G., Szintai, B., Tóth, H. (2021). *NWP activities at the Hungarian Meteorological Service.* EWGLAM/SRNWP meeting, 2021.
+- Lancz, D., Jávorné Radnóczi, K., Szanyi, K., Szépszó, G., Szintai, B., Tóth, B., Tóth, G., Tóth, H., Várkonyi, A. (2022). *NWP activities at the Hungarian Meteorological Service.* EWGLAM/SRNWP meeting, 2022.
+- Szépszó, G., Jávorné Radnóczi, K., Kardos-Várkonyi, A., Lancz, D., Szintai, B., Tóth, B., Tóth, G., Tóth, H. (2023). *NWP activities at the Hungarian Meteorological Service.* 45th EWGLAM & 30th SRNWP Meeting, Reykjavík, Iceland, 25–28 October 2023.
+- Szépszó, G., Elek, P., Homonnai, V., Lancz, D., Szintai, B., Tóth, H. (2024). *NWP activities at the Hungarian Meteorological Service.* RC LACE national presentation.
+- Szépszó, G., Kardos-Várkonyi, A., Lancz, D., Tóth, H. (2025). *NWP activities at the Hungarian Meteorological Service.* RC LACE national presentation.
 
 ### Contact
 - Open data technical contact: odp@met.hu
