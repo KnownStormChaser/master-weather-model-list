@@ -28,7 +28,7 @@ In Météo-France's open-data portal the system is branded **PE-AROME**; **PEARO
 - **Model system / core:** AROME (spectral limited-area model, ALADIN-NH dynamical core); SURFEX surface modelling
 - **Dynamical formulation:** Non-hydrostatic, spectral, with semi-Lagrangian advection and semi-implicit time integration
 - **Convection-allowing:** Yes (deep convection explicitly resolved at 1.3 km native resolution; shallow convection parameterized)
-- **Ensemble size:** 17 members (1 control + 16 perturbed)
+- **Ensemble size:** 26 members (1 control + 25 perturbed) since the cy48t1_op1 suite (operational mid-October 2024); previously 17 members (1 control + 16 perturbed)
 - **Native horizontal resolution:** ~1.3 km
 - **Public distribution grid:** EURW1S40 — 0.025° (~2.5 km) regular latitude–longitude
 - **Vertical levels:** 90 (same vertical grid as AROME; model top ~10 hPa)
@@ -40,15 +40,15 @@ In Météo-France's open-data portal the system is branded **PE-AROME**; **PEARO
 ---
 
 ## Data assimilation
-- **Data assimilation:** Yes — upper-air initial states draw on the AROME ensemble of data assimilations (AE-AROME).
-- **Method / cadence:** Perturbations are extracted around the AE-AROME ensemble mean from 3-hour AE-AROME forecasts and added to a synchronous 3DVAR analysis (see Perturbations and design).
+- **Data assimilation:** Yes — upper-air initial states draw on the AROME ensemble of data assimilations (AE-AROME), a 50-member ensemble running 3D-Var in the OOPS framework on a 3-hour cycle (50 members since cy48t1_op1, up from 25).
+- **Method / cadence:** Perturbations are extracted around the AE-AROME ensemble mean from 3-hour AE-AROME forecasts and added to a synchronous 3D-Var analysis (see Perturbations and design).
 
 ---
 
 ## Initial and boundary conditions
 - **Initial conditions (upper air):** Perturbed states formed by adding AE-AROME ensemble perturbations (taken around the AE-AROME mean, from 3-hour forecasts) to a synchronous 3DVAR analysis.
 - **Initial conditions (surface):** Built by randomly perturbing the deterministic AROME-France surface analysis. Perturbations are applied to both physiographic variables (vegetation index, albedo, …) and prognostic variables (SST, soil temperature and moisture, …).
-- **Boundary conditions:** Provided by [PE-ARPEGE](../../global/france/pe-arpege.md), with **hourly coupling**. Cycles are time-lagged against PE-ARPEGE: PE-ARPEGE 00 UTC → PE-AROME 03 UTC, 06 → 09, 12 → 15, 18 → 21. The 16 perturbed PE-AROME members are each coupled to 16 PE-ARPEGE members selected by automatic classification (penalized Ward method) from PE-ARPEGE's 34 perturbed members.
+- **Boundary conditions:** Provided by [PE-ARPEGE](../../global/france/pe-arpege.md), with **hourly coupling**. Cycles are time-lagged against PE-ARPEGE: PE-ARPEGE 00 UTC → PE-AROME 03 UTC, 06 → 09, 12 → 15, 18 → 21. The perturbed PE-AROME members draw their lateral boundary conditions from PE-ARPEGE members selected by automatic classification (penalized Ward method) from PE-ARPEGE's 34 perturbed members; the control couples to deterministic ARPEGE.
 
 ---
 
@@ -86,17 +86,14 @@ Probabilistic regional forecasts including:
 - **Overseas sibling:** A separate **PEAROME-OM** (Prévision d'Ensemble AROME Outre-Mer) covers France's overseas domains at 2.5 km native resolution and is documented under its own entry; this entry is the metropolitan EURW1S40 system only.
 - **Stretched/trapezoidal grid:** As with AROME France, the native grid is trapezoidal; GRIB files on the regular 0.025° lat–lon grid may contain missing values outside the effective domain, and the published 0.025° grid is interpolated from the finer 1.3 km native mesh.
 - **Access model differs from deterministic AROME:** PE-AROME is distributed through the WCS-based ensemble API with a 5-day rolling retention and per-member/per-field granularity, rather than the bulk GRIB "Paquets" packages and unauthenticated data.gouv.fr / AWS channels used for deterministic AROME. Users wanting whole-field or whole-member bulk pulls should plan around the single-field WCS access pattern.
+- **Forthcoming (cy49t1_op1; e-suite from autumn 2025, operational switch targeted for autumn 2026):** model-error representation to combine SPPT with random parameter perturbation (RPP; ~19 perturbed parameters); AROME-EDA to move to 3DEnVar+SDL. Subject to confirmation.
 
 ---
 
 ## Recent version history
-
-### 29 June 2022 (chaîne 2021-01)
-- **Control member added** (an AROME run): ensemble grew from 16 to 17 members
-- **Resolution aligned with AROME:** native mesh refined from 2.5 km to 1.3 km
-- Significant changes in the PE-ARPEGE coupler (resolution, parameterization changes)
-- New convection and aeronautical diagnostics
-- All four cycles unified to a 51-hour forecast range
+- **cy48t1_op1 (operational mid-October 2024):** Ensemble enlarged from 17 to 26 members (16 → 25 perturbed). The driving AROME-EDA grew from 25 to 50 members and moved to the OOPS framework; deterministic AROME-France moved to 3DEnVar.
+- **2022 (cy46t1-era upgrade):** Native resolution increased from 2.5 km to 1.3 km, matching deterministic AROME-France; ensemble reframed as 16 perturbed + control.
+- **June 2022:** Added convective and aeronautical diagnostics to the distributed product.
 
 ---
 
