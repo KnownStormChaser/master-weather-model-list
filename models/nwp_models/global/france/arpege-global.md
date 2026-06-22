@@ -30,12 +30,20 @@ ARPEGE is jointly developed with ECMWF as part of the IFS/ARPEGE shared code bas
   - **0.5° global** (legacy packages; 720 × 361 regular lat–lon)  
   - Companion ARPEGE Europe distribution at 0.1°
 - **Vertical levels:** 105
-- **Model top:** ~70 km
+- **Model top:** ~0.1 hPa (~65 km); lowest model level ~10 m above ground
 - **Forecast length:**  
   - 102 hours (4 days 6 hours) for 00, 06, and 18 UTC cycles  
   - 114 hours (4 days 18 hours) for 12 UTC cycle
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** Hourly through ~48 h, then 3-hourly thereafter (varies by package)
+- **Time step:** 240 s
+
+---
+
+## Data assimilation
+- **Data assimilation:** Yes
+- **Method / cadence:** 4D-Var on a 6-hour cycle, run at two inner-loop resolutions (Tl224 c1 and Tl499 c1). Since the cy48t1_op1 suite (operational mid-October 2024), ARPEGE uses **Hybrid 4D-Var within the OOPS framework**, with a hybrid flow-dependent background-error (B) matrix drawn from the ARPEGE Ensemble of Data Assimilations (ARPEGE-EDA, 50 members). As of the cy49t1 development the hybrid B is described as anisotropic flow-dependent, combining ~50% climatological wavelet covariances with ~50% localised ensemble covariances.
+- **Observations:** Conventional plus all-sky microwave (MHS, MWHS-2, GMI, AMSR2), ATMS, GOES ABI, IASI, GNSS-RO (GRACE-C, Sentinel-6, Spire), AMVs, and Mode-S, among others.
 
 ---
 
