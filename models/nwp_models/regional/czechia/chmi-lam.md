@@ -52,7 +52,7 @@ Internally, CHMI also generates **operational biometeorological diagnostics** (m
 
 ## Initial and boundary conditions
 - **Initial conditions:** Own BlendVar + CANARI analysis
-- **Lateral boundary conditions:** **ARPEGE** (Météo-France global model); space-consistent coupling. **⚠ Coupling-interval conflict:** the 2024 RC LACE DAWD poster documents a **1-hour** coupling interval, but the 2025 *and* 2026 ACCORD ASW national posters all state a **3-hour** coupling interval in the NWP-system box. Unresolved — the most recent (2026) poster favours 3 h; left flagged pending confirmation.
+- **Lateral boundary conditions:** **ARPEGE** (Météo-France global model); space-consistent coupling. **⚠ Coupling-interval conflict:** a single source — the 2024 RC LACE DAWD poster — documents a **1-hour** coupling interval, while **nine CHMI ASW / EWGLAM / national posters spanning 2021–2026** all state a **3-hour** coupling interval in the NWP-system box. The weight of evidence favours **3 h**; the lone 1 h figure is treated as a likely DAWD-poster anomaly. Left flagged pending positive confirmation.
 
 ---
 
@@ -101,8 +101,8 @@ Internally CHMI also runs a richer convective-diagnostics package for forecaster
 ## Notes
 - The current high-resolution Lambert_2.3km configuration has been operational since **February 2019**, replacing the previous 4.6 km version with improved resolution, orography, and radiation diagnostics. **CZ_1km is not a separate model integration** — it is a downstream post-processing product produced by reprojecting the same Lambert_2.3km forecast onto a regular ~1 km lat-lon raster over Czechia, with a reduced parameter list (surface only).
 - **Biometeorological outputs** (mean radiant temperature, UTCI) and the richer convective-diagnostics package described in the 2023–2025 RC LACE / ACCORD posters are computed operationally inside CHMI for forecaster use (and were the subject of Novák 2021), but are **not** included in the public `opendata.chmi.cz` ALADIN feed.
-- **Near-term DA development** documented at the RC LACE Data Assimilation Working Days 2024:
-  - **Snow data assimilation** for ALARO via CANARI+ISBA (currently coded only for SURFEX) — technical validation in progress; flexible orography-based snow rejection limit (`LAOROFLEXREJSN`) under test for mountain stations.
+- **Near-term DA development** documented at the RC LACE Data Assimilation Working Days 2024 (snow-depth status updated per the 2026 ACCORD ASW national poster):
+  - **Snow-depth analysis** for ALARO via the ISBA scheme — developed jointly with **Florian Meier (GeoSphere Austria)**. Three assimilation configurations were tuned with the Nelder–Mead simplex method: **FR** (Météo-France-style: Gaussian correlation function, default first-guess QC, no spatial QC, rejects observations above 1500 m), **AT-gauss** (Gaussian correlation function, adapted height-dependent first-guess QC, spatial QC enabled, uses data above 1500 m), and **AT-Mescan** (adapted MESCAN correlation function, first-guess QC with height-dependent observation-error σ, spatial QC enabled, uses data above 1500 m). All three improve snow-depth forecasts over both the no-snow-analysis reference and the default FR setting; the extra snow introduces a short-range screen-level cold/moist bias, to be mitigated by adjusting the grid-box snow fraction before operational implementation. *(Supersedes the earlier 2024 DAWD note on CANARI+ISBA snow DA and the `LAOROFLEXREJSN` rejection-limit test.)*
   - **OPERA Nimbus** reflectivity processing chain validated in parallel against the legacy OIFS chain at CHMI (most stations >95 % availability; Swiss and British radars showed nodata/undetect attribute discrepancies).
   - **Doppler radial-wind** assimilation under development (separate from the volume-reflectivity work).
 - **Companion / related ALADIN deployments in the consortium** share much of the same code base and tunings; cross-references to other entries in this repository:
@@ -143,16 +143,16 @@ The Abel & Boutle (2012) rain size distribution was implemented for simulated re
 SEVIRI water-vapour channels (channels 2 and 3) were reintroduced into the data-assimilation observation set after an ~18-month withdrawal. SEVIRI had been **withdrawn in March 2023** following the Meteosat-10 / Meteosat-11 instrument exchange, which produced a ~1 K bias with unusually large diurnal variations. Reintroduction used a **cold-start VARBC with increased adaptivity** to absorb the persistent bias signature.
 
 ### February 2024 — long cut-off cycle to 3 h, snow / surface assimilation retuning
-The long cut-off assimilation cycle was tightened from 6 h to **3 h**. Surface analysis settings were retuned: relaxation to climatology was suppressed for snow (recovering realistic snow amounts), the snow-roughness treatment was switched to `LZ0SNOWH=T` / `RZ0_TO_HEIGHT=0.1` (improving 10 m wind bias over forested snow-covered areas), and the snow-fraction parameter `WCRIN` was raised from 4 to 10 (reducing 2 m cold bias). The Lopez evaporation parameterization and retuned auto-conversions to snow and cloud water were also introduced.
+The long cut-off assimilation cycle was tightened from 6 h to **3 h**. Surface analysis settings were retuned: relaxation to climatology was suppressed for snow (recovering realistic snow amounts), the snow-roughness treatment was switched to `LZ0SNOWH=T` / `RZ0_TO_HEIGHT=0.1` (improving 10 m wind bias over forested snow-covered areas), and the snow-fraction parameter `WCRIN` was raised from 4 to 10 (reducing 2 m cold bias). The Lopez evaporation parameterization and retuned auto-conversions to snow and cloud water were also introduced. A new **wind-gust diagnostic based on TKE at 20 m** was introduced in the same change (per the 2024 national poster; not listed on the ASW 2024 poster). ⚠ *Not confirmed whether the publicly distributed "maximum 1-hour wind gust" parameter now derives from this diagnostic — to verify against the open-data feed.*
 
 ### May 2023 — new convective diagnostics
 A revised convective-diagnostics package became operational, in cooperation with CHMI's convection-specialist team. New products include storm relative helicity, updraft and downdraft helicity tracks, and combinations of MUCAPE/CIN/moisture convergence and CAPE/wind shear, useful for distinguishing squall lines from supercells and for tornado-environment indicators.
 
 ### April 2023 — model cycle upgrade to CY46T1mp
-The operational model cycle was upgraded to **CY46T1mp** (ALARO-1vB).
+The operational model cycle was upgraded to **CY46T1mp** (ALARO-1vB), operational on **19 April 2023** following the **e-suite AKW** technical switch on 27 February 2023.
 
-### February 2022 — prognostic graupel
-The ALARO microphysics scheme was upgraded with **fully prognostic graupel**, replacing the earlier pseudo-prognostic treatment. A new graupel fall-speed relation (matching ICE3-style behaviour) was introduced together with retuned precipitation-type thresholds for small and big hail. This change also enabled a straightforward lightning-density diagnostic.
+### May 2022 — prognostic graupel operational
+The ALARO microphysics scheme was upgraded with **fully prognostic graupel**, replacing the earlier pseudo-prognostic treatment. A new graupel fall-speed relation (matching ICE3-style behaviour) was introduced together with retuned precipitation-type thresholds for small and big hail. This change also enabled a straightforward lightning-density diagnostic. The change ran as **e-suite AKV from 15 February 2022** and became **operational on 9 May 2022**.
 
 ### January 2022 — Mode-S EHS via EMADDC
 Mode-S EHS aircraft observations from the previous KNMI/MUAC airspace (Belgium, Netherlands, Luxembourg, Germany) were replaced by **European-wide EMADDC** processing, with shorter assimilation window (1 h, ±30 min around analysis) reflecting the very high data frequency.
