@@ -98,20 +98,23 @@ Deterministic forecasts of standard meteorological variables, including:
 
 ## Recent version history
 
-### 2021 — ALARO-1 / CY43T2 operational at RMI
-The 4 km operational chain ran CY43T2 with ALARO-1 (3MT with non-saturated downdraft, TOUCANS turbulence, ACRANEB2 radiation) on a 432 × 432 / L87 grid with a 180 s time step, ARPEGE-coupled (hourly as of September 2021) and producing +60 h forecasts at 00, 06, 12 and 18 UTC. A 1.3 km / 576 × 576 / L87 high-resolution ALARO (45 s time step, hourly coupling to the 4 km ALARO, +36 h forecasts) and a 1.3 km / 576 × 576 / L87 AROME with the same dynamical settings (+48 h forecasts, surface assimilation via CANARI-OImain, no operational upper-air DA) ran alongside it.
-
-### 2021 — Tuned 1.3 km ALARO ("MODC")
-A retuned 1.3 km configuration with revised dynamics/physics tunings (provided via cooperation with CHMI), an improved Total Turbulent Energy (TTE) solver, and an updated roughness-length climatology was put into daily use in September 2021, with operational status targeted for April 2022. RMSE improvements were seen across mean sea-level pressure, 10 m wind, and 2 m temperature, together with reduced cold (winter) and warm (summer) biases.
-
-### 2023 — Operational suites ported to ECMWF ATOS
-Facing end-of-life of the local SGI cluster, RMI began moving its three operational suites to ECMWF's ATOS infrastructure in Bologna as a Time Critical facility: **AO40** (4 km ALARO, +60 h, hourly ARPEGE LBCs, downscaling), **AO13** (1.3 km ALARO, +48 h, 3 h surface DA, hourly HRES LBCs) and **AR13** (1.3 km AROME, +48 h, 3 h surface DA, hourly HRES LBCs), all on CY43T2 and scripted with NodeRunner. The cy43t2 BATOR code was adapted with Harmonie code to ingest BUFR-SYNOP data at ECMWF.
+### 2024 — 3D-Var "in preparation"; first ML-EPS experiments
+By the 30 Sep–3 Oct 2024 national poster, the ATOS suites (cy43t2; 4 km +60 h ARPEGE-coupled, 1.3 km +48 h HRES-coupled, 30+1 nodes) ran with surface assimilation and **3D-Var "in preparation."** RMI also reported first exploratory **machine-learning EPS** work aimed at a lightweight ensemble over the Belgian domain — training ECMWF's **Anemoi** framework on the CERRA regional reanalysis and a **Neural-LAM** ALARO emulator on archived local ALARO analyses/forecasts. These remain exploratory and are not part of the public `alaro_40l` product. *(The April 2024 ASW poster had described an experimental AROME 3D-Var RUC with an outlook to e-suite by summer 2024; the autumn "in preparation" wording suggests it had not yet gone operational — flagged.)*
 
 ### 2024 — Operational on ATOS; experimental AROME 3D-Var RUC
 By the 4th ACCORD ASW the suites were running operationally on ATOS (tc2, 30+1 nodes), with the 9-year-old local SGI retained only as a backup chain (ARPEGE-coupled) and a possible ECMWF-coupled "mini-EPS" under consideration. RMI also reported an experimental AROME 3D-Var rapid-update cycle assimilating SYNOP, AMDAR, TEMP and GNSS (3 h CANARI + 3D-Var, with IAU), targeting a 1-hourly cycle, radar DA, and e-suite promotion during summer 2024.
 
 ### 2024 — Seamless Prediction Programme
 Work on RMI's *Seamless Prediction Programme* (project IMA) was reported, integrating ALARO and AROME with INCA-BE and pySTEPS-based blending to provide a probabilistic, observation-driven, convection-permitting forecasting system from +5 min out to +24 h. This concerns the broader RMI forecasting suite rather than the public `alaro_40l` dataset specifically.
+
+### 2023 — Operational suites ported to ECMWF ATOS
+Facing end-of-life of the local SGI cluster, RMI began moving its three operational suites to ECMWF's ATOS infrastructure in Bologna as a Time Critical facility: **AO40** (4 km ALARO, +60 h, hourly ARPEGE LBCs, downscaling), **AO13** (1.3 km ALARO, +48 h, 3 h surface DA, hourly HRES LBCs) and **AR13** (1.3 km AROME, +48 h, 3 h surface DA, hourly HRES LBCs), all on CY43T2 and scripted with NodeRunner. The cy43t2 BATOR code was adapted with Harmonie code to ingest BUFR-SYNOP data at ECMWF.
+
+### 2021 — Tuned 1.3 km ALARO ("MODC")
+A retuned 1.3 km configuration with revised dynamics/physics tunings (provided via cooperation with CHMI), an improved Total Turbulent Energy (TTE) solver, and an updated roughness-length climatology was put into daily use in September 2021. The 2022 ASW poster reports it **became operational in December 2021**. RMSE improvements were seen across mean sea-level pressure, 10 m wind, and 2 m temperature, together with reduced cold (winter) and warm (summer) biases. *(The 2021 national poster described operationalisation as planned "by the end of April," with no year given — flagged as inconsistent with the December 2021 operational date in the 2022 poster.)*
+
+### 2021 — ALARO-1 / CY43T2 operational at RMI
+The 4 km operational chain ran CY43T2 with ALARO-1 (3MT with non-saturated downdraft, TOUCANS turbulence, ACRANEB2 radiation) on a 432 × 432 / L87 grid with a 180 s time step, ARPEGE-coupled (hourly as of September 2021) and producing +60 h forecasts at 00, 06, 12 and 18 UTC. A 1.3 km / 576 × 576 / L87 high-resolution ALARO (45 s time step, hourly coupling to the 4 km ALARO, +36 h forecasts) and a 1.3 km / 576 × 576 / L87 AROME with the same dynamical settings (+48 h forecasts, surface assimilation via CANARI-OImain, no operational upper-air DA) ran alongside it.
 
 ---
 
@@ -132,3 +135,5 @@ Work on RMI's *Seamless Prediction Programme* (project IMA) was reported, integr
 - Dewettinck, W. et al. (2024). *State of regional climate modelling in Belgium with the ALARO model.* ACCORD All-Staff Workshop, 2024.
 - Caluwaerts, S. et al. (2023). *The operational ALADIN-Belgium model.* RMI national poster, 3rd ACCORD All-Staff Workshop, Tallinn, March 2023.
 - Caluwaerts, S. et al. (2024). *The operational ALADIN-Belgium model.* RMI national poster, 4th ACCORD All-Staff Workshop, Norrköping, April 2024.
+- Caluwaerts, S. et al. (2022). *The operational ALADIN-Belgium model.* RMI national poster, 2nd ACCORD All-Staff Workshop, April 2022. *(venue TBD)*
+- RMI Modelling team (2024). *The operational ALADIN-Belgium models.* RMI national poster, 30 Sep–3 Oct 2024. *(venue/workshop TBD — dates match the 46th EWGLAM / 31st SRNWP meeting)*
