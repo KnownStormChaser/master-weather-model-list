@@ -31,7 +31,7 @@ A subset of the model output is published as GRIB through IMGW-PIB's public data
 - **Horizontal resolution:** 4 km
 - **Grid dimensions:** 789 × 789
 - **Vertical levels:** 70
-- **Forecast length:** **99 h in the public product** (IMGW product description and the `+000gl … +099gl` file range); the operational forecast range is documented as **102 h** in the 2025 EWGLAM poster — i.e. the public distribution appears to stop one or two steps short of the full run
+- **Forecast length:** **99 h in the public product** (IMGW product description and the `+000gl … +099gl` file range). The **operational range is 102 h**, confirmed in both the 47th EWGLAM (2025) and 6th ASW (April 2026) posters. *(It was 72 h in every poster from 2020 through the 46th EWGLAM Sept 2024, extended to 102 h by Sept 2025.)* Because the operational run reaches +102 and the public output is 3-hourly (…+096, +099, +102 are all valid steps), the public feed appears to stop one 3-hourly step short at +099 — **confirm whether a `+102gl` step is also published** (see Notes).
 - **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** **3-hourly in the public product**; full operational output is hourly (the public GRIB is downsampled — see Notes)
 - **Time step:** 150 s
@@ -39,8 +39,8 @@ A subset of the model output is published as GRIB through IMGW-PIB's public data
 ---
 
 ## Data assimilation
-- **Data assimilation:** Pre-operational (surface only) as of the 2025 EWGLAM poster
-- **Method / cadence:** **CANARI** surface assimilation on a 6-hour cycle. Earlier (2024) this was described as a test-mode CANARI surface analysis within CY43T2 using SYNOP and partially automatic-station data via the OPLACE database. Whether it is in the publicly distributed product yet is unconfirmed — **flag for verification**.
+- **Data assimilation:** Pre-operational (surface only) — still described as *pre-operational* in the most recent (6th ASW, April 2026) poster
+- **Method / cadence:** **CANARI** surface assimilation on a 6-hour cycle. Earlier (2024) this was described as a test-mode CANARI surface analysis within CY43T2 using SYNOP and partially automatic-station data via the OPLACE database. The "pre-operational" wording persisted unchanged from 2024 through April 2026, which suggests the surface DA is **not yet in the operational (hence public) product** — **flag for verification**.
 
 ---
 
@@ -76,8 +76,17 @@ This is a limited subset of the full operational field set (the full output feed
 - **Public vs. operational differences:** the public product is downsampled to 3-hourly output (operational output is hourly) and stops at +99 h (operational range 102 h). Confirm whether a +102 h step is also published.
 - **AROME nest:** ALARO provides the lateral boundary conditions for [AROME (Poland)](./arome-poland.md) (LBC from ALARO-1 4 km).
 - **Public-data transition:** IMGW-PIB stated (June 2026) that it is changing its public model data **from COSMO to ICON-LAM**. At present ALARO and AROME GRIB are the available products. COSMO is being phased out; ICON-LAM is not yet confirmed as openly downloadable — both are candidate future entries and out of scope until a free feed is confirmed.
-- **Pre-operational code:** preoperational tests of **ALARO CY46T1** (export version) run daily at 2.45 km horizontal resolution, 90 s time step, 70 levels — not the publicly distributed product.
+- **Pre-operational code (cycle upgrade):** an **ALARO CY46T1** export version (four LACE/Prague code packages) has run daily since Feb 2024 at **2.45 km**, 90 s time step, 70 levels (later possibly more). As of the 6th ASW (April 2026) poster its verification has been running **in operational mode since the beginning of 2026** (one-month comparison 23 Feb–24 Mar 2026 against the operational 4 km CY43T2). It is **not yet the publicly distributed product** — the public feed remains CY43T2 4 km — but it is the clearest candidate to watch for a future resolution/cycle change. **Flag:** the 2026 poster gives this resolution as both **2.45 km** and **2.4 km** in different panels.
 - **Consortium context:** developed within the **ACCORD** consortium (and **RC LACE**). The ACCORD/LACE common ensemble **A-LAEF** is built on ALARO-1vB physics but is run at ECMWF under SHMÚ and is a separate system. See related ALARO/ALADIN entries: [ALARO Belgium](../belgium/alaro-belgium.md), [ALADIN Slovakia](../slovakia/aladin-slovakia.md).
+
+---
+
+## Recent configuration history (from IMGW ACCORD/EWGLAM posters)
+- **2020–April 2021:** 4 km, coupling zone **8 points**, **72 h** range.
+- **Sept 2021:** coupling zone widened to **16 points**.
+- **Feb 2024–:** daily pre-operational **CY46T1** export tests at 2.45 km / 90 s.
+- **By Sept 2025:** operational range extended **72 h → 102 h**.
+- **Since early 2026:** CY46T1 (2.45 km) verification run in operational mode; CY43T2 4 km remains the distributed product.
 
 ---
 
