@@ -34,7 +34,9 @@ AROME France is one model in a wider AROME family that also includes [AROME Fran
 - **Forecast length:** Up to 51 hours
 - **Update frequency:** 8× daily (00, 03, 06, 09, 12, 15, 18, 21 UTC)
 - **Temporal output resolution:** Hourly
-- **Data assimilation:** 3DEnVar (operational since October 2024); previously 3D-Var
+- **Data assimilation:** 3DEnVar in the OOPS framework, 1-hour cycle, with Incremental Analysis Update (IAU); operational since October 2024 (cy48t1_op1). Previously 3D-Var.
+- **Time step:** 50 s
+- **Numerical precision:** Uncycled forecasts run in single precision
 
 ---
 
