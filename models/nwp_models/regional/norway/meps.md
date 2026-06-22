@@ -108,6 +108,7 @@ Ensemble products derived from the 30+1 members include ensemble means and sprea
   - [HARMONIE (FMI)](../finland/harmonie-fmi.md) — FMI's redistribution of the surface-level MEPS subset via a different access scheme (WFS + binary download service).
   - [HARMONIE-AROME Ireland](../ireland/harmonie-arome-ireland.md), [HARMONIE (DMI)](../denmark/harmonie-dmi.md), [AROME Hungary](../hungary/arome-hungary.md), and other ACCORD-consortium HARMONIE-AROME and AROME deployments share the same core model.
 - **United Weather Centres (UWC).** MetCoOp is one of two regional UWC clusters; the other is **UWC-West** (KNMI, DMI, Met Éireann, Veðurstofa Íslands), which runs a separate joint operational suite. The HIRLAM consortium that previously provided the HARMONIE-AROME reference architecture dissolved at the end of 2025, with the new UWC consortium taking over that role from 2026 onward. The two regional clusters target a common UWC NWP production by ~2027. **DMI is in UWC-West, not MetCoOp.**
+- **Geostationary radiance assimilation (status unconfirmed).** Schönach et al. (2025) demonstrated assimilation of SEVIRI water-vapour radiances (WV062, WV073) at satellite zenith angles up to 84° in HARMONIE-AROME, expanding geostationary coverage over the MetCoOp domain with positive short-range impact. Distinct from the polar-orbiting radiances in BAMS Table 3 and from the MNWC cloud-ingest step. Whether this is in the operational MEPS assimilation is not yet confirmed.
 
 ---
 
@@ -140,11 +141,14 @@ Major reorganization of the production schedule. Previously MEPS ran 10 members 
 ### 2020 — Estonia joins MetCoOp
 ESTEA (Estonian Environment Agency) joined as a full member.
 
-### 2017 — Finland joins MetCoOp; ensemble extension
-FMI joined as a full member. The MetCoOp suite was extended from a deterministic configuration to include an ensemble prediction component, becoming MEPS.
+### 2017 — Finland joins MetCoOp
+FMI joined as a full member from January 2017 and became an integral part of the production chain (running one EPS member) from September 2017, at which point the MEPS control member replaced FMI's own HARMONIE-AROME runs.
 
-### 2014 — Operational start
-The deterministic MetCoOp AROME configuration entered operations (Müller et al. 2017).
+### 2016-11-01 — MEPS ensemble operational (SMHI + MET Norway)
+The suite was extended from the deterministic AROME-MetCoOp configuration to a 10-member ensemble (HARMONIE-AROME cy40h1.1; SLAF-based initial and boundary perturbations), and the primary suite became the MetCoOp Ensemble Prediction System (MEPS). Ran in e-suite from June 2016, operational 1 November 2016.
+
+### 2014-03-18 — Operational start
+The deterministic AROME-MetCoOp configuration entered operations (Müller et al. 2017b). Experimental runs had been conducted since December 2013; the predecessor AROME-Norway had appeared on yr.no from 1 October 2013.
 
 ---
 
