@@ -30,11 +30,11 @@ A subset of the model output is published as GRIB through IMGW-PIB's public data
 - **Horizontal resolution:** 2 km
 - **Grid dimensions:** 799 × 799
 - **Vertical levels:** 70
-- **Forecast length:** 42 h (consistent across the IMGW product description, the `+000gl … +042gl` file range, and the 2025 EWGLAM poster)
+- **Forecast length:** 42 h (IMGW product description, the `+000gl … +042gl` file range, the 47th EWGLAM 2025 poster, and the 6th ASW April 2026 poster). *(The operational range was 30 h in every poster from 2020 through the 46th EWGLAM Sept 2024, extended to 42 h by the 47th EWGLAM Sept 2025.)*
 - **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** Hourly (public product and operational output both hourly)
 - **Time step:** 50 s
-- **Coupling:** LBC from ALARO-1 (4 km). **Flag:** the coupling frequency is given as **3 h** in the 2022, 2023 and 2025 posters but as **1 h** in the 2024 ACCORD poster — treat as 3 h pending confirmation.
+- **Coupling:** LBC from **[ALARO (Poland)](./alaro-poland.md)** (ALARO-1, 4 km), **3 h coupling**. *(History: the IMGW poster series lists 1 h coupling in 2020 and April 2021, switching to 3 h from the Sept 2021 poster and staying 3 h through April 2026. The single 1 h value in the April 2024 ASW poster is contradicted by the Sept 2023 and Sept 2024 posters on either side of it and is treated as a carried-over transcription error — this resolves the earlier 3 h / 1 h flag.)*
 
 ---
 
