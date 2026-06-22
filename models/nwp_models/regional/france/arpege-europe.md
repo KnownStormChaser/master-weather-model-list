@@ -29,12 +29,13 @@ For the parent system's full technical description, see [ARPEGE](../../global/fr
 - **Native horizontal resolution:** Variable — approximately 5 km over France, ~24 km over the antipodes (TL1798 stretched spectral truncation)
 - **Public distribution grid:** **0.1° (~10 km)** regular latitude–longitude over Europe and North Africa
 - **Vertical levels:** 105
-- **Model top:** ~70 km
+- **Model top:** ~0.1 hPa (~65 km); lowest model level ~10 m above ground
 - **Forecast length:**
   - 102 hours (4 days 6 hours) for 00, 06, and 18 UTC cycles
   - 114 hours (4 days 18 hours) for 12 UTC cycle
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** Hourly through ~48 h, then 3-hourly thereafter (varies by package)
+- **Time step:** 240 s
 
 ---
 
