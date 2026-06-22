@@ -65,7 +65,7 @@ This is a limited subset of the full operational field set. Internally, AROME al
 - **Is the data free?** Yes
 - **License:** IMGW-PIB confirmed (correspondence WWS.381.295.2026/AKS, June 2026) that the model data on the public datastore are **HVD (High Value Datasets)** and may be used "in any way," with a **mandatory obligation to cite the source — including for processed/derived data**. IMGW-PIB does **not** cite a specific named license (e.g. CC BY 4.0) in this correspondence; the terms are open-reuse-with-attribution. **Flag:** confirm whether the portal's terms page names a specific license. (An IMGW-prepared product/format conversion/extract is a paid value-added service and does not affect the free raw GRIB.)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB. **Flag:** files carry **no standard file extension** — they are named `fc<YYYYMMDD>_<HH>+<step>gl` (e.g. `fc20260609_18+000gl` … `fc20260609_18+042gl`). The trailing `gl` is of unverified meaning. IMGW confirmed the format is GRIB.
+- **Data formats:** GRIB. **Flag:** files carry **no standard file extension** — they are named `fc<YYYYMMDD>_<HH>+<step>gl` (e.g. `fc20260609_18+000gl` … `fc20260609_18+042gl`). The trailing `gl` denotes the **HARMONIE `gl` postprocessing tool** (Andrae, SMHI; `util/gl` in the HARMONIE tree), which converts the model's native FA output to GRIB and assembles the IO-server's distributed files into a single GRIB file — i.e. the suffix marks these as gl's GRIB product (as opposed to the `fullpos`/e927 path). This is inferred from the tool's documented role; IMGW has not stated the naming convention explicitly. IMGW confirmed the format is GRIB.
 - **Official download location:**  
   https://danepubliczne.imgw.pl/pl/datastore?product=AROME_pub
 
