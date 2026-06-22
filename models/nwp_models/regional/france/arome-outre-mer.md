@@ -16,7 +16,7 @@ Internally designated **PAROTRO** (AROME-Tropical), AROME-OM is designed for **s
 ## How it is initialized
 Unlike AROME France, **AROME-OM has no data assimilation of its own.** It is coupled for its initial conditions from two larger-scale models:
 
-- **Upper-air initial conditions:** provided by **ECMWF's IFS** (~16 km)
+- **Upper-air initial conditions:** provided by **ECMWF's IFS** (~16 km), via dynamical downscaling with a prior "warmup" spin-up integration
 - **Surface initial conditions:** provided by Météo-France's **[ARPEGE](../../global/france/arpege-global.md)**
 
 This is a meaningful difference from AROME France, which runs its own 3DEnVar assimilation cycle. AROME-OM is effectively a high-resolution dynamical downscaling driven by IFS and ARPEGE, without an independent analysis.
@@ -37,6 +37,8 @@ This is a meaningful difference from AROME France, which runs its own 3DEnVar as
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC) for all domains **except French Polynesia, which runs 2× daily (00, 12 UTC)**
 - **Temporal output resolution:** Hourly
 - **Operational availability (UTC run → delivery):** 00→07:30, 06→13:30, 12→19:30, 18→01:30 (next day)
+- **Numerical precision:** Mixed precision
+- **Ocean coupling:** 1D ocean model
 - **Archive start:** 8 December 2015
 
 Note that the output level set is coarser than metropolitan AROME France (which distributes 24 isobaric and 25 height levels); AROME-OM provides 19 isobaric and 14 height levels.
