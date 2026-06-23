@@ -77,6 +77,16 @@ The combination of hourly DA, two-moment microphysics, and rapid-update forecast
 
 ---
 
+## Recent version history
+
+### 5 February 2025 — model version icon-2024.10-dwd-2.1 (effective with the 08 UTC RUC run)
+Shared with the standard ICON-D2 upgrade (the precipitation-intensity retuning does **not** apply to RUC, which already uses two-moment microphysics):
+- **TERRA_URB urban canopy scheme activated.**
+- **Assimilation of meteorological ICOS tower data** (9 towers over Germany).
+- **Retuned visibility diagnostic** (corrects nighttime fog underestimation).
+
+---
+
 ## Official documentation
 - DWD ICON model description: https://www.dwd.de/EN/research/weatherforecasting/num_modelling/01_num_weather_prediction_modells/icon_d2/icon_d2_node.html
 - DWD ICON Database Reference: https://www.dwd.de/DWD/forschung/nwv/fepub/icon_database_main.pdf
