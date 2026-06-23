@@ -28,8 +28,8 @@ It is not a separately initialized limited-area model but the **two-way coupled 
 - **Public output grids:** Native triangular grid (GRIB2); regular latitude–longitude grids interpolated from native for many element packages
 - **Vertical levels:** 74 (increased from 60 in the November 2022 upgrade)
 - **Model top:** ~22.8 km
-- **Forecast length:** Inherited from the global ICON integration's main synoptic cycles (see flag in Notes — exact per-cycle horizons worth confirming)
-- **Update frequency / cycles:** Runs within the global ICON integration on the main synoptic cycles (00/06/12/18 UTC); DWD additionally distributes shorter-range off-synoptic cycles on the open data server (see flag in Notes)
+- **Forecast length:** 120 hours (5 days) for the main synoptic cycles (00, 06, 12, 18 UTC); 51 hours for the intermediate cycles (03, 09, 15, 21 UTC)
+- **Update frequency / cycles:** 8× daily — 4 main synoptic cycles (00, 06, 12, 18 UTC) plus 4 intermediate off-synoptic cycles (03, 09, 15, 21 UTC), matching the global ICON integration
 - **Temporal output resolution:** Hourly to +78 h, then 3-hourly (matching the global ICON integration)
 
 ---
@@ -70,8 +70,7 @@ DWD provides CDO grid description and weight files for interpolating native tria
 - ICON-EU and the global [ICON](../../global/germany/icon-global.md) are not separate models — ICON-EU is the higher-resolution European nest of a single tightly coupled two-way integration. This is structurally different from regional models elsewhere (e.g., ARPEGE/AROME at Météo-France) where the limited-area model runs as a separate process driven by one-way lateral boundary conditions.
 - The ensemble counterpart is [ICON-EU-EPS](../../../ensemble_models/regional/de/icon-eu-eps.md), distributed as the European-nest portion of [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md).
 - The ICON model code has been open source under a permissive licence since January 2024 (repository: https://gitlab.dkrz.de/icon/icon-model).
-- **Flag — forecast length and exact cycle list:** Because ICON-EU runs as the nest within the global ICON integration, its main-cycle cadence (4× daily, 00/06/12/18 UTC) and forecast horizons follow the global system, but DWD also distributes additional off-synoptic short-range ICON-EU cycles on open data. The precise per-cycle forecast lengths and the full open-data cycle list should be confirmed against DWD's ICON Database Reference before these fields are finalized.
-
+- ICON-EU per-cycle horizons (120 h for 00/06/12/18 UTC; 51 h for 03/09/15/21 UTC) are taken from DWD's EWGLAM 2024, ICCARUS 2025, and EWGLAM 2025 operational-chain posters, which agree. Note the EU nest caps at 120 h even for the 00/12 cycles, whereas the global ICON integration runs those to 180 h.
 ---
 
 ## Recent version history
