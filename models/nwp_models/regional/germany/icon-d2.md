@@ -25,7 +25,7 @@ At 2.2 km horizontal resolution it resolves deep convection explicitly, making i
 - **Convection-allowing:** Yes (2.2 km; deep convection resolved explicitly)
 - **Horizontal resolution:** 2.2 km (native triangular grid, ~2.1 km average grid spacing — see flag in Notes)
 - **Public output grids:** Native triangular grid; also distributed on a rotated lat-lon grid at 0.02° (same spacing as the former COSMO-D2 lat-lon output)
-- **Vertical levels:** 65 (consistent with the ICON-D2-RUC and ICON-D2-EPS members of the family)
+- **Vertical levels:** 65 (directly confirmed by DWD's EWGLAM 2024/2025 and ICCARUS 2025 operational-chain posters; same as ICON-D2-RUC and ICON-D2-EPS)
 - **Model top:** TBD (see flag in Notes)
 - **Forecast length:** Up to +48 hours
 - **Update frequency / cycles:** 8× daily, every 3 hours (00, 03, 06, 09, 12, 15, 18, 21 UTC)
@@ -71,11 +71,21 @@ High-resolution deterministic forecasts of:
 - The ICON model code has been open source under a permissive licence since January 2024 (repository: https://gitlab.dkrz.de/icon/icon-model).
 - Standard ICON-D2 is distributed under the main `/weather/nwp/icon-d2/` path; the newer `/weather/nwp/v1/m/` distribution tier (introduced 2025) hosts ICON-D2-RUC and the ICON-ART family rather than standard ICON-D2.
 - **Flag — horizontal resolution wording:** the previous entry stated "~2.1 km average grid spacing," while sibling entries (ICON-D2-RUC, ICON-D2-EPS) consistently cite 2.2 km. I've reconciled these by giving 2.2 km with the ~2.1 km native average noted; confirm preferred phrasing.
-- **Flag — model top and vertical-level confirmation:** ICON-D2's model top is not stated in current repo sources (left TBD). Vertical levels are given as 65 by analogy with the documented RUC/EPS members of the family; worth a one-line confirmation against DWD's Database Reference.
+- **Flag — model top:** ICON-D2's model top is not stated in current sources (left TBD); worth confirming against DWD's Database Reference. (Vertical-level count of 65 is now directly confirmed by DWD operational-chain posters.)
+- ICON-D2 spawns a 500 m nested domain, **ICON-D05**, operational since 27 February 2025. ICON-D05 is initialised from the operational ICON-D2 analysis (via intermediate 1 km nesting). Confirm whether ICON-D05 output is distributed on the DWD open data server before adding a standalone entry.
 
 ---
 
 ## Recent version history
+
+### 27 February 2025 — ICON-D05 500 m nest operational
+A 500 m nested domain (ICON-D05) was added, initialised from the operational ICON-D2 analysis.
+
+### 5 February 2025 — model version icon-2024.10-dwd-2.1 (effective with the 09 UTC run)
+- **Reduced overestimation of high precipitation intensities** (standard single-moment ICON-D2 only; not RUC): supersaturation-aware saturation adjustment, restricted raindrop-size-distribution shift, reduced snow-to-graupel riming conversion, and retuned convection to suppress spurious "convective drizzle." Primarily affects the May–September convective season.
+- **TERRA_URB urban canopy scheme activated** (all configurations): urban heat-island / dry-island effects now represented; nighttime urban 2 m temperatures warm by up to ~1 K, with RMSE reductions of up to ~4 % around cities such as Paris.
+- **Assimilation of meteorological ICOS tower data** (all configurations): temperature, humidity and selected wind levels from 9 ICOS towers over Germany; local, short-lived forecast impact.
+- **Retuned visibility diagnostic** (all configurations): corrects nighttime fog underestimation; visibility diagnostic itself was introduced in ICON-D2 in spring 2024.
 
 ### 10 February 2021 — ICON-D2 replaces COSMO-D2
 ICON-D2 became DWD's operational convection-permitting regional model, replacing COSMO-D2 as part of the migration from the COSMO model family to ICON. Aviation weather products were migrated from COSMO-D2 at the same time. Older references may still use the COSMO-D2 name.
