@@ -198,7 +198,7 @@ Input changes in v5.0:
 - Added ECAIFS (ECMWF AI/IFS) and AIGFS as inputs for temperature, wind speed, and QPF (all domains except no QPF over GU)
 - Higher-resolution GEFS surface guidance (0.25° through 240 h; vertical profile remains at 0.5°)
 - WPC MMEBC QPF added as input (CO)
-- SREF input usage eliminated (SREF itself is subsequently scheduled for retirement on August 31, 2026 under SCN 26-48; v5.0's removal of SREF as an input is what enabled folding SREF retirement into the first-wave RRFSv1 cutover rather than holding it for RRFSv2)
+- SREF input usage eliminated (SREF itself is subsequently scheduled for retirement on October 6, 2026 under SCN 26-47; v5.0's removal of SREF as an input is what enabled folding SREF retirement into the first-wave RRFSv1 cutover rather than holding it for RRFSv2)
 - Significant wave height bias correction now uses ~120 ensemble member inputs (up from 13 ensemble means)
 
 ### NBM v4.3 (operational May 27, 2025)
