@@ -4,7 +4,7 @@ This page indexes all NOAA models in this repository that are part of, are being
 
 The goal of this index is to make a coherent programme visible. Right now UFS shows up across the repository as separate line items — RRFSv1 here, GFSv17 there, RTOFS v3.0 elsewhere, NAM retirement somewhere else — but they are all parts of the same consolidation effort, scheduled and sequenced together. This page exists to surface that coherence.
 
-Last updated: May 2026.
+Last updated: July 2026.
 
 ---
 
