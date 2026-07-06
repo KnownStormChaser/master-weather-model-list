@@ -1,6 +1,6 @@
 # NAM (North American Mesoscale Forecast System)
 
-> ⚠️ **Scheduled for retirement August 31, 2026 at 12 UTC.** The NAM (12 km parent and all five high-resolution nests, NAM-DNG, DGEX, and NAM MOS) is scheduled for retirement under [NWS Service Change Notice 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf) (May 12, 2026), the same cycle that brings [RRFS](./rrfs.md) into operations. The retirement set was originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025). Implementation is subject to the standard CWD/ECE postponement contingency.
+> ⚠️ **Scheduled for retirement October 6, 2026 at 12 UTC.** The NAM (12 km parent and all five high-resolution nests, NAM-DNG, DGEX, and NAM MOS) is scheduled for retirement under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination notice; updated July 6, 2026), on the same cycle that brings [RRFS](./rrfs.md) into operations under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf) (implementation notice; May 12, 2026, updated July 6, 2026). The retirement set was originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025). Implementation is subject to the standard CWD/ECE postponement contingency.
 
 ## What this model is
 The North American Mesoscale Forecast System (NAM) is NOAA's regional deterministic numerical weather prediction system covering North America at 12 km horizontal resolution, with five embedded high-resolution nests run within the same forecast integration.
@@ -90,8 +90,8 @@ The NAM uses physics broadly inherited from the Eta and WRF-NMM lineage that pre
 - **[GFS](../../global/usa/gfs.md):** Provides lateral boundary conditions for the 12 km NAM, and is blended with NAM forecasts in the DGEX (NAM Extension) product.
 - **[RAP](./rap.md):** Operational mesoscale counterpart at 13 km. RAP and NAM are similar in resolution but use different dynamical cores (NAM: NMMB B-grid; RAP: WRF-ARW), different DA systems (NAM: NDAS; RAP: hourly cycling GSI hybrid), and different update cadences (NAM: 4× daily; RAP: hourly). NAM produces longer 84-hour forecasts; RAP produces shorter forecasts more frequently.
 - **[NBM](./nbm.md):** Uses NAM fields as one of many deterministic inputs.
-- **SREF:** Multi-model regional ensemble that included NAM-NMMB members alongside other model formulations. SREF is being retired on the same day as the NAM (August 31, 2026) under SCN 26-48 and replaced by [REFS](../../ensemble_models/regional/usa/refs.md).
-- **[RRFS](./rrfs.md):** Replacement. RRFSv1 implements August 31, 2026 at 12 UTC under SCN 26-48 and is intended to replace both the 12 km NAM parent and the [NAM Nest](./nam-nest.md) high-resolution domains. Most NAM products will continue to be produced from RRFS output via post-processing during the transition.
+- **SREF:** Multi-model regional ensemble that included NAM-NMMB members alongside other model formulations. SREF is being retired on the same day as the NAM (October 6, 2026) under SCN 26-47 and replaced by [REFS](../../ensemble_models/regional/usa/refs.md).
+- **[RRFS](./rrfs.md):** Replacement. RRFSv1 implements October 6, 2026 at 12 UTC under SCN 26-48 (NAM termination under companion SCN 26-47) and is intended to replace both the 12 km NAM parent and the [NAM Nest](./nam-nest.md) high-resolution domains. Most NAM products will continue to be produced from RRFS output via post-processing during the transition.
 
 ---
 
@@ -156,7 +156,8 @@ The most significant NAM architectural change since the original Eta retirement.
 - NAM at EMC: https://emc.ncep.noaa.gov/emc/pages/numerical_forecast_systems/nam.php
 - NAM Vlab page: https://vlab.noaa.gov/web/emc/nam
 - NAM Product Inventory at NCEP: https://www.nco.ncep.noaa.gov/pmb/products/nam/
-- NWS SCN 26-48 (RRFS and REFS implementation, NAM retirement effective August 31, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf
+- NWS SCN 26-47 (termination of NAM/SREF/HREF/HiresW/NAM MOS, effective October 6, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf
+- NWS SCN 26-48 (RRFS and REFS implementation, effective October 6, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf
 - NAM grids being retired: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/nam_retiredgrids.txt
 - NAM products being discontinued: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/nam_retirements.txt
 - NCEI long-term archive: https://www.ncei.noaa.gov/products/weather-climate-models/north-american-mesoscale
