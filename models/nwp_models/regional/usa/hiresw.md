@@ -3,7 +3,7 @@
 ## What this model is
 HiresW (the High-Resolution Window Forecast System, sometimes written HiResW or HRW) is NOAA/NCEP's dual-core, convection-allowing regional NWP system. It runs two dynamical cores — WRF-ARW and FV3 — over five fixed regional domains, providing short-range high-resolution guidance for the U.S. and its offshore/territorial regions.
 
-> **Status note (read first):** Under NWS Service Change Notice 26-48 (May 12, 2026), the **CONUS, Alaska, Hawaii, and Puerto Rico** HiresW domains are scheduled to retire on **August 31, 2026 at 12 UTC**, replaced by [RRFS](./rrfs.md) (deterministic) and [REFS](../../../ensemble_models/regional/usa/refs.md) (ensemble). The **Guam** domain is explicitly preserved because RRFS does not extend to Guam. This entry documents the full system as operated up to that transition; see the [Status and retirement](#status-and-retirement) section below.
+> **Status note (read first):** Under NWS Service Change Notice 26-47 (termination notice; updated July 6, 2026), the **CONUS, Alaska, Hawaii, and Puerto Rico** HiresW domains are scheduled to retire on **October 6, 2026 at 12 UTC**, replaced by [RRFS](./rrfs.md) (deterministic) and [REFS](../../../ensemble_models/regional/usa/refs.md) (ensemble) under companion SCN 26-48. The **Guam** domain is explicitly preserved because RRFS does not extend to Guam. This entry documents the full system as operated up to that transition; see the [Status and retirement](#status-and-retirement) section below.
 
 ---
 
@@ -130,7 +130,7 @@ curl -O https://nomads.ncep.noaa.gov/pub/data/nccf/com/hiresw/prod/hiresw.202606
 ---
 
 ## Status and retirement
-- **CONUS, Alaska, Hawaii, Puerto Rico:** scheduled for retirement **August 31, 2026 at 12 UTC** under NWS SCN 26-48 (companion product-retirement list in SCN 26-47), originally proposed in NWS PNS 25-41 (June 26, 2025). Replaced by [RRFS](./rrfs.md) (CONUS/AK at 3 km; HI/PR at 2.5 km) and the [REFS](../../../ensemble_models/regional/usa/refs.md) ensemble. Subject to the standard CWD/ECE contingency.
+- **CONUS, Alaska, Hawaii, Puerto Rico:** scheduled for retirement **October 6, 2026 at 12 UTC** under NWS SCN 26-47 (termination notice; RRFS/REFS implementation under companion SCN 26-48), originally proposed in NWS PNS 25-41 (June 26, 2025). The July 6, 2026 SCN update moved the date from August 31, 2026 to October 6, 2026. Replaced by [RRFS](./rrfs.md) (CONUS/AK at 3 km; HI/PR at 2.5 km) and the [REFS](../../../ensemble_models/regional/usa/refs.md) ensemble. Subject to the standard CWD/ECE contingency.
 - **Guam:** explicitly **preserved** — RRFS does not extend to the Guam domain, leaving HiresW as the operational convection-allowing guidance source for the western Pacific after the other domains retire.
 
 ---
@@ -145,7 +145,8 @@ curl -O https://nomads.ncep.noaa.gov/pub/data/nccf/com/hiresw/prod/hiresw.202606
 ## Official documentation
 - NCEP product page: https://www.nco.ncep.noaa.gov/pmb/products/hiresw/
 - NOMADS production directory: https://nomads.ncep.noaa.gov/pub/data/nccf/com/hiresw/prod/
-- NWS SCN 26-48 (RRFS/REFS implementation; retirement of CONUS/AK/HI/PR HiresW domains, Guam preserved): https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf
+- NWS SCN 26-47 (termination of CONUS/AK/HI/PR HiresW domains, Guam preserved; effective October 6, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf
+- NWS SCN 26-48 (RRFS/REFS implementation; effective October 6, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf
 - NWS PNS 25-41 (legacy model cessation; Guam exempted): https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf
 - WRF-ARW (NCAR): https://www.mmm.ucar.edu/models/wrf
 - FV3 (NOAA/GFDL): https://www.gfdl.noaa.gov/fv3/
