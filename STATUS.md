@@ -6,7 +6,7 @@ The goal is to give users a single place to check "what is changing" without hav
 
 For UFS-related transitions specifically, see [UFS.md](./UFS.md), which provides the full programme context. UFS items are listed here briefly; UFS.md has the detailed narrative.
 
-Last updated: June 2026.
+Last updated: July 2026.
 
 ---
 
@@ -34,11 +34,11 @@ ECCC's operational global deterministic system becomes a hybrid physics–AI sys
 - **Entry:** [GDPS](./models/nwp_models/global/canada/gem-global.md)
 - **Authority:** ECCC technical note CMC-GDPS-EXP-10.0.0-2026; GDPS 10.0.0 fact sheet and technical specifications (May 2026)
 
-### RRFSv1 and REFS — scheduled August 31, 2026 (12 UTC)
-NOAA's next-generation convection-allowing system for North America is now formally scheduled. RRFS and REFS implement together, with legacy NAM, HREF, SREF, and HiresW (all domains except Guam) retiring on the same day. A pre-implementation real-time feed is expected on NOMADS on or about July 7, 2026. **See [UFS.md](./UFS.md) for the full UFS context including the wave of retirements that occurs on the same day.**
+### RRFSv1 and REFS — scheduled October 6, 2026 (12 UTC)
+NOAA's next-generation convection-allowing system for North America is now formally scheduled. RRFS and REFS implement together, with legacy NAM, HREF, SREF, and HiresW (all domains except Guam) retiring on the same day. A pre-implementation real-time feed is expected on NOMADS on or about August 11, 2026. **See [UFS.md](./UFS.md) for the full UFS context including the wave of retirements that occurs on the same day.**
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
-- **Authority:** NWS SCN 26-48 (May 12, 2026); product retirements detailed in companion SCN 26-47
-- **Verification note:** Originally targeted early 2026; slipped through pre-operational evaluation. The August 31 date is subject to the standard CWD/ECE contingency — if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. NBM v5.0 was deferred under exactly this provision earlier in 2026, so the contingency is not theoretical.
+- **Authority:** NWS SCN 26-48 (RRFS/REFS implementation) + companion SCN 26-47 (terminations), both updated July 6, 2026 (originally May 12, 2026)
+- **Verification note:** Originally targeted early 2026, then August 31, 2026; slipped again to October 6, 2026 in the July 6, 2026 update (AAB), which also decoupled the real-time parallel feed to on or about August 11, 2026. The October 6 date is subject to the standard CWD/ECE contingency — if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. NBM v5.0 was deferred under exactly this provision earlier in 2026, so the contingency is not theoretical.
 
 ---
 
@@ -56,9 +56,9 @@ ECMWF's AI deterministic and ensemble forecast systems both upgraded to v2, join
 
 ---
 
-## Scheduled retirements (NWS SCN 26-48 / PNS 25-41)
+## Scheduled retirements (NWS SCN 26-47 + 26-48 / PNS 25-41)
 
-These systems are scheduled for retirement on **August 31, 2026 at 12 UTC**, the same cycle that brings RRFSv1 and REFS into operations. The retirement set was originally proposed in NWS Public Information Statement 25-41 (June 26, 2025) and formally scheduled in NWS Service Change Notice 26-48 (May 12, 2026), with the detailed product retirement list in companion SCN 26-47. Subject to the standard CWD/ECE contingency. **See [UFS.md](./UFS.md) for the consolidation context.**
+These systems are scheduled for retirement on **October 6, 2026 at 12 UTC**, the same cycle that brings RRFSv1 and REFS into operations. The retirement set was originally proposed in NWS Public Information Statement 25-41 (June 26, 2025); the retirements are scheduled by NWS Service Change Notice 26-47 (termination) and RRFS/REFS implementation by companion SCN 26-48, both updated July 6, 2026 (second slip, from August 31 to October 6). Subject to the standard CWD/ECE contingency. **See [UFS.md](./UFS.md) for the consolidation context.**
 
 - [NAM](./models/nwp_models/regional/usa/nam.md) — full retirement (12 km parent and all 3 km nests)
 - [NAM Nest](./models/nwp_models/regional/usa/nam-nest.md) — all convection-allowing nests
