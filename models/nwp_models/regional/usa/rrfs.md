@@ -5,7 +5,7 @@ The Rapid Refresh Forecast System (RRFS) is NOAA's next-generation convection-al
 
 RRFS is built on the Unified Forecast System (UFS) framework and is designed to consolidate and replace several legacy NCEP regional modeling systems, including the NAM, HiresW (except the Guam domain), HREF, SREF, and NARRE. It provides both deterministic and ensemble guidance, with the ensemble component distributed as REFS (RRFS Ensemble Forecast System).
 
-RRFS and REFS are scheduled to become operational on **August 31, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026), subject to the standard CWD/ECE postponement contingency. A pre-implementation real-time parallel feed is expected on NOMADS on or about July 7, 2026.
+RRFS and REFS are scheduled to become operational on **October 6, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, 2026), subject to the standard CWD/ECE postponement contingency. A pre-implementation real-time parallel feed is expected on NOMADS on or about **August 11, 2026**.
 
 ---
 
@@ -97,7 +97,7 @@ A full description of RRFS products including variables and encoding is availabl
 ---
 
 ## Relationship to other models
-RRFS is intended to replace the following legacy NCEP regional systems on August 31, 2026:
+RRFS is intended to replace the following legacy NCEP regional systems on October 6, 2026:
 - **NAM** (12 km parent domain and 3 km nests – CONUS, AK, HI, PR, fire weather)
 - **NAM Nest**
 - **HiresW** (all domains except Guam)
@@ -115,10 +115,10 @@ HRRR, RAP, and the NAM 12 km parent domain are not retired with RRFSv1. These sy
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download locations:**
-  - **NOMADS (pre-implementation parallel feed, on or about July 7, 2026):**
+  - **NOMADS (pre-implementation parallel feed, on or about August 11, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/para/
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/rrfs
-  - **NOMADS (post-implementation, August 31, 2026):**
+  - **NOMADS (post-implementation, October 6, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/prod/
   - **AWS Open Data:** https://registry.opendata.aws/noaa-rrfs/ (prototype and operational data)
 
@@ -127,7 +127,7 @@ HRRR, RAP, and the NAM 12 km parent domain are not retired with RRFSv1. These sy
 ## Status
 - Proposal for legacy model retirement published in NWS Public Information Statement 25-41 (June 26, 2025), with a public comment period through July 26, 2025.
 - Originally targeted for operational implementation in early 2026; implementation slipped through pre-operational evaluation.
-- **NWS Service Change Notice 26-48 (May 12, 2026)** scheduled RRFS and REFS operational implementation for August 31, 2026 at 12 UTC, with retirement of NAM, HREF, SREF, and HiresW (except Guam) on the same day. Per SCN 26-48, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday.
+- **NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, 2026)** scheduled RRFS and REFS operational implementation for October 6, 2026 at 12 UTC, with retirement of NAM, HREF, SREF, and HiresW (except Guam) on the same day (retirement details in companion **SCN 26-47**). The AAB update (July 6, 2026) is the second slip: it moved the date from August 31, 2026 to October 6, 2026 and set the real-time parallel feed to begin on or about August 11, 2026. Per SCN 26-48, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday.
 - Pre-implementation parallel data feed expected on NOMADS on or about July 7, 2026.
 - RRFSv2 (based on the MPAS dynamical core) is under development and will drive the next phase of legacy model retirements (HRRR, RAP, NAM 12 km parent).
 
