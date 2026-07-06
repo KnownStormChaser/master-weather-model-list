@@ -1,6 +1,6 @@
 # NAM Nest (North American Mesoscale – High Resolution Nests)
 
-> ⚠️ **Scheduled for retirement August 31, 2026 at 12 UTC.** The NAM (12 km parent and all five high-resolution nests, NAM-DNG, DGEX, and NAM MOS) is scheduled for retirement under [NWS Service Change Notice 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf) (May 12, 2026), the same cycle that brings [RRFS](./rrfs.md) into operations. The retirement set was originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025). Implementation is subject to the standard CWD/ECE postponement contingency.
+> ⚠️ **Scheduled for retirement October 6, 2026 at 12 UTC.** The NAM (12 km parent and all five high-resolution nests, NAM-DNG, DGEX, and NAM MOS) is scheduled for retirement under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination notice; updated July 6, 2026), on the same cycle that brings [RRFS](./rrfs.md) into operations under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf) (implementation notice; May 12, 2026, updated July 6, 2026). The retirement set was originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025). Implementation is subject to the standard CWD/ECE postponement contingency.
 
 ## What this model is
 The NAM Nest is the **collective name for five high-resolution convection-allowing nested domains** run inside each cycle of the [NAM](./nam.md) (North American Mesoscale) production system. Despite its plural nature, "NAM Nest" is commonly used as a singular name in operational practice.
@@ -102,7 +102,7 @@ Unlike [HRRR](./hrrr.md), the NAM Nest covers Hawaii and Puerto Rico operational
 - **[HiresW](./hiresw.md):** Operational convection-allowing guidance for Guam (after the broader HiresW retirement); not produced by the NAM Nest.
 - **[HREF](./href.md):** Multi-model regional ensemble that uses some NAM Nest output as members.
 - **[NBM](./nbm.md):** Uses NAM Nest fields as one of many deterministic inputs.
-- **[RRFS](./rrfs.md):** Replacement. RRFSv1 implements August 31, 2026 at 12 UTC under SCN 26-48; it covers CONUS at 3 km, Alaska at 3 km, Hawaii at 2.5 km, and Puerto Rico at 2.5 km, providing functionally equivalent convection-allowing guidance to all NAM Nest domains. The 1.5 km fire-weather nest is replaced by a separate relocatable 1.5 km RRFS fire-weather run on a 5° × 5° rotated lat-lon domain. Many NAM Nest output grids will continue to be produced from RRFS output via post-processing.
+- **[RRFS](./rrfs.md):** Replacement. RRFSv1 implements October 6, 2026 at 12 UTC under SCN 26-48; it covers CONUS at 3 km, Alaska at 3 km, Hawaii at 2.5 km, and Puerto Rico at 2.5 km, providing functionally equivalent convection-allowing guidance to all NAM Nest domains. The 1.5 km fire-weather nest is replaced by a separate relocatable 1.5 km RRFS fire-weather run on a 5° × 5° rotated lat-lon domain. Many NAM Nest output grids will continue to be produced from RRFS output via post-processing.
 
 ---
 
@@ -121,11 +121,11 @@ NAM Nest output is distributed as separate GRIB2 files per nest within the paren
 ---
 
 ## Status and retirement timeline
-- **Scheduled for full retirement August 31, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026), as part of the broader NAM system retirement; detailed product list in companion SCN 26-47.
+- **Scheduled for full retirement October 6, 2026 at 12 UTC** under NWS Service Change Notice 26-47 (termination notice; updated July 6, 2026), as part of the broader NAM system retirement; RRFS/REFS implementation under companion SCN 26-48. The July 6, 2026 update moved the date from August 31, 2026 to October 6, 2026.
 - All five nest domains (CONUS, AK, HI, PR, fire weather) are included.
 - **Replacement deterministic guidance** at convection-allowing scales is provided by [RRFS](./rrfs.md) (3 km CONUS and Alaska, 2.5 km Hawaii and Puerto Rico, with a separate 1.5 km relocatable fire-weather domain).
 - The 1.5 km fire-weather nest is replaced by an operational RRFS fire-weather run on a 5° × 5° rotated latitude–longitude domain, removing the gap previously noted in fire-weather moveable-nest coverage.
-- Originally proposed for early 2026 under PNS 25-41; the date slipped through pre-operational evaluation of RRFSv1 before being scheduled in SCN 26-48. Per SCN 26-48, if August 31, 2026 is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, retirement moves to 12 UTC on the next eligible weekday.
+- Originally proposed for early 2026 under PNS 25-41; the date slipped through pre-operational evaluation of RRFSv1 before being scheduled in SCN 26-48. Per the SCN, if October 6, 2026 is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, retirement moves to 12 UTC on the next eligible weekday.
 - Some NAM Nest output grids will continue to be produced from RRFS output via post-processing to ease the transition; others will be fully discontinued. EMC has published lists of retained vs. fully discontinued grids:
   - Retained NAM Nest output grids: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/namnest_grids.txt
 
