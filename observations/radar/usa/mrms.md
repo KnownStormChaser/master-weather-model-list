@@ -23,7 +23,7 @@ input to US operational NWP and hydrology.
 
 ## Who operates it
 - **Operator / coordinating programme:** NOAA / National Severe Storms Laboratory (NSSL); operational production at NOAA/NWS/NCEP. Co-developed with the Cooperative Institute for Severe and High-Impact Weather Research and Operations (CIWRO, formerly CIMMS) / University of Oklahoma.
-- **Country / region:** United States (CONUS domain; composite extends over southern Canada and northern Mexico). Separate OCONUS domains run for Alaska, the Caribbean/Puerto Rico, Guam, and Hawaii.
+- **Country / region:** United States. The primary CONUS domain's composite extends over southern Canada and northern Mexico; separate OCONUS domains cover Alaska, the Caribbean/Puerto Rico, Guam, and Hawaii (served as subtrees under `2D/`).
 - **Data distributor:** NOAA Open Data Dissemination (NODD) via AWS; NCEP real-time HTTP server.
 
 ---
@@ -61,8 +61,11 @@ every 2 minutes; accumulations update at their stated windows.
 - **Data formats:** GRIB2, gzip-compressed (`.grib2.gz`). ProbSevere as ASCII/JSON (non-gridded).
 - **Update cadence:** Real-time; 2-minute update cycle for most 2D products.
 - **Primary access:**
-  - NCEP real-time HTTP: https://mrms.ncep.noaa.gov/ — top level `2D/`, `3DRefl/`, `3DRhoHV/`, `3DZdr/`, `ProbSevere/` (CONUS). (`RIDGEII/` is rendered imagery — see Notes.)
-  - AWS Open Data: `s3://noaa-mrms-pds` (region `us-east-1`, no account: `aws s3 ls --no-sign-request s3://noaa-mrms-pds/`); browse at https://noaa-mrms-pds.s3.amazonaws.com/index.html. The AWS bucket also carries the OCONUS domains.
+  - **NCEP real-time HTTP:** https://mrms.ncep.noaa.gov/ — top-level trees `2D/`, `3DRefl/`, `3DRhoHV/`, `3DZdr/`, `ProbSevere/`. The ~150 CONUS products sit directly under `2D/` as per-product subfolders; the OCONUS domains are nested as `2D/ALASKA/`, `2D/CARIB/`, `2D/GUAM/`, `2D/HAWAII/`. (`RIDGEII/` is rendered imagery — see Notes.)
+  - **Filename convention:** `MRMS_<Product>_<level>_<YYYYMMDD>-<HHMMSS>.grib2.gz`, timestamped in UTC at the 2-minute cycle. `<level>` is `00.00` for 2D surface fields; the `3D*/` trees carry per-CAPPI-level files. A rolling `MRMS_<Product>.latest.grib2.gz` in each folder always points to the most recent file.
+    - Example (timestamped): `https://mrms.ncep.noaa.gov/2D/PrecipRate/MRMS_PrecipRate_00.00_20260706-020000.grib2.gz` (~627 KB)
+    - Example (rolling latest): `https://mrms.ncep.noaa.gov/2D/PrecipRate/MRMS_PrecipRate.latest.grib2.gz`
+  - **AWS Open Data:** `s3://noaa-mrms-pds` (region `us-east-1`, no account: `aws s3 ls --no-sign-request s3://noaa-mrms-pds/`); browse at https://noaa-mrms-pds.s3.amazonaws.com/index.html. Mirrors the same product/domain layout and filename convention.
 - **New-data notifications:** SNS `arn:aws:sns:us-east-1:123901341784:NewMRMSObject` (Lambda and SQS protocols only).
 - **Archive depth:** The NCEP HTTP server is a short rolling real-time window; the AWS bucket holds the operational archive. Note the v11→v12 break on 14 October 2020 (below) — treat pre-2020 v11 holdings with caution.
 - **Licence:** NOAA Open Data Dissemination (NODD) — open to the public and usable as desired; as a U.S. Government work, effectively public domain (CC0-equivalent). Attribution requested; no stating or implying NOAA endorsement; modified data must not be presented as original, unaltered NOAA data.
