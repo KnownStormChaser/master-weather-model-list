@@ -1,15 +1,15 @@
 # master-weather-model-list
 
-This repository is a **simple, human-readable catalog of publicly available forecast models and the satellite data that feeds them**.
+This repository is a **simple, human-readable catalog of publicly available forecast models and the observational data that feeds them**.
 
-Its primary focus is **numerical weather prediction (NWP) and related atmospheric forecast systems** whose data can be **freely downloaded** by anyone. It also includes a smaller catalog of **operational weather satellites with openly distributed raw data**, since these observation systems are foundational inputs to the models documented here.
+Its primary focus is **numerical weather prediction (NWP) and related atmospheric forecast systems** whose data can be **freely downloaded** by anyone. It also includes a smaller catalog of **operational observation systems with openly distributed raw data — weather satellites and radar networks** — since these are foundational inputs to the models documented here.
 
 The goal is to make it easy to discover:
 - which forecast models exist
 - who produces them
 - what regions they cover
 - where their data can be downloaded
-- and which weather satellites provide raw data that can be freely accessed
+- and which weather satellites and radar networks provide raw data that can be freely accessed
 
 No meteorology background is required to use this repository.
 
@@ -26,6 +26,7 @@ No meteorology background is required to use this repository.
 - **Long-range forecast systems** (sub-seasonal, seasonal, and interannual prediction)
 - **AI-based and hybrid physics–AI forecast systems**
 - **Operational weather satellites** with openly distributed raw data (Level 1 calibrated radiances, Level 2 retrievals)
+- **Operational weather radar networks and composites** with openly distributed gridded data (e.g., reflectivity mosaics and radar-derived precipitation estimation); rendered radar imagery and viewer-only web loops remain out of scope
 - **Free and publicly downloadable data**, including:
   - Data with no account required (e.g., NOAA NOMADS, AWS Open Data buckets)
   - Data requiring free registration or a free API key (e.g., EUMETSAT Data Store, KNMI Data Platform, Météo-France public API)
@@ -39,7 +40,7 @@ No meteorology background is required to use this repository.
 ## What this repository does NOT include
 - Models or satellite data behind paywalls, commercial licensing, or usage-fee structures
 - Data that requires approval gates, vetted-user programs, or commercial-use restrictions beyond simple registration
-- Models that only provide maps or viewers without downloadable data (this excludes the many nowcasting products distributed only as web radar loops or viewer animations)
+- Models or observation systems that only provide maps or viewers without downloadable data — including nowcasting products distributed only as web radar loops, and rendered radar imagery or tile services (e.g. RIDGE-style viewers) where no gridded feed is offered
 - Research-only or one-off model runs that are not distributed by an operating agency
 - Climate **reanalysis** and other historical-only datasets (e.g., ERA5, CFSR) — note that forward-looking long-range *forecast* systems (sub-seasonal, seasonal, and interannual prediction) **are** in scope and are documented under `models/climate_models/`; only reanalyses and historical-only products are excluded
 - Commercial weather satellites and Earth observation missions outside the operational weather/atmospheric scope
@@ -64,11 +65,10 @@ Each model has its own file describing:
 - basic resolution and update information
 - where to download the data
 
-Satellites are organized in a parallel structure under `observations/satellites/` by:
-- **Orbit type** (geostationary vs polar-orbiting)
-- **Country or organization of origin**
+- **Satellites** (`observations/satellites/`) — organized by **orbit type** (geostationary vs polar-orbiting) and **country or organization of origin**. Each entry covers a constellation or series (e.g., GOES-R Series rather than separate GOES-16 and GOES-19 entries).
+- **Radar** (`observations/radar/`) — operational weather-radar networks and composites, organized by **country or organization of origin**. Each entry covers a network or composite product (e.g., MRMS, OPERA) rather than individual radars.
 
-Each satellite entry covers a constellation or series (e.g., GOES-R Series rather than separate GOES-16 and GOES-19 entries) and follows the same general format as the model entries. See [`observations/satellites/README.md`](./observations/satellites/README.md) for the index of currently documented satellite systems.
+These observation entries follow the same general format as the model entries. See [`observations/satellites/README.md`](./observations/satellites/README.md) for the index of documented satellite systems.
 
 ---
 
@@ -88,7 +88,7 @@ These exist because the country-and-type directory structure doesn't surface eve
 
 ## Why this exists
 
-Information about forecast models and weather satellites is often:
+Information about forecast models, weather satellites, and radar networks is often:
 - scattered across many websites
 - written for experts only
 - difficult to compare or discover
