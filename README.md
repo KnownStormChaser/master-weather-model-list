@@ -68,7 +68,7 @@ Satellites are organized in a parallel structure under `satellites/` by:
 - **Orbit type** (geostationary vs polar-orbiting)
 - **Country or organization of origin**
 
-Each satellite entry covers a constellation or series (e.g., GOES-R Series rather than separate GOES-16 and GOES-19 entries) and follows the same general format as the model entries. See [`satellites/README.md`](./satellites/README.md) for the index of currently documented satellite systems.
+Each satellite entry covers a constellation or series (e.g., GOES-R Series rather than separate GOES-16 and GOES-19 entries) and follows the same general format as the model entries. See [`observations/satellites/README.md`](./observations/satellites/README.md) for the index of currently documented satellite systems.
 
 ---
 
