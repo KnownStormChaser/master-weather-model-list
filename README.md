@@ -64,7 +64,7 @@ Each model has its own file describing:
 - basic resolution and update information
 - where to download the data
 
-Satellites are organized in a parallel structure under `satellites/` by:
+Satellites are organized in a parallel structure under `observations/satellites/` by:
 - **Orbit type** (geostationary vs polar-orbiting)
 - **Country or organization of origin**
 
@@ -80,7 +80,7 @@ In addition to the directory structure, several index files make specific slices
 - [`STATUS.md`](./STATUS.md) — tracker for upcoming implementations, scheduled retirements, experimental systems, version upgrades, and format changes
 - [`COPERNICUS.md`](./COPERNICUS.md) — index of all products distributed through the Copernicus Marine Service and Copernicus Atmosphere Monitoring Service, organized by operator and coverage
 - [`UFS.md`](./UFS.md) — index of all NOAA models that are part of, being consolidated into, or being retired by the Unified Forecast System, with the full programme context and rollout sequencing
-- [`satellites/README.md`](./satellites/README.md) — index of operational weather satellites with openly downloadable raw data, with quick-reference tables for access tiers
+- [`observations/satellites/README.md`](./observations/satellites/README.md) — index of operational weather satellites with openly downloadable raw data, with quick-reference tables for access tiers
 
 These exist because the country-and-type directory structure doesn't surface every useful view on its own. Users arriving with "show me all the AI models" or "what's being retired this year" or "which satellites have no-account-needed S3 access" can go straight to the relevant index.
 
