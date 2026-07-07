@@ -99,8 +99,8 @@ These are operationally important satellites and the data is genuinely free, but
 
 Satellite observations feed many of the models documented elsewhere in this repository:
 
-- [`AI_MODELS.md`](../AI_MODELS.md) — AI weather models trained partially on satellite-derived analyses
-- [`COPERNICUS.md`](../COPERNICUS.md) — Copernicus Marine and Atmosphere services that ingest satellite observations (notably Sentinel-4 and Sentinel-5 hosted on MTG and MetOp-SG)
+- [`AI_MODELS.md`](../../AI_MODELS.md) — AI weather models trained partially on satellite-derived analyses
+- [`COPERNICUS.md`](../../COPERNICUS.md) — Copernicus Marine and Atmosphere services that ingest satellite observations (notably Sentinel-4 and Sentinel-5 hosted on MTG and MetOp-SG)
 - Air quality model entries — CAMS Global, NAQFC, RAQDPS all assimilate satellite composition retrievals
 - Ocean physics model entries — GLO12, GIOPS, RTOFS all assimilate altimeter SWH, SST, and sea ice products
 - NWP model entries — operational global NWP systems (GFS, IFS, GEM, ICON, others) assimilate IASI, ATMS, CrIS, AMSU, MHS, GPS-RO, AMV, and scatterometer winds from the satellites documented here
@@ -113,7 +113,7 @@ Additions and corrections to satellite entries follow the same conventions as th
 
 1. Verify the data is genuinely free and downloadable
 2. Confirm operational status from official agency sources
-3. Use the satellite template ([`templates/satellite.template.md`](../templates/satellite.template.md)) as a starting point
+3. Use the satellite template ([`templates/satellite.template.md`](../../templates/satellite.template.md)) as a starting point
 4. Place new entries in the appropriate `satellites/<orbit_type>/<country>/` directory
 5. Update this README's quick-reference tables when adding new entries
 
