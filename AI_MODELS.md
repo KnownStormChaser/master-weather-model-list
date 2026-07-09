@@ -26,11 +26,11 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ### [AIFS Single (ECMWF)](./models/nwp_models/global/eu/aifs-single.md)
 - **Operator:** ECMWF
-- **Operational since:** February 25, 2025 (v1.0.0); currently v1.1.0 (August 27, 2025)
-- **Next upgrade:** v2 scheduled for May 12, 2026
+- **Operational since:** February 25, 2025 (v1.0.0); currently **v2** (May 12, 2026), deployed jointly with IFS Cycle 50r1
 - **Approach:** Standalone AI, MSE-trained, encoder–processor–decoder architecture with graph neural networks and transformer
 - **Resolution:** ~0.25° (Open Data)
 - **Forecast length:** Up to 15 days
+- **Note:** v2 added a 10 hPa pressure level (14 total), a snow cover parameter, and ECMWF's first data-driven ocean wave forecasts.
 
 ### [AIGFS (NOAA)](./models/nwp_models/global/usa/aigfs.md)
 - **Operator:** NOAA / NCEP
@@ -41,7 +41,7 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ### [GEML (ECCC)](./models/nwp_models/global/canada/gdps-geml.md)
 - **Operator:** ECCC / Canadian Meteorological Centre
-- **Status:** Experimental
+- **Status:** Operational (v1.1; AI component of GDPS v10.0.0, operational since May 26, 2026)
 - **Approach:** Standalone AI (GraphCast-derived), retrained on ERA5 + ECMWF HRES analyses; weights publicly distributed via HuggingFace
 - **Resolution:** 0.25° (~28 km)
 - **Forecast length:** 10 days
@@ -63,11 +63,11 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ### [AIFS ENS (ECMWF)](./models/ensemble_models/global/eu/aifs-ens.md)
 - **Operator:** ECMWF
-- **Operational since:** July 1, 2025
-- **Next upgrade:** v2 scheduled for May 12, 2026
-- **Approach:** Standalone AI, CRPS-trained for probabilistic forecasting; ensemble members generated via noise injection
+- **Operational since:** July 1, 2025 (v1); currently **v2** (May 12, 2026), deployed jointly with IFS Cycle 50r1
+- **Approach:** Standalone AI, probabilistically trained (multi-scale loss in v2, replacing v1's afCRPS); ensemble members generated via noise injection
 - **Resolution:** ~0.25° (Open Data); native ~30 km
 - **Members:** 51 (1 control + 50 perturbed)
+- **Note:** v2 added a 10 hPa pressure level, a probabilistic wave ensemble stream (ECMWF's first), and snow cover, convective precipitation, and volumetric soil moisture parameters.
 
 ### [AIGEFS (NOAA)](./models/ensemble_models/global/usa/aigefs.md)
 - **Operator:** NOAA / NCEP
