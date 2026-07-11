@@ -81,6 +81,7 @@ In addition to the directory structure, several index files make specific slices
 - [`COPERNICUS.md`](./COPERNICUS.md) — index of all products distributed through the Copernicus Marine Service and Copernicus Atmosphere Monitoring Service, organized by operator and coverage
 - [`UFS.md`](./UFS.md) — index of all NOAA models that are part of, being consolidated into, or being retired by the Unified Forecast System, with the full programme context and rollout sequencing
 - [`observations/satellites/README.md`](./observations/satellites/README.md) — index of operational weather satellites with openly downloadable raw data, with quick-reference tables for access tiers
+- [`observations/radar/README.md`](./observations/radar/README.md) — index of operational weather-radar networks and composites with openly downloadable gridded data, with quick-reference tables for access tiers and endpoints
 
 These exist because the country-and-type directory structure doesn't surface every useful view on its own. Users arriving with "show me all the AI models" or "what's being retired this year" or "which satellites have no-account-needed S3 access" can go straight to the relevant index.
 
