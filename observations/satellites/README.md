@@ -42,6 +42,7 @@ For users wanting the most frictionless access, the following constellations dis
 
 | Constellation | Operator | S3 buckets | Coverage |
 |---|---|---|---|
+| [GEO-KOMPSAT-2A](./geostationary/korea/gk2a.md) | KMA (distributed by NOAA) | `s3://noaa-gk2a-pds/` | Asia-Pacific geostationary |
 | [GOES-R Series](./geostationary/usa/goes-r-series.md) | NOAA | `s3://noaa-goes16/`, `s3://noaa-goes17/`, `s3://noaa-goes18/`, `s3://noaa-goes19/` | Western Hemisphere geostationary |
 | [Himawari-8/9](./geostationary/japan/himawari.md) | JMA (distributed by NOAA) | `s3://noaa-himawari8/`, `s3://noaa-himawari9/` | Western Pacific geostationary |
 | [JPSS](./polar_orbiting/usa/jpss.md) | NOAA | `s3://noaa-nesdis-n21-pds/`, `s3://noaa-nesdis-n20-pds/`, `s3://noaa-nesdis-snpp-pds/` | Polar orbiting, twice-daily global |
@@ -70,6 +71,7 @@ Entries are organized by orbit type and operating country/region, mirroring the 
 ```
 satellites/
   geostationary/
+    korea/       — GEO-KOMPSAT-2A (GK-2A)
     usa/         — GOES-R Series
     japan/       — Himawari-8/9
     eu/          — Meteosat (MSG and MTG)
@@ -87,7 +89,6 @@ Each entry covers a constellation or satellite series rather than individual spa
 The current section covers the operationally significant Western and European weather satellite systems with truly open data access. Several other operational systems exist with free-but-registered access that may be added later:
 
 - **Fengyun (FY-4 geostationary, FY-3 polar-orbiting)** — China Meteorological Administration, distributed via NSMC portal with registration
-- **GEO-KOMPSAT-2A (GK-2A)** — Korea Meteorological Administration, distributed via NMSC portal with registration
 - **INSAT-3D series** — India Meteorological Department, distributed via MOSDAC with registration and some restrictions on non-Indian users
 - **Elektro-L series** — Roshydromet (Russia), distributed via NTSOMZ with intermittent availability
 
