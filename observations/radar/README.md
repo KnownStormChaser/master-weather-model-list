@@ -49,6 +49,7 @@ Most operational radar data documented here is in the first tier.
 | [FMI](./finland/fmi-radar.md) | FMI | Finland | Composite + single-site | GeoTIFF / ODIM HDF5 | Open (no account) | CC BY 4.0 |
 | [ČHMÚ (CZRAD)](./czechia/chmi-radar.md) | ČHMÚ | Czechia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 | [HungaroMet](./hungary/hungaromet-radar.md) | HungaroMet | Hungary | Composite (CMax / PseudoCAPPI / 3D) | NetCDF (zipped) | Open (no account) | CC BY-SA 4.0 |
+| [SHMÚ](./slovakia/shmu-radar.md) | SHMÚ | Slovakia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 
 Note the licence spread: US products are public domain (NODD); OPERA and MET Norway are CC BY 4.0; the UK and Italian composites are CC BY-**SA** 4.0 (ShareAlike); DWD is GeoNutzV with mandatory attribution.
 
@@ -70,8 +71,9 @@ For the most frictionless access, these networks distribute gridded data with no
 | [FMI](./finland/fmi-radar.md) | `s3://fmi-opendata-radar-geotiff`, `s3://fmi-opendata-radar-volume-hdf5` | AWS `eu-west-1` |
 | [ČHMÚ (CZRAD)](./czechia/chmi-radar.md) | https://opendata.chmi.cz/meteorology/weather/radar/ | ČHMÚ Open Data |
 | [HungaroMet](./hungary/hungaromet-radar.md) | https://odp.met.hu/weather/radar/composite/nc/ | HungaroMet ODP |
+| [SHMÚ](./slovakia/shmu-radar.md) | https://opendata.shmu.sk/meteorology/weather/radar/ | SHMÚ Open Data |
 
-The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, ČHMÚ, and HungaroMet are plain THREDDS / HTTPS.
+The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, ČHMÚ, HungaroMet, and SHMÚ are plain THREDDS / HTTPS.
 
 ---
 
@@ -90,6 +92,7 @@ observations/radar/
   finland/   — FMI (composites, single-radar products, ODIM volumes)
   czechia/   — ČHMÚ (CZRAD: single-site volumes + national composites)
   hungary/   — HungaroMet (national composites: CMax, PseudoCAPPI, 3D)
+  slovakia/  — SHMÚ (CZRAD-style: single-site volumes + national composites)
 ```
 
 Each entry covers a network or composite product rather than an individual radar — MRMS as one mosaic, NEXRAD as one single-site archive — with the single exception that a national service publishing genuinely distinct products (e.g. DWD's composites and single-site sweeps) documents them together in one entry.
