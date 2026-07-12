@@ -15,7 +15,7 @@ INCA was specifically designed for complex mountainous terrain (the eastern Alps
 
 ## What area it covers
 - **Coverage:** Austria and the surrounding eastern Alpine region
-- **Domain details:** The Austrian operational INCA domain covers roughly 600 km × 350 km centred on the eastern Alps, on a 1 km grid. The public products use the MGI / Austria Lambert projection (EPSG:31287); the nowcast bounding box is approximately 45.5–49.48 °N, 8.1–17.74 °E (the hourly analysis product spans a slightly wider 45.77–49.48 °N, 7.1–17.74 °E).
+- **Domain details:** The public nowcast grid is **701 × 431 points at 1 km** (~700 km × 430 km), on the MGI / Austria Lambert projection (EPSG:31287; standard parallels 46°N / 49°N, origin 47.5°N / 13.333°E). Bounding box ≈ 45.50–49.48 °N, 8.10–17.74 °E (confirmed from a distributed nowcast file). The hourly analysis product spans a slightly wider 45.77–49.48 °N, 7.1–17.74 °E.
 
 ---
 
@@ -26,7 +26,7 @@ INCA was specifically designed for complex mountainous terrain (the eastern Alps
 - **Underlying / driving model:** The NWP first guess and trend are provided by GeoSphere's operational [AROME Austria](../../../nwp_models/regional/austria/arome-austria.md) (AROME-Aut). The foundational INCA papers (2011) describe the then-operational driver as ALADIN-Austria (9.6 km, 60 levels, 4× daily to +72 h); GeoSphere has since transitioned its operational limited-area model from ALADIN to AROME.
 - **Probabilistic / ensemble:** No (deterministic)
 - **Horizontal resolution:** 1 km
-- **Vertical structure:** The public products are 2D near-surface fields (2 m temperature and humidity, 10 m wind, precipitation). Internally the analysis is three-dimensional, using a z-coordinate measured above a slowly varying valley-floor surface (temperature analysis on 21 levels at Δz = 200 m to ~4000 m above the valley floor; wind analysis on 32 levels at Δz = 125 m).
+- **Vertical structure:** The public products are 2D near-surface fields (2 m temperature, dew point, and humidity; 10 m wind speed, direction, and gust; precipitation amount and type). Internally the analysis is three-dimensional, using a z-coordinate measured above a slowly varying valley-floor surface (temperature analysis on 21 levels at Δz = 200 m to ~4000 m above the valley floor; wind analysis on 32 levels at Δz = 125 m).
 - **Lead time:** 0–3 h (public nowcast product). Internally the nowcast blends into the NWP forecast over a longer window, and INCA continues to add value to the NWP forecast through downscaling at longer ranges.
 - **Update frequency:** Every 15 minutes (nowcast product). The companion analysis product updates hourly.
 - **Temporal output resolution:** 15-minute steps (nowcast); 1-hour (analysis)
@@ -49,13 +49,17 @@ For precipitation and cloudiness, the observation-based extrapolation receives f
 ---
 
 ## What it provides
-The public 15-minute nowcast product provides 0–3 h forecasts of:
-- 2 m temperature
-- Precipitation
-- 10 m wind
-- 2 m humidity
+The public 15-minute nowcast product provides 0–3 h forecasts (13 steps at 15-min spacing, including the +0 analysis) of the following near-surface fields:
+- 2 m air temperature (`TT`)
+- 2 m dew point temperature (`TD`)
+- 2 m relative humidity (`RH`)
+- 10 m wind speed (`FF`), direction (`DD`), and gust (`FX`)
+- 15-min accumulated precipitation (`RR`)
+- precipitation type (`PT`)
 
-The fuller INCA system additionally analyses and nowcasts cloudiness, global radiation, precipitation type (rain / snow / sleet / freezing rain), snowfall line, and ground temperature, and derives convective parameters (e.g. CAPE, CIN, LCL); not all of these appear in the public 15-minute nowcast dataset.
+(Variable list read directly from a distributed nowcast NetCDF file.) Precipitation type **is** included in the public nowcast dataset; in the inspected file it is an integer-coded field with 255 as the no-precipitation/fill value — the exact code table is not embedded in the file (flag).
+
+The fuller INCA system additionally analyses and nowcasts cloudiness, global radiation, snowfall line, and ground temperature, and derives convective parameters (e.g. CAPE, CIN, LCL); those do not appear in the public 15-minute nowcast dataset.
 
 ---
 
@@ -63,7 +67,8 @@ The fuller INCA system additionally analyses and nowcasts cloudiness, global rad
 - **Is the data free?** Yes
 - **License:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 - **Is the data downloadable?** Yes
-- **Data formats:** NetCDF
+- **Data formats:** NetCDF (CF-1.7)
+- **File naming:** `nowcast_yyyyMMddHHmm.nc` (e.g. `nowcast_202607122230.nc`)
 - **Official download location (nowcast, 15-min, +3 h):**
   https://public.hub.geosphere.at/public/datahub.html?id=nowcast-v1-15min-1km/filelisting
 - **Companion analysis product (hourly, 1 km, archive from 2011):**
