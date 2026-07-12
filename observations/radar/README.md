@@ -47,6 +47,7 @@ Most operational radar data documented here is in the first tier.
 | [MET Norway](./norway/metno-radar.md) | MET Norway | Nordic + Norway | Composite | NetCDF (CF) | Open (no account) | CC BY 4.0 |
 | [DWD](./germany/dwd-radar.md) | DWD | Germany | Composite + single-site | RADOLAN binary / ODIM HDF5 | Open (no account) | GeoNutzV (≈ CC BY 4.0) |
 | [FMI](./finland/fmi-radar.md) | FMI | Finland | Composite + single-site | GeoTIFF / ODIM HDF5 | Open (no account) | CC BY 4.0 |
+| [ČHMÚ (CZRAD)](./czechia/chmi-radar.md) | ČHMÚ | Czechia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 
 Note the licence spread: US products are public domain (NODD); OPERA and MET Norway are CC BY 4.0; the UK and Italian composites are CC BY-**SA** 4.0 (ShareAlike); DWD is GeoNutzV with mandatory attribution.
 
@@ -66,8 +67,9 @@ For the most frictionless access, these networks distribute gridded data with no
 | [MET Norway](./norway/metno-radar.md) | https://thredds.met.no/ (OPeNDAP / HTTP / WCS / WMS) | MET Norway THREDDS |
 | [DWD](./germany/dwd-radar.md) | https://opendata.dwd.de/weather/radar/ | DWD Open Data |
 | [FMI](./finland/fmi-radar.md) | `s3://fmi-opendata-radar-geotiff`, `s3://fmi-opendata-radar-volume-hdf5` | AWS `eu-west-1` |
+| [ČHMÚ (CZRAD)](./czechia/chmi-radar.md) | https://opendata.chmi.cz/meteorology/weather/radar/ | ČHMÚ Open Data |
 
-The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway and DWD are plain THREDDS / HTTPS.
+The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, and ČHMÚ are plain THREDDS / HTTPS.
 
 ---
 
@@ -84,6 +86,7 @@ observations/radar/
   norway/    — MET Norway (Nordic reflectivity + Norwegian accumulation)
   germany/   — DWD (RADOLAN, reflectivity composites, single-site)
   finland/   — FMI (composites, single-radar products, ODIM volumes)
+  czechia/   — ČHMÚ (CZRAD: single-site volumes + national composites)
 ```
 
 Each entry covers a network or composite product rather than an individual radar — MRMS as one mosaic, NEXRAD as one single-site archive — with the single exception that a national service publishing genuinely distinct products (e.g. DWD's composites and single-site sweeps) documents them together in one entry.
