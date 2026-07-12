@@ -1,4 +1,4 @@
-# ARSO Nowcast (Slovenia)
+# ARSO Nowcast — INCA (Slovenia)
 
 ## What this model is
 ARSO Nowcast is the Slovenian Environment Agency's gridded weather-analysis and very-short-range forecast (nowcast) product covering Slovenia and the surrounding region. It provides 1 km fields of near-surface air temperature, near-surface wind, precipitation, and sky openness (clear-sky fraction), refreshing every 30 minutes to one hour. The distributed GRIB files are named `public_inca_*`, identifying the product as ARSO's implementation of **INCA** (Integrated Nowcasting through Comprehensive Analysis) — the Slovenian node of the INCA-CE Central European family. See the [INCA (Austria)](../austria/inca.md) entry for the method family (a seamless extrapolation–NWP blend built on a comprehensive multi-source analysis). ARSO's own cited documentation does not describe the method or configuration, so ARSO-specific details (NWP first guess, blending timescales, input sources) remain flagged below.
