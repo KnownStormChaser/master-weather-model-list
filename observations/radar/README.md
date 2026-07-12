@@ -89,14 +89,15 @@ Each entry covers a network or composite product rather than an individual radar
 
 ## What's intentionally missing (for now)
 
-Several systems were evaluated and deliberately left out, for reasons worth recording:
+Several systems were evaluated but not given full entries, for reasons worth recording. This catalog's radar entries are reserved for **real-time (or near-real-time) operational feeds**; genuinely open datasets that are only delayed or archival are noted here instead.
 
 - **Canada (ECCC / MSC)** — viewer/imagery only. The open channels are rendered GIF (Datamart) and WMS map images (GeoMet); there is no open gridded feed. Worth revisiting if a WCS coverage or GRIB/GeoTIFF path appears (a "Radar product guide" is pending on the MSC side).
 - **MET Norway HF-radar** — High-Frequency radar measuring **ocean surface currents**, not precipitation. A different instrument class; not weather radar.
 - **Rendered image services** — `api.met.no` radar, NWS RIDGE / RIDGE II tiles, and national WMS/viewer loops return images, not gridded data.
 - **Radar-derived nowcasts** — DWD RADVOR and RADOLAN-RV, KONRAD3D, and the nowcast fields bundled inside MRMS (FLASH, ANC) project future states; they are flagged for the **nowcasting model** section rather than documented here.
+- **IDEAM (Colombia)** — genuine open single-site Level II data in Sigmet/IRIS format (`s3://s3-radaresideam`, `us-east-1`, CC BY 4.0), with a historical archive back to 2018. Noted here rather than given a full entry because the recent feed is **delayed and intermittent** rather than real-time: checked against the live bucket, the newest data typically runs 1–2 days behind, with whole days absent and only part of the network present on a given day. Valuable as a historical Level II archive — worth a full entry if IDEAM moves to a reliable real-time feed.
 
-Other national radar services with open gridded feeds may be added as they are verified.
+Other national radar services with open **real-time** gridded feeds may be added as they are verified.
 
 ---
 
@@ -112,7 +113,7 @@ Other national radar services with open gridded feeds may be added as they are v
 
 Additions and corrections to radar entries follow the same conventions as the rest of the repository:
 
-1. Verify the data is genuinely free and downloadable through a permanent open channel (free registration is acceptable; paywalls and approval gates are not)
+1. Verify the data is genuinely free and downloadable through a permanent open channel (free registration is acceptable; paywalls and approval gates are not), and that it is a real-time or near-real-time operational feed — delayed-only or archive-only datasets are noted under "What's intentionally missing" rather than given full entries
 2. Confirm it is an **observation**, not a nowcast/forecast — radar-derived nowcasts belong in the nowcasting model section
 3. Confirm the data is **gridded or structured** (GRIB2, NetCDF, ODIM HDF5, native binary), not rendered imagery
 4. Use the radar template ([`templates/radar.template.md`](../../templates/radar.template.md)) as a starting point
