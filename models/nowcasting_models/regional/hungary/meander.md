@@ -34,7 +34,7 @@ MEANDER (MEsoscale ANalysis and DEcision Routines) is HungaroMet's operational a
 ---
 
 ## Inputs
-- **Radar:** Hungarian weather-radar network — radar reflectivity/signal and radar-signal advection for precipitation extrapolation (network details TBD)
+- **Radar:** HungaroMet national radar network — **five C-band (5.5 cm) dual-polarisation Doppler radars** (Budapest, Napkor, Pogányvár, Szentes, Hármas-hegy), 240 km range, ingested via the national reflectivity composite (CMax / PseudoCAPPI); radar reflectivity/signal (dBZ) and radar-signal advection drive the precipitation extrapolation. See [HungaroMet Radar](../../../../observations/radar/hungary/hungaromet-radar.md).
 - **Satellite:** Yes (satellite information used in the analysis; channels TBD)
 - **Surface / other observations:** Surface station measurements
 - **NWP fields:** WRF forecast values
