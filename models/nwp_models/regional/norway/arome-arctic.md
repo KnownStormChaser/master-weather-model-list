@@ -15,7 +15,7 @@ It is a HARMONIE-AROME configuration tailored to high-latitude conditions, with 
 
 ## What area it covers
 - **Coverage:** European Arctic — including Svalbard, the Norwegian Sea, the Barents Sea, parts of the Greenland Sea, and adjacent land and marine areas
-- **Domain details:** Lambert-projected Arctic domain at 2.5 km grid spacing (the "blue contour" domain on MET Norway's [domain map](https://github.com/metno/NWPdocs/wiki/AROME-Arctic-dataset#domains)); larger and more northerly than the MEPS Nordic domain.
+- **Domain details:** Lambert-projected Arctic domain at 2.5 km grid spacing, **739 × 949 grid points** (verified from the THREDDS OPeNDAP structure), covering roughly **62–88°N, 18°W–80°E** (per the file's `geospatial_*` global attributes); the "blue contour" domain on MET Norway's [domain map](https://github.com/metno/NWPdocs/wiki/AROME-Arctic-dataset#domains) — larger and more northerly than the MEPS Nordic domain.
 
 ---
 
@@ -27,7 +27,9 @@ It is a HARMONIE-AROME configuration tailored to high-latitude conditions, with 
 - **Horizontal resolution:** ~2.5 km
 - **Vertical levels:** 65 (lowest level ~12 m above ground)
 - **Model top:** 10 hPa (~30 km)
-- **Forecast length:** 66 hours
+- **Forecast length:**
+  - 66 hours for the deterministic control (verified: the `det_vc` product carries 67 hourly steps, +0…+66 h)
+  - 61 hours for the time-lagged ensemble members as archived/disseminated (verified from the 2026-07-13 00 UTC `lagged_6_h` product: 62 hourly steps, +0…+61 h)
 - **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** 1 hour
 
@@ -78,7 +80,8 @@ The model is optimized for polar boundary-layer processes, sea-ice / cold-surfac
 
 ## Notes
 - **File structure mirrors MEPS:** Since the March 2022 production change, AROME-Arctic file names and structure follow the same convention as [MEPS](./meps.md): `<model>_<form>_<resolution>_<DTG>.<type>`, with `det` for the deterministic control output and `lagged_Xh_*` for ensemble output. Most files in the latest catalogue are NCML-only (accessed via OPeNDAP); some (`*_latest.nc`, `*_vc_*`) are also available as NetCDF.
-- **AROME-Arctic EPS (companion ensemble):** AROME-Arctic also runs as an ensemble system distributed alongside the deterministic control. Since the September 2024 update, it produces 6 members per 6 hours. This entry covers the deterministic configuration; if the AROME-Arctic EPS is documented separately in the future, it would belong under `ensemble_models/regional/norway/`.
+- **AROME-Arctic EPS (companion ensemble):** AROME-Arctic also runs as an ensemble system distributed alongside the deterministic control. Since the September 2024 update, it produces 6 members per 6 hours (verified: the `lagged_6_h` products carry `ensemble_member = 6`). This entry covers the deterministic configuration; if the AROME-Arctic EPS is documented separately in the future, it would belong under `ensemble_models/regional/norway/`.
+- **Polar-low tracking product:** The latest catalogue also carries a gridded polar-low (PL) tracking product derived from the 6-member lagged EPS — `arome_arctic_lagged_6_h_tracking_2_5km_*`, offered as direct NetCDF (`_latest.nc` plus per-cycle files at 00/06/12/18 UTC). It holds two fields on the full 739 × 949 grid, `strike_probability` (long name "PL strike_probability map") and `number_of_tracks` ("Individual PL tracks"), hourly out to +42 h, with no ensemble-member dimension (a probability/count map rather than raw model output). This fits AROME-Arctic's polar-low focus and is distinct from the deterministic and EPS field products.
 - **Relationship to MEPS:** AROME-Arctic is closely related to [MEPS](./meps.md) (both are HARMONIE-AROME at 2.5 km), but the two systems are configured differently. AROME-Arctic generally tracks MEPS upgrades after a delay. Documented configuration differences include: no radar reflectivity assimilation in AROME-Arctic; the statistical cloud scheme (`STATNW`) is disabled in AROME-Arctic (it produced higher negative bias in low cloud cover over Svalbard in 500 m experiments); a different surface-layer Richardson number cutoff (`xrimax = 0` in AA vs 0.4 in MEPS); Mode-S EHS settings differ; and AROME-Arctic does not assimilate FengYun-3C MWHS-2.
 - **Use in CARRA:** AROME-Arctic provides the operational basis for the Copernicus Arctic Regional Reanalysis (CARRA1 and the upcoming CARRA2), which extends a HARMONIE-AROME-based Arctic reanalysis back to 1985 and is delivered through the Copernicus Climate Data Store.
 - **Use in other MET Norway systems:** AROME-Arctic provides atmospheric forcing for [Barents-2.5](https://ocean.met.no/models), MET Norway's coupled ocean and sea-ice ensemble for the Barents Sea and around Svalbard.
