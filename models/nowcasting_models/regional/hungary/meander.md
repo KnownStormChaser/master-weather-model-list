@@ -13,7 +13,7 @@ MEANDER (MEsoscale ANalysis and DEcision Routines) is HungaroMet's operational a
 
 ## What area it covers
 - **Coverage:** Hungary and the surrounding Carpathian Basin
-- **Domain details:** 220 (W–E) × 355 (N–S) grid points. Northwest corner at **lat 48.8°N, lon 15.7°E**; grid spacing **dx = 0.021274°** (E–W), **dy = 0.014378°** (N–S). This yields an approximate extent of **43.7°N–48.8°N, 15.7°E–20.4°E** (south/east edges derived from the corner, spacing, and grid dimensions).
+- **Domain details:** **355 (W–E) × 220 (N–S)** grid points (global attrs `Nx=355`, `Ny=220`). Northwest (first) grid point at **lat 48.8°N, lon 15.7°E** (`La1`/`Lo1`), with north→south row order; grid spacing **dx = 0.021274°** (E–W), **dy = 0.014378°** (N–S). This yields an extent of ≈ **45.65°N–48.8°N, 15.7°E–23.2°E** (south/east edges derived from the corner + spacing × dimensions). Read directly from the distributed NetCDF global attributes.
 - **Projection:** Regular latitude–longitude (spherical)
 
 ---
@@ -55,9 +55,9 @@ Gridded surface analysis/nowcast fields (one variable per file):
 | U10 | 10 m wind, west–east component | m/s |
 | V10 | 10 m wind, south–north component | m/s |
 | PSFC | Surface pressure | Pa |
-| PSEALEVEL | Mean sea-level pressure | Pa |
-| cloudines | Cloud cover | octa |
-| maxRadSig | Radar signal | dBZ |
+| PSEALEVEL | Mean sea-level pressure | hPa |
+| cloudines | Cloud cover | okta |
+| maxRadSig | Radar signal | dB |
 | sumRadPrec | Predicted precipitation from radar-signal advection | mm |
 | sumPrec_01hour | Precipitation in the last 1 hour (radar + surface measurements) | mm |
 | WGUST | Wind gust | m/s |
@@ -90,12 +90,14 @@ Gridded surface analysis/nowcast fields (one variable per file):
 - **Operational since 2005**, with version changes roughly once a year (no detailed public changelog).
 - **Distinct from HungaroMet's NWP suite:** MEANDER is driven by WRF, separate from the agency's operational [AROME](../../../nwp_models/regional/hungary/arome-hungary.md) and ALARO models. The 10-minute refresh and 0–2 h lead time make it a true nowcasting product rather than an NWP run.
 - **Uncertainties:** Noisy radar measurements, damaged or incorrect surface/satellite data, or a temporary deficit of certain data types can distort the analysis and propagate into the forecast.
-- **Coded weather fields:** Full `presWeather` / `simpleWeather` code tables are in the dataset description PDF; they can be embedded here as a reference appendix if you want them inline.
+- **Coded weather fields:** Full `presWeather` / `simpleWeather` code tables are in the dataset description PDF; they can be embedded here as a reference appendix if you want them inline. In the distributed files both carry `units = "category"`.
+- **Mixed pressure units:** `PSFC` is in `Pa` but `PSEALEVEL` is in `hPa` (confirmed from the files) — don't assume both are Pa.
+- **Geolocation gotcha:** Files declare `conventions = "LFS"` with no CF coordinate variables or `grid_mapping`; build the lat/lon axes from `La1`/`Lo1` + `Nx`/`Ny`/`Dx`/`Dy`, and note the **north→south** row order (first grid point is the NW corner) before plotting — same pattern as the [HungaroMet radar composites](../../../../observations/radar/hungary/hungaromet-radar.md).
 
 ---
 
 ## Recent version history
-- Operating since 2005; version changes occur approximately annually. Specific version identifiers are not published in the dataset description.
+- Operating since 2005; version changes occur approximately annually. No version identifiers are published in the dataset description, though the distributed NetCDF files embed a `version` global attribute (observed value `9991.0`, likely a placeholder/test value rather than a release number — flag).
 
 ---
 
