@@ -13,18 +13,18 @@ WRF is a regional numerical weather prediction (NWP) system operated by CPTEC/IN
 
 ## What area it covers
 - **Coverage:** South America
-- **Domain details:** Continental South America domain (`ams_07km`); exact grid bounds TBD.
+- **Domain details:** Continental South America domain (`ams_07km`), distributed as a **regular latitude/longitude grid of 1019 × 1081 points at 0.07°** (~7.8 km), spanning **90.67°W–19.41°W and 57.90°S–17.70°N** (verified from the GrADS `.ctl` and confirmed against the GRIB2 grid definition: `regular_ll`, Ni=1019 × Nj=1081, 0.07° increments). The native WRF grid is presumably projected; the public product is delivered on this regular lat/lon mesh.
 
 ---
 
 ## Basic details
 - **Model type:** Regional deterministic NWP
-- **Model system / core:** WRF (Weather Research and Forecasting); ARW core unconfirmed
+- **Model system / core:** WRF (Weather Research and Forecasting); ARW core presumed but not definitively encoded in the output. The GRIB2 is produced by the NCEP Unified Post Processor (headers carry `centre = kwbc`, `generatingProcessIdentifier = 116`, and NCEP-style parameter names), and the field set is consistent with a standard WRF-ARW/UPP configuration.
 - **Dynamical formulation:** Non-hydrostatic (WRF)
 - **Convection-allowing:** No — at ~7 km the model uses parameterized convection
 - **Horizontal resolution:** ~7 km
-- **Vertical levels:** TBD
-- **Model top:** TBD
+- **Vertical levels:** 25 pressure levels in the distributed output (1000, 975, 950, 925, 900, 875, 850, 825, 800, 775, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50 hPa). The native model level count is not exposed in the GRIB2 — unconfirmed.
+- **Model top:** Highest distributed pressure level is 50 hPa; the native model top is higher but not determinable from the output — unconfirmed.
 - **Forecast length:** +180 h (7.5 days)
 - **Update frequency / cycles:** 1× daily (00 UTC)
 - **Temporal output resolution:** Hourly
@@ -42,11 +42,15 @@ WRF is a regional numerical weather prediction (NWP) system operated by CPTEC/IN
 ---
 
 ## What it provides
-Deterministic regional forecasts of core atmospheric variables, including:
-- Near-surface temperature, wind, and humidity
-- Atmospheric pressure and geopotential
-- Precipitation
-- Mid- and upper-level circulation fields
+Deterministic regional forecasts distributed as GRIB2 (89 variables per timestep, NCEP/UPP naming), including:
+- **Pressure-level fields (25 levels, 1000–50 hPa):** geopotential height, temperature, relative and specific humidity, dew point, potential temperature, U/V wind, vertical velocity
+- **Surface / near-surface:** 2 m temperature, dew point, RH and specific humidity; 10 m and 100 m U/V wind; surface wind gust; surface pressure and two MSLP reductions (PRMSL and Eta-reduction MSLET); surface temperature, geopotential height, and specific humidity; visibility; PBL height
+- **Precipitation:** total, convective (ACPCP), and large-scale/non-convective (NCPCP) — the separate convective field confirms parameterized convection
+- **Radiation & surface fluxes:** downward/upward long- and short-wave flux, latent and sensible heat flux, ground heat flux, albedo
+- **Cloud:** total, low, middle, and high cloud cover; cloud base/ceiling/top height; cloud-top temperature and visibility
+- **Convective / severe-weather diagnostics:** CAPE and CIN (surface and 90-0/180-0/255-0 mb layers), lifted index (best 4-layer and surface), storm-relative helicity (0–1 km, 0–3 km), U/V storm motion (0–6 km), composite and 1 km/4 km reflectivity, precipitable water
+- **Land-surface:** soil temperature and volumetric/liquid soil moisture (4 layers: 0–10, 10–40, 40–100, 100–200 cm), snow cover, water-equivalent snow depth, surface and baseflow runoff, land–sea mask
+- **Levels of interest:** 0 °C isotherm height/RH, tropopause height, max-wind-level height/pressure/wind
 
 The WRF configuration is one of CPTEC's two operational regional NWP systems over South America, run alongside the [Eta](./eta-cptec.md) configurations.
 
