@@ -17,8 +17,8 @@ The dataset documented here — **`alaro_40l`** — is the publicly distributed 
 
 ## What area it covers
 - **Coverage:** Belgium and surrounding parts of Western Europe
-- **Domain details:** Lambert conformal conic projection centred near Belgium (central meridian ≈ 4.55°E, latitude of origin ≈ 50.57°N), based on the operational ALARO-Belgium NWP domain
-- **Grid dimensions (public dataset):** TBD (the internal 4 km operational ALARO runs on 432 × 432 grid points)
+- **Domain details:** The public `alaro_40l` GRIB is distributed on a **regular latitude/longitude grid** (not the model's native projection), spanning **≈ 47.40°N–53.62°N, 0.12°W–9.22°E**, centred near 4.55°E / 50.5°N. Spacing ≈ 0.053° longitude × 0.035° latitude (≈ 3.7 × 3.9 km at 50.5°N) — the native ~4 km resolution interpolated to a regular lat/lon mesh. The underlying model runs on a Lambert conformal conic projection (central meridian ≈ 4.55°E, latitude of origin ≈ 50.57°N); the public product is regridded from it. *(Verified from the 2026-07-13 00 UTC run; grid identical across the MSLP, 2T and TotPrecip parameter files.)*
+- **Grid dimensions (public dataset):** **177 × 177** points (31,329 grid points), regular lat/lon. *(The internal 4 km operational ALARO runs on a 432 × 432 Lambert grid; the public product is a regridded subset.)*
 
 ---
 
@@ -31,9 +31,9 @@ The dataset documented here — **`alaro_40l`** — is the publicly distributed 
 - **Physics package:** ALARO-1 — including the modular Multiscale Microphysics and Transport (3MT) deep convection scheme with non-saturated downdraft, the TOUCANS turbulence scheme, and the ACRANEB2 broadband radiation scheme
 - **Horizontal resolution:** ~4 km
 - **Vertical levels:** 40 (in the public `alaro_40l` distribution; RMI's internal 4 km operational ALARO uses 87 levels)
-- **Forecast length:** Up to ~60 hours (TBD for the public distribution specifically; +60 h is the documented range of the internal 4 km operational ALARO chain)
+- **Forecast length:** **+60 hours** — confirmed for the public `alaro_40l` distribution (2026-07-13 00 UTC run: hourly steps 0–60, 61 time steps per parameter), matching the documented range of the internal 4 km operational ALARO chain
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC) — the most recent 4 runs are kept on the FTP server
-- **Temporal output resolution:** TBD
+- **Temporal output resolution:** **Hourly** (1 h steps from +0 h to +60 h; verified across the MSLP, 2T and TotPrecip parameter files of the 2026-07-13 00 UTC run)
 
 ---
 
@@ -52,7 +52,7 @@ The dataset documented here — **`alaro_40l`** — is the publicly distributed 
 ## What it provides
 Deterministic forecasts of standard meteorological variables, including:
 - Temperature, maximum and minimum temperature, dew-point temperature, wet-bulb potential temperature
-- 10 m U/V wind components and stationary boundary layer (SBL) gust
+- 10 m U/V wind components and boundary-layer wind gust (distributed as separate zonal `ZonGust` and meridional `MerGust` components)
 - Cloud cover (low / medium / high / total)
 - Total precipitation; large-scale and convective rain; large-scale and convective snow
 - Relative and specific humidity
@@ -61,6 +61,8 @@ Deterministic forecasts of standard meteorological variables, including:
 - Freezing level / 0 °C isotherm
 - Convective Available Potential Energy (CAPE)
 - Vertical velocity
+- Surface downward shortwave and longwave radiation (`SurfSWrad`, `SurfLWrad`)
+- Soil temperature (`ST`); convective cloud cover (`IFCCC`, in addition to low/medium/high/total)
 
 ---
 
