@@ -14,8 +14,8 @@ It is part of the **ALADIN limited-area model system** (developed within the ALA
 ---
 
 ## What area it covers
-- **Coverage:** Slovenia and surrounding Central / South-East European regions
-- **Domain details:** 300 × 300 horizontal grid points at 4.4 km spacing (≈ 1320 km across) as of the April 2026 ACCORD ASW poster, centered over Slovenia and the eastern Alps / northern Adriatic. The grid was 432 × 432 (≈ 1900 km across) through at least the March 2025 ASW poster; it was reduced to 300 × 300 by April 2026 (see Notes).
+- **Coverage:** Slovenia and surrounding Central / South-East European regions (native model domain). The openly distributed GRIB covers a smaller footprint — Slovenia and immediate surroundings only; see *Data availability → Distributed grid*.
+- **Domain details (native model grid):** 300 × 300 horizontal grid points at 4.4 km spacing (≈ 1320 km across) as of the April 2026 ACCORD ASW poster, centered over Slovenia and the eastern Alps / northern Adriatic. The grid was 432 × 432 (≈ 1900 km across) through at least the March 2025 ASW poster; it was reduced to 300 × 300 by April 2026 (see Notes). **This is the model's internal computational grid;** the downloadable GRIB is regridded to a smaller regular lat/lon window (111 × 71, ~4.4 km effective) — see *Data availability → Distributed grid*.
 
 ---
 
@@ -25,13 +25,13 @@ It is part of the **ALADIN limited-area model system** (developed within the ALA
 - **Dynamical formulation:** Hydrostatic (ALADIN spectral limited-area dynamical core)
 - **Convection-allowing:** No (4.4 km grid; deep convection is parameterized via the ALARO physics)
 - **Horizontal resolution:** ~4.4 km
-- **Grid dimensions:** 300 × 300 horizontal grid points (April 2026 ASW poster; previously 432 × 432 through at least the March 2025 poster — see Notes)
+- **Grid dimensions (native model grid):** 300 × 300 horizontal grid points (April 2026 ASW poster; previously 432 × 432 through at least the March 2025 poster — see Notes). The **distributed** GRIB is a different, smaller grid — 111 × 71 regular lat/lon — see *Data availability → Distributed grid*.
 - **Vertical levels:** 87
 - **Time step:** 180 s
 - **Forecast length:** Up to **72 hours**
 - **Update frequency / cycles:** 4× daily
 - **Cut-off time:** ~110 min after nominal (operational long cut-off)
-- **Temporal output resolution:** Hourly (selected fields), with standard pressure-level fields archived at sub-daily intervals
+- **Temporal output resolution:** Hourly — every field (surface and all four pressure levels) is output at every step from +0 to +72 h.
 
 ---
 
@@ -61,11 +61,11 @@ It is part of the **ALADIN limited-area model system** (developed within the ALA
 
 ## What it provides
 Deterministic forecasts of:
-- precipitation (3-hourly accumulated rain + snow)
+- total precipitation — a single **Total Precipitation** field (WMO param 61), accumulated from run start (+0 → step), output hourly. Not split into rain/snow.
 - total cloud cover
 - surface and mean sea-level pressure
-- near-surface temperature, humidity, and wind (2 m / 10 m)
-- temperature, humidity, and wind at standard pressure levels  
+- near-surface temperature, relative humidity, and wind (2 m / 10 m)
+- **geopotential**, temperature, relative humidity, and wind at standard pressure levels
   (925 hPa, 850 hPa, 700 hPa, 500 hPa)
 
 Operationally also serves as the meteorological driver for ARSO's downstream **CAM-X** (air quality) and **NEMO** (ocean) modeling systems.
@@ -76,7 +76,10 @@ Operationally also serves as the meteorological driver for ARSO's downstream **C
 - **Is the data free?** Yes
 - **License:** Open with mandatory attribution. ARSO publishes information from meteo.arso.gov.si as freely reusable on the condition that the source is cited as "Vir: Agencija Republike Slovenije za okolje" or "Vir: ARSO" (in English: "Source: Slovenian Environment Agency" or "Source: ARSO"). Mandatory attribution is stipulated by **Article 14 of the Slovenian Act on the State Meteorological, Hydrological, Oceanographic and Seismological Service** (Official Gazette of the Republic of Slovenia, No. 60/17). No specific named open-data licence (e.g., CC BY) is asserted; reuse terms are governed by the ARSO site policy and Slovenian law.
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB (distributed as compressed ZIP archives)
+- **Data formats:** GRIB edition 1, one `.grb` message file per hourly step, packaged as a per-run ZIP.
+- **Distributed grid:** The downloadable product is **not** the native 300 × 300 Lambert model grid. It is a **regular lat/lon 111 × 71 grid** covering **11.625–17.895 °E, 44.642–47.407 °N** (Slovenia + immediate surroundings, ~485 × 306 km) at 0.057 ° × 0.04 ° (~4.4 km effective). GRIB centre code 219 (ARSO), WMO parameter table 2. *(Verified from the 2026-07-13 00 UTC run.)*
+- **File naming:** `nwp_YYYYMMDD-HHMM.zip` (run) containing `nwp_YYYYMMDDHH_SSSS.grb` (step in hours, zero-padded, +0000 to +0072).
+- **Retention:** Roughly the last four cycles (00/06/12/18 UTC) — a rolling ~24 h window.
 - **Official download location:**  
   https://meteo.arso.gov.si/uploads/probase/www/model/data/
 
