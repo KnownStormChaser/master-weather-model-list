@@ -13,7 +13,11 @@ The Eta model is a regional numerical weather prediction (NWP) system operated b
 
 ## What area it covers
 - **Coverage:** South America (continental domains) plus a São Paulo–Rio de Janeiro local domain
-- **Domain details:** Two continental South America domains (`ams_08km`, `ams_40km`), one energy-sector domain run for the national grid operator (`ons_40km`), and one high-resolution local domain over the RJ/SP corridor (`rjsp_01km`). Exact grid bounds for each domain are TBD.
+- **Domain details:** All configurations are distributed as regular lat/lon grids (verified from the GrADS `.ctl` descriptors):
+  - `ams_08km`: 875 × 931 @ 0.08° (~8.9 km) — 90.00°W–20.08°W, 55.00°S–19.40°N
+  - `ams_40km`: 144 × 157 @ 0.40° (~44 km) — 83.00°W–25.80°W, 50.20°S–12.20°N
+  - `ons_40km`: **identical grid to `ams_40km`** (144 × 157 @ 0.40°, same bounds) — same domain, run separately for the ONS energy sector
+  - `rjsp_01km`: 450 × 280 @ 0.01° (~1.1 km) — 46.30°W–41.81°W, 24.40°S–21.61°S (RJ/SP corridor)
 
 ---
 
@@ -36,8 +40,8 @@ The Eta model is a regional numerical weather prediction (NWP) system operated b
 - **Dynamical formulation:** TBD (classic Eta is hydrostatic; not confirmed for the current CPTEC configuration)
 - **Convection-allowing:** Only `rjsp_01km` (~1 km) is convection-allowing; the 8 km and 40 km configurations use parameterized convection
 - **Horizontal resolution:** Per configuration — ~8 km / ~40 km / ~40 km / ~1 km (see table)
-- **Vertical levels:** TBD
-- **Model top:** TBD
+- **Vertical levels:** All four configurations distribute **22 pressure levels**: 1020, 1000, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50 hPa (verified from the `.ctl` `zdef`). The native Eta step-mountain level count is not exposed in the output — unconfirmed.
+- **Model top:** Highest distributed pressure level is 50 hPa; the native model top is higher but not determinable from the output — unconfirmed.
 - **Forecast length:** +264 h (11 days) for `ams_08km`, `ams_40km`, `ons_40km`; +72 h (3 days) for `rjsp_01km`
 - **Update frequency / cycles:** 1× daily (00 UTC) — all four configurations
 - **Temporal output resolution:** Hourly — all four configurations
@@ -55,11 +59,13 @@ The Eta model is a regional numerical weather prediction (NWP) system operated b
 ---
 
 ## What it provides
-Deterministic regional forecasts of core atmospheric variables, including:
-- Near-surface temperature, wind, and humidity
-- Atmospheric pressure and geopotential
-- Precipitation
-- Mid- and upper-level circulation fields
+Deterministic regional forecasts on 22 pressure levels plus surface/near-surface fields. The two formats use different naming conventions: `ams_08km` (GRIB2) uses NCEP/UPP-style names (46 variables); the three GRIB1 configs use CPTEC's native Eta names (64 variables). Fields include:
+- **Pressure-level (22 levels):** geopotential height, temperature, U/V wind, vertical velocity, relative and specific humidity, potential and equivalent-potential temperature, cloud water and cloud ice
+- **Surface / near-surface:** 2 m temperature, dew point, RH; 10 m and 100 m U/V wind; surface and MSL pressure (Mesinger/Eta reduction); daily max/min temperature; surface and soil temperature; soil moisture / soil wetness (surface and root-zone in the GRIB1 configs); topography and land–sea mask
+- **Precipitation:** total, convective, and large-scale (non-convective); snowfall
+- **Radiation & fluxes:** downward/upward short- and long-wave at the surface, net short/long-wave at TOA, latent/sensible heat flux, ground heat flux, albedo
+- **Cloud:** low/medium/high and mean cloud cover; cloud base/top pressure
+- **Diagnostics:** CAPE, CIN, best lifted index, precipitable water, tropopause pressure, freezing-level height and RH, max-wind-level pressure/wind; plus roughness length, wind stress, potential evaporation, and runoff in the GRIB1 configs
 
 The Eta configurations complement CPTEC's global BAM guidance by resolving mesoscale and local-scale features, with `rjsp_01km` targeting high-resolution local forecasting over the RJ/SP corridor and `ons_40km` supporting the energy sector (streamflow / hydropower inflow guidance).
 
@@ -83,7 +89,7 @@ The Eta configurations complement CPTEC's global BAM guidance by resolving mesos
 ## Notes
 - **Format split:** `ams_08km` is the only configuration distributed in GRIB2; the three others are GRIB1. GRIB1-only pipelines/decoders may be needed for the `.grb` configs (wgrib, pygrib, cfgrib all handle GRIB1).
 - **Cycle:** Only the 00 UTC cycle is published for all four configurations (verified — no 12 UTC directory exists). This supersedes the earlier note that `ams_08km` ran twice daily.
-- **`ams_40km` vs `ons_40km`:** Same model core, same ~40 km resolution, and identical `eta_40km_` filename prefix; they are separate products distinguished only by directory and domain/purpose (`ons_40km` is the configuration run for the ONS — Operador Nacional do Sistema Elétrico — energy sector). A stray `ONS_40km_*.ctl` descriptor also appears in the `ams_40km` directory.
+- **`ams_40km` vs `ons_40km`:** Same model core, same ~40 km resolution, identical `eta_40km_` prefix — and, verified from the `.ctl` descriptors, the **same grid and domain** (144 × 157 @ 0.40°, identical bounds, same 22 levels and 64 variables; the two `.ctl` files are byte-identical apart from the `dset` name). They are therefore distinguished only by directory and **purpose** (`ons_40km` is the run for the ONS — Operador Nacional do Sistema Elétrico — energy sector), not by domain or resolution. A stray `ONS_40km_*.ctl` descriptor also appears in the `ams_40km` directory.
 - **Relationship to siblings:** Complements [BAM](../../global/brazil/bam-cptec.md) (global). The Eta also feeds CPTEC's SMEC multi-model ensemble (Eta + WRF + BRAMS) and underlies the separate **ProjEta** climate-change projection product (RCP scenarios to 2099) — both distinct from this operational NWP entry; ProjEta is out of repository scope.
 - **Older data:** Only the current month is served on the operational FTP/dataserver; older data requires a request to CPTEC and is subject to availability.
 
