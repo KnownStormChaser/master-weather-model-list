@@ -77,6 +77,21 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ---
 
+## Regional AI models
+
+Regional (limited-area) AI forecast systems. Unlike the global systems above, these cover a single national or continental domain, typically at convection-permitting resolution. This is a young category, expected to grow as centres extend AI methods to limited-area modelling (e.g., DWD's planned AICON-LAM).
+
+### [HRRR-Cast (NOAA)](./models/nwp_models/regional/usa/hrrrcast.md)
+- **Operator:** NOAA / OAR — developed by Global Systems Laboratory (GSL); run experimentally at NWS/EMC
+- **Status:** Experimental (not operational)
+- **Approach:** Standalone AI emulator of the physics-based [HRRR](./models/nwp_models/regional/usa/hrrr.md); ensemble since V2 (members + ensemble mean)
+- **Coverage:** Contiguous United States, on the native 3 km HRRR grid (1799 × 1059 Lambert conformal)
+- **Resolution:** 3 km, 20 pressure levels
+- **Forecast length:** 48 h, hourly cycles (24× daily)
+- **Note:** NOAA's first regional experimental AI forecast system and a component of Project EAGLE. Reported at 100–1000× the efficiency of the operational HRRR (laptop-runnable). Live-feed member count was in transition when documented — a stable 9 members through 2026-07-10, expanding to 14 member tokens on 2026-07-11; likely a V3-era change but unconfirmed, so re-verify. Data: GRIB2 via the `noaa-gsl-experimental-pds` S3 bucket.
+
+---
+
 ## Hybrid physics–AI systems
 
 ### [HGEFS (NOAA)](./models/ensemble_models/global/usa/hgefs.md)
