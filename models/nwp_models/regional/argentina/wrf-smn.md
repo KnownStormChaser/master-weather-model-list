@@ -36,9 +36,9 @@ It is based on the **WRF-ARW (Advanced Research WRF)** dynamical core. SMN's doc
 ---
 
 ## Initial and boundary conditions
-- **Initial conditions:** NCEP GFS (0.25°)
-- **Lateral boundary conditions:** NCEP GFS (0.25°), updated hourly
-- **Data assimilation:** None at the regional level — the regional run inherits the GFS analysis
+- **Initial conditions:** An SMN analysis — the live output files (all cycles, July 2026) carry `initial_condition = "SAP.SMN-ANA - <cycle time>"`, a cycle-specific SMN analysis product, **not** GFS directly. This differs from the ~2023 documentation the entry previously followed. *(Flagged: whether `SAP.SMN-ANA` is a local data-assimilation/cycling analysis or a repackaged GFS analysis is not determinable from the file attribute alone — verify against current SMN sources.)*
+- **Lateral boundary conditions:** NCEP GFS (0.25°) per the documentation; not exposed in the distributed file attributes, so unverified from the data.
+- **Data assimilation:** Previously documented as none at the regional level (inheriting the GFS analysis). The `SAP.SMN-ANA` initial-condition label suggests SMN now runs its own analysis step; treat the "no DA" statement as **likely outdated — verify.**
 
 ---
 
@@ -91,13 +91,13 @@ Deterministic forecasts of near-surface and atmospheric fields, distributed as:
 
 File path convention:
 `DATA/WRF/DET/{YYYY}/{MM}/{DD}/{HH}/WRFDETAR_{freq}_{YYYYMMDD}_{HH}_{fhr}.nc`
-where `{freq}` is `10M`, `01H`, or `24H`, `{HH}` is the cycle (00 or 12), and `{fhr}` is the lead time (3-digit, in hours for `10M`/`01H` and in days for `24H`).
+where `{freq}` is `10M`, `01H`, or `24H`, `{HH}` is the cycle (`00`, `06`, `12`, or `18`), and `{fhr}` is the lead time (3-digit, in hours for `10M`/`01H` and in days for `24H`). *(Verified against the live bucket 2026-07-12/13: all four cycles present; `01H`/`10M` leads 000–072; `24H` 000–002.)*
 
 ---
 
 ## Notes
 - WRF-SMN Argentina explicitly resolves deep convection and is optimized for high-impact weather over southern South America.
-- The published WRF version (4.0, with documentation citing Skamarock et al. 2019) reflects what SMN documents on its open data portal. The SMN documentation site appears to date from around 2022, so the actual operational version may have advanced since then; this is the version SMN states publicly.
+- The WRF version is **4.0**, confirmed from the live output files: every distributed file (all cycles, verified July 2026) carries `source = "OUTPUT FROM WRF V4.0 MODEL"`. So although SMN's documentation site dates from ~2022–2023, the operational model still reports V4.0 in its output — the version has not advanced despite the stale docs. (The attribute gives only the major version "V4.0", not a specific patch release.)
 - Some surface variables (T2, magViento10, Tmax, Tmin) are post-processed with a statistical debiasing step against surface observations. The methodology is documented in Cutraro et al. 2020 (linked in *Official documentation*).
 - The horizontal grid is described in the documentation as a Lambert-conformal projection centered at 35°S, 65°W with x and y coordinates expressed in metres relative to the grid center.
 - For comparison with other South American regional WRF systems documented in this repository, see [WRF (IDEAM Regional Forecast System)](../colombia/wrf-ideam.md) for Colombia.
