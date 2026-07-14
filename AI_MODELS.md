@@ -57,6 +57,24 @@ These approaches reflect genuinely different theories about how AI should enter 
 - **Forecast length:** Up to 180 hours
 - **Note:** DWD's first AI-based forecast model; complements but does not replace the physics-based [ICON](./models/nwp_models/global/germany/icon-global.md). A limited-area extension (AICON-LAM) is on the roadmap for 2026–2027.
 
+### [Pangu-Weather — AIWP reforecast archive (NOAA/CIRA)](./models/nwp_models/global/usa/pangu-aiwp.md)
+- **Operator:** CIRA (Colorado State University) + NOAA-GSL, distributed via NOAA Open Data Dissemination (NODD); underlying model by Huawei Cloud (Bi et al., 2023)
+- **Status:** Reforecast archive + near-real-time (not an operational forecast product)
+- **Approach:** Standalone AI (3D Earth-Specific Transformer), initialized from operational analyses in two parallel streams — GFS and IFS
+- **Resolution:** 0.25° (~28 km), 13 pressure levels
+- **Forecast length:** 240 h (10 days), 6-hourly steps; 2× daily (00/12 UTC)
+- **Period of record:** GFS-initialized ~10/2020 → present; IFS-initialized 01/2022 → present
+- **Note:** Part of the AIWP archive (`noaa-oar-mlwp-data`) alongside Aurora, FourCastNet, and GraphCast — one bucket, shared NetCDF-4 format, cadence, and open license. Distinct from Pangu-Weather in its original research form (see "What this page does not cover"). Described in Radford et al. (2025, BAMS).
+
+### [Aurora — AIWP reforecast archive (NOAA/CIRA)](./models/nwp_models/global/usa/aurora-aiwp.md)
+- **Operator:** CIRA (Colorado State University) + NOAA-GSL, distributed via NODD; underlying model by Microsoft Research AI for Science (Bodnar et al., 2025)
+- **Status:** Reforecast archive + near-real-time (not an operational forecast product); undocumented in the AIWP registry/README as of this writing — verified from live bucket inspection
+- **Approach:** Standalone AI foundation model (3D Swin Transformer U-Net), initialized from operational analyses in two parallel streams — GFS and IFS
+- **Resolution:** 0.25° (~28 km), 13 pressure levels
+- **Forecast length:** 240 h (10 days), 6-hourly steps; 2× daily (00/12 UTC)
+- **Period of record:** both GFS- and IFS-initialized from January 2025 → present (shorter record than the other AIWP models)
+- **Note:** Part of the AIWP archive (`noaa-oar-mlwp-data`); files are large (~4.6 GB per cycle at full 0.25°). This is the deterministic base Aurora 0.25° model — not Microsoft's newer Aurora 1.5 (ensemble/hourly). Described in Radford et al. (2025, BAMS).
+
 ---
 
 ## Ensemble AI global models
@@ -152,6 +170,12 @@ The two operational lineages share architecture and a 13-pressure-level vertical
 ### FourCastNet lineage (NVIDIA, 2022)
 - **FourCastNet** (research) → **FourCastNetGFS** (NOAA experimental, no operational descendant announced)
 
+### Pangu-Weather lineage (Huawei, 2023)
+- **Pangu-Weather** (3D Earth-Specific Transformer, research) → redistributed as open GFS- and IFS-initialized reforecasts via the **[NOAA/CIRA AIWP archive](./models/nwp_models/global/usa/pangu-aiwp.md)**
+
+### Aurora lineage (Microsoft, 2024/2025)
+- **Aurora** (3D Swin Transformer U-Net foundation model, research) → redistributed as open GFS- and IFS-initialized reforecasts via the **[NOAA/CIRA AIWP archive](./models/nwp_models/global/usa/aurora-aiwp.md)**. Microsoft's later **Aurora 1.5** (ensemble/hourly) is a separate release, not in the archive.
+
 ### ECMWF in-house architecture
 - **[AIFS Single](./models/nwp_models/global/eu/aifs-single.md)** and **[AIFS ENS](./models/ensemble_models/global/eu/aifs-ens.md)** use ECMWF's own encoder–processor–decoder architecture with attention-based GNN encoder/decoder and sliding-window transformer processor. Not derived from GraphCast or FourCastNet.
 - **[AICON-Global](./models/nwp_models/global/germany/aicon-global.md)** (DWD) shares the Anemoi encoder–processor–decoder framework with AIFS, applied to ICON's icosahedral mesh and model-level vertical structure rather than ECMWF's lat–lon / pressure-level setup.
@@ -160,7 +184,7 @@ The two operational lineages share architecture and a 13-pressure-level vertical
 
 ## What this page does not cover
 
-- Research-only AI models with no public data (e.g., Pangu-Weather in its original research form) unless they have been productionized by an NWP centre.
+- Research-only AI models with no public data, unless they have been productionized or openly redistributed by an NWP centre. Pangu-Weather and Aurora in their original research forms fall here; the NOAA/CIRA AIWP reforecast archive redistributes both as open data and *is* covered — see the [Pangu-Weather](./models/nwp_models/global/usa/pangu-aiwp.md) and [Aurora](./models/nwp_models/global/usa/aurora-aiwp.md) entries.
 - AI post-processing and statistical correction systems that operate downstream of physics-based forecasts without participating in the forecast integration itself.
 - Climate reanalysis ML applications.
 
