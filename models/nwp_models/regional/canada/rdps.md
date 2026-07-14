@@ -32,7 +32,7 @@ As of RDPS 9.0.0, RDPS is no longer produced by a standalone limited-area contin
 - **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC) early analysis and forecast runs
 - **Time step:** 300 seconds
 - **Time integration:** Iterative-implicit, semi-Lagrangian (3D), 2 time-level
-- **Temporal output resolution:** Typically hourly to 3-hourly
+- **Temporal output resolution:** Hourly, out to +84 h (file-verified on the rotated `model_rdps` grid)
 
 ---
 
@@ -85,13 +85,10 @@ RDPS provides the primary deterministic NWP guidance for forecast days 1 and 2 i
   - **MSC Datamart:** Direct file access (HTTPS, with optional AMQP push notifications) — primary download channel
   - **MSC GeoMet:** Geospatial web services (WMS, WCS, OGC API)
   - **MSC AniMet:** Visualization service
-- **Official download locations:** RDPS GRIB2 output is published on two grids with different coverage and filename conventions:
-  - **Polar stereographic grid** (covers North America and adjacent waters; 935 × 824 at 10 km resolution at 60°N): https://dd.weather.gc.ca/today/model_gem_regional/10km/grib2/
-    - Available for all four runs (00, 06, 12, 18 UTC)
-    - Legacy filename nomenclature: `CMC_reg_{Variable}_{LevelType}_{level}_ps10km_{YYYYMMDDHH}_P{hhh}.grib2`
-  - **Rotated lat-lon grid** (covers a larger area also including the Caribbean, all of Mexico, and part of Northern Europe; 1102 × 1076 at 0.09°): https://dd.weather.gc.ca/today/model_rdps/10km/
-    - Available only for the 00 and 12 UTC runs
-    - ISO-8601 filename nomenclature: `{YYYYMMDD}T{HH}Z_MSC_RDPS_{VAR}_{LVLTYPE-LVL}_RLatLon0.09_PT{hhh}H.grib2`
+- **Official download location:** RDPS GRIB2 output is distributed on a single **rotated latitude–longitude grid** (1140 × 1045 at 0.09°), covering North America and adjacent oceans and extending to the Caribbean, all of Mexico, and part of northern Europe:
+  https://dd.weather.gc.ca/today/model_rdps/10km/
+  - Available for **all four runs (00, 06, 12, 18 UTC)**, each out to **+84 h** (file-verified 2026-07-13)
+  - ISO-8601 filename nomenclature: `{YYYYMMDD}T{HH}Z_MSC_RDPS_{VAR}_{LVLTYPE-LVL}_RLatLon0.09_PT{hhh}H.grib2`
 - **Open data documentation:** https://eccc-msc.github.io/open-data/msc-data/nwp_rdps/readme_rdps-datamart_en/
 
 ---
@@ -106,6 +103,9 @@ RDPS provides the primary deterministic NWP guidance for forecast days 1 and 2 i
 ---
 
 ## Recent version history
+
+### Distribution change — 2026
+The legacy polar-stereographic distribution (`model_gem_regional`, `CMC_reg_*_ps10km_*` filenames, 935 × 824) has been retired from the MSC Datamart, along with its documentation. RDPS GRIB2 is now published only on the rotated lat-lon grid (`model_rdps`), which carries all four daily runs (00/06/12/18) out to +84 h.
 
 ### RDPS v9.0.0 — operational June 11, 2024 (current)
 Implemented as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0. The biggest change is structural: the RDPS no longer runs a standalone regional LAM with its own continuous assimilation cycle.
