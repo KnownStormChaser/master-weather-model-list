@@ -18,15 +18,15 @@ The current experimental version is CAPS 3.0.0, implemented June 18, 2025.
 ---
 
 ## What area it covers
-- **Coverage:** Pan-Arctic, with substantial extension into mid-latitudes
-- **Atmospheric domain:** Rotated latitude-longitude grid covering the Canadian Arctic and surrounding regions, including:
-  - Northern Canada and the Canadian Arctic Archipelago
-  - Alaska
-  - Greenland and Iceland
-  - Scandinavia (Norway, Sweden, Finland)
-  - The Baltic countries
-  - Eastern Russia and adjacent Arctic seas
-- **Ice-ocean domain:** Extends further south than the atmospheric domain, covering additional parts of the North Atlantic and North Pacific (consistent with the RIOPS model domain), with active atmosphere-ocean coupling occurring only over the atmospheric domain footprint
+- **Coverage:** Pan-Arctic, centred on the Canadian Arctic, with substantial extension into the mid-latitudes of three ocean basins
+- **Domain details (atmospheric — read from the distributed GRIB2 grid definition):**
+  - **Grid:** Rotated latitude–longitude (`rotated_ll`), **2230 (i) × 1830 (j)** points, **0.02925° uniform** spacing (~3 km)
+  - **Rotation:** Southern pole of the rotated projection at **0.0°N, 263.875°E** (angle of rotation 0°); the grid's own equator runs across the North American Arctic, placing the grid centre at ≈ **83.1°N, 88.1°W**
+  - **Geographic extent:** Reaches the **North Pole (90°N)** and extends south to ≈ **44°N**; because the domain encircles the pole it spans **all longitudes**
+  - **Grid corners (geographic):** SW ≈ 45.2°N, 134.4°W (NE Pacific) · SE ≈ 44.0°N, 56.4°W (NW Atlantic, near the Grand Banks) · NW ≈ 53.2°N, 139.3°E (Sea of Okhotsk, far-eastern Russia) · NE ≈ 51.6°N, 27.1°E (eastern Europe)
+  - **Scanning:** West→east, south→north (first grid point at the SW corner)
+  - This footprint takes in northern Canada and the Arctic Archipelago, Alaska, Greenland and Iceland, Scandinavia and the Baltic, and eastern Russia — the regions previously enumerated here, now bounded by the corner coordinates above
+- **Ice-ocean domain:** Extends further south than the atmospheric domain, covering additional parts of the North Atlantic and North Pacific (consistent with the RIOPS model domain — to 25.6°N in the Atlantic and 43.8°N in the Pacific), with active atmosphere-ocean coupling occurring only over the atmospheric domain footprint
 
 The unusually large pan-Arctic atmospheric coverage is one of CAPS's distinctive features — it provides high-resolution coupled guidance over a domain that would normally be split across multiple national operational systems.
 
@@ -41,7 +41,7 @@ The unusually large pan-Arctic atmospheric coverage is one of CAPS's distinctive
 - **Dynamical formulation:** Non-hydrostatic primitive equations
 - **Convection-allowing:** Yes (~3 km horizontal resolution)
 - **Horizontal resolution:** ~3 km (0.02925° uniform)
-- **Grid dimensions:** 2250 × 1850 rotated latitude-longitude grid
+- **Grid dimensions:** 2230 × 1830 rotated latitude-longitude grid (`rotated_ll`, 0.02925°) — file-verified from the distributed GRIB2. *(ECCC's v3.0.0 technical specifications list 2250 × 1850, which appears to be the full computational grid including the lateral-boundary blending zone; the trimmed distributed product is 2230 × 1830.)*
 - **Vertical levels:** 62 staggered hybrid levels with SLEVE coordinate (Husain et al., 2020)
 - **Model lid:** 10 hPa (with nesting over 4 levels)
 - **Lowest model level:** 40 m
