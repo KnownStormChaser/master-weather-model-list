@@ -15,7 +15,7 @@ C-LAEF quantifies forecast uncertainty for short-range, small-scale and rapidly 
 
 ## What area it covers
 - **Coverage:** Austria and the surrounding (extended) Alpine region
-- **Domain details:** 600 × 432 grid points centred on the Alpine region (same domain as the deterministic AROME-Aut). The public dataset is published on a WGS84 grid (EPSG:4326) with a bounding box of approximately 42.98–51.82 °N, 5.49–22.1 °E.
+- **Domain details:** Native model grid is 600 × 432 points centred on the Alpine region (same domain as the deterministic AROME-Aut). The public dataset is regridded to a regular WGS84 / EPSG:4326 lat-lon grid of **594 × 492 points** (0.028° lon × 0.018° lat), bounding box ≈ 42.98–51.82 °N, 5.50–22.10 °E (confirmed from the distributed files).
 
 ---
 
@@ -62,7 +62,7 @@ C-LAEF quantifies forecast uncertainty for short-range, small-scale and rapidly 
 ## What it provides
 The operational ensemble generates 16+1 member forecasts together with derived ensemble products (ensemble mean and spread, probability maps, and Met/EPSgrams) for parameters including 2 m temperature and humidity, 10 m wind and gusts, precipitation, cloud cover, radiation, and thunderstorm/convection indices.
 
-The **publicly distributed dataset** (`ensemble-v1-1h-2500m`, "Ensemble Forecast for Austria") is a reduced product: it contains the **10th, 50th and 90th percentiles** computed from the 17 underlying runs (16 perturbed members + 1 control), at hourly resolution out to +60 h, for temperature, precipitation, wind, radiation, cloud cover, and thunderstorm parameters. Individual members are not distributed.
+The **publicly distributed dataset** (`ensemble-v1-1h-2500m`, "Ensemble Forecast for Austria") is a reduced product: it contains the **10th, 50th and 90th percentiles** computed from the 17 underlying runs (16 perturbed members + 1 control), at hourly resolution out to +60 h. The files carry **13 surface/2D parameters** (39 fields = 13 × 3 percentiles): 2 m temperature and its hourly min/max, 10 m wind (eastward/northward components), total precipitation, rainfall, snowfall, snow-level altitude, total cloud cover, CAPE, surface global radiation, and sunshine duration. Fields are packed as scaled 16-bit integers. Individual members, gusts, 2 m humidity, low/mid/high cloud cover, and pressure-level (3D) fields are **not** distributed.
 
 ---
 
