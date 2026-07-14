@@ -17,7 +17,8 @@ As of version 10.0.0 (operational May 26, 2026), GDPS is a **hybrid physics–AI
 
 ## What area it covers
 - **Coverage:** Global
-- **Atmospheric grid:** Yin–Yang horizontal grid, 2 × 2047 × 683 grid points
+- **Atmospheric grid (native):** Yin–Yang horizontal grid, 2 × 2047 × 683 grid points
+- **Distributed grid (GRIB2 output):** Global regular latitude–longitude, 0.15° × 0.15°, 2400 × 1201 grid points (−90°→90° latitude, 0°→359.85° longitude) — the GEM forecast is interpolated from the native Yin–Yang grid onto this uniform lat-lon grid for distribution
 - **Ice-ocean grid:** Global 0.25° with 50 z-levels
 
 ---
