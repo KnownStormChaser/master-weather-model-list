@@ -92,7 +92,9 @@ See [GEML](./gdps-geml.md) for details of the AI model itself. (Husain et al., 2
   - **MSC Datamart:** Direct file access — primary download channel
   - **MSC GeoMet:** Geospatial web services (WMS, WCS, OGC API)
   - **MSC AniMet:** Visualization service
-- **Official download location:** https://dd.weather.gc.ca/today/model_gem_global/15km/grib2/lat_lon/
+- **Official download location:** https://dd.weather.gc.ca/today/model_gdps/15km/
+  - **Path template:** `https://dd.weather.gc.ca/today/model_gdps/15km/{HH}/{hhh}/` — `{HH}` = run (`00`/`12`), `{hhh}` = 3-digit lead time (`000`–`240`)
+  - **Filename convention:** `{YYYYMMDD}T{HH}Z_MSC_GDPS_{Var}_{LevelType}-{Level}_LatLon0.15_PT{hhh}H.grib2` (e.g. `20260714T00Z_MSC_GDPS_AirTemp_IsbL-0500_LatLon0.15_PT000H.grib2`)
 - **Open data documentation:** https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-datamart_en/
 
 ---
@@ -102,6 +104,7 @@ See [GEML](./gdps-geml.md) for details of the AI model itself. (Husain et al., 2
 - Background-error covariances in 4DEnVar come entirely from the 256-member LETKF ensemble of GEPS 8.0.0 backgrounds (no NMC component), with scale-dependent horizontal localization.
 - GDPS is part of a tightly integrated suite of Canadian operational prediction systems sharing the GEM core, the GEPS ensemble for DA covariances, and GIOPS for ice-ocean initialization.
 - Open data licensing is genuinely open — no registration required, direct file access via the Datamart. Same as GIOPS, RIOPS, and CIOPS.
+- **Datamart path and naming migration (2026):** GDPS GRIB2 moved from `model_gem_global/15km/grib2/lat_lon/{HH}/{hhh}/` to `model_gdps/15km/{HH}/{hhh}/` (the `grib2/lat_lon/` segment was dropped and the folder renamed), and the filename scheme was overhauled at the same time — old `CMC_glb_{VAR}_{LVL}_latlon.15x.15_{YYYYMMDDHH}_P{hhh}.grib2` (GRIB abbreviations like `TMP`, `UGRD`) is replaced by `{YYYYMMDD}T{HH}Z_MSC_GDPS_{Var}_{LevelType}-{Level}_LatLon0.15_PT{hhh}H.grib2` (descriptive CamelCase tokens like `AirTemp`, `WindU`). The old `model_gem_global` path now returns HTTP 404 — a hard cutover, so scripts targeting the old paths or filenames will break.
 
 ---
 
