@@ -21,7 +21,7 @@ GEML is the AI component of the operational GDPS v10.0.0 (operational since May 
 
 ## What area it covers
 - **Coverage:** Global
-- **Grid:** Uniform latitude-longitude grid with poles
+- **Grid:** Uniform latitude-longitude grid with poles, 1440 × 721 grid points (global; 90°N–90°S latitude, 0°–359.75° longitude)
 - **Horizontal resolution:** 0.25° (~28 km)
 
 ---
@@ -34,8 +34,9 @@ GEML is the AI component of the operational GDPS v10.0.0 (operational since May 
   - Fine-tuned on ECMWF HRES initial conditions dataset for calendar years 2016–2021 (Rasp et al., 2024)
 - **Input data:** 3D analyses of atmospheric variables on a global 0.25° × 0.25°, 13-level grid; initialized from GDPS analysis
 - **Forecast timestep:** 6 hours (autoregressive)
-- **Forecast length:** 10 days
+- **Forecast length:** 10 days (240 h)
 - **Update frequency:** 2× daily (00 and 12 UTC)
+- **Temporal output resolution:** 6-hourly (lead times 000–240 h; 41 steps per run)
 - **Initialization:** GDPS analysis
 
 ---
@@ -66,7 +67,7 @@ GEML is the AI component of the operational GDPS v10.0.0 (operational since May 
 GEML produces global deterministic forecasts of:
 - Temperature (surface and upper-air pressure levels)
 - Wind components (10 m and upper-air)
-- Geopotential height
+- Geopotential
 - Specific humidity
 - Vertical velocity
 - Mean sea level pressure
@@ -107,10 +108,13 @@ The four systems share the same underlying GNN architecture and 13-pressure-leve
 
 ## Data availability
 - **Is the data free?** Yes
+- **License:** Environment and Climate Change Canada Data Servers End-use Licence (attribution required; commercial use permitted) — https://eccc-msc.github.io/open-data/licence/readme_en/
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
+- **Data formats:** GRIB2 (simple packing; ~1.98 MB per field, ~162 MB per step, ~6.5 GB per run)
 - **Official download location:**  
   https://dd.weather.gc.ca/today/model_gdps-geml/25km/
+  - **Path template:** `https://dd.weather.gc.ca/today/model_gdps-geml/25km/{HH}/{hhh}/` — `{HH}` = run (`00`/`12`), `{hhh}` = 3-digit lead time (`000`–`240`, every 6 h)
+  - **Filename convention:** `{YYYYMMDD}T{HH}Z_MSC_GDPS-GEML_{Var}_{LevelType}-{Level}_LatLon0.25_PT{hhh}H.grib2` (e.g. `20260714T00Z_MSC_GDPS-GEML_AirTemp_IsbL-0500_LatLon0.25_PT024H.grib2`)
 - **Documentation:**  
   https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-geml-datamart_en/
 - **HuggingFace repository (model weights and code):**  
@@ -131,7 +135,8 @@ The HuggingFace distribution makes GEML one of the few operational AI weather mo
 - GEML's 0.25° resolution and 13-level pressure grid match NOAA's GraphCastGFS and AIGFS, reflecting the shared GraphCast architecture. Users comparing the three should be aware that despite this structural similarity, the systems differ in training data (ERA5+HRES for GEML, ERA5+GDAS for the NOAA systems), fine-tuning procedures, and operational status.
 - The `/25km/` directory naming on the MSC datamart refers to the approximate metric equivalent of 0.25° resolution at the equator. The actual grid spacing varies with latitude on a regular lat-lon grid, narrowing significantly toward the poles.
 - Like other GraphCast-derived models, GEML uses two model states (current time and 6 hours prior) as input to step the forecast forward in 6-hour increments. This means GEML cannot be initialized from a single analysis time — it requires the GDPS analysis at both T and T-6h.
-- The 4 surface variables (2 m temperature, 10 m U/V wind, MSLP) and 6 upper-air variables (temperature, geopotential, U/V wind, vertical velocity, specific humidity) constitute the total GEML output set. Variables not in this list — including precipitation, cloud, radiation, and humidity diagnostics commonly available from physics-based NWP — are not produced by GEML directly.
+- The 4 surface variables (2 m temperature, 10 m U/V wind, MSLP) and 6 upper-air variables (temperature, geopotential, U/V wind, vertical velocity, specific humidity) constitute the total GEML output set. Variables not in this list — including precipitation, cloud, radiation, and humidity diagnostics commonly available from physics-based NWP — are not produced by GEML directly. File-verified against the 00Z run: 6 upper-air fields × 13 levels + 4 surface fields = 82 GRIB2 files per lead-time step.
+- **Field conventions (file-verified):** The upper-air geopotential field is distributed as true geopotential Φ (GRIB shortName `z`, units m² s⁻²), *not* geopotential height — divide by g ≈ 9.80665 m s⁻² for height in metres. Vertical velocity is pressure velocity omega (`w`, Pa s⁻¹). Files use GRIB2 simple packing (unlike the JPEG2000 packing in the operational GDPS GRIB2) and carry originating centre `cwao`.
 - ECCC's choice to publicly release GEML's weights via HuggingFace (`ECCC-ASTD-MRD/geml`) is operationally meaningful: it allows external researchers and forecast services to reproduce GEML inference, fine-tune the model further, or build downstream products. This contrasts with operational AI weather systems where weights remain proprietary.
 - The dual role (standalone product + nudging input for the experimental GDPS) is methodologically distinctive. Most operational AI weather systems are run either as full replacements for physics-based forecasts (AIFS Single alongside IFS, AIGFS as operational complement to GFS) or as research/development products without operational integration. GEML occupies a more closely-coupled position within ECCC's broader hybrid forecasting architecture.
 
