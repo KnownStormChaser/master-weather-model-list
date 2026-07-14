@@ -15,7 +15,7 @@ It is designed for short-range forecasting of small-scale and rapidly evolving w
 
 ## What area it covers
 - **Coverage:** Austria and surrounding Alpine regions
-- **Domain details:** 600 × 432 grid points centred on the Alpine region; same domain as the operational C-LAEF ensemble
+- **Domain details:** Native model grid is 600 × 432 points centred on the Alpine region (same domain as the operational C-LAEF ensemble). The **public dataset** is regridded to a regular WGS84 / EPSG:4326 lat-lon grid of **594 × 492 points** (0.028° lon × 0.018° lat), bounding box ≈ **42.98–51.82 °N, 5.50–22.10 °E** (confirmed from the distributed NetCDF files)
 
 ---
 
@@ -26,7 +26,7 @@ It is designed for short-range forecasting of small-scale and rapidly evolving w
 - **Convection-allowing:** Yes (deep convection explicitly resolved at 2.5 km; shallow convection parameterized)
 - **Horizontal resolution:** ~2.5 km
 - **Grid dimensions:** 600 × 432 grid points
-- **Vertical levels:** 90 (lowest level ~5 m above ground; model top ~35 km)
+- **Vertical levels:** 90 native model levels (lowest ~5 m above ground; model top ~35 km). The public dataset delivers 3D fields interpolated to **23 isobaric levels** (1000–100 hPa)
 - **Forecast length:** 60 hours
 - **Update frequency:** 8× daily (00, 03, 06, 09, 12, 15, 18, 21 UTC)
 - **Time step:** 60 s
@@ -51,15 +51,23 @@ It is designed for short-range forecasting of small-scale and rapidly evolving w
 ---
 
 ## What it provides
-Deterministic forecasts of:
-- 2 m temperature and humidity
-- 10 m wind (including gusts)
-- Mean sea-level and surface pressure
-- Precipitation (rain, snow, graupel)
-- Cloud cover (total, low, mid, high) and cloud microphysics
-- Boundary-layer parameters and surface fluxes
-- Radar reflectivity (simulated)
-- Standard upper-air fields on isobaric and height-above-ground levels
+Deterministic hourly forecasts to +60 h. The publicly distributed NetCDF (`nwp-v1-1h-2500m`) contains 35 fields.
+
+**Surface / single-level (2D):**
+- 2 m temperature (with min/max over the previous forecast hour) and 2 m relative humidity
+- 10 m wind (eastward/northward components) and 10 m gusts (u/v components)
+- Surface pressure *(surface pressure only — no MSLP field in the public data)*
+- Total precipitation, rainfall amount, snowfall amount, surface snow amount, and snow-level altitude
+- Cloud cover (total, low, mid, high)
+- CAPE, CIN, and Showalter index
+- Surface radiation: global (downwelling SW), net shortwave, net longwave, and downwelling longwave
+- Sunshine duration
+- Surface temperature, surface geopotential (orography), and a coded weather symbol
+
+**Upper-air (3D, on 23 isobaric levels, 1000 → 100 hPa):**
+- Wind (U, V), temperature, geopotential, relative humidity, and vertical velocity (ω)
+
+*(The public dataset contains no simulated radar reflectivity, cloud-microphysics, or height-above-ground-level fields.)*
 
 ---
 
