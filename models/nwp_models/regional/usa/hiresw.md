@@ -20,7 +20,7 @@ HiresW (the High-Resolution Window Forecast System, sometimes written HiResW or 
   - **Hawaii** (`hi`)
   - **Guam** (`guam`) — western Pacific
   - **Puerto Rico** (`pr`) — Caribbean
-- **Domain details:** Output grids are on a Lambert Conformal projection for CONUS; domains are run on a staggered cycle schedule (see below), not all simultaneously.
+- **Domain details:** Output projection varies by domain (verified from live GRIB2 headers, 2026-07-15): CONUS on Lambert Conformal, Alaska on polar stereographic, and Guam/Hawaii/Puerto Rico on Mercator (finer grids) or regular lat-lon (5 km grids). Domains are run on a staggered cycle schedule (see below), not all simultaneously.
 
 ---
 
@@ -33,8 +33,13 @@ HiresW (the High-Resolution Window Forecast System, sometimes written HiResW or 
 - **Convection-allowing:** Yes — deep convection is explicitly resolved; no cumulus parameterization
 - **Horizontal resolution:**
   - Native computational grid ~3–4 km (varies by core and domain)
-  - Output is distributed remapped onto **two grids per run: a ~5 km grid and a ~2.5 km grid**
-- **Vertical levels:** WRF-ARW ~50 levels (raised from 40 in May 2015); FV3 not clearly documented in public NCEP materials
+  - Output is distributed on **two grids per run: a ~5 km grid and a finer grid**. The finer grid is **2.5 km for CONUS, Hawaii, Guam, and Puerto Rico**, but **3 km for Alaska** (distributed under the `3km` grid token). Verified grid geometry from live GRIB2 headers (2026-07-15):
+    - CONUS — 5 km: Lambert 1473×1025 @ 5.079 km; 2.5 km: Lambert 2145×1377 @ 2.540 km
+    - Alaska — 5 km: polar stereographic 825×603 @ 5.000 km; 3 km: polar stereographic 1649×1105 @ 2.976 km
+    - Guam — 2.5 km: Mercator 193×193 @ 2.500 km (5 km: regular lat-lon 223×170)
+    - Hawaii — 2.5 km: Mercator 321×225 @ 2.500 km (5 km: regular lat-lon 223×170)
+    - Puerto Rico — 2.5 km: Mercator 177×129 @ 2.500 km (5 km: regular lat-lon 340×208)
+- **Vertical levels:** WRF-ARW ~50 levels (raised from 40 in May 2015). FV3 native level count is not documented in public NCEP materials and **cannot be determined from NOMADS output** (output is on pressure levels, not native model levels). GRIB2 output carries **27 isobaric levels, 1000–200 mb** (25 mb spacing below 500 mb, 50 mb above) for both cores — verified 2026-07-15.
 - **Forecast length:**
   - WRF-ARW: **48 hours**
   - FV3: **60 hours**
@@ -80,7 +85,7 @@ Deterministic convection-allowing forecasts of:
 - **Is the data free?** Yes
 - **License:** Public domain (U.S. Government work; CC0-equivalent)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2 (each file accompanied by a `.idx` index; BUFR soundings also produced)
+- **Data formats:** GRIB2 (each file accompanied by a `.idx` index). **BUFR soundings** are also produced per domain/core/cycle, distributed both as `bufr_{domain}{core}.t{CC}z/` station directories and as bundled `hiresw.t{CC}z.{domain}{core}.bufrsnd.tar.gz` tarballs (verified in the NOMADS directory, 2026-07-15).
 - **Official download location:**
   - NOMADS (real-time, rolling retention of the most recent several days):
     https://nomads.ncep.noaa.gov/pub/data/nccf/com/hiresw/prod/
@@ -96,10 +101,10 @@ hiresw.t{CC}z.{core}_{grid}.f{FFF}.{domain}.grib2
 
 - `{CC}` — cycle: `00`, `06`, `12`, `18`
 - `{core}` — `arw` or `fv3`
-- `{grid}` — `5km` or `2p5km`
+- `{grid}` — `5km` (all domains), `2p5km` (CONUS/Hawaii/Guam/Puerto Rico), or `3km` (Alaska only)
 - `{FFF}` — forecast hour (`00`–`48` for ARW, `00`–`60` for FV3)
 - `{domain}` — `conus`, `ak`, `hi`, `guam`, `pr`
-- ARW member 2 appends `mem2` to the domain token: `conusmem2`, `himem2`, `akmem2`, `prmem2` (no `guammem2`)
+- ARW member 2 appends `mem2` to the domain token: `conusmem2`, `himem2`, `akmem2`, `prmem2` (no `guammem2`). **Member 2 is distributed only on the 5 km grid** — the finer 2.5 km / 3 km grids carry member 1 (ARW) and FV3 only (verified 2026-07-15).
 
 Examples:
 ```
@@ -137,7 +142,7 @@ curl -O https://nomads.ncep.noaa.gov/pub/data/nccf/com/hiresw/prod/hiresw.202606
 
 ## Notes
 - HiresW is best understood as a small collection of convection-allowing runs (two ARW members + one FV3) rather than a single model; its main downstream role is as the backbone membership of [HREF](../../../ensemble_models/regional/usa/href.md).
-- Both output grids (5 km and 2.5 km) are remapped products of the same underlying forecast; the 2.5 km files have a documented quirk of bundling multiple lead-time steps per forecast hour in some fields — verify the `valid_time`/`forecast_time` when subsetting.
+- The 5 km and finer (2.5 km / 3 km) grids are remapped products of the same underlying forecast. The **finer files come in 3-hour blocks**: at forecast hours divisible by 3 (f03, f06, … f60) the file bundles the valid hour plus the two preceding hourly steps for the instantaneous fields, while off-block hours (f01, f02, f04 …) contain only the single valid hour. The 5 km files always contain just the single valid hour. Verify `forecast_time`/`valid_time` when subsetting the finer grids (confirmed 2026-07-15 on CONUS/Guam/Hawaii 2.5 km and Alaska 3 km: the f24 file carries hours 22–24; f12 carries 10–12).
 - The FV3 core in HiresW replaced an earlier NMMB core; older NCEP documentation occasionally labels the second core with NMMB-era terminology.
 
 ---
