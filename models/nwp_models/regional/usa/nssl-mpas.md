@@ -15,7 +15,7 @@ These are experimental, pre-operational research runs — not an operational NWP
 
 ## What area it covers
 - **Coverage:** Contiguous United States (CONUS)
-- **Domain details:** 3 km regional MPAS mesh covering CONUS. MPAS uses an unstructured centroidal Voronoi mesh with C-grid staggering; the NSSL runs use GSL's MPAS codebase.
+- **Domain details:** Distributed on the HRRR 3-km CONUS Lambert-conformal grid (1799 × 1059), spanning roughly 21.1–52.6°N and 234–299°E (≈ −126° to −61°W). The model itself runs on an MPAS unstructured Voronoi mesh; distributed files are regridded to the Lambert grid.
 
 ---
 
@@ -23,12 +23,12 @@ These are experimental, pre-operational research runs — not an operational NWP
 - **Model type:** Regional deterministic NWP (convection-allowing), experimental
 - **Model system / core:** MPAS (Model for Prediction Across Scales), atmospheric component, with a subset of Advanced Research WRF (ARW) physics
 - **Dynamical formulation:** Non-hydrostatic, finite-volume on an unstructured Voronoi mesh
-- **Convection-allowing:** Yes — 3 km cell spacing; no cumulus parameterization
-- **Horizontal resolution:** ~3 km cell spacing (CONUS mesh)
-- **Vertical levels:** TBD
-- **Forecast length:** ~48 h
+- **Convection-allowing:** Yes — 3 km grid spacing; no cumulus parameterization
+- **Horizontal resolution:** 3 km. Distributed output is on the operational HRRR CONUS Lambert-conformal grid (1799 × 1059; Dx = Dy = 3 km; standard parallels 38.5°N, central longitude 262.5°E / −97.5°W; spherical earth R = 6,371,229 m). The native MPAS unstructured Voronoi mesh is regridded to this grid for distribution.
+- **Vertical levels:** Distributed output is provided on 10 isobaric levels (250, 500, 700, 750, 800, 850, 900, 925, 950, 1000 hPa), plus surface/near-surface and layer diagnostics. The native MPAS model level count is not exposed in the distributed GRIB2.
+- **Forecast length:** 48 h (hourly output; forecast hours f00–f48, 49 steps per cycle)
 - **Update frequency / cycles:** Varies by configuration (see table below)
-- **Temporal output resolution:** Hourly GRIB2 output (TBD if sub-hourly fields are included)
+- **Temporal output resolution:** Hourly (one GRIB2 file per forecast hour)
 
 ### Configurations
 
@@ -54,7 +54,13 @@ As of mid-July 2026, only MPAS-HTPO-NSSL (`mpasht2`) is still being published. T
 ---
 
 ## What it provides
-Deterministic convection-allowing forecasts of standard atmospheric fields (temperature, wind, precipitation, pressure, humidity, reflectivity/simulated radar, severe-weather diagnostics such as updraft helicity), distributed as GRIB2.
+Deterministic convection-allowing output in GRIB2, as a compact curated field set (72 messages per forecast hour in the sampled f00 file). Contents:
+
+- **Isobaric suite (10 levels: 250–1000 hPa):** geopotential height, temperature, specific humidity, u/v wind, geometric vertical velocity
+- **Convective / radar diagnostics:** composite reflectivity, derived reflectivity (1 km AGL and −10 °C isotherm), hourly-maximum reflectivity (1 km AGL), echo top, maximum updraft and downdraft vertical velocity
+- **Other:** mean sea level pressure, visibility, surface wind gust
+
+Note: this set does **not** include standard 2 m / 10 m surface fields (2 m temperature/dewpoint, 10 m winds) or accumulated precipitation — it is an upper-air-plus-convective-diagnostics subset rather than a full sensible-weather field list.
 
 ---
 
