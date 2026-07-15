@@ -19,7 +19,9 @@ The current experimental version is HRDPS-West 1.5.0.
 
 ## What area it covers
 - **Coverage:** Southern British Columbia (with the domain extending into adjacent regions of Alberta, Washington State, and the northeast Pacific)
-- **Grid:** Latitude–longitude grid, 1350 × 1200 points at uniform 0.00899° (~1 km) resolution
+- **Grid:** Rotated latitude–longitude LAM at uniform 0.00899° (~1 km) resolution
+  - **Computational (model) grid:** 1350 × 1200 grid points — the full West forecast domain (HRDPS-West 1.5.0 technical specifications / fact sheet)
+  - **Distributed (output) grid:** 1330 × 1180 grid points, rotated south pole at 33.443°S / 266.464°E — the grid in the public GRIB2 (file-verified)
 
 ---
 
