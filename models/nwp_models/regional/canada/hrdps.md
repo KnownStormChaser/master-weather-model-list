@@ -15,7 +15,9 @@ HRDPS is a limited-area (LAM) configuration of the Global Environmental Multisca
 
 ## What area it covers
 - **Coverage:** Pan-Canadian — Canada (excluding the Canadian Archipelago), northern United States, and adjacent oceans
-- **Grid:** Rotated latitude–longitude LAM, 2582 × 1332 grid points at uniform 0.0225° (~2.5 km) resolution
+- **Grid:** Rotated latitude–longitude LAM at uniform 0.0225° (~2.5 km) resolution
+  - **Computational (model) grid:** 2582 × 1332 grid points — the full pan-Canadian forecast domain (HRDPS 7.0.0 technical specifications)
+  - **Distributed (output) grid:** 2540 × 1290 grid points, rotated south pole at 36.089°S / 245.305°E — the grid in the public GRIB2 (v7.0.0 fact sheet; file-verified)
 
 ---
 
