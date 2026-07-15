@@ -32,11 +32,13 @@ These are experimental, pre-operational research runs — not an operational NWP
 
 ### Configurations
 
-| Configuration | File tag | Initialized from | Microphysics | Cycles |
-|---|---|---|---|---|
-| MPAS-HTPO-NSSL | `mpasht2` | Operational [HRRR](./hrrr.md) | TEMPO (Thompson-Eidhammer for Operations) | 4× daily (00/06/12/18 UTC) |
-| MPAS-RN-NSSL | `mpasrn` | Experimental RRFS (EMC) | NSSL 2-moment | 2× daily (00/12 UTC) |
-| MPAS-RN3-NSSL | `mpasrn3` | Experimental RRFS (EMC) | NSSL 3-moment | 2× daily (00/12 UTC) |
+| Configuration | File tag | Initialized from | Microphysics | Cycles | Status |
+|---|---|---|---|---|---|
+| MPAS-HTPO-NSSL | `mpasht2` | Operational [HRRR](./hrrr.md) | TEMPO (Thompson-Eidhammer for Operations) | 4× daily (00/06/12/18 UTC) | Active |
+| MPAS-RN-NSSL | `mpasrn` | Experimental RRFS (EMC) | NSSL 2-moment | 2× daily (00/12 UTC) | Discontinued (last cycle 2026-06-16) |
+| MPAS-RN3-NSSL | `mpasrn3` | Experimental RRFS (EMC) | NSSL 3-moment | 2× daily (00/12 UTC) | Discontinued (last cycle 2026-03-16) |
+
+As of mid-July 2026, only MPAS-HTPO-NSSL (`mpasht2`) is still being published. The two RRFS-initialized configurations have been retired — MPAS-RN3-NSSL ended 2026-03-16 and MPAS-RN-NSSL ended 2026-06-16 — leaving the HRRR-initialized run as the sole active NSSL MPAS configuration.
 
 ---
 
@@ -80,7 +82,7 @@ Deterministic convection-allowing forecasts of standard atmospheric fields (temp
 
 ## Status
 - Experimental / pre-operational. GSL states these systems are not for operational use and the supporting websites are not maintained 24/7.
-- MPAS-RN3-NSSL was paused during NSSL's transition of its MPAS runs from the NOAA Jet HPC to the NOAA Ursa HPC; verify current availability before relying on its cadence.
+- Only MPAS-HTPO-NSSL (`mpasht2`) remains active as of mid-July 2026. MPAS-RN3-NSSL was discontinued after 2026-03-16 (it did not resume following NSSL's Jet→Ursa HPC transition) and MPAS-RN-NSSL was discontinued after 2026-06-16.
 - NSSL's legacy 4 km WRF-NSSL run was scheduled to cease on or near 31 March 2026 (Jet decommissioning) as resources shifted toward MPAS development.
 - Expected to feed the eventual operational RRFSv2; once RRFSv2 is implemented and lands on NOMADS/AWS, a separate operational entry will be warranted.
 
