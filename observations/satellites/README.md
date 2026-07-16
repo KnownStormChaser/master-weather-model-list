@@ -86,11 +86,54 @@ Each entry covers a constellation or satellite series rather than individual spa
 
 ## What's intentionally missing (for now)
 
-The current section covers the operationally significant Western and European weather satellite systems with truly open data access. Several other operational systems exist with free-but-registered access that may be added later:
+The current section covers the operationally significant Western and European weather satellite systems with truly open data access. Several other systems were evaluated but not given full entries, for reasons worth recording — some are operational satellites with access friction that may be added later; others are openly accessible but fall outside the raw-data scope and are noted as pointers rather than catalogued.
+
+Operational satellites with free-but-registered access that may be added later:
 
 - **Fengyun (FY-4 geostationary, FY-3 polar-orbiting)** — China Meteorological Administration, distributed via NSMC portal with registration
 - **INSAT-3D series** — India Meteorological Department, distributed via MOSDAC with registration and some restrictions on non-Indian users
 - **Elektro-L series** — Roshydromet (Russia), distributed via NTSOMZ with intermittent availability
+
+### Global mosaics — NOAA GMGSI (honourable mention, not a full entry)
+
+The **NOAA/NESDIS Global Mosaic of Geostationary Satellite Imagery
+([GMGSI](https://registry.opendata.aws/noaa-gmgsi/))** is worth flagging for anyone who
+wants a single, ready-made global satellite view rather than assembling one from the
+native geostationary feeds documented above. It is a deliberate mention rather than a
+catalogued entry — the reasoning is in *Why it's a mention* below.
+
+GMGSI is an hourly mosaic composited from the operational geostationary constellation —
+GOES-East and GOES-West (NOAA), Meteosat-10 at 0°E and Meteosat-9 at 45.5°E (EUMETSAT),
+and Himawari-9 (JMA) — giving near-global coverage (~73°N to ~73°S) at roughly 8 km
+resolution, updated every hour. Four bands are operational and current:
+
+- **VIS** — visible (`GMGSI_VIS/`)
+- **SW**  — shortwave / mid-infrared (`GMGSI_SW/`)
+- **LW**  — longwave / thermal infrared (`GMGSI_LW/`)
+- **WV**  — water vapour (`GMGSI_WV/`)
+
+Delivered as CF-compliant NetCDF on a regular lat/lon grid via NOAA Open Data
+Dissemination — anonymous access, no account required:
+
+```
+aws s3 ls --no-sign-request s3://noaa-gmgsi-pds/
+# path layout: s3://noaa-gmgsi-pds/GMGSI_<BAND>/YYYY/MM/DD/HH/
+```
+
+- **Access tier:** Open (no account)
+- **Licence:** NODD open — public use permitted, attribution requested, no implied NOAA
+  endorsement.
+
+**Why it's a mention and not a catalogued entry:** despite the NetCDF container, the
+pixel values are display-scaled 0–255 digital numbers (the `data` variable is labelled
+"0-255 Brightness Temperature"), not calibrated radiances or brightness temperatures.
+GMGSI is a visualization mosaic, not native or calibrated Level 1/Level 2 satellite data
+— for quantitative work, use the native ABI / AHI / SEVIRI products catalogued above
+instead.
+
+> **Note — retired fifth band.** A `GMGSI_SSR/` band (shortwave solar reflectance) also
+> exists in the bucket but appears retired: its most recent files are from 2025-06-03 in
+> the older pre-`v3r0` format, so it is not listed here as operational.
 
 These are operationally important satellites and the data is genuinely free, but each has access friction worth documenting carefully. They're left for a future expansion of this section.
 
