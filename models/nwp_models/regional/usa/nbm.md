@@ -126,10 +126,12 @@ These models are used to build the various NBM products, and the mix differs fro
 - **Is the data free?** Yes
 - **License:** Public domain (U.S. government work; CC0-equivalent)
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2 and ASCII/text bulletins (NBH/NBS/NBE/NBX/NBP)
-- **Official download locations:**  
-  https://registry.opendata.aws/noaa-nbm/ (realtime + archive back to May 2020)  
-  https://nomads.ncep.noaa.gov/pub/data/nccf/com/blend/prod/ (realtime; ~2-day retention)
+- **Data formats:** GRIB2, Cloud-Optimized GeoTIFF (COG), and ASCII/text bulletins (NBH/NBS/NBE/NBX/NBP)
+- **Official download locations:**
+  - **AWS — operational GRIB2:** `s3://noaa-nbm-grib2-pds/` — realtime + archive back to 2020-05-18; date-organized (`blend.YYYYMMDD/`), each cycle holding `core/`, `qmd/`, and `text/`. Registry: https://registry.opendata.aws/noaa-nbm/
+  - **AWS — operational COG:** `s3://noaa-nbm-pds/` — Cloud-Optimized GeoTIFF, one file per element/valid-time, organized by version → domain → date (`blendv3.2/` … `blendv5.0/`); current v5.0 data begins 2026-05-05. Registry: https://registry.opendata.aws/noaa-nbm/
+  - **AWS — parallel (pre-operational test stream):** `s3://noaa-nbm-para-pds/` — GRIB2 only (`core/` + `qmd/`, no text bulletins); ~5-day rolling window, no archive; carries the next-version candidate ahead of operational implementation. Registry: https://registry.opendata.aws/noaa-nbm-parallel/
+  - **NOMADS:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/blend/prod/ — realtime GRIB2 + text; ~2-day retention, no archive or parallel stream.
 
 ### Text bulletin products
 | Label | Product | Time step | Forecast hours |
