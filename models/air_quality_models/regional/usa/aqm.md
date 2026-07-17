@@ -3,7 +3,7 @@
 ## What this model is
 The Air Quality Model (AQM) is the primary atmospheric chemistry component of NOAA/NWS's National Air Quality Forecast Capability (NAQFC). It produces operational forecasts of ozone (O3) and fine particulate matter (PM2.5) over the United States, and is the system whose output feeds directly into the EPA's AirNow air quality alerts.
 
-AQM is one of three component prediction systems making up NAQFC — alongside [RAP](../../../nwp_models/regional/usa/rap.md) (operational smoke forecasts) and [HYSPLIT-Dust](./hysplit-dust.md) (operational dust forecasts). For the broader NAQFC programme context and how the three components fit together, see the [NAQFC umbrella entry](./naqfc.md).
+AQM is one of three component prediction systems making up NAQFC — alongside [RAP](../../../nwp_models/regional/usa/rap.md) (operational smoke forecasts) and [HYSPLIT-Dust](./hysplit-dust.md) (operational dust forecasts).
 
 The current operational version is **AQMv7**, which became operational on 14 May 2024. AQMv7 is a major architectural shift from earlier versions: it transitioned from an offline-coupled GFS-CMAQ chain to a fully online-coupled UFS-based atmosphere-chemistry system embedding CMAQ v5.2.1 within the UFS framework. The earlier offline-coupled architecture (NAM-CMAQ in v5, GFS-CMAQ in v6) is no longer in operational use.
 
@@ -99,7 +99,7 @@ The driving meteorological component (formerly GFS, now UFS) has its own indepen
   - PM2.5 (hourly, 1h and 24h averages, 24h maximum — raw and bias-corrected)
 - **Supplemental meteorology:** Surface fields consistent with the driving NWP component
 
-For wildfire smoke and dust, AQM does not produce these as primary forecasts — they come from the other NAQFC component models. See the [NAQFC umbrella entry](./naqfc.md) for the full picture.
+For wildfire smoke and dust, AQM does not produce these as primary forecasts — they come from the other NAQFC component models, [RAP](../../../nwp_models/regional/usa/rap.md) (smoke) and [HYSPLIT-Dust](./hysplit-dust.md) (dust).
 
 ---
 
