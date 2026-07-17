@@ -42,7 +42,7 @@ Earlier versions (AQMv5 and AQMv6) ran three separate domains at ~12 km. The uni
 ### Output averaging
 To align with U.S. EPA National Ambient Air Quality Standards, AQM provides:
 - **Ozone:** 1-hour and 8-hour backward-calculated averages, plus preceding 1-hour and 8-hour maximum values
-- **PM2.5:** 1-hour and 24-hour averages, plus 24-hour maximum values
+- **PM2.5:** 1-hour and 24-hour averages, plus 1-hour maximum values
 - **Bias-corrected versions:** All O3 and PM2.5 fields are also available as bias-corrected outputs, using the Kalman Filter Analog (KFAN) technique trained against AirNow observational data
 
 ---
@@ -96,7 +96,7 @@ The driving meteorological component (formerly GFS, now UFS) has its own indepen
 ## What it provides
 - **Surface-level concentrations:**
   - O3 (hourly, 1h and 8h averages, 1h and 8h maxima — raw and bias-corrected)
-  - PM2.5 (hourly, 1h and 24h averages, 24h maximum — raw and bias-corrected)
+  - PM2.5 (hourly, 1h and 24h averages, 1h maximum — raw and bias-corrected)
 - **Supplemental meteorology:** Surface fields consistent with the driving NWP component
 
 For wildfire smoke and dust, AQM does not produce these as primary forecasts — they come from the other NAQFC component models, [RAP](../../../nwp_models/regional/usa/rap.md) (smoke) and [HYSPLIT-Dust](./hysplit-dust.md) (dust).
@@ -106,13 +106,16 @@ For wildfire smoke and dust, AQM does not produce these as primary forecasts —
 ## Data availability
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
+- **License:** Public domain (U.S. government work; CC0-equivalent)
 - **Data format:** GRIB2
-- **Primary access:** NOAA Open Data Dissemination (NODD) via AWS S3 bucket
-  - Bucket: `noaa-nws-naqfc-pds` (shared with HYSPLIT-Dust and RAP-Smoke products under the NAQFC umbrella)
+- **NOMADS (real-time, rolling window):** https://nomads.ncep.noaa.gov/pub/data/nccf/com/aqm/prod/
+- **AWS Open Data / NOAA Open Data Dissemination (NODD) — real-time + archive, via S3 bucket:**
+  - Bucket: `noaa-nws-naqfc-pds` (shared with HYSPLIT and RAP-Smoke products under the NAQFC umbrella)
   - Region: `us-east-1`
   - Browse: https://noaa-nws-naqfc-pds.s3.amazonaws.com/index.html
   - CLI: `aws s3 ls --no-sign-request s3://noaa-nws-naqfc-pds/`
 - **Historical archive:** Available from 1 January 2020 onward (spans AQMv5, AQMv6, and AQMv7 — users should be aware that model physics and resolution differ across this time span; see version history)
+- **Supplemental native model output (`AQMv7_suppl/`):** Beyond the operational AQI GRIB2 products above, NOAA distributes the raw native UFS-CMAQ output as NetCDF on the same bucket — hourly 3D dynamics (`dyn.fNNN.nc`) and physics/chemistry (`phy.fNNN.nc`) history files on the native 13 km North American domain (f000–f072), plus the model's emissions inputs (NEXUS, point-source `PT`, and regridded hourly emissions). Same 06/12 UTC cadence; this archive begins 31 March 2025 (shorter than the GRIB2 record). Path: `s3://noaa-nws-naqfc-pds/AQMv7_suppl/YYYYMMDD/CC/`
 - **New-data notifications:** AWS SNS topic `arn:aws:sns:us-east-1:709902155096:NewNWSAirQualityObject` (Lambda and SQS protocols)
 - **Operational forecast viewer:** https://airquality.weather.gov/
 
