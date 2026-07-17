@@ -15,7 +15,7 @@ The domain exposes two companion datasets: a chemical air-quality run (`silam_re
 
 ## What area it covers
 - **Coverage:** Northern Europe / Fennoscandia and the Baltic
-- **Domain details:** Rotated latitude–longitude, **800 × 750**, ~**0.0225°** (~2.5 km), real-world bounds approximately **2.0°W–47.6°E, 52.1°N–71.8°N** (from the live pollen dataset). The chemistry dataset's grid is unverified while its collection is empty, but is expected to match.
+- **Domain details:** Rotated latitude–longitude, **800 × 750**, ~**0.0225°** (measured), real-world bounds approximately **2.0°W–47.6°E, 52.1°N–71.8°N** (from the live pollen dataset). FMI describes this Fennoscandia + Baltic suite as **~2.4 km**, **nested in the European SILAM CAMS simulations** (per the CAMS Finland programme page). The chemistry dataset's grid is unverified while its collection is empty, but is expected to match.
 
 ---
 
