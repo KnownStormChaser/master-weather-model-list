@@ -5,7 +5,7 @@ HYSPLIT-Dust is the operational atmospheric dust forecast component of NOAA/NWS'
 
 This entry documents HYSPLIT in its specific role as the operational NAQFC dust component. HYSPLIT itself is a far broader system used internationally for emergency response (volcanic ash, nuclear and hazmat releases), backward trajectory analysis for source attribution, and many other dispersion applications. Those uses are outside the operational-forecast scope of this repository.
 
-HYSPLIT-Dust is one of three component prediction systems making up NAQFC — alongside [AQM](./aqm.md) (operational ozone and PM2.5 forecasts) and [RAP](../../../nwp_models/regional/usa/rap.md) (operational smoke forecasts). For the broader NAQFC programme context and how the three components fit together, see the [NAQFC umbrella entry](./naqfc.md).
+HYSPLIT-Dust is one of three component prediction systems making up NAQFC — alongside [AQM](./aqm.md) (operational ozone and PM2.5 forecasts) and [RAP](../../../nwp_models/regional/usa/rap.md) (operational smoke forecasts).
 
 Prior to 28 June 2022, HYSPLIT also produced the operational smoke forecast guidance for NAQFC. On that date, RAP-Smoke replaced HYSPLIT for operational smoke prediction; HYSPLIT is now used solely for the dust forecast.
 
