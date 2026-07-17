@@ -66,7 +66,17 @@ Full-chemistry 3D concentration fields (`cnc_*`), hourly, on 10 height layers, i
 - Fire-emitted PM tracers
 - Supporting fields (air density, etc.)
 
-(Pollen / allergen species are distributed in the separate `silam_hires_pollen_v6_1` dataset — see Notes.)
+Airborne pollen and aeroallergens are treated here as an air-quality-relevant exposure and are documented in the section below.
+
+---
+
+## Pollen and aeroallergens (companion dataset)
+FMI runs a parallel SILAM pollen / aeroallergen forecast on the **same rotated Finland/Baltic grid** as the chemistry dataset, distributed as `silam_hires_pollen_v6_1`.
+- **Coverage / grid:** Identical to the chemistry dataset — rotated latitude–longitude, 1560 × 900, ~0.0075° (~0.8 km), 17.5°E–38.2°E / 58.3°N–70.8°N
+- **Taxa / allergens:** Birch, alder, grass, hazel, mugwort (with sub-source variants), olive, ragweed; plus an aphids tracer
+- **Products per taxon:** Airborne concentration (`cnc_POLLEN_*`), ready-to-fly amount (`Poll_Rdy2fly_*`), remaining / total seasonal pollen (`poll_left_*`, `poll_tot_m2_*`), phenology heat-sums (`heatsum_*`), empirical bias correction (`pollen_corr_*`), plus driving meteorology
+- **Cadence / output:** Daily run, hourly output
+- **Access:** THREDDS — https://thredds.silam.fmi.fi/thredds/catalog/silam_hires_pollen_v6_1/catalog.xml — via OPeNDAP, NetCDF Subset Service, and HTTPServer
 
 ---
 
@@ -87,7 +97,7 @@ Full-chemistry 3D concentration fields (`cnc_*`), hourly, on 10 height layers, i
 - **Distributed via FMI's THREDDS server, not AWS.** See [SILAM Global](../../global/finland/silam-global.md) (AWS surface subset) and [SILAM Europe](./silam-europe.md) (0.1° full chemistry) for the companion configurations.
 - **Rotated-pole grid.** Coordinates in the files are rotated latitude/longitude; reproject (or use the file's grid-mapping metadata) before combining with regular lat/lon products. The real-world bounding box above is approximate.
 - **Large files.** At ~1.43 GB per hourly file (~1.4 M grid points × ~475 fields × 10 layers), full-run downloads are heavy; prefer OPeNDAP or NCSS subsetting for targeted extractions.
-- **Pollen is a separate dataset.** The companion `silam_hires_pollen_v6_1` carries pollen/allergen species — biological rather than chemical AQ; treat as a separate cataloguing decision.
+- **Pollen is included here** (see *Pollen and aeroallergens*) as an air-quality-relevant exposure. The companion `silam_hires_pollen_v6_1` shares this entry's grid and is documented within this entry rather than separately.
 - **Archive depth:** Short rolling window — only ~4 daily runs present at time of check (2026-07-13 → 2026-07-16), versus ~63 for the European domain. Confirm current retention.
 
 ---
