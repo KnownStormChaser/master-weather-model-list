@@ -65,13 +65,11 @@ The dust scheme is most active over arid and semi-arid regions of the western an
 ## Data availability
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
+- **License:** Public domain (U.S. government work; CC0-equivalent)
 - **Data format:** GRIB2
-- **Primary access:** NOAA Open Data Dissemination (NODD) via AWS S3 bucket
-  - Bucket: `noaa-nws-naqfc-pds` (shared with the AQM and RAP-Smoke components under the NAQFC umbrella)
-  - Region: `us-east-1`
-  - Browse: https://noaa-nws-naqfc-pds.s3.amazonaws.com/index.html
-  - CLI: `aws s3 ls --no-sign-request s3://noaa-nws-naqfc-pds/`
-- **New-data notifications:** AWS SNS topic `arn:aws:sns:us-east-1:709902155096:NewNWSAirQualityObject` (shared with all NAQFC products)
+- **Primary access (live) — NOMADS:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/hysplit/prod/
+  - Dust is under the per-cycle `dustcs.YYYYMMDD/` directories: `dustcs.tCCz.sfc.1hr.grib2` (surface) and `dustcs.tCCz.pbl.1hr.grib2` (boundary-layer), each also on NCEP Grid 227 (~5 km CONUS) as the `_227.grib2` variant. Cycles 06 and 12 UTC.
+- **Historical archive — AWS Open Data (NODD):** `s3://noaa-nws-naqfc-pds/HYSPLIT_Dust/` (browse: https://noaa-nws-naqfc-pds.s3.amazonaws.com/index.html). This mirror spans 2020-01-01 to 2026-04-20 and has not updated since — use NOMADS for current data.
 - **Operational forecast viewer:** https://airquality.weather.gov/
 
 ---
