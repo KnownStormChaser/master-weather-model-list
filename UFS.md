@@ -55,7 +55,7 @@ These systems already run on UFS infrastructure as of May 2026.
 - **Replaced:** [HWRF](./models/tropical_cyclone_models/hwrf.md) and [HMON](./models/tropical_cyclone_models/hmon.md) (both retired 2023)
 - **Notes:** First major UFS-based operational system. HAFS runs only when active tropical cyclones exist; supports basins worldwide (NATL, EPAC, CPAC, WPAC, NIO, SH).
 
-### [NAQFC AQM v7 — National Air Quality Forecast Capability](./models/air_quality_models/regional/usa/naqfc.md)
+### NAQFC AQM v7 — National Air Quality Forecast Capability
 - **Operational since:** May 2024 (v7.0.7 — UFS-based architecture introduced)
 - **UFS components used:** UFS-based online-coupled atmosphere-chemistry embedding CMAQ v5.2.1
 - **Replaced:** Offline-coupled GFS-CMAQ chain used in AQMv5 and AQMv6
