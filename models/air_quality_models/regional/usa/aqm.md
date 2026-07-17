@@ -97,6 +97,7 @@ The driving meteorological component (formerly GFS, now UFS) has its own indepen
 - **Surface-level concentrations:**
   - O3 (hourly, 1h and 8h averages, 1h and 8h maxima — raw and bias-corrected)
   - PM2.5 (hourly, 1h and 24h averages, 1h maximum — raw and bias-corrected)
+  - Bias-corrected (`_bc`) output is distributed for the CONUS (Grid 227) domain only; Alaska (Grid 198) and Hawaii (Grid 196) are raw-only (verified on both NOMADS and AWS)
 - **Supplemental meteorology:** Surface fields consistent with the driving NWP component
 
 For wildfire smoke and dust, AQM does not produce these as primary forecasts — they come from the other NAQFC component models, [RAP](../../../nwp_models/regional/usa/rap.md) (smoke) and [HYSPLIT-Dust](./hysplit-dust.md) (dust).
@@ -114,6 +115,7 @@ For wildfire smoke and dust, AQM does not produce these as primary forecasts —
   - Region: `us-east-1`
   - Browse: https://noaa-nws-naqfc-pds.s3.amazonaws.com/index.html
   - CLI: `aws s3 ls --no-sign-request s3://noaa-nws-naqfc-pds/`
+- **File organization & domain grids:** Products are distributed on three domain grids — Grid 227 (CONUS), Grid 198 (Alaska), Grid 196 (Hawaii). The channels lay this out differently: NOMADS keeps all three domains in one cycle directory (`aqm.YYYYMMDD/CC/aqm.tCCz.<product>.<grid>.grib2`, date only in the directory name), while AWS splits them into `CS/`, `AK/`, `HI/` folders with the date in each filename (`AQMv7/CS/YYYYMMDD/CC/aqm.tCCz.<product>.YYYYMMDD.227.grib2`). Content is identical between the two.
 - **Historical archive:** Available from 1 January 2020 onward (spans AQMv5, AQMv6, and AQMv7 — users should be aware that model physics and resolution differ across this time span; see version history)
 - **Supplemental native model output (`AQMv7_suppl/`):** Beyond the operational AQI GRIB2 products above, NOAA distributes the raw native UFS-CMAQ output as NetCDF on the same bucket — hourly 3D dynamics (`dyn.fNNN.nc`) and physics/chemistry (`phy.fNNN.nc`) history files on the native 13 km North American domain (f000–f072), plus the model's emissions inputs (NEXUS, point-source `PT`, and regridded hourly emissions). Same 06/12 UTC cadence; this archive begins 31 March 2025 (shorter than the GRIB2 record). Path: `s3://noaa-nws-naqfc-pds/AQMv7_suppl/YYYYMMDD/CC/`
 - **New-data notifications:** AWS SNS topic `arn:aws:sns:us-east-1:709902155096:NewNWSAirQualityObject` (Lambda and SQS protocols)
