@@ -68,7 +68,17 @@ Full-chemistry 3D concentration fields (`cnc_*`), hourly, on 10 height layers, i
 - Fire-emitted PM tracers
 - Supporting fields (air density, etc.)
 
-(Pollen / allergen species are distributed in the separate `silam_europe_pollen_v6_1` dataset — see Notes.)
+Airborne pollen and aeroallergens are treated here as an air-quality-relevant exposure and are documented in the section below.
+
+---
+
+## Pollen and aeroallergens (companion dataset)
+FMI runs a parallel SILAM pollen / aeroallergen forecast for this region, distributed as `silam_europe_pollen_v6_1`.
+- **Coverage / grid:** Rotated latitude–longitude, 549 × 459, ~0.1° (~10 km), over a broad European domain (~47.6°W–78.1°E, 19.0°N–76.0°N — wider than the chemistry domain)
+- **Taxa / allergens:** Birch, alder, grass, hazel, mugwort (with sub-source variants), olive, ragweed; plus an aphids tracer
+- **Products per taxon:** Airborne concentration (`cnc_POLLEN_*`), ready-to-fly amount (`Poll_Rdy2fly_*`), remaining / total seasonal pollen (`poll_left_*`, `poll_tot_m2_*`), phenology heat-sums (`heatsum_*`), empirical bias correction (`pollen_corr_*`), plus driving meteorology (2 m temperature, humidity, 10 m wind, precipitation)
+- **Cadence / output:** Daily run, hourly output (multi-day forecast; exact per-run length not separately verified)
+- **Access:** THREDDS — https://thredds.silam.fmi.fi/thredds/catalog/silam_europe_pollen_v6_1/catalog.xml — via OPeNDAP, NetCDF Subset Service, and HTTPServer (same service set as the chemistry dataset)
 
 ---
 
@@ -88,7 +98,7 @@ Full-chemistry 3D concentration fields (`cnc_*`), hourly, on 10 height layers, i
 ## Notes
 - **Distributed via FMI's THREDDS server, not AWS.** The AWS Open Data bucket carries only the global surface subset; the full regional chemistry lives here. See [SILAM Global](../../global/finland/silam-global.md) for the AWS product.
 - **Distinct from FMI's CAMS Regional contribution**, which is a separate, CAMS-harmonised European SILAM configuration delivered through the Copernicus ADS — see [CAMS Regional](../eu/cams-regional.md).
-- **Pollen is a separate dataset.** The companion `silam_europe_pollen_v6_1` carries pollen/allergen species (birch, grass, etc.). Pollen is biological rather than chemical air quality — treat as a separate cataloguing decision.
+- **Pollen is included here** (see *Pollen and aeroallergens*) as an air-quality-relevant exposure. It is a distinct THREDDS dataset (`silam_europe_pollen_v6_1`) on its own broader grid, but documented within this entry rather than separately.
 - **Archive depth:** ~63 daily runs retained at time of check (2026-05-15 → 2026-07-16); confirm current retention before documenting as a fixed window.
 - Grid, 10-layer vertical structure, and IFS forcing are corroborated by the FMI SILAM factsheet (Feb 2020) and by live THREDDS metadata (July 2026).
 
