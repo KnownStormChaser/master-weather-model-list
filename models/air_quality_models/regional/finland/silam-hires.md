@@ -32,7 +32,7 @@ It is the finest of FMI's publicly distributed SILAM configurations. Where the [
 ---
 
 ## Meteorological driver
-- **Driving NWP model:** A high-resolution NWP driver — **not confirmed from the distributed files.** A ~1 km chemistry run requires km-scale meteorology, so this is most likely a high-resolution FMI NWP (HARMONIE-AROME / MEPS) rather than the coarser IFS used for the global and European runs. ***Flag: verify the hires meteorological driver against FMI/SILAM documentation.***
+- **Driving NWP model:** **Not explicitly documented for the km-scale run.** FMI's Nordic/Finland suite is nested in the European SILAM CAMS simulations (which are IFS-driven), and FMI operates HARMONIE (MetCoOp / MEPS) as its km-scale NWP for Finland and Scandinavia — the plausible high-resolution driver here. But no source found states whether SILAM-hires is HARMONIE-driven or IFS-driven. ***Flag: verify the hires meteorological driver against FMI/SILAM documentation.***
 - **Coupling:** Offline (one-way), read through SILAM's meteorological pre-processor
 - **Update source frequency:** *Verify*
 
