@@ -30,10 +30,11 @@ Prior to 28 June 2022, HYSPLIT also produced the operational smoke forecast guid
 - **Forecast length:** 48 hours
 - **Update frequency:** 2× daily (06, 12 UTC)
 - **Temporal output resolution:** Hourly
-- **Output units:** µg/m³ (surface concentration); mg/m² (vertically integrated column dust)
+- **Horizontal grids:** Native ~0.1° regular lat/lon (601 × 251) and NCEP Grid 227 (Lambert, 1473 × 1025 at ~5 km over CONUS); the latter is the `_227.grib2` variant (verified, 12 UTC cycle)
+- **Output units:** log10(µg/m³) — fine-particulate (dust) mass concentration on a base-10 log scale (e.g. ~2.7 ≈ 500 µg/m³), with -99 as the below-threshold / no-data fill (verified from the GRIB2 values)
 - **Output products:**
-  - Surface dust concentration (hourly)
-  - Vertically integrated dust column
+  - `sfc` — near-surface layer dust (heightAboveGroundLayer, ~100 m), hourly
+  - `pbl` — deep-layer dust (heightAboveGroundLayer, ~0–5 km), hourly
 
 ---
 
@@ -56,9 +57,10 @@ The dust scheme is most active over arid and semi-arid regions of the western an
 ---
 
 ## What it provides
-- Hourly surface dust concentration over the CONUS
-- Vertically integrated column dust mass
-- Forecast horizon out to 48 hours from each cycle
+- Hourly near-surface dust field (`sfc`) over the CONUS
+- Hourly deep-layer (~0–5 km) dust field (`pbl`)
+- Both distributed as log10(µg/m³) on a native ~0.1° lat/lon grid and on NCEP Grid 227 (~5 km CONUS)
+- Forecast horizon out to 48 hours (f00–f47) from each cycle
 
 ---
 
