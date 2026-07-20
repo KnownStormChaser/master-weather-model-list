@@ -81,7 +81,7 @@ The AWS buckets carry only the curated seven-species surface subset. FMI's **THR
   - **NetCDF Subset Service (NCSS)** — base `/thredds/ncss/grid/` — spatial/temporal/variable subset returned as NetCDF (dataset description at `.../thredds/ncss/grid/silam_glob_v6_1/silam_glob_v6_1_best.ncd/dataset.xml`)
   - **HTTPServer** — base `/thredds/fileServer/` — whole-file download of individual run files (~3.35 GB each; native naming `SILAM-AQ-glob_v6_1_<YYYYMMDDHH>_<NNN>.nc4`, sequence `001`–`005` per run)
 - **Aggregations:** each dataset exposes a "Best Time Series" virtual file (`<dataset>_best.ncd`) aggregating all runs, plus per-run (`/runs/`) and per-file (`/files/`) catalogs.
-- **Licence:** presumed to follow the same FMI CC BY 4.0 terms as the AWS distribution, but **not separately confirmed on the THREDDS server** — verify against the server's Info/licence page before relying on it (open access ≠ open licence).
+- **License:** **CC BY 4.0** — confirmed by FMI (M. Sofiev, July 2026) for all data released from thredds.silam.fmi.fi
 
 ### File organization
 
