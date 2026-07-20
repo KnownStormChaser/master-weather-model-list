@@ -59,6 +59,11 @@ Note: FMI also contributes a European SILAM configuration to the CAMS Regional e
 
 ---
 
+## Data assimilation
+- **Assimilates AQ observations:** Not in the standard operational forecast (free-running from IFS meteorology + emissions) — *verify*
+
+---
+
 ## What it provides
 Full-chemistry 3D concentration fields (`cnc_*`), hourly, on 10 height layers, including:
 - Ozone (O3), nitric oxide (NO), nitrogen dioxide (NO2), sulfur dioxide (SO2), carbon monoxide (CO)
@@ -84,7 +89,7 @@ FMI runs a parallel SILAM pollen / aeroallergen forecast for this region, distri
 
 ## Data availability
 - **Is the data free?** Yes
-- **License:** Presumed CC BY 4.0 (FMI open data), consistent with the AWS distribution — **but the THREDDS server's own licence statement is not confirmed here; verify before relying on it** (open access ≠ open licence)
+- **License:** **CC BY 4.0** — confirmed by FMI (M. Sofiev, July 2026) for all data released from thredds.silam.fmi.fi
 - **Is the data downloadable?** Yes
 - **Data formats:** NetCDF-4 (`.nc4`)
 - **Official download location:**
@@ -99,7 +104,7 @@ FMI runs a parallel SILAM pollen / aeroallergen forecast for this region, distri
 - **Distributed via FMI's THREDDS server, not AWS.** The AWS Open Data bucket carries only the global surface subset; the full regional chemistry lives here. See [SILAM Global](../../global/finland/silam-global.md) for the AWS product.
 - **Distinct from FMI's CAMS Regional contribution**, which is a separate, CAMS-harmonised European SILAM configuration delivered through the Copernicus ADS — see [CAMS Regional](../eu/cams-regional.md).
 - **Pollen is included here** (see *Pollen and aeroallergens*) as an air-quality-relevant exposure. It is a distinct THREDDS dataset (`silam_europe_pollen_v6_1`) on its own broader grid, but documented within this entry rather than separately.
-- **Archive depth:** ~63 daily runs retained at time of check (2026-05-15 → 2026-07-16); confirm current retention before documenting as a fixed window.
+- **Archive depth:** Retention on the THREDDS server varies by forecast size and available space (per FMI); smaller forecasts and their surface fields are kept longer. ~63 daily runs were present at time of check (2026-05-15 → 2026-07-16), but treat this as observed rather than a guaranteed window.
 - Grid, 10-layer vertical structure, and IFS forcing are corroborated by the FMI SILAM factsheet (Feb 2020) and by live THREDDS metadata (July 2026).
 
 ---
