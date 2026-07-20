@@ -3,7 +3,7 @@
 ## What this model is
 This entry covers FMI's **regional (Northern-Europe) SILAM configuration** — an intermediate-resolution domain sitting between the [European](./silam-europe.md) (0.1°, ~10 km) and [hires](./silam-hires.md) (~0.8 km) setups. It is distributed through FMI's THREDDS Data Server.
 
-The domain exposes two companion datasets: a chemical air-quality run (`silam_regional_v6_1`) and a pollen / aeroallergen run (`silam_regional_pollen_v6_1`). **At the time of writing (July 2026) the chemistry aggregation is empty** — the THREDDS FMRC returns *"cannot find any files in the collection"* — while the pollen forecast is live. Both are documented below; treat the chemistry dataset as provisionally listed, pending files reappearing.
+The domain exposes two companion datasets: a chemical air-quality run (`silam_regional_v6_1`) and a pollen / aeroallergen run (`silam_regional_pollen_v6_1`). **As of late July 2026 the chemistry dataset is unreachable on the public THREDDS server** — every endpoint (top catalog, `files/`, `runs/`, and the `best.ncd` aggregation) returns HTTP 500 with *"The FMRC silam_regional_v6_1 cannot find any files in the collection."* FMI has stated the expected files are present on the server and that the collection is on a **four-day rolling archive**, so this appears to be a server-side catalog/FMRC issue rather than missing data; it was under investigation at time of writing. The pollen twin (`silam_regional_pollen_v6_1`) works normally. Both are documented below; treat the chemistry dataset as provisionally listed pending the server-side issue being resolved.
 
 ---
 
@@ -32,7 +32,7 @@ The domain exposes two companion datasets: a chemical air-quality run (`silam_re
 ---
 
 ## Meteorological driver
-- **Driving NWP model:** ECMWF IFS (per the FMI SILAM factsheet for the European-scale runs) — *verify for this domain / resolution*
+- **Driving NWP model:** **MEPS** (MetCoOp Ensemble Prediction System) — the zeroth / unperturbed (control) member, at its native 2.5 km resolution. Confirmed by FMI (M. Sofiev, July 2026).
 - **Coupling:** Offline (one-way)
 
 ---
@@ -50,17 +50,17 @@ The domain exposes two companion datasets: a chemical air-quality run (`silam_re
 
 ## Data availability
 - **Is the data free?** Yes
-- **License:** Presumed CC BY 4.0 (FMI open data) — **not confirmed on the THREDDS server; verify** (open access ≠ open licence)
+- **License:** **CC BY 4.0** — confirmed by FMI (M. Sofiev, July 2026) for all data released from thredds.silam.fmi.fi
 - **Is the data downloadable?** Yes (pollen); chemistry collection currently empty
 - **Data formats:** NetCDF-4 (`.nc4`)
 - **Official download location:**
-  - Chemistry: https://thredds.silam.fmi.fi/thredds/catalog/silam_regional_v6_1/catalog.xml — **collection empty / FMRC error at check time (July 2026)**
+  - Chemistry: https://thredds.silam.fmi.fi/thredds/catalog/silam_regional_v6_1/catalog.xml — **all public endpoints return HTTP 500 (FMRC "cannot find any files") as of late July 2026; server-side issue under investigation by FMI, data reportedly present**
   - Pollen: https://thredds.silam.fmi.fi/thredds/catalog/silam_regional_pollen_v6_1/catalog.xml — live; OPeNDAP, NetCDF Subset Service, HTTPServer
 
 ---
 
 ## Notes
-- **Chemistry aggregation was empty at check time** ("cannot find any files in the collection"). Recheck before relying on it; the **pollen forecast is the currently active product** for this domain.
+- **Chemistry currently unreachable (server-side).** All public endpoints for `silam_regional_v6_1` return HTTP 500 with the FMRC "cannot find any files in the collection" message; FMI reports the files are present and is investigating. Recheck before relying on it; the **pollen forecast is the currently accessible product** for this domain. The collection is on a **four-day rolling archive** (per FMI).
 - Intermediate resolution (~2.5 km) fills the gap between the European (~10 km) and hires (~0.8 km) domains.
 - Pollen is documented here as an air-quality-relevant exposure, consistent with [SILAM Europe](./silam-europe.md) and [SILAM Hires](./silam-hires.md).
 - Rotated-pole grid — reproject before combining with regular lat/lon products.
