@@ -22,7 +22,7 @@ It is the finest of FMI's publicly distributed SILAM configurations. Where the [
 ## Basic details
 - **Model type:** Regional (high-resolution) air quality / atmospheric composition (offline chemistry-transport)
 - **Model system / core:** SILAM **v6.1** (multi-scale Eulerian advection with semi-Lagrangian / Eulerian dispersion)
-- **Horizontal resolution:** ~0.0075° on a rotated-pole grid (≈ 0.8 km; sub-kilometre / "hires")
+- **Horizontal resolution:** ~0.0075° on a rotated-pole grid (**0.833 km**, per FMI; sub-kilometre / "hires")
 - **Vertical levels:** 10 staggered "thick" height layers (mass-conserving), layer mid-heights 12.5–7725 m; model top near ~7.7 km
 - **Model top:** ~7.7 km
 - **Forecast length:** **48 h (2 days)**
@@ -32,7 +32,8 @@ It is the finest of FMI's publicly distributed SILAM configurations. Where the [
 ---
 
 ## Meteorological driver
-- **Driving NWP model:** **Not explicitly documented for the km-scale run.** FMI's Nordic/Finland suite is nested in the European SILAM CAMS simulations (which are IFS-driven), and FMI operates HARMONIE (MetCoOp / MEPS) as its km-scale NWP for Finland and Scandinavia — the plausible high-resolution driver here. But no source found states whether SILAM-hires is HARMONIE-driven or IFS-driven. ***Flag: verify the hires meteorological driver against FMI/SILAM documentation.***
+- **Driving NWP model:** **MEPS** (MetCoOp Ensemble Prediction System) — the zeroth / unperturbed (control) member. Confirmed by FMI (M. Sofiev, July 2026). MEPS's native resolution is 2.5 km, so this 0.833 km run **"overclocks"** the MEPS meteorology, pairing it with high-resolution emissions from **SYKE** (Finnish Environment Institute).
+- **Emissions note:** High-resolution anthropogenic emissions from SYKE distinguish this run from the coarser domains.
 - **Coupling:** Offline (one-way), read through SILAM's meteorological pre-processor
 - **Update source frequency:** *Verify*
 
@@ -54,6 +55,11 @@ It is the finest of FMI's publicly distributed SILAM configurations. Where the [
 - **Dust scheme:** Online — *confirm activity over this domain*
 - **Sea salt scheme:** Online (relevant given the Baltic / marine coverage)
 - **Other sources:** As configured — *verify*
+
+---
+
+## Data assimilation
+- **Assimilates AQ observations:** Not in the standard operational forecast (free-running from driving meteorology + emissions) — *verify*
 
 ---
 
@@ -82,7 +88,7 @@ FMI runs a parallel SILAM pollen / aeroallergen forecast on the **same rotated F
 
 ## Data availability
 - **Is the data free?** Yes
-- **License:** Presumed CC BY 4.0 (FMI open data), consistent with the AWS distribution — **but the THREDDS server's own licence statement is not confirmed here; verify before relying on it** (open access ≠ open licence)
+- **License:** **CC BY 4.0** — confirmed by FMI (M. Sofiev, July 2026) for all data released from thredds.silam.fmi.fi
 - **Is the data downloadable?** Yes
 - **Data formats:** NetCDF-4 (`.nc4`)
 - **Official download location:**
@@ -98,7 +104,7 @@ FMI runs a parallel SILAM pollen / aeroallergen forecast on the **same rotated F
 - **Rotated-pole grid.** Coordinates in the files are rotated latitude/longitude; reproject (or use the file's grid-mapping metadata) before combining with regular lat/lon products. The real-world bounding box above is approximate.
 - **Large files.** At ~1.43 GB per hourly file (~1.4 M grid points × ~475 fields × 10 layers), full-run downloads are heavy; prefer OPeNDAP or NCSS subsetting for targeted extractions.
 - **Pollen is included here** (see *Pollen and aeroallergens*) as an air-quality-relevant exposure. The companion `silam_hires_pollen_v6_1` shares this entry's grid and is documented within this entry rather than separately.
-- **Archive depth:** Short rolling window — only ~4 daily runs present at time of check (2026-07-13 → 2026-07-16), versus ~63 for the European domain. Confirm current retention.
+- **Archive depth:** Short rolling window (~4 daily runs observed, 2026-07-13 → 2026-07-16). Per FMI, THREDDS retention varies by forecast size and available disk space, with smaller forecasts and their surface fields kept longer.
 
 ---
 
