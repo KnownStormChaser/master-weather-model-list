@@ -1,137 +1,120 @@
-# ICON-ART-EU (European Pollen Forecast)
+# ICON-ART-EU (European Mineral Dust Forecast)
 
 ## What this model is
-ICON-ART-EU is DWD's operational regional pollen forecast system, built on the European nest of ICON (ICON-EU) extended with the ART (Aerosols and Reactive Trace gases) module. It produces 5-day pollen forecasts across Europe, four times daily, for five allergenic species: **alder, birch, grasses, ragweed, and hazel**.
+ICON-ART-EU is DWD's regional **mineral-dust** forecast for Europe — the European nest of ICON (ICON-EU) extended with the ART (Aerosols and Reactive Trace gases) module, run online-coupled. It predicts the emission, transport, sedimentation, and dry/wet deposition of mineral dust (notably Saharan dust transported into Europe), and distributes the standard ICON-EU meteorological fields alongside a set of ART dust parameters.
 
-The system was developed jointly by DWD and the Karlsruhe Institute of Technology (KIT), with substantial collaboration from MeteoSwiss who use a closely related ICON-ART configuration for their own pollen forecasting service. DWD's pollen forecast became operational in **September 2021**, making it one of the earliest operational national-scale pollen forecasting systems based on online-coupled meteorology-aerosol modelling.
+The forecasts became available on the DWD Open Data Server in **April 2025**, under the `/weather/nwp/v1/m/` tier that also hosts the global ICON-ART and the ensemble counterparts. The "online-coupled" design means dust and meteorology evolve together within a single model run, with dust–radiation and dust–cloud (ice-nucleation) feedbacks acting on the forecast.
 
-ICON-ART-EU represents a meaningful step beyond simpler statistical pollen forecasting: it explicitly models pollen emission (driven by phenology, vegetation distribution, and meteorological readiness), atmospheric transport (using the same advection scheme as the underlying ICON-EU NWP forecast), sedimentation, and wet/dry deposition. The "online-coupled" design means meteorology and pollen fields evolve together within a single model run, allowing detailed representation of how weather conditions modulate pollen release and dispersal.
-
-DWD shares the core ICON-ART pollen modelling capability with MeteoSwiss, who operate a similar configuration over Switzerland. The ART module's pollen capabilities were largely co-developed by the two services together with KIT.
+> **Note on scope / naming:** "ICON-ART-EU" also labels DWD's ICON-ART-based European *pollen* forecast (five allergenic species, feeding the DWD *Pollenflug* warning service since 2021). That pollen product is a **separate configuration and is not distributed on the DWD Open Data Server as raw GRIB** — the open `icon-art-eu` feed contains dust and standard meteorology only, with no pollen fields. This entry covers the open-data mineral-dust product. See *Notes*.
 
 ---
 
 ## Who runs it
-- **Organization:** Deutscher Wetterdienst (DWD — German Weather Service), with the ART module developed and maintained by the Karlsruhe Institute of Technology (KIT) and shared with MeteoSwiss
+- **Organization:** Deutscher Wetterdienst (DWD — German Weather Service; GRIB centre `edzw`, Offenbach), with the ART module developed and maintained by the Karlsruhe Institute of Technology (KIT)
 - **Country:** Germany
-- **Operational since:** September 2021
+- **On open data since:** April 2025
 
 ---
 
 ## What area it covers
-- **Coverage:** Europe (matching the ICON-EU nest domain)
-- **Domain bounds (approx.):** 23.5°W – 62.5°E, 29.5°N – 70.5°N (same as ICON-EU)
-- **Native grid:** R3B08 icosahedral grid (~6.5 km), inherited from ICON-EU
+- **Coverage:** Europe (the ICON-EU nest domain)
+- **Domain details:** Native ICON-EU icosahedral (triangular) **unstructured grid**; the GRIB2 messages carry no lat/lon, so georeferencing requires the ICON-EU grid/coordinate description file (as with all native-grid ICON output).
 
 ---
 
 ## Basic details
-- **Model type:** Regional pollen forecast (online-coupled meteorology-aerosol)
-- **Underlying core:** ICON (Icosahedral Nonhydrostatic) — limited-area mode, same configuration as ICON-EU
-- **ART module developer:** Karlsruhe Institute of Technology (KIT)
-- **Coupling:** Online — pollen and meteorological fields share the same grid, advection scheme, and time integration
-- **Horizontal resolution:** ~6.5 km (matching ICON-EU)
-- **Vertical levels:** 74 (matching ICON-EU)
+- **Model type:** Regional atmospheric composition / mineral-dust forecast (online-coupled)
+- **Model system / core:** ICON-EU nest + ART module (online-coupled meteorology–aerosol), same dynamical core, grid, and physics as [ICON-EU](../../../nwp_models/regional/germany/icon-eu.md)
+- **Horizontal resolution:** ~6.5 km (native ICON-EU nest, unstructured grid)
+- **Vertical levels:** ICON-EU model levels (3D dust fields such as `DUST_TOTAL_MC` are on model levels; see the [ICON-EU](../../../nwp_models/regional/germany/icon-eu.md) entry for the level count)
 - **Forecast length:** 120 hours (5 days)
-- **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
-- **Temporal output resolution:** 3-hourly
-- **Operational since:** September 2021
+- **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
+- **Temporal output resolution:** Hourly to +72 h, then 3-hourly to +120 h (verified from the feed)
 
 ---
 
-## Forecast species
-ICON-ART-EU forecasts five allergenic pollen species:
+## Meteorological driver
+- **Driving NWP model:** Self — ICON-ART-EU *is* ICON-EU with ART; ICON-EU is two-way coupled within global ICON.
+- **Coupling:** Online (two-way) — dust tracers use the same advection and subgrid transport operators as ICON's moisture fields; dust–radiation and dust–cloud feedbacks act on the meteorological forecast.
 
-| Species | Typical bloom season (Europe) |
-|---|---|
-| **Hazel** (Corylus) | Late winter — earliest pollen of the year |
-| **Alder** (Alnus) | Late winter / early spring |
-| **Birch** (Betula) | Spring — major allergen across northern and central Europe |
-| **Grasses** (Poaceae) | Late spring / summer — most widespread allergen |
-| **Ragweed** (Ambrosia) | Late summer / autumn |
+---
 
-The five species cover the full pollen calendar for central European allergy sufferers, with substantial overlap during transition periods (e.g., late spring birch–grass overlap; late summer grass–ragweed overlap).
+## Chemistry and aerosols
+- **Composition species:** Mineral dust only (no gas-phase chemistry, and no other aerosol species, in this operational configuration).
+- **Dust representation:** Three dust modes / size classes (A, B, C), each carried as mass-concentration fields on model levels, with companion `*0` fields.
+- **ART processes (online):** Dust emission, advective/convective/turbulent transport, gravitational sedimentation, and dry and wet (convective + grid-scale) deposition.
+- **Feedbacks:** Aerosol–radiation (dust attenuates shortwave radiation) and aerosol–cloud (dust as ice-nucleating particles).
 
-For each species, the model produces 3-hourly concentration forecasts driven by:
-- **Plant distribution maps** for the relevant vegetation
-- **Phenological state** — bloom start dates calculated from antecedent weather (cumulative temperature, day length, precipitation)
-- **Meteorological emission drivers** — wind, humidity, precipitation
-- **Atmospheric transport, sedimentation, and deposition** computed online
+---
+
+## Emissions
+- **Dust (natural):** Online mineral-dust emission computed by ART, driven by the model's own near-surface meteorology and surface characteristics.
+- **Anthropogenic / biogenic / other:** Not applicable — this configuration forecasts natural mineral dust only.
+
+---
+
+## Data assimilation
+- **Assimilates composition observations:** No dust observation assimilation is documented; initial conditions are inherited from the ICON/ICON-EU analysis. Meteorology carries ICON-EU's own assimilation.
 
 ---
 
 ## What it provides
-- 3D pollen concentration fields for each of the five species
-- Surface (near-ground) pollen counts at 3-hourly temporal resolution
-- 120-hour (5-day) forecast horizon, refreshed four times daily
-- Phenological diagnostics (e.g., calculated bloom start dates)
-- Inputs to DWD's public-facing pollen warning service
+The feed distributes the **standard ICON-EU meteorological parameter set** (2 m temperature, cloud cover, wind, precipitation, pressure, etc. — ~100+ fields) **plus 28 ART mineral-dust parameters**, including:
 
----
+- **`TAOD_DUST`** — Total-atmosphere optical depth due to mineral dust aerosol (dimensionless). *This is the "dust optical depth" downstream sites typically use.*
+- **`DUST_TOTAL_MC`** — Total dust mass concentration on model levels (3D; kg m⁻³)
+- **`DUST_TOTAL_MC_VI`** — Vertically integrated (column) total dust mass (kg m⁻²)
+- **`DUST_MAX_TOTAL_MC_LAYER`** — Maximum layer total dust mass concentration
+- **`DUSTA` / `DUSTB` / `DUSTC`** (+ `DUSTA0` / `DUSTB0` / `DUSTC0`) — per-mode dust fields (modes A/B/C)
+- **`AER_DUST`, `CEIL_BSC_DUST`, `SAT_BSC_DUST`** — dust aerosol and ceilometer/satellite backscatter diagnostics
+- **`ACCEMISS_DUST{A,B,C}`** — accumulated dust emission per mode
+- **`ACCDRYDEPO_DUST{A,B,C}`** — accumulated dry deposition per mode
+- **`ACCSEDIM_DUST{A,B,C}`** — accumulated sedimentation per mode
+- **`ACCWETDEPO_CON_DUST{A,B,C}` / `ACCWETDEPO_GSP_DUST{A,B,C}`** — accumulated wet deposition, convective and grid-scale, per mode
 
-## Online coupling and atmospheric transport
-The online-coupling architecture means pollen tracers are advected by the same dynamical core that produces ICON-EU's meteorological forecast — using identical grid-scale advection and subgrid-scale transport algorithms. This is structurally different from offline-coupled pollen models that ingest pre-computed wind fields from a separate NWP run.
-
-ART-specific processes for pollen include:
-- **Emission parameterization:** EMPOL-based emission scheme (Zink et al., 2013) accounting for meteorological readiness, plant distribution, and bloom phenology
-- **Transport:** Same advection scheme as ICON-EU's water vapor transport
-- **Sedimentation:** Gravitational settling at species-specific terminal velocities
-- **Wet deposition:** Pollen washout by precipitation
-- **Dry deposition:** Surface removal processes
-
-The system explicitly accounts for the fact that pollen forecasts depend critically on the underlying weather forecast — ICON-EU's wind, temperature, precipitation, and humidity forecasts directly drive both pollen emission and dispersal.
+No pollen and no other pollutant species are provided.
 
 ---
 
 ## Data availability
 - **Is the data free?** Yes
+- **Licence:** DWD Open Data licence (GeoNutzV; CC BY 4.0-compatible, attribution required)
 - **Is the data downloadable?** Yes
-- **Data format:** GRIB2
+- **Data format:** GRIB2 (native ICON-EU unstructured grid)
 - **Primary access:** DWD Open Data Server
-  - ICON-ART-EU: https://opendata.dwd.de/weather/nwp/v1/m/icon-art-eu/
-- **Distribution path note:** ICON-ART-EU is distributed under `/weather/nwp/v1/m/` rather than alongside the main ICON-EU directory at `/weather/nwp/icon-eu/`. The `v1/m/` path appears to be a distribution tier introduced in 2025 and also hosts the global ICON-ART (mineral dust), ICON-D2-RUC, and the ensemble counterparts of these systems.
-- **Licence:** DWD Open Data licence (CC-BY 4.0-compatible; attribution required)
-- **Retention note:** DWD retains GRIB2 files on the open data server for a short period only (typically 24 hours).
-
----
-
-## Relationship to other models
-
-### Companion DWD systems
-- **[ICON-EU](../../../nwp_models/regional/germany/icon-eu.md):** The base meteorological model that ICON-ART-EU extends. Same grid, same dynamical core, same physics — with ART pollen modules added.
-- **[ICON-ART](../../global/germany/icon-art.md):** The global companion for mineral dust forecasting. The two ICON-ART configurations cover different operational use cases — pollen requires regional resolution and European species coverage, while dust requires global advection (notably for trans-Saharan transport).
-
-### Peer pollen forecasting systems
-ICON-ART-EU is one of several pollen forecasting systems operating in Europe, with different operational scopes:
-
-- **[CAMS Regional](../eu/cams-regional.md):** The Copernicus Atmosphere Monitoring Service distributes pollen forecasts (alder, birch, grass, mugwort, olive, ragweed) as part of its 11-model regional ensemble. CAMS Regional pollen runs at ~10 km on the ENSEMBLE grid and is produced as a multi-model median.
-- **[SILAM Global](../../global/finland/silam-global.md):** FMI's SILAM atmospheric composition model, distributed at 20 km global resolution, is used both as a contributor to CAMS Regional and as a standalone forecast.
-- **MeteoSwiss pollen forecast:** Operates ICON-ART at 2.1 km over Switzerland with the same five species. Methodologically very similar to DWD's system (same ART module, same KIT collaboration), but at higher resolution over a smaller domain.
-
-ICON-ART-EU's distinctive features in this peer group are: **online-coupling with ICON-EU NWP** (rather than offline coupling to a separate driving model), **6.5 km resolution across the full European domain** (finer than CAMS Regional's 10 km), and **4× daily update frequency** (more frequent than the 1× daily CAMS pollen forecast).
-
-### Architectural lineage
-The ART module's pollen capabilities were jointly developed by KIT, DWD, and MeteoSwiss, with the pollen emission scheme based on EMPOL (Zink et al., 2013). MeteoSwiss's operational pollen forecasting service uses the same fundamental ART pollen module, configured for Swiss conditions and species relevant to the Swiss domain.
+  - Root: https://opendata.dwd.de/weather/nwp/v1/m/icon-art-eu/
+  - **Path structure:** `.../icon-art-eu/p/{VARIABLE}/r/{YYYY-MM-DDTHH:MM}/s/PT{hhh}H{mm}M.grib2`
+    - `{VARIABLE}` — parameter folder (e.g. `TAOD_DUST`, `DUST_TOTAL_MC_VI`, `T_2M`)
+    - `r/{run}` — run initialization time, ISO-8601 (`00/06/12/18` UTC)
+    - `s/PT{hhh}H{mm}M.grib2` — forecast lead time (hourly to +72, 3-hourly to +120)
+- **Ensemble companion:** `icon-art-eu-eps` (same tier).
+- **Retention note:** Short rolling retention (~24 h); elapsed lead-times are pruned as a run ages, so at any given moment only the still-forecast lead-times of the most recent runs are present.
+- **Georeferencing note:** GRIB messages are on the native ICON unstructured grid with no embedded lat/lon — pair with the ICON-EU grid/coordinate description to georeference.
 
 ---
 
 ## Notes
-- The 4× daily update cadence is unusually frequent for an operational pollen forecast — most peer systems (CAMS Regional, SILAM-based national services) update once daily. This reflects ICON-ART-EU's tight integration with ICON-EU's operational cycle: each pollen forecast inherits the same atmospheric initial conditions as ICON-EU at the same cycle, so refreshing pollen four times per day adds value at a relatively low marginal cost.
-- DWD's pollen warning service uses ICON-ART-EU forecasts as its primary modeling input, combined with expert evaluation of plant readiness and observed pollen counts where available.
-- The species set (alder, birch, grasses, ragweed, hazel) is broadly aligned with what most central European allergy sufferers encounter, but does **not** include some Mediterranean species like olive (covered by CAMS Regional) or mugwort (also CAMS Regional). Users in Mediterranean regions or with specific non-listed allergens should look to additional sources.
-- Real-time pollen observation networks (notably the AutoPollen network coordinated by MeteoSwiss under EUMETNET) are providing near-real-time validation data for systems like ICON-ART-EU, with the longer-term goal of supporting pollen data assimilation. As of operational ICON-ART-EU configuration, pollen observations are not directly assimilated.
-- The ICON-ART codebase used at DWD is the same fundamental code used at MeteoSwiss for Swiss pollen forecasting, jointly developed and maintained.
+- **Identity correction (verified 2026-07):** The open `icon-art-eu` feed is DWD's **mineral-dust** forecast (launched April 2025), *not* a pollen forecast. All 132 variable folders were enumerated: standard ICON-EU meteorology + 28 dust ART parameters, zero pollen fields.
+- **Pollen product (separate; out of the open-data channel):** DWD does run ICON-ART for a European pollen forecast — alder, birch, grasses, ragweed, hazel — operational since September 2021, feeding the DWD *Pollenflug* public warning service, and closely related to MeteoSwiss's ICON-ART pollen system (co-developed with KIT via the EMPOL scheme, Zink et al. 2013). That product does not appear to be distributed as raw GRIB on the Open Data Server, so it falls outside the repository's raw-gridded-open-data scope. **Flagged for a decision:** keep as this note, or record separately (e.g. a "Systems Not in the Catalog" wiki entry).
+- **Not "dust only" in file terms:** the feed carries the full standard ICON-EU meteorological field set in addition to the dust parameters; dust is simply the distinguishing atmospheric-composition capability.
+- **Companion:** the global [ICON-ART](../../global/germany/icon-art.md) mineral-dust forecast is the global counterpart; ICON-ART-EU is the regional (ICON-EU nest) dust configuration. *(The `icon-art.md` entry currently cross-references ICON-ART-EU as the "pollen" companion — update that line to match this correction.)*
+
+---
+
+## Recent version history
+
+### April 2025 — ICON-ART on DWD Open Data
+DWD published the ICON-ART NWP system (global ICON-ART and regional ICON-ART-EU, plus ensemble counterparts) on the Open Data Server under `/weather/nwp/v1/m/`, adding the ART mineral-dust parameters (`TAOD_DUST`, `DUST_TOTAL_MC`/`_VI`, and per-mode emission/deposition/sedimentation accumulations) to the standard parameter set.
 
 ---
 
 ## Official documentation
-- DWD ICON-ART overview: https://www.dwd.de/EN/research/weatherforecasting/num_modelling/03_environmental_forecasts/icon_art_cosmo_art_en.html
-- KIT ICON-ART website: https://www.icon-art.kit.edu/
-- ICON-ART module documentation: https://docs.icon-model.org/atmosphere/art/art.html
-- DWD Open Data Server v1/m subtree: https://opendata.dwd.de/weather/nwp/v1/m/
+- DWD Open Data announcement (ICON-ART, April 2025): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_april2025_1.html
+- DWD Open Data Server, ICON-ART-EU: https://opendata.dwd.de/weather/nwp/v1/m/icon-art-eu/
+- DWD ICON-ART / COSMO-ART overview: https://www.dwd.de/EN/research/weatherforecasting/num_modelling/03_environmental_forecasts/icon_art_cosmo_art_en.html
+- ICON model / ART parameter documentation: https://docs.icon-model.org/atmosphere/art/art.html
+- KIT ICON-ART: https://www.icon-art.kit.edu/
 
 ### Key references
-- Rieger, D., et al. (2015). ICON-ART 1.0 — a new online-coupled model system from the global to regional scale. *Geosci. Model Dev. Discuss.*, 8, 567–614.
-- Schröter, J., et al. (2018). ICON-ART 2.1: a flexible tracer framework and its application for composition studies in numerical weather forecasting and climate simulations. *Geosci. Model Dev.*, 11, 4043–4068.
-- Zink, K., et al. (2013). EMPOL 1.0: a new parameterization of pollen emission in numerical weather prediction models. *Geosci. Model Dev.*, 6, 1961–1975.
+- Rieger, D., et al. (2015). ICON-ART 1.0 — a new online-coupled model system from the global to regional scale. *Geosci. Model Dev.*, 8, 1659–1676.
 - Hoshyaripour, G. A., et al. (2026). The atmospheric composition component of the ICON modeling framework: ICON-ART version 2025.10. *Geosci. Model Dev.*, 19, 1645–1681.
