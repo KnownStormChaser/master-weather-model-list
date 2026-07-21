@@ -69,7 +69,7 @@ The forecasts are driven by HungaroMet's [AROME](../../../nwp_models/regional/hu
 
 ---
 
-## Data assimilation (optional)
+## Data assimilation
 - **Assimilates AQ observations:** No air quality data assimilation is described in the HungaroMet dataset description; the system runs as a forecast CTM driven by AROME meteorology and EMEP emissions.
 
 ---
