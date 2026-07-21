@@ -15,9 +15,10 @@ It is distributed as two nested products: an outer **9 km** domain covering Euro
 
 ## What area it covers
 - **Coverage:** Europe (9 km outer domain) and Central Europe (3 km inner domain)
-- **Domain details:**
-  - **9 km "Pollutant Forecast for Europe":** covers Europe plus parts of North Africa and Russia. Lambert Conic Conformal (2SP) projection (EPSG:9802); the published bounding box spans roughly 15.59–74.39 °N, −53.73–80.33 °E (the wide longitude range reflects the projected-grid corners rather than the useful coverage area).
-  - **3 km "Pollutant Forecast for Central Europe":** covers Central Europe. Lambert Conic Conformal (2SP) projection (EPSG:9802); bounding box roughly 40.91–53.75 °N, 2.86–23.74 °E.
+- **Domain details:** Both domains use the same Lambert Conic Conformal (2SP) projection — standard parallels 30° / 60°, central meridian 13.3 °E, latitude of origin 47.5 °N, WGS84 datum (verified from the files' `lambert_conformal` grid-mapping variable). Files are CF-1.8 NetCDF-4 with 2-D `lat`/`lon` and 1-D projected `x`/`y` coordinates.
+  - **9 km "Pollutant Forecast for Europe":** Europe plus parts of North Africa and Russia. Grid **680 × 680** at 9 km (≈ 6111 km span; file label `d01`, outer domain); bounding box roughly 15.59–74.39 °N, −53.73–80.33 °E (the wide longitude range reflects the projected-grid corners rather than the useful coverage area).
+  - **3 km "Pollutant Forecast for Central Europe":** Central Europe. Grid **450 × 450** at 3 km (≈ 1347 km span; file label `d02`, inner domain); bounding box roughly 40.91–53.75 °N, 2.86–23.74 °E.
+  - **⚠ Portal resource IDs are inverted (verified 2026-07):** the data-hub resource named `chem-v2-1h-9km` actually serves the **3 km** Central Europe files (`chem_d02_*`), and `chem-v2-1h-3km` actually serves the **9 km** Europe files (`chem_d01_*`). GeoSphere's API changelog confirms the intended physical design (Europe = 9 km, Central Europe = 3 km); only the resource-ID labels are reversed. See *Data availability* for the corrected download mapping.
 
 ---
 
@@ -25,7 +26,7 @@ It is distributed as two nested products: an outer **9 km** domain covering Euro
 - **Model type:** Air quality / atmospheric composition
 - **Model system / core:** WRF-Chem (online-coupled meteorology–chemistry chemical transport model)
 - **Horizontal resolution:** 9 km (outer Europe domain) and 3 km (inner Central Europe domain)
-- **Vertical levels:** ~48 (per GeoSphere HPC documentation for the WRF-Chem domains; not restated for the v2 grids, so treat as approximate)
+- **Vertical levels:** The **distributed** fields are surface-only — one "close to the surface (lowest model level)" layer per pollutant (file variables are `*surf`, dimensioned time × y × x with no vertical axis). The full WRF-Chem model runs ~48 levels internally (per GeoSphere HPC documentation); only the lowest level is published.
 - **Forecast length:** 72 hours (3 days)
 - **Update frequency / cycles:** Published daily. (The operational WRF-Chem system is documented as running twice daily out to +72 h internally; the public datasets are refreshed once per day.)
 - **Temporal output resolution:** 1 hour
@@ -65,12 +66,13 @@ It is distributed as two nested products: an outer **9 km** domain covering Euro
 ---
 
 ## What it provides
-Daily hourly forecasts (to +72 h) of:
-- Ozone (O3)
-- Particulate matter (PM)
-- Nitrogen dioxide (NO2)
+Daily hourly forecasts (73 hourly steps, t+0 … t+72) of four near-surface pollutant concentrations — each the lowest-model-level value, in **kg m⁻³** (note: not µg/m³):
+- Nitrogen dioxide — `NO2surf`
+- Ozone — `O3surf`
+- PM10 — `PM10surf`
+- PM2.5 — `PM25surf`
 
-Both the 9 km and 3 km products distribute the same three pollutant parameters.
+Both domains distribute the same four parameters. (The files split particulate matter into separate PM10 and PM2.5 fields.)
 
 ---
 
@@ -78,18 +80,21 @@ Both the 9 km and 3 km products distribute the same three pollutant parameters.
 - **Is the data free?** Yes
 - **License:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 - **Is the data downloadable?** Yes
-- **Data formats:** NetCDF
-- **Official download locations (bulk file listing):**
-  - 9 km (Europe): https://public.hub.geosphere.at/public/datahub.html?id=chem-v2-1h-9km/filelisting
-  - 3 km (Central Europe): https://public.hub.geosphere.at/public/datahub.html?id=chem-v2-1h-3km/filelisting
+- **Data formats:** NetCDF-4 / HDF5, CF-1.8 conventions. One file per daily run holding all 73 hourly steps and all four pollutants (`NO2surf`, `O3surf`, `PM10surf`, `PM25surf`, kg m⁻³). Time is encoded as "seconds since 1961-01-01" — an unusual epoch; decode with a CF-aware reader.
+- **File naming:** `chem_<d0X>_<YYYYMMDDHH>.nc` — `d01` = 9 km Europe (outer), `d02` = 3 km Central Europe (inner); `<YYYYMMDDHH>` is the 00 UTC run initialization.
+- **Official download locations (bulk file listing) — ⚠ resource IDs are inverted relative to resolution (verified 2026-07):**
+  - **9 km Europe** (files `chem_d01_*`, 9000 m, 680 × 680) is served under the resource named **`chem-v2-1h-3km`**: https://public.hub.geosphere.at/public/datahub.html?id=chem-v2-1h-3km/filelisting
+  - **3 km Central Europe** (files `chem_d02_*`, 3000 m, 450 × 450) is served under the resource named **`chem-v2-1h-9km`**: https://public.hub.geosphere.at/public/datahub.html?id=chem-v2-1h-9km/filelisting
+  - Direct raw `.nc` base: `https://public.hub.geosphere.at/datahub/resources/<resource-id>/filelisting/<file>.nc`
+  - Don't infer resolution from the resource-ID number — confirm via each file's `spatial_resolution` attribute or the projected `x`/`y` spacing.
 - **API access:** GeoSphere Austria's Dataset API provides programmatic access with subsetting (by area, time, parameter):
   https://dataset.api.hub.geosphere.at/v1/docs/
 - **Dataset landing pages:**
   - 9 km: https://data.hub.geosphere.at/en/dataset/chem-v2-1h-9km
   - 3 km: https://data.hub.geosphere.at/en/dataset/chem-v2-1h-3km
-- **DOIs:**
-  - 9 km (Europe): https://doi.org/10.60669/f4q8-5j13
-  - 3 km (Central Europe): https://doi.org/10.60669/1860-g785
+- **DOIs** (per the data-hub resource pages; **domain labels not independently verified** — because the resource IDs are inverted, these DOI-to-domain assignments may likewise be reversed, so confirm before citing):
+  - listed for 9 km (Europe): https://doi.org/10.60669/f4q8-5j13
+  - listed for 3 km (Central Europe): https://doi.org/10.60669/1860-g785
 
 Both products are version 2, published 22 January 2025. The 9 km and 3 km datasets share the same access portal, API, and license; users can choose whichever domain/resolution suits their workflow.
 
