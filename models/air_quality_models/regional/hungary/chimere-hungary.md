@@ -17,12 +17,14 @@ The forecasts are driven by HungaroMet's [AROME](../../../nwp_models/regional/hu
 - **Coverage:** Hungary and the wider Carpathian Basin, plus three nested high-resolution city windows
 - **Domain details (four published domains):**
 
-  | Domain | Code | Bounds | Resolution |
-  |---|---|---|---|
-  | Carpathian Basin | HUN | 45°N–50°N, 14°E–25°E | 0.1° × 0.1° (≈ 8–11 km) |
-  | Budapest | BUD | 47.30°N–47.66°N, 18.85°E–19.37°E | 0.02° × 0.015° (≈ 1.5–2 km) |
-  | Miskolc | MIS | 48.02°N–48.185°N, 20.51°E–20.89°E | 0.02° × 0.015° (≈ 1.5–2 km) |
-  | Pécs | PEC | 46.01°N–46.19°N, 18.11°E–18.39°E | 0.02° × 0.015° (≈ 1.5–2 km) |
+  | Domain | Code | Bounds | Resolution | Grid (nx × ny) |
+  |---|---|---|---|---|
+  | Carpathian Basin | HUN | 45°N–50°N, 14°E–25°E | 0.1° × 0.1° (≈ 8–11 km) | 111 × 51 |
+  | Budapest | BUD | 47.30°N–47.66°N, 18.85°E–19.37°E | 0.02° × 0.015° (≈ 1.5–2 km) | 27 × 25 |
+  | Miskolc | MIS | 48.02°N–48.185°N, 20.51°E–20.89°E | 0.02° × 0.015° (≈ 1.5–2 km) | 20 × 12 |
+  | Pécs | PEC | 46.01°N–46.19°N, 18.11°E–18.39°E | 0.02° × 0.015° (≈ 1.5–2 km) | 15 × 13 |
+
+  Grid dimensions read from the distributed NetCDF files (2026-07) and confirmed against each domain's bounds ÷ resolution.
 - **Projection:** Regular latitude–longitude (latlon)
 
 ---
@@ -32,8 +34,8 @@ The forecasts are driven by HungaroMet's [AROME](../../../nwp_models/regional/hu
 - **Model system / core:** CHIMERE (multi-scale Eulerian offline CTM, developed by LMD/IPSL and partners)
 - **Model version:** CHIMERE-2017
 - **Horizontal resolution:** 0.1° × 0.1° (HUN); 0.02° × 0.015° (BUD, MIS, PEC)
-- **Vertical levels:** TBD (not stated in the HungaroMet dataset description)
-- **Model top:** TBD
+- **Vertical levels:** Model vertical structure not documented. The **distributed** product is a single near-surface layer only — 2-D fields with no vertical dimension; the server metadata's `height_levels` and `pressure_levels` lists are both empty, and each field carries `cell_methods = "bottom_top: mean"` (a near-surface layer mean).
+- **Model top:** TBD (not documented; not applicable to the surface-only distributed product)
 - **Forecast length:** 48 hours (0–48 h)
 - **Update frequency / cycles:** 1× daily (00 UTC), all domains
 - **Temporal output resolution:** 1 hour
@@ -73,18 +75,16 @@ The forecasts are driven by HungaroMet's [AROME](../../../nwp_models/regional/hu
 ---
 
 ## What it provides
-Hourly gridded surface concentration forecasts of six pollutants (one parameter per file):
+Hourly gridded near-surface concentration forecasts, one parameter per file. **Five species are actually distributed** (verified against the live feed across all four domains, 2026-07): NO2, O3, SO2, PM10, PM2.5 — all in µg/m³ (NetCDF `units = "ug/m3"`). CO is listed in both the dataset-description PDF and the server's `chimere.json`, **but no CO files are present in any domain**, so it is treated here as documented-but-not-currently-published.
 
-| Parameter | Description | Unit |
-|---|---|---|
-| CO | Carbon monoxide concentration | ppb |
-| NO2 | Nitrogen dioxide concentration | µg/m³ |
-| O3 | Tropospheric ozone concentration | µg/m³ |
-| SO2 | Sulphur dioxide concentration | µg/m³ |
-| PM10 | PM10 (particulate matter) concentration | µg/m³ |
-| PM25 | PM2.5 (fine particulate matter) concentration | µg/m³ |
-
-(Note: CO is reported in ppb; all other species in µg/m³.)
+| Parameter | Description | Unit | In live feed? |
+|---|---|---|---|
+| NO2 | Nitrogen dioxide concentration | µg/m³ | Yes |
+| O3 | Tropospheric ozone concentration | µg/m³ | Yes |
+| SO2 | Sulphur dioxide concentration | µg/m³ | Yes |
+| PM10 | PM10 (particulate matter) concentration | µg/m³ | Yes |
+| PM25 | PM2.5 (fine particulate matter) concentration | µg/m³ | Yes |
+| CO | Carbon monoxide concentration | ppb | No — documented but absent from the feed |
 
 ---
 
@@ -92,17 +92,17 @@ Hourly gridded surface concentration forecasts of six pollutants (one parameter 
 - **Is the data free?** Yes
 - **License:** HungaroMet Open Data Portal terms (free use without modification; attribution required as *"Database: Meteorological Database, HungaroMet Nonprofit Zrt."*; modifications require written consent, with example attribution forms provided in the General Terms of Use). Warnings, alerts, and aviation forecasts may only be redistributed unmodified.
 - **Is the data downloadable?** Yes
-- **Data formats:** NetCDF (one parameter per file, compressed inside ZIP archives)
+- **Data formats:** NetCDF (classic), one parameter × one lead time per file, each compressed inside its own ZIP archive (`.nc.zip`). Files use HungaroMet's `HMS` convention, **not CF**: there are no `lat`/`lon`/`time` coordinate variables — the grid is defined solely by global attributes (`Lo1`, `La1`, `Dx`, `Dy`, `Nx`, `Ny`), so georeferencing must be reconstructed from those. The `version=1.0` global attribute is the converter/file-format version, not the CHIMERE model version.
 - **Official download location:**
   https://odp.met.hu/weather/nwp/CHIMERE/
-  - Domain subfolders: `HUN/`, `BUD/`, `MIS/`, `PEC/`
-- **File naming convention** (from the dataset description):
+  - **Path structure:** `https://odp.met.hu/weather/nwp/CHIMERE/{DOMAIN}/nc/{HH}/` — `{DOMAIN}` ∈ {HUN, BUD, MIS, PEC}; only the `00` UTC run directory exists
+  - **Machine-readable metadata:** `https://odp.met.hu/weather/nwp/CHIMERE/chimere.json` (domain geometries, forecast length, output frequency, variable list and units)
+  - Each forecast is split into 49 files per parameter — one per hourly lead time, `+00000` … `+04800`
+- **File naming convention** (confirmed against the live feed):
   - `CHIMERE_<domain>-<parameter>-<YYYYMMDD>_<HHmm>+<TTTtt>.nc.zip`
-  - `<domain>`: domain identifier (HUN / BUD / MIS / PEC)
-  - `<parameter>`: pollutant name (CO, NO2, O3, SO2, PM10, PM25)
-  - `<YYYYMMDD>`: forecast date
-  - `<HHmm>`: forecast initial time (UTC)
-  - `<TTTtt>`: forecast lead time, hours (TTT) and minutes (tt)
+  - `<domain>`: HUN / BUD / MIS / PEC
+  - `<parameter>`: NO2, O3, SO2, PM10, PM25 (CO documented but not currently present)
+  - `<YYYYMMDD>`: forecast date · `<HHmm>`: init time UTC (`0000`) · `<TTTtt>`: lead time, hours (TTT) + minutes (tt), e.g. `+02400` = +24 h
 
 ---
 
