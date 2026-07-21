@@ -21,7 +21,7 @@ Mineral dust forecasts using ICON-ART became technically operational at DWD in N
 ## What area it covers
 - **Coverage:** Global
 - **Operational application focus:** Saharan dust transport into Europe, but the model itself is global
-- **Native grid:** Same as ICON Global (R3B07 icosahedral grid, ~13 km)
+- **Native grid:** ICON icosahedral **R3B06** grid, ~26 km (DWD "Grid #36", 737,280 cells) — verified from the distributed GRIB2. This is **coarser than the operational ICON Global deterministic** (R3B07, ~13 km); the ART dust configuration runs at reduced horizontal resolution.
 
 ---
 
@@ -30,10 +30,10 @@ Mineral dust forecasts using ICON-ART became technically operational at DWD in N
 - **Underlying core:** ICON (Icosahedral Nonhydrostatic) — same model core as the deterministic ICON Global
 - **ART module developer:** Karlsruhe Institute of Technology (KIT)
 - **Coupling:** Online — ART is integrated within ICON; aerosol and meteorological fields share the same grid, advection scheme, and time integration
-- **Horizontal resolution:** ~13 km (matching ICON Global)
-- **Vertical levels:** 120 (matching ICON Global operational setup)
-- **Forecast length:** Same as ICON Global (up to 180 hours for 00 and 12 UTC; 120 h for 06 and 18 UTC; 30 h for 03/09/15/21 UTC)
-- **Update frequency:** Multiple cycles per day (matching ICON Global)
+- **Horizontal resolution:** ~26 km (ICON R3B06, DWD Grid #36; verified from the GRIB2 — coarser than the ~13 km operational ICON Global)
+- **Vertical levels:** ICON model levels (3D dust fields such as `DUST_TOTAL_MC` are on model levels). The exact count on the ART grid was not verifiable from the open feed at check time (3D fields are pruned quickly); the operational ICON Global uses 120 levels, and the ART configuration may match or differ given its coarser horizontal grid.
+- **Forecast length:** +180 h from the 00 and 12 UTC runs; +120 h from the 06 and 18 UTC runs (verified from the feed). Output is hourly to +72 h, then 3-hourly.
+- **Update frequency:** 4× daily at the main synoptic hours (00/06/12/18 UTC). Unlike the full ICON Global, the ART dust feed does **not** publish the off-synoptic 03/09/15/21 UTC short runs.
 - **Operational since:** November 2023 (mineral dust forecast)
 
 ---
@@ -68,12 +68,16 @@ ART-specific processes — dust emission, sedimentation, wet deposition, dry dep
 ## Data availability
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
-- **Data format:** GRIB2
+- **Data format:** GRIB2 (native ICON R3B06 unstructured grid; GRIB messages carry no lat/lon, so georeferencing requires the matching ICON grid/coordinate description file)
 - **Primary access:** DWD Open Data Server
-  - ICON-ART: https://opendata.dwd.de/weather/nwp/v1/m/icon-art/
-- **Distribution path note:** ICON-ART is distributed under `/weather/nwp/v1/m/` rather than alongside the main ICON, ICON-EU, and ICON-D2 directories at `/weather/nwp/`. The `v1/m/` path appears to be a distribution tier introduced in 2025 and also hosts ICON-D2-RUC and the ICON-ART-EU regional configuration.
-- **Licence:** DWD Open Data licence (CC-BY 4.0-compatible; attribution required)
-- **Retention note:** DWD retains GRIB2 files on the open data server for a short period only (typically 24 hours).
+  - Root: https://opendata.dwd.de/weather/nwp/v1/m/icon-art/
+  - **Path structure:** `.../icon-art/p/{VARIABLE}/r/{YYYY-MM-DDTHH:MM}/s/PT{hhh}H{mm}M.grib2` — `{VARIABLE}` = parameter folder (e.g. `TAOD_DUST`, `DUST_TOTAL_MC_VI`), `r/{run}` = init time (00/06/12/18 UTC), `s/PT…` = lead time
+- **On open data since:** April 2025 (ICON-ART and ICON-ART-EPS added to the `/weather/nwp/v1/m/` tier)
+- **Ensemble companion:** `icon-art-eps` (same tier)
+- **Parameter set:** standard ICON Global meteorological fields plus 28 ART mineral-dust parameters — `TAOD_DUST`, `DUST_TOTAL_MC`/`_VI`, `DUST_MAX_TOTAL_MC_LAYER`, per-mode `DUST{A,B,C}` (+ `{A,B,C}0`), per-mode accumulated emission / dry-deposition / wet-deposition (convective + grid-scale) / sedimentation, plus `AER_DUST`, `CEIL_BSC_DUST`, `SAT_BSC_DUST`
+- **Distribution path note:** ICON-ART sits under `/weather/nwp/v1/m/` rather than alongside ICON/ICON-EU/ICON-D2 at `/weather/nwp/`. The `v1/m/` tier also hosts `aicon`, `icon-art-eps`, the regional `icon-art-eu`/`icon-art-eu-eps`, and `icon-d2-ruc`/`icon-d2-ruc-eps`.
+- **Licence:** DWD Open Data licence (GeoNutzV; CC BY 4.0-compatible, attribution required)
+- **Retention note:** Short rolling retention; elapsed lead-times are pruned as a run ages (3D model-level fields in particular are removed quickly), so at any moment only the still-forecast steps of the most recent runs are present.
 
 ---
 
@@ -81,7 +85,7 @@ ART-specific processes — dust emission, sedimentation, wet deposition, dry dep
 
 ### Companion DWD systems
 - **[ICON Global](../../../nwp_models/global/germany/icon-global.md):** The base meteorological model that ICON-ART extends. ICON-ART runs the same dynamical core, same grid, same vertical structure, and same physics — with ART aerosol modules added.
-- **[ICON-ART-EU](../../regional/germany/icon-art-eu.md):** The regional companion for European pollen forecasting at 6.5 km resolution (matching the ICON-EU nest).
+- **[ICON-ART-EU](../../regional/germany/icon-art-eu.md):** The regional companion — DWD's ICON-EU-nested **mineral-dust** forecast (~6.5 km) on the same open-data tier. (DWD also runs an ICON-ART-EU *pollen* configuration feeding its public pollen-warning service, but that is not distributed on the open-data server as raw GRIB.)
 - **COSMO-ART:** Predecessor regional system based on the now-retired COSMO model. COSMO-ART supported the same operational use cases (dust, volcanic ash, radionuclide dispersion) before DWD's transition to ICON.
 
 ### Peer global atmospheric composition systems
