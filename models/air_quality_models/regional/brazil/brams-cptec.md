@@ -65,7 +65,7 @@ BRAMS (Brazilian developments on the Regional Atmospheric Modeling System) is a 
 
 ---
 
-## Data assimilation (optional)
+## Data assimilation
 - **Assimilates AQ observations:** TBD.
 
 ---
