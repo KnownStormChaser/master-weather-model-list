@@ -17,7 +17,7 @@ RAQDPS has been operated by ECCC since 2009. The current operational version is 
 
 ## What area it covers
 - **Coverage:** Canada, the contiguous United States, northern Mexico, and adjacent oceans
-- **Domain details:** Rotated limited-area latitude–longitude grid, 772 × 642 grid points
+- **Domain details:** Rotated limited-area latitude–longitude grid (0.09° ≈ 10 km). The full computational grid is 772 × 642 points (per the v25 fact sheet and technical specifications); the publicly distributed GRIB2 files are on a cropped 729 × 599 grid — see *Data availability*.
 
 ---
 
@@ -115,10 +115,15 @@ Forecasts of NO2, O3, and PM2.5 are used to compute the **Air Quality Health Ind
 
 ## Data availability
 - **Is the data free?** Yes
+- **License:** Environment and Climate Change Canada Data Servers End-use Licence (attribution required; commercial use permitted) — https://eccc-msc.github.io/open-data/licence/readme_en/
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
+- **Data formats:** GRIB2 (JPEG2000-compressed; `grid_jpeg` packing)
+- **Distributed grid:** Rotated lat-lon, 729 × 599 points at 0.09° (~10 km), first grid point 32°S, 39.5°W. This is the cropped distribution grid — smaller than the 772 × 642 full computational grid (see *What area it covers*).
 - **Official download location:**
-  https://eccc-msc.github.io/open-data/msc-data/nwp_raqdps/readme_raqdps_en/
+  https://dd.weather.gc.ca/today/model_raqdps/10km/grib2
+  - **Path template:** `https://dd.weather.gc.ca/today/model_raqdps/10km/grib2/{HH}/{hhh}/` — `{HH}` = run (`00`/`12`), `{hhh}` = 3-digit forecast hour (`000`–`072`). `today/` holds the most recent ~24 h; runs are also reachable under a dated path (`https://dd.weather.gc.ca/{YYYYMMDD}/WXO-DD/model_raqdps/10km/grib2/{HH}/`).
+  - **Filename convention:** `{YYYYMMDD}T{HH}Z_MSC_RAQDPS_{VAR}_{LVL}_RLatLon0.09_PT{hhh}H.grib2` (e.g. `20260720T12Z_MSC_RAQDPS_O3_Sfc_RLatLon0.09_PT001H.grib2`)
+  - `{VAR}` ∈ {PM2.5, PM2.5-WildfireSmokePlume, PM10, PM10-WildfireSmokePlume, NO2, NO, O3, SO2} (plus `PM2.5-WildfireSmokePlume-DAvg` / `-DMax` daily statistics); `{LVL}` ∈ {Sfc, AGL-2m, EAtm}
 
 ---
 
@@ -147,6 +152,7 @@ Previous operational version.
 - RAQDPS is an online, one-way-coupled chemical transport model. Meteorology influences chemistry, but chemistry does not feed back into the meteorological forecast.
 - Activating the MACH chemistry module increases model run time by a factor of approximately 4.4 compared to meteorology-only runs.
 - RAQDPS is part of ECCC's broader operational air quality forecasting suite. The separate FireWork wildfire smoke system's core capability is now integrated into RAQDPS v25.
+- **The public data is a subset of the full model output.** The operational model carries dozens of chemical fields, but the MSC Datamart GRIB2 feed distributes only eight species/levels — near-surface (2 m AGL) NO2, NO, O3, SO2; surface and column-integral (EAtm) PM2.5 and PM10; and the matching PM2.5/PM10 WildfireSmokePlume fields — plus daily-average (DAvg) and daily-maximum (DMax) near-surface PM2.5 smoke-plume fields at hours 024/048/072 (days 1–3). Species such as NH3, HNO3, PAN, individual PM chemical components, and deposition fields are not in the public feed.
 
 ---
 
