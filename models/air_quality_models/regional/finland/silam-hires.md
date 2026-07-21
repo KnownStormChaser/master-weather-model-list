@@ -81,7 +81,7 @@ FMI runs a parallel SILAM pollen / aeroallergen forecast on the **same rotated F
 - **Coverage / grid:** Identical to the chemistry dataset — rotated latitude–longitude, 1560 × 900, ~0.0075° (~0.8 km), 17.5°E–38.2°E / 58.3°N–70.8°N
 - **Taxa / allergens:** Birch, alder, grass, hazel, mugwort (with sub-source variants), olive, ragweed; plus an aphids tracer
 - **Products per taxon:** Airborne concentration (`cnc_POLLEN_*`), ready-to-fly amount (`Poll_Rdy2fly_*`), remaining / total seasonal pollen (`poll_left_*`, `poll_tot_m2_*`), phenology heat-sums (`heatsum_*`), empirical bias correction (`pollen_corr_*`), plus driving meteorology
-- **Cadence / output:** Daily run, hourly output
+- **Cadence / output:** Daily run, hourly output, **48 h (2-day)** forecast per run (verified) — matching the chemistry domain
 - **Access:** THREDDS — https://thredds.silam.fmi.fi/thredds/catalog/silam_hires_pollen_v6_1/catalog.xml — via OPeNDAP, NetCDF Subset Service, and HTTPServer
 
 ---
