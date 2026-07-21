@@ -82,7 +82,7 @@ FMI runs a parallel SILAM pollen / aeroallergen forecast for this region, distri
 - **Coverage / grid:** Rotated latitude–longitude, 549 × 459, ~0.1° (~10 km), over a broad European domain (~47.6°W–78.1°E, 19.0°N–76.0°N — wider than the chemistry domain)
 - **Taxa / allergens:** Birch, alder, grass, hazel, mugwort (with sub-source variants), olive, ragweed; plus an aphids tracer
 - **Products per taxon:** Airborne concentration (`cnc_POLLEN_*`), ready-to-fly amount (`Poll_Rdy2fly_*`), remaining / total seasonal pollen (`poll_left_*`, `poll_tot_m2_*`), phenology heat-sums (`heatsum_*`), empirical bias correction (`pollen_corr_*`), plus driving meteorology (2 m temperature, humidity, 10 m wind, precipitation)
-- **Cadence / output:** Daily run, hourly output (multi-day forecast; exact per-run length not separately verified)
+- **Cadence / output:** Daily run, hourly output, **120 h (5-day)** forecast per run (verified) — matching the chemistry domain
 - **Access:** THREDDS — https://thredds.silam.fmi.fi/thredds/catalog/silam_europe_pollen_v6_1/catalog.xml — via OPeNDAP, NetCDF Subset Service, and HTTPServer (same service set as the chemistry dataset)
 
 ---
