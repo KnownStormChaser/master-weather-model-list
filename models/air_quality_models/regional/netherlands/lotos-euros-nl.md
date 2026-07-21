@@ -1,0 +1,104 @@
+# LOTOS-EUROS (KNMI National Air Quality Forecast for the Netherlands)
+
+## What this model is
+KNMI's operational daily 4-day air quality forecast for the Netherlands, produced with the LOTOS-EUROS chemical transport model in the frame of the CAMS National Collaboration Programme (CAMS-NCP). It is a high-resolution (~1 km) national downscaling of the CAMS regional ENSEMBLE, forecasting reactive gases, particulate matter and pollen at the surface for public-health air-quality monitoring.
+
+This is a **distinct product** from the European-domain LOTOS-EUROS that participates in the [CAMS Regional ensemble](../eu/cams-regional.md): that member runs over the full European domain at ~10 km and is distributed through the Copernicus ADS. This entry is KNMI's own Netherlands-only, ~1 km downscaling distributed through the KNMI Data Platform (KDP), using a national emissions inventory and taking the CAMS regional ENSEMBLE as chemical initial and boundary conditions.
+
+---
+
+## Who runs it
+- **Organization:** KNMI (Royal Netherlands Meteorological Institute). The LOTOS-EUROS chemical transport model is jointly developed by KNMI and TNO.
+- **Country / region:** Netherlands
+- **Programme:** CAMS National Collaboration Programme (CAMS-NCP) for the Netherlands
+- **Dataset manager:** John Douros (KNMI)
+
+---
+
+## What area it covers
+- **Coverage:** Netherlands (and immediate surroundings)
+- **Domain (cell edges):** 2.80° E to 7.80° E, 50.50° N to 53.75° N (EPSG:4326)
+- **Grid:** 300 × 390 regular lat-lon cells; cell centres 2.80833°–7.79166° E (0.0167° step) and 50.50417°–53.74583° N (0.00833° step). *Verified from a live file (July 2026).*
+
+---
+
+## Basic details
+- **Model type:** Regional air quality / atmospheric composition
+- **Model system / core:** LOTOS-EUROS (offline Eulerian chemical transport model; `model: LE` in file metadata)
+- **Model version:** file-embedded attribute `version = v2.3.003-beta` (see Notes — the "beta" tag persists despite the dataset being published as operational v1.0)
+- **Horizontal resolution:** ~1 km distributed grid (0.0167° lon × 0.00833° lat; ≈1.1 km E–W × ≈0.9 km N–S at ~52° N)
+- **Vertical levels:** Surface only in this product — a single level (`conc-sfc`, file variable `level = 0`, "layer")
+- **Forecast length:** 4 days (96 h)
+- **Update frequency / cycles:** 1× daily
+- **Temporal output resolution:** Hourly (24 steps per valid day; each valid day is delivered as a separate file)
+
+---
+
+## Meteorological driver
+- **Driving NWP model:** ECMWF (IFS) — per the dataset lineage statement ("ECMWF meteorological forecasts")
+- **Coupling:** Offline (one-way) — LOTOS-EUROS is an offline CTM driven by external meteorology
+- **Chemical initial / boundary conditions:** CAMS regional ENSEMBLE forecasts (this product is a dynamical downscaling of the ENSEMBLE)
+
+---
+
+## Chemistry and aerosols
+- **Gas-phase chemical mechanism:** TNO CBM-IV — a modified/condensed version of the Carbon Bond Mechanism IV (Whitten et al., 1980), solved with the TWOSTEP integration method. Confirmed against the LOTOS-EUROS v2.3.000 Reference Guide (the same v2.3 line as this product's `v2.3.003-beta` file tag).
+- **Aerosol treatment:** Bulk, with fine/coarse partitioning (verified: fine/coarse pairs present for sulfate, nitrate, elemental carbon, and primary PM)
+- **Heterogeneous / aqueous chemistry:** Explicit N₂O₅ hydrolysis on wet aerosol surface (γ = 0.05); pH-dependent in-cloud sulfate formation (O₃/H₂O₂ oxidation); aerosol thermodynamic equilibrium via ISORROPIA II (Fountoukis & Nenes, 2007). These are the LOTOS-EUROS standard treatments; not separately re-verified for this operational stream.
+- **Aerosol components represented (verified from file):** secondary inorganic aerosol (`sia25`), sulfate (`so4a_f`/`so4a_c`), nitrate (`no3a_f`/`no3a_c`), ammonium (`nh4a_f`), elemental/black carbon (`ec_f`/`ec_c`, plus residential-sector `ec_res`/`ec_res_f`), total particulate organic matter (`tpom`), sea salt (`tss`), dust (`tdust`), primary PM (`ppm_f`/`ppm_c`), and fire PM (`tpmfire`)
+- **Pollen (verified):** birch, grass, olive, alder, mugwort (number concentration, #/m³) — note this is 5 species, without the ragweed found in the CAMS Regional ENSEMBLE pollen set
+
+---
+
+## Emissions
+- **Anthropogenic inventory:** Detailed national inventory based on the Dutch Emissions Registration (Emissieregistratie) — per the lineage statement; the finer national emissions are the main reason for the higher resolution vs. the CAMS Regional member
+- **Boundary / regional emissions:** Inherited via the CAMS regional ENSEMBLE used for boundary conditions
+- **Biogenic / wildfire / other sources:** TBD (not confirmed from primary sources)
+
+---
+
+## Data assimilation
+- **Assimilates AQ observations:** Yes — the file's separate `no2_obs` field (alongside the free-running model `no2`) is the observation-corrected NO₂ product.
+- **Method:** Ensemble Kalman Filter (EnKF), LOTOS-EUROS's operational assimilation approach. The ensemble is generated by perturbing emissions (NOₓ, VOC, NH₃, aerosol), deposition velocities, and boundary conditions (Curier et al., 2012).
+- **Observations assimilated (LOTOS-EUROS operational):** Surface O₃ and NO₂ concentrations (also PM10/PM2.5 in the CAMS configuration), plus OMI/TROPOMI NO₂ satellite columns.
+- **Note:** The method is confirmed at the model level from TNO/CAMS documentation. The exact surface network feeding this Netherlands-specific stream (national RIVM/LML vs. the EEA feed) is not documented in the KDP metadata — flagged rather than assumed.
+
+---
+
+## What it provides
+Hourly surface forecasts over the Netherlands (verified variable list, July 2026):
+- **Gases (mole mole⁻¹):** O₃, NO₂, NO₂ (observation-corrected `no2_obs`), NO, NH₃, SO₂, CO, PAN, formaldehyde (`form`), methylglyoxal (`mgly`), HNO₃
+- **Particulate matter (kg m⁻³):** total PM2.5 (`tpm25`), total PM10 (`tpm10`), plus the aerosol component fields listed above
+- **NMVOC:** total NMVOC mass (`tnmvoc`, kg m⁻³) and as ppb (`tnmvocC`)
+- **Pollen (# m⁻³):** birch, grass, olive, alder, mugwort
+
+---
+
+## Data availability
+- **Is the data free?** Yes
+- **License:** Creative Commons Attribution 4.0 (CC BY 4.0) — https://creativecommons.org/licenses/by/4.0/ ; "No use limitation"
+- **Is the data downloadable?** Yes
+- **Data formats:** NetCDF4 (CF-1.6)
+- **Access:** KNMI Data Platform (KDP) Open Data API. Requires an API key in the `Authorization` HTTP header; KNMI publishes a free, no-registration **anonymous key** in the Open Data API documentation (rate/quota-limited and annually rotated), or a free registered key can be self-requested via the Developer Portal.
+  - **List files:** `https://api.dataplatform.knmi.nl/open-data/v1/datasets/LE_AQ_NL_daily/versions/1.0/files`
+  - **Get download URL:** `.../files/{filename}/url` (returns a temporary signed S3 URL)
+  - **Filename convention:** `LE_{YYYYMMDD}FC_nl_conc-sfc_{YYYYMMDD}.nc` — first date is the forecast base/initialization date, second is the valid day. Each daily run produces 4 files (one per valid day, base+1 through base+4).
+  - **Update notifications:** MQTT via the KDP Notification Service, topic `dataplatform/file/v1/LE_AQ_NL_daily/1.0/#`
+
+---
+
+## Notes
+- **Relationship to CAMS Regional:** The LOTOS-EUROS CTM here is the same modelling system that contributes to the [CAMS Regional European ensemble](../eu/cams-regional.md), but this is a separate operational product — Netherlands-only, ~1 km, national emissions, KNMI-distributed. It should not be conflated with the ~10 km European ENSEMBLE member on the Copernicus ADS.
+- **CAMS-NCP family:** This is the Netherlands instance of the CAMS National Collaboration Programme. Other national partners run analogous downscalings, so this may be the first of a small family of national CAMS-NCP entries worth watching for.
+- **"beta" version tag:** Files carry a `version = v2.3.003-beta` attribute even though the KDP dataset is published as operational v1.0 (publication date 2025-12-17, dataset start 2025-12-15). Flagged as a metadata discrepancy rather than resolved; the dataset itself is operational.
+- **Surface-only:** This public product is a single surface level (`conc-sfc`). Any multi-level LOTOS-EUROS output, if produced, is not part of this dataset.
+- **Anonymous-key caveat:** Access is "open but keyed" — the anonymous key is rate/quota-limited and expires annually (KNMI rotates it and updates the docs page). For scripted/bulk use a registered or bulk key is recommended.
+
+---
+
+## Official documentation
+- Dataset landing page: https://dataplatform.knmi.nl/dataset/le-aq-nl-daily-1-0
+- KNMI Open Data API (and current anonymous key): https://developer.dataplatform.knmi.nl/open-data-api
+- CAMS National Collaboration Programme: https://atmosphere.copernicus.eu/cams-national-collaboration-programme
+- CAMS-NCP Netherlands: https://atmosphere.copernicus.eu/netherlands
+- CAMS Regional documentation (ENSEMBLE providing IC/BC): https://confluence.ecmwf.int/spaces/CKB/pages/202173092/
