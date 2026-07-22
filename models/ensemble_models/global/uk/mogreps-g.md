@@ -7,7 +7,7 @@ It is the global ensemble counterpart to the deterministic [UKMO Global](../../.
 
 The ensemble distribution is structurally distinctive: 17 perturbed members + 1 control are produced **per cycle** for forecast distribution, but the underlying data assimilation runs an **ensemble of 44 perturbed members** under a hybrid four-dimensional ensemble-variational (En-4DEnVar) scheme — the first operational atmospheric ensemble in the world to apply hybrid 4DEnVar to each of its analysis members (since December 2019).
 
-The current operational version is part of **Operational Suite 47 (OS47)**, implemented on 21 January 2026 — the Met Office's first major science upgrade in over three years and the first run on its new Microsoft Azure-based supercomputer. OS47 extended MOGREPS-G's forecast range from 7d 6h to 10 days.
+The current operational version is part of **Operational Suite 47 (OS47)**, implemented on 21 January 2026 — the Met Office's first major science upgrade in over three years and the first run on its new Microsoft Azure-based supercomputer. OS47 extended MOGREPS-G's distributed forecast range from **T+198 (8 d 6 h) to T+246 (10 d 6 h)**, verified against live open data.
 
 ---
 
@@ -27,7 +27,28 @@ The current operational version is part of **Operational Suite 47 (OS47)**, impl
 - **Model system / core:** Unified Model (UM), in its Global Coupled 5 (GC5) science configuration as of OS47
 - **Dynamical formulation:** Non-hydrostatic, fully compressible deep-atmosphere equations on a regular latitude–longitude grid (ENDGame dynamical core); semi-Lagrangian, semi-implicit time integration
 - **Convection-allowing:** No (deep convection is parameterized at ~20 km resolution)
-- **Ensemble size (forecast distribution):** 18 per cycle (1 control + 17 perturbed). Two adjacent cycles can be combined to form a 36-member time-lagged ensemble for downstream products.
+- **Ensemble size (forecast distribution):** 18 per cycle (1 control + 17 perturbed), verified live as a `realization` dimension of size 18 with values 0–17. Two adjacent cycles can be combined to form a 36-member time-lagged ensemble for downstream products.
+  - **Note:** the files do not label which realization is the control. `realization = 0` is the conventional reading but is not asserted in the metadata — treat as **TBD** if the distinction matters for your application.
+- **Horizontal grid:** N640 — 1280 longitudes × 960 latitudes on a regular latitude–longitude grid, exactly half the deterministic [UKMO Global](../../../nwp_models/global/uk/ukmo-global.md) N1280 resolution in both directions
+  - **Grid spacing:** 0.28125° longitude × 0.1875° latitude — **anisotropic**. Meridional spacing is ~20.8 km everywhere; zonal spacing is ~31.3 km at the equator and ~20 km at 50°N. The published "20 km" describes mid-latitudes only.
+  - Cell-centred: latitudes −89.90625° to +89.90625°, longitudes −179.859375° to +179.859375°; poles are not grid points
+  - **Earth model:** sphere, radius 6 371 229 m
+- **Vertical levels:** 70 (the L70(50t,20s)80 hybrid-eta NWP set, shared with the global deterministic model)
+- **Model top:** ~80 km
+- **Forecast length:** **T+246 (10 d 6 h)** since OS47, up from T+198 (8 d 6 h). Verified live: **all four cycles** reach T+246 — there is no short-cycle asymmetry, unlike the global deterministic model where the 06 and 18 UTC runs stop at T+69.
+- **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
+- **Temporal output resolution:** Parameter-dependent, in six distinct patterns (verified against the 2026-07-21 00Z cycle):
+
+| Pattern | Params | Examples |
+|---|---|---|
+| Hourly T+0→132, then 3-hourly T+135→246 | 50 | CAPE/CIN family, screen temperature, MSLP, wind gusts |
+| Hourly T+0→54, then 3-hourly T+57→246 | 21 | all pressure-level and height-level fields |
+| Hourly T+1→132 only | 13 | `*-PT01H` accumulations and maxima |
+| 3-hourly T+135→246 only | 13 | `*-PT03H` accumulations and maxima |
+| As row 1 but terminating at **T+243** | 4 | longwave downward at surface, longwave outgoing at TOA, UV downward, UV upward |
+| 3-hourly T+0→246 | 1 | `landsea_mask` |
+
+- **Data latency:** Documented as 10–11 hours after run time; **observed at 6 h 30 m to 8 h 04 m** across four consecutive cycles (21–22 July 2026), with first objects landing at T+6h30m every time. Substantially faster than advertised.
 - **Underlying DA ensemble:** 44 perturbed members (En-4DEnVar)
 - **Native horizontal grid:** N640 (1280 × 960 grid points; ~0.28° E–W × ~0.19° N–S; ~20 km in mid-latitudes)
 - **Vertical levels:** 70
@@ -88,15 +109,57 @@ The Unified Model is also operated by partner agencies for ensemble forecasting:
 ## Data availability
 - **Is the data free?** Yes
 - **License:** Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0); attribution and ShareAlike required (note: this differs from ECMWF's CC-BY-4.0 by adding the ShareAlike obligation)
-- **Resolution:** ~20 km native (no downsampling)
-- **Format:** NetCDF (CF-compliant)
-- **Retention:** **30-day rolling archive** — a curated subset of the operational ensemble parameters
+- **Resolution:** N640 native (1280 × 960), no downsampling or reprojection
+- **Format:** NetCDF4/HDF5, CF-1.7 + UKMO-1.0 conventions
+- **Retention:** **~30-day rolling archive.** Measured 22 July 2026: 32 date directories spanning 2026-06-21 to 2026-07-22, with the oldest surviving cycle being `2026/06/21/T1200Z` — the 00Z and 06Z runs from that day had already been deleted. Deletion is therefore at **cycle granularity, not day granularity**, giving roughly 31.5 days of data at any moment.
+- **Bucket:** `s3://met-office-global-ensemble-model-data` (region `eu-west-2`) — a **separate bucket** from the deterministic datasets, which share `met-office-atmospheric-model-data`
+  - Anonymous access, no AWS account or credentials required: `aws s3 ls --no-sign-request s3://met-office-global-ensemble-model-data/`
+  - **⚠️ Different path layout from the deterministic datasets.** MOGREPS-G uses a date hierarchy: `global-ensemble/{YYYY}/{MM}/{DD}/T{HHMM}Z/`, e.g. `global-ensemble/2026/07/21/T0000Z/`. The deterministic buckets use a single flat prefix (`global-deterministic-10km/20260721T0000Z/`). Code written against one will not work on the other.
+  - **Filename convention:** `{validity YYYYMMDD}T{HHMM}Z-PT{HHHH}H{MM}M-{parameter}.nc` — same as the deterministic products. The leading timestamp is the validity time; the run time appears only in the path.
+  - **No member index in the filename** — see "Ensemble file structure" below.
+- **Volume — this dataset is large.** Each cycle is **14,020 files totalling ~2.11 TB**, i.e. roughly **8.4 TB/day**. The single largest file is ~2.17 GB (`specific_humidity_on_height_levels`). For scale, a global deterministic 00Z cycle is ~116 GB. Full-archive retrieval is not a casual operation; plan around parameter and timestep filtering.
+- **New-object notifications:** SNS topic `arn:aws:sns:eu-west-2:633885181284:met-office-global-ensemble-model-data-object_created` — distinct from the deterministic datasets' topic.
 - **Caveat:** The dataset is offered on a free, **unsupported**, non-operational basis. The Met Office does not recommend it for critical business purposes.
+- **Not on the Planetary Computer.** Unlike the [global deterministic](../../../nwp_models/global/uk/ukmo-global.md) and [UKV](../../../nwp_models/regional/uk/ukv.md) datasets, MOGREPS-G is distributed **only** through AWS. There are no `met-office-global-ensemble-*` collections in the Planetary Computer STAC catalog.
 - **Official location:**
   - https://registry.opendata.aws/met-office-global-ensemble/
-- **Data catalog change (late January 2026):** From the OS47 upgrade onward, the dataset includes additional parameters, extended forecast range to 246 hours, vertical level additions, precision changes, and a parameter rename (`height_asl_on_pressure_levels` → `geopotential_height_on_pressure_levels`).
+  - Browsable index: https://met-office-global-ensemble-model-data.s3.eu-west-2.amazonaws.com/index.html
+- **Data catalog change (late January 2026):** From the OS47 upgrade onward the dataset gained 19 new parameters, extended forecast range from T+198 to T+246, vertical level additions, precision reduction, and **two** parameter renames — `height_ASL_on_pressure_levels` → `geopotential_height_on_pressure_levels` and `height_ASL_at_freezing_level` → `geopotential_height_at_freezing_level`. Both old names are absent and both new names present in live listings.
 
-The publicly distributed subset is significantly smaller than the full operational ensemble. The Met Office distributes the full operational MOGREPS-G output through its commercial Weather DataHub and direct customer feeds, not through the AWS Open Data programme.
+### Ensemble file structure (verified 21 July 2026)
+**All 18 members are contained within each file.** Every parameter/timestep file carries a `realization` dimension of size 18 (values 0–17) as the **leading** dimension:
+- Surface fields: `(realization, latitude, longitude)` — e.g. `air_temperature` at (18, 960, 1280)
+- Level fields: `(realization, pressure|height|depth, latitude, longitude)`
+- The `flag` status variable on pressure-level parameters is likewise per-member: `(realization, pressure, latitude, longitude)`
+
+There is **no member assembly step** — one file is the complete ensemble for that parameter and timestep. This differs sharply from ensembles distributed as per-member files or built by time-lagging across cycles (compare the [KNMI HARMONIE-EPS entries](../../regional/netherlands/harmonie-eps-knmi-nl.md), where a single file is *not* a complete ensemble).
+
+### File internals
+| Attribute | Value |
+|---|---|
+| `Conventions` | `CF-1.7, UKMO-1.0` |
+| `title` | `MOGREPS-G Model Forecast on Global 20 km Standard Grid` |
+| `mosg__model_configuration` | `gl_ens` |
+| `mosg__forecast_run_duration` | `PT246H` |
+| `mosg__grid_domain` / `mosg__grid_type` / `mosg__grid_version` | `global` / `standard` / `1.7.0` |
+| `um_version` | `13.8` |
+
+- **Compression:** zlib level 1, shuffle off, with lossy precision truncation via `least_significant_digit`. **Note:** unlike the deterministic products, `least_significant_digit` is a **global** attribute here, not a per-variable one — decoders looking for it on the data variable will miss it.
+- **Status flags:** pressure-level files carry a `flag` ancillary variable (`standard_name = status_flag`, `flag_meanings = above_surface_pressure below_surface_pressure`). Sub-surface points are **not masked** and must be screened per member.
+- **Calendar:** `standard`; HDF5 superblock version 2 as of late January 2026.
+- **CF variable names differ from filenames**, as with all Met Office NetCDF products.
+
+### Scope of the public parameter set
+The distributed set is **102 parameters** — verified against the 2026-07-21 00Z cycle, matching the Met Office parameter table. This is a subset of the full operational ensemble (the Met Office sells the complete output through Weather DataHub and direct customer feeds), but it is notably **richer than the global deterministic open data**, which carries only 70 parameters. Fields present here and absent from the deterministic open data include:
+- Specific humidity at screen level and on both height and pressure levels
+- Soil temperature and soil moisture on 4 soil depth levels (0.05, 0.225, 0.675, 2.0 m)
+- Boundary layer depth
+- Convective inflow base and top heights, CAPE equilibrium and initiation levels
+- Convective cloud base and top pressure, convective cloud amount on height and pressure levels
+- Full relative humidity, temperature, wind and vertical velocity profiles on height levels
+- Net shortwave and outgoing longwave radiation at TOA
+
+Conversely, `wet_bulb_potential_temperature_on_pressure_levels` carries only **3 levels** here (85000, 70000, 50000 Pa) against the deterministic model's 27 post-OS47 — a genuine asymmetry between the siblings.
 
 ---
 
