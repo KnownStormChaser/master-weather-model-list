@@ -5,7 +5,7 @@ ICON-ART-EU is DWD's regional **mineral-dust** forecast for Europe — the Europ
 
 The forecasts became available on the DWD Open Data Server in **April 2025**, under the `/weather/nwp/v1/m/` tier that also hosts the global ICON-ART and the ensemble counterparts. The "online-coupled" design means dust and meteorology evolve together within a single model run, with dust–radiation and dust–cloud (ice-nucleation) feedbacks acting on the forecast.
 
-> **Note on scope / naming:** "ICON-ART-EU" also labels DWD's ICON-ART-based European *pollen* forecast (five allergenic species, feeding the DWD *Pollenflug* warning service since 2021). That pollen product is a **separate configuration and is not distributed on the DWD Open Data Server as raw GRIB** — the open `icon-art-eu` feed contains dust and standard meteorology only, with no pollen fields. This entry covers the open-data mineral-dust product. See *Notes*.
+> **Note on scope / naming:** "ICON-ART-EU" is sometimes used loosely for DWD's ICON-ART-based *pollen* forecast as well. That is a **separate configuration on a separate distribution channel** — it *is* openly distributed, but as NetCDF under `/climate_environment/health/forecasts/pollen/`, not as GRIB in this feed. The open `icon-art-eu` feed contains dust and standard meteorology only, with no pollen fields. See [ICON-ART Pollen](./icon-art-pollen.md) for the pollen product; this entry covers the open-data mineral-dust product.
 
 ---
 
@@ -95,9 +95,9 @@ No pollen and no other pollutant species are provided.
 
 ## Notes
 - **Identity correction (verified 2026-07):** The open `icon-art-eu` feed is DWD's **mineral-dust** forecast (launched April 2025), *not* a pollen forecast. All 132 variable folders were enumerated: standard ICON-EU meteorology + 28 dust ART parameters, zero pollen fields.
-- **Pollen product (separate; out of the open-data channel):** DWD does run ICON-ART for a European pollen forecast — alder, birch, grasses, ragweed, hazel — operational since September 2021, feeding the DWD *Pollenflug* public warning service, and closely related to MeteoSwiss's ICON-ART pollen system (co-developed with KIT via the EMPOL scheme, Zink et al. 2013). That product does not appear to be distributed as raw GRIB on the Open Data Server, so it falls outside the repository's raw-gridded-open-data scope. **Flagged for a decision:** keep as this note, or record separately (e.g. a "Systems Not in the Catalog" wiki entry).
+- **Pollen product (separate entry, verified 2026-07):** DWD runs ICON-ART in limited-area mode for a European pollen forecast — hazel, alder, birch, grasses, ragweed — operational since September 2021 and co-developed with GeoSphere Austria, MeteoSwiss, and KIT via the EMPOL scheme (Zink et al. 2013). The Germany-domain subset **is** openly distributed, as daily-mean NetCDF at `https://opendata.dwd.de/climate_environment/health/forecasts/pollen/` — a different path tree, format, cadence, and domain from this dust feed. It is catalogued separately as [ICON-ART Pollen](./icon-art-pollen.md).
 - **Not "dust only" in file terms:** the feed carries the full standard ICON-EU meteorological field set in addition to the dust parameters; dust is simply the distinguishing atmospheric-composition capability.
-- **Companion:** the global [ICON-ART](../../global/germany/icon-art.md) mineral-dust forecast is the global counterpart; ICON-ART-EU is the regional (ICON-EU nest) dust configuration. *(The `icon-art.md` entry currently cross-references ICON-ART-EU as the "pollen" companion — update that line to match this correction.)*
+- **Companion:** the global [ICON-ART](../../global/germany/icon-art.md) mineral-dust forecast is the global counterpart; ICON-ART-EU is the regional (ICON-EU nest) dust configuration. The third DWD ART product is [ICON-ART Pollen](./icon-art-pollen.md), a distinct limited-area pollen configuration on its own open-data channel.
 
 ---
 
