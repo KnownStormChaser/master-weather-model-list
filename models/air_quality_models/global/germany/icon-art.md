@@ -85,7 +85,8 @@ ART-specific processes — dust emission, sedimentation, wet deposition, dry dep
 
 ### Companion DWD systems
 - **[ICON Global](../../../nwp_models/global/germany/icon-global.md):** The base meteorological model that ICON-ART extends. ICON-ART runs the same dynamical core, same grid, same vertical structure, and same physics — with ART aerosol modules added.
-- **[ICON-ART-EU](../../regional/germany/icon-art-eu.md):** The regional companion — DWD's ICON-EU-nested **mineral-dust** forecast (~6.5 km) on the same open-data tier. (DWD also runs an ICON-ART-EU *pollen* configuration feeding its public pollen-warning service, but that is not distributed on the open-data server as raw GRIB.)
+- **[ICON-ART-EU](../../regional/germany/icon-art-eu.md):** The regional companion — DWD's ICON-EU-nested **mineral-dust** forecast (~6.5 km) on the same open-data tier.
+- **[ICON-ART Pollen](../../regional/germany/icon-art-pollen.md):** DWD's limited-area ICON-ART **pollen** forecast (five allergenic taxa), distributed as daily-mean NetCDF for Germany under `/climate_environment/health/forecasts/pollen/` — a separate configuration and distribution channel from both dust products.
 - **COSMO-ART:** Predecessor regional system based on the now-retired COSMO model. COSMO-ART supported the same operational use cases (dust, volcanic ash, radionuclide dispersion) before DWD's transition to ICON.
 
 ### Peer global atmospheric composition systems
