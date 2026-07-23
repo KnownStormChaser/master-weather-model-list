@@ -18,7 +18,8 @@
 ---
 
 ## Basic details
-- **Model type:** Deterministic wave model
+- **Model type:** <Deterministic wave model / Ensemble wave model / Deterministic + ensemble>
+- **Grid system:** <Single regular grid / multi-grid mosaic (e.g., WW3 `mult_1`) / unstructured mesh> (TBD)
 - **Core wave model:** <e.g., WAVEWATCH III (WW3) / MFWAM / SWAN> (TBD)
 - **Horizontal resolution:** <e.g., 0.25° / 0.1° / 0.025°> (domain-dependent if needed)
 - **Forecast length:** <e.g., 240 h / 48 h>
@@ -32,6 +33,15 @@
 - **Ice forcing (if applicable):** <source + rules/thresholds> (TBD)
 - **Current forcing (if applicable):** <source + one-way forcing vs two-way coupling> (TBD)
 - **Nested inside / parent for:** <optional>
+
+---
+
+## Ensemble configuration (ensemble systems only)
+- **Ensemble size:** <e.g., 30 perturbed + 1 control> (TBD)
+- **Source of perturbations:** <usually inherited from the driving atmospheric ensemble — name it; state explicitly if the wave model itself is also perturbed, which is uncommon> (TBD)
+- **Resolution / output differences vs deterministic sibling:** <ensemble wave output is often coarser and less frequent than the deterministic run> (TBD)
+- **Member packaging:** <separate file per member vs member dimension in one file; GRIB2 `perturbationNumber` / `typeOfEnsembleForecast` encoding> (TBD)
+- **Derived products distributed:** <ensemble mean, spread, SWH exceedance probabilities, percentiles — list only what is actually published as raw data> (TBD)
 
 ---
 
