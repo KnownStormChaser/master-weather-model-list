@@ -61,7 +61,7 @@ The current operational release is **STOFS v2.1** (SCN 23-124 references v2.1.4)
 
 ---
 
-## Vertical datum and reference level (important)
+## Vertical datum and reference level
 - **Vertical datum:** Differs by product —
   - **Gridded output (GRIB2 and native NetCDF):** global mean sea level (**GMSL**)
   - **Station NetCDF:** local mean sea level (**LMSL**)
