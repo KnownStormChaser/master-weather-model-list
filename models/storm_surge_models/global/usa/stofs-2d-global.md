@@ -165,6 +165,19 @@ aws s3 ls --no-sign-request s3://noaa-gestofs-pds/
 - SNS new-object notifications: `arn:aws:sns:us-east-1:123901341784:NewGESTOFSObject`
 - **Archive depth (live-verified 2026-07-23):** 1,293 daily directories under `stofs_2d_glo.` from **2023-01-08** to present, plus 744 legacy `estofs.YYYYMMDD/` directories covering **2020-12-30 to 2023-01-12**.
 
+**Parallel (pre-implementation) feed — not for operational use:**
+```
+https://nomads.ncep.noaa.gov/pub/data/nccf/com/stofs/para/
+s3://noaa-gestofs-pds/_para4/stofs_2d_glo.YYYYMMDD/
+```
+NCEP runs every model upgrade in a public parallel stream for at least 30 days before implementation, mirroring the production directory structure so users can test their ingest against the new output. The `para` feed currently carries **STOFS v3.1**, scheduled to replace production on 11 August 2026 — see [Upcoming changes](#upcoming-changes) for the live-verified differences.
+
+Three points matter for anyone tempted to use it:
+
+- **It is unsupported and will disappear.** Parallel feeds are not 24/7-supported, carry no service guarantee, and are removed once the upgrade goes operational. They are for testing ingest code, not for producing guidance.
+- **The NOMADS parallel directory holds `stofs_3d_pac.YYYYMMDD/` alongside the 2-D and 3-D Atlantic components.** This is the public pre-implementation feed for **STOFS-3D-Pacific**, the third STOFS component arriving with v3.1.
+- **The S3 `_para` prefixes are not all equivalent.** As of 2026-07-23 the bucket carries `_para/`, `_para2/`, `_para3/`, `_para4/` and `_polar_para/`. Only **`_para4/`** mirrors the full public product suite (GRIB2 for all seven regions, field and station NetCDF, SHEF) and matches what NOMADS serves under `stofs/para`. `_para/` and `_para2/` are partial development streams carrying no GRIB2 at all, plus raw ADCIRC intermediates (`fort.11.nc`, `stofs_2d_glo_fcst1.221.nc`) and forcing fields. The bucket README describes all of these as stored for NOAA internal reference. Treat anything other than `_para4/` as internal.
+
 ---
 
 ## Notes
@@ -204,9 +217,29 @@ aws s3 ls --no-sign-request s3://noaa-gestofs-pds/
 ### STOFS v3.1 — effective 11 August 2026
 **SCN 26-51 (Updated)** announces an upgrade of the Surge and Tide Operational Forecast System to version 3.1. The notice was first issued 3 June 2026 with an effective date of 7 July 2026 and subsequently revised to **11 August 2026**.
 
-As of the 2026-07-23 00Z cycle the upgrade had **not** taken effect — output files still stamp `STOFS_2D_GLOBAL.V2.1.0`. Everything in this entry describes the v2.1 configuration.
+As of the 2026-07-23 00Z cycle the upgrade had **not** taken effect in production — operational files still stamp `STOFS_2D_GLOBAL.V2.1.0`. Everything above describes the v2.1 configuration.
 
-The v3.1 upgrade is expected to cover the STOFS-2D-Global and STOFS-3D-Atlantic components together and to introduce a third component, **STOFS-3D-Pacific**, which is currently running daily in a parallel path (`s3://noaa-nos-stofs3d-pds/STOFS-3D-Pac/para1_pro/`). Specific changes to STOFS-2D-Global under v3.1 are TBD pending review of the SCN.
+The upgrade covers all three STOFS components together, including the debut of **STOFS-3D-Pacific**. The parallel feed is public (see *Parallel (pre-implementation) feed* above), so the v3.1 changes can be inspected directly rather than inferred from the notice.
+
+**Live-verified differences, production vs. parallel, 2026-07-23 00Z cycle:**
+
+| Property | v2.1 (production) | v3.1 (parallel) |
+|---|---|---|
+| `title` attribute | `STOFS_2D_GLOBAL.V2.1.0` | `STOFS_2D_GLOBAL.V3.1.0` |
+| `version` attribute | `noaa.stofs.2d.glo.v2.1.0r1.v55.12` | `unknown` (not yet stamped) |
+| `runid` | `STOFS 2D GLOBAL v5.6.5` | `STOFS 2D GLOBAL v5.6.5` (unchanged) |
+| Mesh | 12,785,004 nodes / 24,875,336 elements | **unchanged** |
+| Verification sites | 1,688 | 1,687 |
+| Forecast length / cycles | −6 h nowcast + 180 h, 4× daily | **unchanged** |
+| GRIB2 regions | 7 | **unchanged** (same seven) |
+| GRIB2 parameter encoding | 10/3/250, 194, 193 | **unchanged** |
+| Gridded anomaly-corrected products | none | **new** — `fields.cwl.noanomaly.nc`, `fields.cwl.maxele.noanomaly.nc` |
+
+- **The GRIB2 trap survives the upgrade.** Decoding the parallel `conus.east.f012.grib2` gives the identical three-message structure, identical parameter numbers, identical `generatingProcessIdentifier = 14`, no bitmap, `missingValue = 9999`, and the same exact additivity (`250 − (194 + 193)` max residual 2 × 10⁻⁵ m). The caution in the Notes section above applies unchanged to v3.1.
+- **The anomaly correction appears to extend from stations to the gridded fields.** v3.1 introduces `fields.cwl.noanomaly.nc` and `fields.cwl.maxele.noanomaly.nc` on the native mesh — the same `noanomaly` naming convention used for the station files. The natural reading is that the bias correction currently applied only at stations is being applied to the gridded output too, with an uncorrected variant published alongside. **This would change the meaning of the primary gridded product** and should be confirmed against the SCN before the entry's *Data assimilation* section is finalised. (TBD)
+- **Station list churn is small and mostly cosmetic.** Net 1,688 → 1,687. The University of Hawai'i Sea Level Center sites (`UH***`) all gained a trailing short code in `station_name` — e.g. `UH002 SOUS00 GL113 Tarawa, Bairiki Kiribati` becomes `... Kiribati tara` — so naive string matching on station names will fail across the upgrade even where the site is unchanged. Genuine changes are confined to a handful of U.S. sites: **added** Bogue Sound at Emerald Isle NC (`EMDN7`), White Oak River at Swansboro NC (`SWBN7`), Kings Bay MSF Pier GA (`KBMG1`), TEMCO Kalama Terminal WA (`KLMW1`); **removed** Duck Pier NC (`DUKN7`), Money Point VA (`MNPV2`), Myrtle Beach Springmaid Pier SC (`MROS1`), South Amboy NJ (`SABN4`); **re-identified** New London CT (`NLNC3` → `NLHC3`) and Naples FL (NOS ID 8725110 → 8725114). Match on NOS station ID where possible, not on name or Handbook-5 ID.
+- **New barrier/weir variables on the native mesh.** The v3.1 field files add `barsp`, `barht`, `ibconn`, `barsb` and `nfaces` alongside the existing mesh topology arrays — ADCIRC internal barrier boundary parameters, absent from the v2.1 output. This suggests levee and weir structures have been added to the mesh even though the node and element counts are identical. (TBD — mechanism unconfirmed.)
+- **GFS forcing fields are published in the parallel stream.** `icec.nc`, `pressfc.nc` and `uvgrd10m.nc` (sea ice concentration, surface pressure, 10 m wind) appear in the parallel directories. Whether these persist into the operational feed is TBD.
 
 ---
 
