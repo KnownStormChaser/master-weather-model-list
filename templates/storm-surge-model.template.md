@@ -79,12 +79,16 @@
 ---
 
 ## Ensemble configuration (ensemble systems only)
+
+<**Delete this entire section for deterministic entries.** Do not leave it in place filled with TBDs — an empty ensemble block in a deterministic entry reads as missing research rather than as "not applicable.">
+
 - **Ensemble size:** <e.g., 20 perturbed + 1 control> (TBD)
-- **Source of perturbations:** <Almost always inherited from the driving atmospheric ensemble — name it. State explicitly if the surge model itself is perturbed (e.g., wind drag coefficient, bathymetry, or tidal phase perturbations), which is uncommon but does occur in TC surge systems.> (TBD)
-- **Deterministic counterpart:** <Name and cross-link the sibling deterministic system if one exists.> (TBD)
+- **Source(s) of perturbations:** <Usually inherited from the driving atmospheric ensemble — name it and state the member correspondence. **List every perturbation source, not just the atmospheric one.** Surge ensembles sometimes perturb the surge model itself — tidal boundary conditions, wind drag coefficient, bathymetry — and this is easy to miss because it is often buried in a single line of the technical specification.> (TBD)
+- **How perturbation sources affect interpretation:** <If spread comes from more than one source, say what each output field's spread actually measures. A total-water-level field whose tides are perturbed does not carry clean meteorological uncertainty, and users need to know which field to use for which question. Where the data allows it, quantify: compute across-member standard deviation per field at several lead times and tabulate.> (TBD — omit if there is only one perturbation source)
+- **Deterministic counterpart:** <Name and cross-link the sibling deterministic system if one exists. **State clearly if there is none** — an ensemble surge system is not automatically the ensemble version of the agency's deterministic surge system; they may differ in domain, model core, and physics.> (TBD)
 - **Resolution / domain / output differences vs deterministic sibling:** <Ensemble surge systems are frequently regional where the deterministic sibling is global, and often coarser or shorter-range.> (TBD)
-- **Member packaging:** <Separate file per member vs member dimension in one file; GRIB2 `perturbationNumber` / `typeOfEnsembleForecast` encoding, or NetCDF member dimension name.> (TBD)
-- **Derived products distributed:** <Ensemble mean, spread, water level exceedance probabilities, percentiles — list only what is actually published as raw data, not what appears in web viewers.> (TBD)
+- **Member packaging:** <Separate file per member vs member dimension in one file. If a member dimension: give the dimension name, its length, the coordinate variable name, and the actual index values — verify live whether the control is index 0 or index 1. If GRIB2: `perturbationNumber` / `typeOfEnsembleForecast` encoding.> (TBD)
+- **Derived products distributed:** <Ensemble mean, spread, exceedance probabilities, percentiles. **Answer this even when the answer is "none"** — whether users must compute their own statistics from raw members is a material usability fact. List only what is published as raw downloadable data, not what appears in web viewers or WMS layers.> (TBD)
 
 ---
 
