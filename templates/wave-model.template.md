@@ -37,6 +37,9 @@
 ---
 
 ## Ensemble configuration (ensemble systems only)
+
+<**Delete this entire section for deterministic entries.** Do not leave it in place filled with TBDs — an empty ensemble block in a deterministic entry reads as missing research rather than as "not applicable.">
+
 - **Ensemble size:** <e.g., 30 perturbed + 1 control> (TBD)
 - **Source of perturbations:** <usually inherited from the driving atmospheric ensemble — name it; state explicitly if the wave model itself is also perturbed, which is uncommon> (TBD)
 - **Resolution / output differences vs deterministic sibling:** <ensemble wave output is often coarser and less frequent than the deterministic run> (TBD)
