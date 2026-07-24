@@ -111,7 +111,7 @@ Deterministic regional wave forecasts (surface, GRIB2, one file per variable per
   - Parent global system: [GDWPS](../../global/canada/gdwps-canada.md) (wave boundary conditions for the ocean domains).
   - Meteorological driver: [HRDPS](../../../nwp_models/regional/canada/hrdps.md) 7.0.0 (10 m winds).
   - Ice drivers: WCPS 3.3.0 (lakes) *(entry pending)*, [RIOPS](../../../ocean_models/regional/canada/riops.md) 2.4.0 (oceans).
-  - Ensemble counterpart: **REWPS** (Regional Ensemble Wave Prediction System) — the ensemble sibling covering Canadian regional waters. *(Entry pending.)*
+  - Ensemble counterpart: [REWPS](./rewps-canada.md) (Regional Ensemble Wave Prediction System) — the ensemble sibling, covering the Great Lakes only (no ocean domains).
   - RDWPS replaced WAM Regional (Gulf of St. Lawrence) when the ocean domains were added in v4.0.0.
 
 ---
