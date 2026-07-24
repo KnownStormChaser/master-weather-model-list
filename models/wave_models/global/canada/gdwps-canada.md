@@ -83,7 +83,7 @@ Deterministic global wave forecasts (surface, GRIB2, one file per variable per t
 - **Relationship to other ECCC systems:**
   - Meteorological driver: [GDPS](../../../nwp_models/global/canada/gem-global.md) 10.0.0 (10 m winds, ice concentration). Note that GDPS 10.0.0 introduced AI spectral nudging toward GEML, so GDWPS 1.11.0 is indirectly driven by a partly data-driven atmospheric forecast.
   - Regional deterministic sibling: [RDWPS](../../regional/canada/rdwps-canada.md), which receives GDWPS boundary conditions.
-  - Ensemble counterpart: **GEWPS** (Global Ensemble Wave Prediction System) — the ensemble sibling of this system, driven by the GEPS atmospheric ensemble. *(Entry pending.)*
+  - Ensemble counterpart: [GEWPS](./gewps-canada.md) (Global Ensemble Wave Prediction System) — the ensemble sibling of this system, driven by the GEPS atmospheric ensemble.
   - Developed in partnership with NCEP/NOAA (GDWPS began as an experimental system in June 2015; declared operational November 2017).
 
 ---
