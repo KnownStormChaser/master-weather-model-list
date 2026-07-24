@@ -88,7 +88,7 @@ Probabilistic global wave forecasts (surface, GRIB2, all 21 members per file). L
 - **Relationship to other ECCC systems:**
   - Deterministic sibling: [GDWPS](./gdwps-canada.md) — same WW3 physics, higher resolution, shorter (10-day) horizon.
   - Atmospheric driver: [GEPS](../../../ensemble_models/global/canada/geps.md) 8.0.0 (per-member 10 m winds and ice).
-  - Regional ensemble counterpart: **REWPS** (Regional Ensemble Wave Prediction System) — the regional-waters ensemble sibling. *(Entry pending.)*
+  - Regional ensemble counterpart: [REWPS](../../regional/canada/rewps-canada.md) (Regional Ensemble Wave Prediction System) — the Great Lakes ensemble sibling.
 
 ---
 
