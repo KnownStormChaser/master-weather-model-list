@@ -26,7 +26,7 @@ NAVGEM is the U.S. Navy's primary medium-range global NWP model and is used to s
 - **Convection-allowing:** No (deep convection is parameterized at ~19 km resolution)
 - **Spectral resolution:** Triangular truncation T681
 - **Horizontal resolution:** ~19 km native; distributed on NOMADS at 0.5° (361 × 720 regular lat-lon grid)
-- **Vertical levels:** 60
+- **Vertical levels:** 60 native (the NOMADS product is distributed on 21 pressure levels, 1000–70 hPa)
 - **Model top:** ~0.04 hPa (~70 km)
 - **Forecast length:**
   180 hours (7.5 days)
@@ -44,11 +44,7 @@ NAVGEM uses **NAVDAS-AR** (NRL Atmospheric Variational Data Assimilation System 
 ---
 
 ## What it provides
-Deterministic global forecasts of:
-- Atmospheric temperature, wind, humidity, and pressure
-- Surface fluxes important for ocean and wave modeling
-- Tropical cyclone environment and track guidance
-- Upper-atmospheric fields extending into the mesosphere
+Deterministic global forecasts of temperature, wind, humidity, pressure, and precipitation, plus tropical-cyclone environment and track guidance. In full operational form NAVGEM also produces surface fluxes for ocean/wave forcing and fields extending into the mesosphere, but **the public NOMADS GRIB2 is a subset** — it tops out at 70 hPa and carries no flux, cloud, or radiation fields (see the NOMADS product contents under Data availability for the exact field set).
 
 NAVGEM output is widely used as:
 - Atmospheric forcing for ocean, sea-ice, and wave models
@@ -60,14 +56,20 @@ NAVGEM output is widely used as:
 
 ## Data availability
 - **Is the data free?** Yes
+- **License:** Public domain (U.S. government work; CC0-equivalent)
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download location (NOMADS):**
   https://nomads.ncep.noaa.gov/pub/data/nccf/com/fnmoc/prod/
 - **File path pattern:** `navgem.YYYYMMDD/navgem_YYYYMMDDHHfFFF.grib2`
   (where `YYYYMMDDHH` is the cycle date and time, and `FFF` is the forecast hour)
-- **Higher-resolution archive (FNMOC GODAE / USGODAE):**
-  https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/
+- **NOMADS product contents (public GRIB2 subset — live-verified against the 2026-07-24 00Z cycle):**
+  The public NOMADS feed is a regridded 0.5° subset of the full operational output (~89 fields per file), not the complete model state.
+  - **Pressure levels:** 21 isobaric levels, 1000 → 70 hPa. The product does **not** reach the model's mesospheric top — 70 hPa (~18 km) is the ceiling. Per-variable coverage varies: geopotential height, temperature, and winds on 12 levels; relative humidity on 15 (300–1000 hPa); vertical velocity on 11; absolute vorticity at 500 hPa only.
+  - **Near-surface:** 2 m temperature; 10 m and 20 m winds; and a 20 m **wind-gust** field (FNMOC-local parameter `0/2/243`). The 20 m level and gust are Navy marine-forecasting features.
+  - **Other single-level:** MSLP; tropopause temperature and pressure; max-wind-level temperature, height, pressure, and wind.
+  - **Precipitation:** total and convective precipitation as **6-hour accumulations, present only on 6-hourly-aligned steps** (f006, f012, f018, f024, …); the intermediate 3-hourly steps carry none. Total precip encodes as WMO `0/1/8` (APCP) but reports as `unknown` under eccodes 2.48 — resolve via GRIB2 Code Table 4.2.
+  - No surface-flux, cloud, or radiation fields are distributed in the public GRIB2 (they exist in full ops but not here).
 
 ---
 
@@ -100,6 +102,7 @@ NAVGEM output is widely used as:
 ## Notes
 - NAVGEM uses a semi-Lagrangian / semi-implicit formulation to allow higher global resolution without prohibitively small time steps, a key limitation of its predecessor NOGAPS.
 - The model is developed primarily at the Naval Research Laboratory and transitioned operationally at FNMOC.
+- A USGODAE archive path (`usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/`) was previously listed as a "higher-resolution archive." It was removed: the path returns HTTP 404 (verified 2026-07-25), and the 0.5° USGODAE feed was a resolution upgrade over the retired 1° NOGAPS — the same 0.5° as NOMADS, not finer. NOMADS is the confirmed public source.
 - NAVGEM serves as the atmospheric core of the Navy Earth System Prediction Capability (ESPC), where it is coupled with HYCOM (ocean), CICE (sea ice), and WAVEWATCH III (waves).
 - A separate **NAVGEM Ensemble** (NAVGEM-EPS) is also operated by FNMOC at coarser resolution (historically T359L60) with 21 members and a 16-day forecast length. The NAVGEM Ensemble is one of the three contributing systems to the [557th WW GEPS](../../../ensemble_models/global/usa/557wg-geps.md) multi-model ensemble. The NAVGEM Ensemble is a separate system from the deterministic NAVGEM described here.
 - While NAVGEM data are publicly available, the model is optimized for naval and maritime applications rather than civilian public forecasting.
