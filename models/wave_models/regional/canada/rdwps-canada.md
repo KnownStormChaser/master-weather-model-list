@@ -113,6 +113,7 @@ Deterministic regional wave forecasts (surface, GRIB2, one file per variable per
   - Ice drivers: WCPS 3.3.0 (lakes) *(entry pending)*, [RIOPS](../../../ocean_models/regional/canada/riops.md) 2.4.0 (oceans).
   - Ensemble counterpart: [REWPS](./rewps-canada.md) (Regional Ensemble Wave Prediction System) — the ensemble sibling, covering the Great Lakes only (no ocean domains).
   - RDWPS replaced WAM Regional (Gulf of St. Lawrence) when the ocean domains were added in v4.0.0.
+- **U.S. counterpart (Great Lakes):** NOAA/NCEP's [GLWU](../usa/glwu.md) is the equivalent deterministic Great Lakes wave system on the U.S. side. It covers the same lakes (plus Lake Champlain) but on an unstructured mesh (~2.5 km → 250 m) rather than RDWPS's structured ~1 km per-lake grids, cycles hourly (24× daily vs 4×), and extends to 149 h at four daily long-range cycles (01/07/13/19 UTC). The two are independent operational systems, not a shared model.
 
 ---
 
