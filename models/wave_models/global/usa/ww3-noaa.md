@@ -45,7 +45,7 @@ As of GFS v16 (March 2021), the previously standalone `multi_1` deterministic wa
 - **Wind forcing:** GFS atmosphere 10 m winds, coupled at **30-minute** frequency (one-way, atmosphere → wave)
 - **Ice forcing:** Sea-ice concentration from the GFS/GDAS analysis
 - **Current forcing:** Surface currents from **RTOFS** provided as input (one-way forcing)
-- **Nested inside / parent for:** Wave component of the GFS system; the ensemble counterpart is the [GEFS](../../../ensemble_models/global/usa/gefs.md)-coupled WAVEWATCH III wave ensemble (GEFS-Wave), which replaced the earlier standalone Global Wave Ensemble
+- **Nested inside / parent for:** Wave component of the GFS system; the ensemble counterpart is [GEFS-Wave](./gefs-wave.md), the [GEFS](../../../ensemble_models/global/usa/gefs.md)-coupled WAVEWATCH III wave ensemble, which replaced the earlier standalone Global Wave Ensemble
 
 ---
 
@@ -92,7 +92,7 @@ The NODD cloud mirrors (AWS, Azure, GCP) carry the same production tree as NOMAD
 - **The Google Earth Engine `NOAA/GFS0P25` asset does *not* contain wave data.** It is a curated atmosphere-only ImageCollection (temperature, humidity, wind, precipitation, radiation, cloud). GFS-Wave on Google is available only through the raw NODD **Google Cloud Storage** bucket (`global-forecast-system`), not through Earth Engine — the two are different products and should not be conflated.
 - **`global.0p16` is a mid-latitude grid, not a global one** — its coverage is 15°S–52.5°N (the native Global Core grid). For pole-to-pole global fields use `global.0p25`. This is a common point of confusion given the shared `global` prefix.
 - The `wave/` directory also contains a `station/` subdirectory holding spectral bulletins and point spectra (`bull`, `spec`). These are **station/point time-series products and fall outside this repository's gridded-data scope**; only the `gridded/` subtree is cataloged here.
-- **Coupling and family relationships:** GFS-Wave is one-way coupled to the GFS atmosphere and takes RTOFS currents as input. Its ensemble sibling is the [GEFS](../../../ensemble_models/global/usa/gefs.md)-coupled WAVEWATCH III ensemble. The broader GFS system is documented in the [GFS entry](../../../nwp_models/global/usa/gfs.md).
+- **Coupling and family relationships:** GFS-Wave is one-way coupled to the GFS atmosphere and takes RTOFS currents as input. Its ensemble sibling is [GEFS-Wave](./gefs-wave.md), the [GEFS](../../../ensemble_models/global/usa/gefs.md)-coupled WAVEWATCH III ensemble. The broader GFS system is documented in the [GFS entry](../../../nwp_models/global/usa/gfs.md).
 - WAVEWATCH III is developed at NOAA/NCEP and is the foundation for many national and international operational wave systems; a number of the regional WW3 entries in this repository (e.g. MET Norway, Météo-France, ItaliaMeteo) are independent configurations of the same core model.
 
 ---
