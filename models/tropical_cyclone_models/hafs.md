@@ -196,7 +196,7 @@ Forecast variables include: tropical cyclone track; maximum sustained winds and 
 ## Relationship to other models
 
 ### Predecessors
-HAFS replaced **HWRF** and **HMON** as NOAA's operational hurricane forecast system in 2023; both legacy systems have been retired.
+HAFS replaced **HWRF** and **HMON** as NOAA's *primary* operational hurricane forecast system in 2023. Both are now on legacy status — frozen at their final pre-HAFS configurations — but **continue to run operationally for active storms** as guidance alongside HAFS; no retirement date has been announced as of mid-2026.
 
 ### Companion NOAA operational models
 - **GFS / GDAS:** large-scale environmental and boundary conditions, and DA background
