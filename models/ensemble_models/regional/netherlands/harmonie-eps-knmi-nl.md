@@ -78,6 +78,20 @@ Each member/timestep file carries 20 GRIB messages of **near-surface and screen-
 
 No pressure-level or model-level output is included. Parameters are identified by GRIB1 `indicatorOfParameter`; consult KNMI's HARMONIE parameter table for exact code meanings.
 
+The above is the **general meteorological package (P2a)**. The same ensemble is also distributed as a **renewable-energy package (P2b)** — see *Variable packages* below.
+
+---
+
+## Variable packages (P2a general meteo · P2b renewable energy)
+The Dutch EPS is published as two parallel datasets drawn from the **same 30-member time-lagged ensemble** — identical grid, members, rotation, forecast length, and hourly cycling — differing only in the retained variable set:
+
+| Package | Dataset | Focus | Contents (verified) |
+|---|---|---|---|
+| **P2a** | `harmonie_arome_cy43_p2a` | General near-surface meteorology | 2 m T/RH, 10 m wind + gusts, 50 m wind, surface visibility/snow/cloud, MSL pressure, whole-atmosphere fields (20 GRIB msgs/member) |
+| **P2b** | `harmonie_arome_cy43_p2b` | Renewable energy (wind + solar) | u/v wind at **10, 50, 100, 200, 300 m** (hub-height profile), 2 m temperature, total cloud cover, global (solar) radiation (13 GRIB msgs/member) |
+
+P2b adds the multi-height wind profile (to 300 m) and radiation that P2a lacks — the package for wind- and solar-energy ensemble applications — while P2a carries the broader surface-weather set. P2b members use the identical time-lagged rotation; file naming `harm43_v1_ned_uwcw_renew_{MMM}_{...}_GB` (`renew` vs P2a's `meteo`).
+
 ---
 
 ## Data availability
@@ -94,6 +108,7 @@ Access is exclusively via the KNMI Data Platform Open Data API; an API key is al
 
 ```
 https://api.dataplatform.knmi.nl/open-data/v1/datasets/harmonie_arome_cy43_p2a/versions/1.0/files
+https://api.dataplatform.knmi.nl/open-data/v1/datasets/harmonie_arome_cy43_p2b/versions/1.0/files
 ```
 
 ```
