@@ -80,6 +80,20 @@ Each member/timestep file carries 20 GRIB messages of **near-surface and screen-
 
 No pressure-level or model-level output is included. Parameters are identified by GRIB1 `indicatorOfParameter`; consult KNMI's HARMONIE parameter table for exact code meanings.
 
+The above is the **general meteorological package (P4a)**. The same ensemble is also distributed as a **renewable-energy package (P4b)** — see *Variable packages* below.
+
+---
+
+## Variable packages (P4a general meteo · P4b renewable energy)
+The European EPS is published as two parallel datasets drawn from the **same 30-member time-lagged ensemble** — identical rotated grid, members, rotation, forecast length, and hourly cycling — differing only in the retained variable set:
+
+| Package | Dataset | Focus | Contents (verified) |
+|---|---|---|---|
+| **P4a** | `harmonie_arome_cy43_p4a` | General near-surface meteorology | 2 m T/RH, 10 m wind + gusts, 50 m wind, surface visibility/snow/cloud, MSL pressure, whole-atmosphere fields (20 GRIB msgs/member) |
+| **P4b** | `harmonie_arome_cy43_p4b` | Renewable energy (wind + solar) | u/v wind at **10, 50, 100, 200, 300 m** (hub-height profile), 2 m temperature, total cloud cover, global (solar) radiation (13 GRIB msgs/member) |
+
+P4b adds the multi-height wind profile (to 300 m) and radiation that P4a lacks — the package for wind- and solar-energy ensemble applications — while P4a carries the broader surface-weather set. P4b members use the identical time-lagged rotation; file naming `harm43_v1_eur_uwcw_renew_{MMM}_{...}_GB` (`renew` vs P4a's `meteo`). As with P4a, wind components on this rotated grid are relative to the rotated axes, not true north.
+
 ---
 
 ## Data availability
@@ -96,6 +110,7 @@ Access is exclusively via the KNMI Data Platform Open Data API; an API key is al
 
 ```
 https://api.dataplatform.knmi.nl/open-data/v1/datasets/harmonie_arome_cy43_p4a/versions/1.0/files
+https://api.dataplatform.knmi.nl/open-data/v1/datasets/harmonie_arome_cy43_p4b/versions/1.0/files
 ```
 
 ```
