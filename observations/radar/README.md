@@ -51,6 +51,7 @@ Most operational radar data documented here is in the first tier.
 | [HungaroMet](./hungary/hungaromet-radar.md) | HungaroMet | Hungary | Composite (CMax / PseudoCAPPI / 3D) | NetCDF (zipped) | Open (no account) | CC BY-SA 4.0 |
 | [SHMÚ](./slovakia/shmu-radar.md) | SHMÚ | Slovakia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 | [KAUR](./estonia/kaur-radar.md) | KAUR (Keskkonnaagentuur) | Estonia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
+| [KNMI](./netherlands/knmi-radar.md) | KNMI | Netherlands | Composite + single-site | KNMI HDF5 / NetCDF | Open with account | CC BY 4.0 |
 
 Note the licence spread: US products are public domain (NODD); OPERA and MET Norway are CC BY 4.0; the UK and Italian composites are CC BY-**SA** 4.0 (ShareAlike); DWD is GeoNutzV with mandatory attribution.
 
@@ -96,6 +97,7 @@ observations/radar/
   hungary/   — HungaroMet (national composites: CMax, PseudoCAPPI, 3D)
   slovakia/  — SHMÚ (CZRAD-style: single-site volumes + national composites)
   estonia/   — KAUR (Harku + Sürgavere: single-site volumes, products + national composite)
+  netherlands/ — KNMI (national network: volumes, composites, radar/gauge QPE)
 ```
 
 Each entry covers a network or composite product rather than an individual radar — MRMS as one mosaic, NEXRAD as one single-site archive — with the single exception that a national service publishing genuinely distinct products (e.g. DWD's composites and single-site sweeps) documents them together in one entry.
