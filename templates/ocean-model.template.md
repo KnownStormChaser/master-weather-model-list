@@ -145,22 +145,6 @@
 
 ---
 
-## Relationship to other ocean products
-
-### Companion products from same operator
-[List sister products from the same Production Unit — e.g., a wave product, biogeochemistry product, regional downscaling, or reanalysis counterpart. Cross-link to existing repository entries.]
-
-### Peer global ocean physics systems
-[For global systems, list peer operational systems with similar capability. Examples: GLO12 ↔ Global RTOFS ↔ Navy Global HYCOM ↔ BLUElink OceanMAPS. For regional systems, list global parents and overlapping regional systems.]
-
-### Regional models nested inside this system
-[If this is a global system that provides boundary conditions for regional downscalings, list them. If this is a regional system, identify its parent global product.]
-
-### AI-based counterparts
-[If applicable — many physics-based ocean systems now have neural-network counterparts trained on their reanalyses (e.g., GLONET trained on GLORYS12). Cross-reference. When adding a new AI-based system, also update [`AI_MODELS.md`](../AI_MODELS.md).]
-
----
-
 ## Notes
 [Use this section for operationally meaningful details that don't fit elsewhere:]
 - [Wetting-and-drying treatment in shallow areas]
