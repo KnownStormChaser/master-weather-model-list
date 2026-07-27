@@ -3,7 +3,9 @@
 ## What this model is
 AMM15-WW3 is an operational regional wave analysis and forecast system for the North-West European Shelf, run by the **UK Met Office** as part of the **Atlantic European North West Shelf Monitoring and Forecasting Centre (NWS MFC)** and distributed through the **Copernicus Marine Service**.
 
-It is a WAVEWATCH III v7.1 wave model two-way coupled online to a NEMO v3.6 physical ocean model via OASIS3-MCT, sharing the same AMM15 (Atlantic Margin Model 15-cell) domain as the NWS physics product. The system uses the Met Office's Spherical Multiple-Cell (SMC) variable-resolution wave grid (Li and Saulter, 2014), which ranges from 3 km in deep water to 1.5 km near coastlines and islands for improved resolution of topographic features. Both wave and physics products are delivered on the same regular 1/33° longitude × 1/74° latitude output grid.
+It is a WAVEWATCH III wave model two-way coupled online to a NEMO v3.6 physical ocean model via OASIS3-MCT, sharing the same AMM15 (Atlantic Margin Model 15-cell) domain as the NWS physics product. The PUM states WW3 **v7.1**; live files on the AWS distribution report **v7.12** (`source = PS-OS 47, AMM-FOAM 1.5 km (tidal) NEMO v3.6_WAVEWATCH-III v7.12`, verified 2026-07-27). Treat v7.1 as PUM shorthand and v7.12 as the operational build.
+
+Despite the Copernicus framing, this product is **also published on AWS Open Data under CC BY-SA 4.0 with no registration**, co-located with the NWS physics fields. See *Data availability* for both channels. It should not be confused with the Met Office's separate four-cycle-daily [UK Wave feed](./uk-wave-metoffice.md), which is a different configuration on the same domain. The system uses the Met Office's Spherical Multiple-Cell (SMC) variable-resolution wave grid (Li and Saulter, 2014), which ranges from 3 km in deep water to 1.5 km near coastlines and islands for improved resolution of topographic features. Both wave and physics products are delivered on the same regular 1/33° longitude × 1/74° latitude output grid.
 
 The official Copernicus Marine product identifier is `NWSHELF_ANALYSISFORECAST_WAV_004_014`. "AMM15-WW3" is the system name used in the PUM and reflects the model pairing (AMM15 domain, WAVEWATCH III). The product has an unusual lineage documented in the Version history section below — between September 2023 and November 2025 it was an extraction from Spain's IBI operational system, not a Met Office product.
 
@@ -104,8 +106,46 @@ The PUM documents how to compute 3D Stokes drift from the surface Stokes drift (
 ---
 
 ## Data availability
-- **Is the data free?** Yes (registration required)
-- **Is the data downloadable?** Yes
+
+This system is distributed through **two independent channels**. The AWS channel is
+open without registration and carries the more permissive access terms; the Copernicus
+channel carries the formal product identifier and the PUM.
+
+- **Is the data free?** Yes — anonymous S3 access with no registration on AWS; free with
+  registration on Copernicus Marine.
+- **License:** **CC BY-SA 4.0** (British Crown copyright 2025, the Met Office) on the AWS
+  distribution — attribution *and* share-alike. The Copernicus Marine copy carries the
+  Copernicus Marine Service licence instead.
+- **Is the data downloadable?** Yes (both channels)
+
+### AWS Open Data (Met Office, no registration)
+- **Data formats:** NetCDF-4; **CF-1.8** conventions (live-verified — note this differs
+  from the CF-1.7 stated for the Copernicus copy)
+- **Bucket:** `s3://met-office-nws-ocean-model-data/` (region `eu-west-2`) — the **same
+  bucket as the NWS Ocean physics**, not a dedicated wave bucket
+- **Path template:** `nws-ocean/{YYYY}/{MM}/{DD}/T0000Z/`
+- **File naming:** `level1_wave_amm15_NWS_WAV_b{YYYYMMDD}_hi{YYYYMMDD}.nc` (bulletin date,
+  then validity date). Filter on the `level1_wave_` prefix to separate wave from the
+  `metoffice_foam1_` physics files.
+- **Files per cycle:** 9 validity-day files, 24 hourly steps each — live-verified span
+  **T-48 h to T+167 h** (2 days analysis + 7 days forecast), matching the product sheet
+- **File size:** ~227–237 MB per validity-day file (all 17 variables in one file).
+  *(The Copernicus copy is quoted at ~261 MB; the difference is presumably packing or
+  convention reformatting — TBD.)*
+- **Run metadata (live-verified):** `mosg__forecast_run_duration = PT192H`,
+  `mosg__model_suite_version = 44`, `mosg__grid_domain = amm15_shelf`
+- **Time coordinate:** `seconds since 1970-01-01T00:00:00Z`
+- **Availability:** files created ~07:15–07:25 UTC for the 00 UTC cycle
+- **Archive retention:** 2-year rolling archive
+- **New-object notifications:** SNS topic
+  `arn:aws:sns:eu-west-2:633885181284:met-office-nws-ocean-model-data-object_created`
+- **Official access:**
+  - AWS registry: https://registry.opendata.aws/met-office-nws-ocean/
+  - Browse: https://met-office-nws-ocean-model-data.s3.eu-west-2.amazonaws.com/index.html
+  - CLI: `aws s3 ls --no-sign-request s3://met-office-nws-ocean-model-data/`
+  - Product sheet (NWS-Wave / FOAM-NWSW / AMM15), Crown Copyright 2023
+
+### Copernicus Marine
 - **Data formats:** NetCDF-4 (CF-1.7 conventions)
 - **Product identifier:** `NWSHELF_ANALYSISFORECAST_WAV_004_014`
 - **Dataset identifiers:**
@@ -115,8 +155,13 @@ The PUM documents how to compute 3D Stokes drift from the surface Stokes drift (
 - **File size:** ~261 MB per file
 - **Official access:** https://data.marine.copernicus.eu/product/NWSHELF_ANALYSISFORECAST_WAV_004_014/description
 - **Delivery mechanism:** Copernicus Marine Toolbox
-- **Licence:** Copernicus Marine Service licence (free with registration)
+- **License:** Copernicus Marine Service licence (free with registration)
 
+**Product-sheet gap:** the 2023 product sheet lists `wave_maximum_height` and
+`wave_maximum_crest_height` (VMXL/VCMX). Neither appears in live AWS files as of
+July 2026. Live-verified variable set is 17 fields: `VHM0`, `VHM0_SW1`, `VHM0_SW2`,
+`VHM0_WW`, `VMDR`, `VMDR_SW1`, `VMDR_SW2`, `VMDR_WW`, `VPED`, `VSDX`, `VSDY`,
+`VTM01_SW1`, `VTM01_SW2`, `VTM01_WW`, `VTM02`, `VTM10`, `VTPK`.
 ---
 
 ## Version history
@@ -168,6 +213,9 @@ AMM15-WW3 is the only one of this set to use WAVEWATCH III as its core model (th
 The NWS domain overlaps substantially with:
 - **[IBIWAM](../spain/ibiwam.md)** — IBI covers 19°W–5°E, 26°N–56°N; the overlap with NWS is the Bay of Biscay, Celtic Sea, Irish Sea approaches, and western English Channel. IBIWAM is at 1/36° with MFWAM and multi-satellite DA; AMM15-WW3 is at 1.5–3 km SMC with WW3 and no documented DA but two-way ocean coupling.
 - **[UK Met Office Global Wave Model (GloWave)](../../global/uk/ukmo-wave.md)** — provides AMM15-WW3's lateral boundary conditions; same operator, global vs regional scope
+
+### Same-domain sibling — do not confuse
+- **[Met Office UK Wave (`uk_wav_det`, AMM15SL2)](./uk-wave-metoffice.md)** — a **second, distinct** Met Office wave configuration on the identical AMM15 domain and delivery grid, published in its own AWS bucket (`met-office-nws-wave-model-data`). It runs 4× daily to T+60 h, is *forced* by NEMO AMM15 rather than two-way coupled, uses WW3 v7.13 under suite 47, and packages one variable per file. It adds tertiary swell, directional spread, peak energy, and 10 m wind, but omits Stokes drift, `VTM10`, `VPED`, and the per-partition mean periods that this entry carries. Same operator, same domain, different system.
 
 ### Relationship to GloWave
 AMM15-WW3 is nested inside **GloWave** (the Met Office global wave model). GloWave provides the 25 km wave spectra boundary conditions, while AMM15-WW3 refines these with the 3/1.5 km SMC grid and couples them to the regional NEMO AMM15 ocean/tide system. GloWave itself has its own Copernicus Marine distribution via the [UK Met Office Global Wave product](../../global/uk/ukmo-wave.md).
