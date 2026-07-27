@@ -50,7 +50,9 @@ It is based on the third-generation spectral wave model **WAVEWATCH III™ (WW3)
 ---
 
 ## Relationship to other models
-GloWave is the global parent of the Met Office's regional wave system [AMM15-WW3](../../regional/uk/amm15-ww3-uk.md), providing 25 km wave spectra as lateral boundary conditions for the higher-resolution (3–1.5 km SMC grid) regional product. AMM15-WW3 is distributed through the Copernicus Marine Service rather than directly through the Met Office Open Data programme.
+GloWave is the global parent of the Met Office's regional wave system [AMM15-WW3](../../regional/uk/amm15-ww3-uk.md), providing 25 km wave spectra as lateral boundary conditions for the higher-resolution (3–1.5 km SMC grid) regional product. AMM15-WW3 is distributed both through the Copernicus Marine Service and through the Met Office Open Data programme on AWS (in the NWS Ocean bucket, under CC BY-SA 4.0 with no registration).
+
+GloWave also supplies boundary spectra to the Met Office's separate [UK Wave configuration](../../regional/uk/uk-wave-metoffice.md) (`uk_wav_det`, AMM15SL2), which runs 4× daily to T+60 h on the same AMM15 domain and has its own AWS bucket.
 
 GloWave is the wave companion to the Met Office's [global deterministic atmospheric model](../../../nwp_models/global/uk/ukmo-global.md) and [global ensemble (MOGREPS-G)](../../../ensemble_models/global/uk/mogreps-g.md), all of which are run on the Unified Model framework with shared atmospheric forcing.
 
