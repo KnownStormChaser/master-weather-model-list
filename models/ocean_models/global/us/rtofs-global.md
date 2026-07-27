@@ -23,8 +23,10 @@ The current version is **RTOFS v2.5**, implemented operationally on July 29, 202
 ## What area it covers
 - **Coverage:** Global ocean
 - **Grid:** Global tripolar grid (avoiding the North Pole singularity by using three poles placed over land)
+- **Grid dimensions:** 4500 × 3298 (the HYCOM `GLBy0.08` grid) — verified from the `X`/`Y` dimensions of the distributed global NetCDF files
 - **Horizontal resolution:** 1/12° (~9 km at mid-latitudes)
-- **Vertical levels:** 41 hybrid vertical levels
+- **Vertical levels (native model):** 41 hybrid vertical levels in HYCOM
+- **Vertical levels (distributed 3D product):** 40 fixed depth (z) levels in the `3dz` NetCDF output (see What it provides)
 - **Vertical coordinate:** HYCOM's hybrid coordinate — isopycnal (density-following) in the open stratified ocean, terrain-following (sigma) in shallow regions, and z-level (fixed depth) in the mixed layer. The vertical coordinate adapts dynamically to the water column structure.
 
 ---
@@ -36,9 +38,9 @@ The current version is **RTOFS v2.5**, implemented operationally on July 29, 202
 - **System name:** Global RTOFS
 - **Eddy-resolving:** Yes — the 1/12° resolution resolves mesoscale ocean eddies (typically ~50–100 km diameter at mid-latitudes)
 - **Forecast length:** 8 days (192 hours), with hindcast going back 1 day from cycle start
-- **Surface output frequency:** Hourly (from nowcast through forecast)
-- **3D volume output frequency:** Every 6 hours
-- **Forecast extent:** 0000Z nowcast out to 196 hours
+- **Surface (2ds) output frequency:** Hourly from f000 to f072, then 3-hourly from f072 to f192; the 24-hour hindcast/nowcast (n000–n024) is hourly — verified from the live file listing
+- **3D volume (3dz) output frequency:** Every 6 hours (f006–f192)
+- **Forecast extent:** 0000Z nowcast out to f192; NOAA's product description cites 196 hours, but the distributed files stop at f192
 - **Update frequency:** Once daily, with staggered product delivery throughout the day
 - **Cycle time:** 00Z base time, with outputs delivered in batches
 - **Completion time:** All products delivered by approximately 17Z
@@ -139,25 +141,20 @@ These changes were explicitly targeted at reducing known biases — in particula
 
 ## What it provides
 
-### 3D ocean fields (every 6 hours)
-- Potential temperature
-- Salinity
-- Zonal velocity (eastward current component)
-- Meridional velocity (northward current component)
-- Interface depths (layer interfaces in HYCOM's hybrid coordinate)
+### 2D surface fields (`2ds`)
+Distributed as NetCDF (`rtofs_glo_2ds_{f|n}{HHH}_{type}.nc`), hourly to f072 then 3-hourly to f192, in three files per time step. Variable lists for `diag` and `ice` are verified from the live NetCDF headers (global grid 4500 × 3298):
 
-### Surface fields (hourly)
-- Sea surface temperature
-- Sea surface salinity
-- Sea surface height
-- Surface currents (u and v components)
-- Mixed layer depth
+- **`diag` (diagnostic):** sea surface height (`ssh`, m), barotropic u/v velocity (m/s), surface boundary layer thickness (m), mixed layer thickness (m)
+- **`ice` (sea ice):** ice coverage (fraction), ice temperature (°C), ice thickness (m), ice u/v velocity (m/s)
+- **`prog` (prognostic):** sea surface temperature, sea surface salinity, and surface currents — **NOMADS only, not carried on AWS**; contents here are per naming convention (this file was not live-inspectable)
 
-### Sea ice fields
-- Sea ice concentration (0–1 coverage fraction)
-- Sea ice thickness
-- Sea ice velocity (u and v components)
-- Snow thickness on sea ice
+### 3D volume fields (`3dz`)
+Distributed every 6 hours as NetCDF interpolated to **40 fixed depth (z) levels**, in two forms:
+
+- **Regional high-vertical-resolution (`3dz_f{HHH}_6hrly_hvr_{region}.nc`):** three cutouts — `US_east`, `US_west`, `alaska`. Variables (verified): temperature (°C), salinity (psu), u/v velocity (m/s).
+- **Global daily (`3dz_f{HHH}_daily_3z{s|t|u|v}io.nc`):** global fields — salinity (`3zsio`), temperature (`3ztio`), u-velocity (`3zuio`), v-velocity (`3zvio`). **NOMADS only, not carried on AWS.**
+
+Note: the distributed `3dz` products are on fixed z-levels, **not** HYCOM's native hybrid layers. Native hybrid-layer output — including layer interface depths — is available only in the HYCOM binary archive files (`*.archv.a/.b`).
 
 ### Analysis vs forecast distinction
 - **Nowcast (analysis):** 00Z fields reflecting the assimilated state — the authoritative "best estimate" of conditions at cycle start
@@ -170,31 +167,44 @@ These changes were explicitly targeted at reducing known biases — in particula
 
 ### Distribution channels
 
-Global RTOFS data is publicly available through two primary channels:
+Global RTOFS data is publicly available through two channels, but **they do not carry the same products** — NOMADS is the complete distribution; AWS is a partial mirror (see coverage note below).
 
-**1. NOMADS (NCEP operational distribution):**
+**1. NOMADS (NCEP operational distribution) — complete product set:**
 - Production: https://nomads.ncep.noaa.gov/pub/data/nccf/com/rtofs/prod/
 - Parallel feed: https://nomads.ncep.noaa.gov/pub/data/nccf/com/rtofs/para/
 - FTP equivalent: ftp://ftp.ncep.noaa.gov/data/nccf/com/rtofs/prod/
+- Daily directories named `rtofs.YYYYMMDD/`; carries GRIB2, all NetCDF families, HYCOM binary archives, and compressed daily bundles.
 
-**2. AWS Open Data (NOAA Open Data Dissemination):**
+**2. AWS Open Data (NOAA Open Data Dissemination) — partial mirror:**
 - S3 bucket: `s3://noaa-nws-rtofs-pds/`
 - Browser access: https://noaa-nws-rtofs-pds.s3.amazonaws.com/index.html
 - AWS CLI (no account required): `aws s3 ls --no-sign-request s3://noaa-nws-rtofs-pds/`
 - AWS region: `us-east-1`
 - SNS notifications for new data: `arn:aws:sns:us-east-1:709902155096:NewRTOFSObject`
+- Daily directories named `rtofs.YYYYMMDD/`; archive extends back to January 2024.
+
+#### AWS vs NOMADS coverage (verified against the live S3 bucket)
+The AWS bucket is **not** a full mirror:
+
+- **On AWS:** `2ds` `diag` and `ice` NetCDF; `3dz` regional `6hrly_hvr` NetCDF (`US_east`, `US_west`, `alaska`); HYCOM binary archives (`*.archs.a.tgz`/`.b`, `*.archv.a.tgz`/`.b`) and restart files.
+- **NOMADS only (absent from AWS):** all **GRIB2** files; the `2ds` `prog` NetCDF; the global daily `3dz` `3z{s,t,u,v}io` NetCDF; the `sst`/`uv` daily bundles and hindcast `tar.gz`; the raw `forcing.*.a` and `cice.*.r` fields.
+
+**Practical consequence:** users who need GRIB2, surface temperature/salinity (`prog`), or the global 3D z-level fields must use NOMADS/FTPPRD — these cannot be obtained from AWS.
 
 ### Data details
 - **Is the data free?** Yes
 - **Is the data downloadable?** Yes
 - **Data formats:**
-  - **GRIB2** (standard gridded format, most user-friendly)
-  - **NetCDF** (standard gridded format, CF conventions)
+  - **GRIB2** — regional `std` products (**NOMADS only**, not on AWS)
+  - **NetCDF** (CF conventions) — the `2ds` surface and `3dz` volume products
   - **HYCOM native binary (`*.a`, `*.b`)** — used by HYCOM community tools; scheduled for removal in v3.0
   - **Compressed bundles (`*.tgz`, `*.tar.gz`, `*.gz`)** — also scheduled for removal in v3.0
-- **Current file naming (forecast):** `rtofs_glo.t00z.f{HHH}_{region}_std.grb2`
-- **Current file naming (nowcast):** `rtofs_glo.t00z.n024_{region}_std.grb2`
-- **Licence:** NOAA public domain — open use, attribution requested
+- **GRIB2 regional coverage (11 regions):** `alaska`, `arctic`, `bering`, `guam`, `gulf_alaska`, `honolulu`, `hudson_baffin`, `samoa`, `trop_paci_lowres`, `west_atl`, `west_conus`
+- **GRIB2 file naming (forecast):** `rtofs_glo.t00z.f{HHH}_{region}_std.grb2` — produced at selected forecast hours (confirmed f024, f072, f144), not every hour
+- **GRIB2 file naming (nowcast):** `rtofs_glo.t00z.n024_{region}_std.grb2`
+- **NetCDF file naming (surface):** `rtofs_glo_2ds_{f|n}{HHH}_{diag|ice|prog}.nc`
+- **NetCDF file naming (volume):** `rtofs_glo_3dz_f{HHH}_6hrly_hvr_{region}.nc` and `rtofs_glo_3dz_f{HHH}_daily_3z{s|t|u|v}io.nc`
+- **License:** NOAA public domain — open use, attribution requested
 - **Documentation:** https://polar.ncep.noaa.gov/global/
 
 ---
@@ -250,7 +260,7 @@ The proposal renames GRIB2 files with cosmetic pattern changes and a new `.grib2
 Users scraping NOMADS paths or building filename-based indexing should prepare for this change. NOAA's standard service change notification policy provides at least 30 days notice before implementation.
 
 ### Status
-As of this writing, v3.0 remains a **proposal in public comment**, not yet scheduled for operational implementation. The final Service Change Notice will confirm the implementation date and any modifications based on comments received.
+The public comment period closed on **April 15, 2026**. As of late July 2026, NOAA has **not** issued a Service Change Notice implementing v3.0, and the live operational output still contains HYCOM binary archives (`*.archv.a/.b`) — RTOFS remains on **v2.5 / HYCOM** operationally. The final Service Change Notice will confirm the implementation date and any modifications based on comments received.
 
 ---
 
