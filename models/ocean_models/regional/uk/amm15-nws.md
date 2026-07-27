@@ -5,6 +5,8 @@ The Met Office NWS Ocean product is a **regional physical ocean analysis and 6-d
 
 AMM15 is a NEMO shelf-seas configuration with explicit tides. On the Met Office AWS Open Data distribution, the physics fields are **co-located in the same S3 bucket** as the AMM15-WW3 wave product (the wave files share the `NWS`/`amm15` naming) — the two are the physics and wave halves of the same coupled shelf-seas system.
 
+**Bucket caveat:** this co-location makes the ocean bucket easy to mistake for the Met Office's only AWS wave source. It is not. A separate bucket, `met-office-nws-wave-model-data`, carries a **different** wave configuration ([Met Office UK Wave](../../../wave_models/regional/uk/uk-wave-metoffice.md)) on the same domain — 4 cycles daily to T+60 h, forced rather than coupled. The wave files in *this* bucket are the coupled MaPP-SS product only.
+
 ---
 
 ## Who runs it
@@ -116,6 +118,7 @@ Variable names (NetCDF), verified from live files. **Note the AWS distribution c
 
 ### Companion products from same operator
 - **[AMM15-WW3 (NWS wave)](../../../wave_models/regional/uk/amm15-ww3-uk.md)** — the wave counterpart on the **same AMM15 domain and delivery grid**, **two-way coupled** to this physics, and **distributed in the same AWS bucket**. The strongest companion link in the repository.
+- **[Met Office UK Wave (`uk_wav_det`)](../../../wave_models/regional/uk/uk-wave-metoffice.md)** — a second wave system on the same domain, which takes this model's surface currents as **one-way forcing** rather than being coupled to it. Published in its own AWS bucket.
 - **[Met Office Global Ocean / FOAM-GC](../../global/uk/foam-gc.md)** — global parent lineage (provides the ocean context/boundary conditions for the shelf downscaling; exact parent configuration to confirm).
 
 ### Regional peers / overlapping coverage
@@ -131,7 +134,7 @@ Variable names (NetCDF), verified from live files. **Note the AWS distribution c
 
 ## Notes
 - **Undocumented-on-sheet variables:** the AWS distribution adds in-situ temperature (`TEMPIS`/`t0`, distinct from potential temperature `thetao`) and water-column maximum-current diagnostics (`MAXCURU`/`uomax`, `MAXCURV`/`vomax`, `ZMAXCUR`/`zomax` — the depth at which the max current occurs). These are absent from the 2023 product sheet and were confirmed only by inspecting live files.
-- **Shared bucket with waves:** physics and AMM15-WW3 wave files sit in the same `nws-ocean/.../T0000Z/` folder; filter on the `metoffice_foam1_` vs `level1_wave_` prefix.
+- **Shared bucket with waves:** physics and AMM15-WW3 wave files sit in the same `nws-ocean/.../T0000Z/` folder; filter on the `metoffice_foam1_` vs `level1_wave_` prefix. The wave files carry 9 validity days per cycle (T-48 h to T+167 h, 24 hourly steps each, ~230 MB apiece), against 18 files for the standard physics variables. Note that a **second Met Office wave bucket exists** (`met-office-nws-wave-model-data`) holding an unrelated configuration — see the [UK Wave entry](../../../wave_models/regional/uk/uk-wave-metoffice.md).
 - **Time coordinate:** `seconds since 1970-01-01T00:00:00Z` (note: differs from the Global Ocean product's 1900 epoch). Hourly files carry 24 steps/day; quarter-hourly carry 96.
 - **Minimum-depth floor:** the underlying NEMO v3.6 AMM15 configuration imposes a minimum depth (~10 m in the coupled wave-ocean setup) because v3.6 lacks wetting-and-drying; fields in very shallow areas (e.g. Wadden Sea) are unreliable. See the AMM15-WW3 entry for the full caveat.
 
