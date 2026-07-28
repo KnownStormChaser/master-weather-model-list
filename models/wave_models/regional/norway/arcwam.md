@@ -5,7 +5,7 @@ ARCWAM is an operational regional wave analysis and forecast system for the Arct
 
 It is a WAM-based spectral wave model covering the Arctic region north of approximately 53°N, with two distinguishing features among operational Arctic wave systems: explicit wave propagation under sea ice using a dimensional-analysis-based source function (Yu et al. 2022), and coupling to the ARC MFC physics and tidal systems for sea ice concentration, sea ice thickness, and surface currents. The system also includes multi-satellite altimetric data assimilation of significant wave height and wind, added in the November 2024 upgrade.
 
-The official Copernicus Marine product identifier is `ARCTIC_ANALYSIS_FORECAST_WAV_002_014`. "ARCWAM" is not an official short name but reflects the product's role as the Arctic counterpart to BALWAM, MEDWAM, and IBIWAM in the Copernicus Marine wave portfolio. MET Norway also operates a separate Nordic Seas WAVEWATCH III wave system distributed directly via their THREDDS server — see the [MET Norway WW3 entry](./met-norway-ww3.md) for that distinct system.
+The official Copernicus Marine product identifier is `ARCTIC_ANALYSIS_FORECAST_WAV_002_014`. "ARCWAM" is not an official short name but reflects the product's role as the Arctic counterpart to BALWAM, MEDWAM, and IBIWAM in the Copernicus Marine wave portfolio. MET Norway also distributes three wave products directly through its own THREDDS server under CC BY 4.0 with no registration — [WW3 4 km](./met-norway-ww3.md), [MyWaveWAM3km](./mywavewam3km.md), and [MyWaveWAM800m](./mywavewam800m.md). **MyWaveWAM3km may be the same operational run as this product, distributed on its native rotated grid;** see *Relationship to other wave products* below before treating the two as independent.
 
 ---
 
@@ -150,13 +150,17 @@ Hourly instantaneous fields of integrated wave parameters, partitioned swell fie
 
 ## Relationship to other wave products
 
-### MET Norway's two operational wave systems
-MET Norway runs two distinct operational wave systems, both covering Arctic and Nordic waters:
+### MET Norway's operational wave portfolio
+MET Norway publishes four operational wave products across two distribution channels:
 
-- **ARCWAM (this entry)** — WAM Cycle 4.7 at 3 km, distributed via Copernicus Marine, with multi-satellite DA, ocean/ice coupling, and 5/10-day forecasts. Optimized for the full Arctic including ice-covered waters.
-- **[MET Norway WW3 (Nordic Seas)](./met-norway-ww3.md)** — WAVEWATCH III at ~4 km, distributed via MET Norway's THREDDS server, no documented DA, 66-hour forecast updated 4× daily. Optimized for short-range Nordic marine forecasting with AROME-MEPS coastal forcing.
+- **ARCWAM (this entry)** — WAM Cycle 4.7 at 3 km on a polar stereographic grid, Copernicus Marine, multi-satellite DA, ocean/ice coupling, 5/10-day alternating forecasts. Registration required.
+- **[MyWaveWAM3km](./mywavewam3km.md)** — WAM Cycle 4.7.0 at ~3.34 km on a rotated grid, MET Norway THREDDS, current- and ice-forced, 120/240 h alternating × 2 daily. CC BY 4.0, no registration, but only a ~3-day rolling window and no archive.
+- **[WW3 4 km](./met-norway-ww3.md)** — WAVEWATCH III v6.07 at ~4.45 km, Nordic/North/**Baltic** Seas, 66 h × 4 daily, no documented DA. MET Norway THREDDS, CC BY 4.0, archive to 2021-07-02.
+- **[MyWaveWAM800m](./mywavewam800m.md)** — WAM Cycle 4.7.0 at ~890 m, five Norwegian coastal domains, MEPS winds and NorKyst v3 currents. Nests inside WW3 4 km. CC BY 4.0, archive to 2023-03-30.
 
-These are complementary systems from the same operator, serving different user communities (Copernicus Marine pan-European users vs Norwegian/Nordic operational marine forecast users).
+**Unresolved: is MyWaveWAM3km the same run as this product?** The two share operator, model core (WAM 4.7), resolution (3 km), spectral discretization (29 frequencies × 36 directions), cycling (2× daily), forecast lengths (120 h / 240 h alternating), 00/12 UTC production with 06/18 UTC bulletin times, ice and current coupling, and a northern bound of ~89.99°N. The most economical explanation is one operational run published on two grids — native rotated via MET Norway, polar stereographic via Copernicus Marine. Two things do not match: the southern bound (36.17°N vs 41.12°N here) and the delivered grid dimensions (2379 × 1995 vs 2367 × 2467), though the latter is uninformative across different projections.
+
+This has not been confirmed with MET Norway. **If the two are the same run, the November 2024 altimetric DA documented in this entry also applies to MyWaveWAM3km**, whose entry currently records DA status as TBD. It would also mean the same data is available without registration through MET Norway's THREDDS. Until confirmed, both entries stand independently with this overlap flagged in each.
 
 ### Copernicus Marine regional wave portfolio
 ARCWAM sits alongside the other Copernicus Marine basin-scale regional wave products, each run by a different national institute:
