@@ -84,7 +84,7 @@ This matches the bulletin-time convention documented for [ARCWAM](./arcwam.md) (
 - **Ice forcing:** **Yes.** Sea ice concentration (`SIC`) and sea ice thickness (`SIT`) are both forced and published. Source not named in metadata (TBD); ARCWAM documents TOPAZ5 for both.
 - **Forcing assembly:** the `history` attribute shows nine `ocean_force_<CYCLE>.nc` files (6-hourly, spanning ~2 days) concatenated with `EcFC.nc` via `ncrcat`, with `fimex` used for the regridding step.
 - **Lateral boundaries:** not applicable in the usual sense — the domain is global in longitude and reaches the pole.
-- **Nested inside / parent for:** not documented. MET Norway's **MyWaveWAM800m** coastal system takes boundary spectra from [WW3 4 km](./met-norway-ww3.md)'s `C*_SPC` files, not from this product.
+- **Nested inside / parent for:** not documented, and this system is **not** the parent of the coastal chain — [MyWaveWAM800m](./mywavewam800m.md) takes its open-boundary spectra from [WW3 4 km](./met-norway-ww3.md)'s `C0`–`C4` `_SPC` files. Despite sharing the WAM 4.7.0 core with MyWaveWAM800m, the two are not in a nesting relationship and neither drives the other.
 
 ---
 
@@ -131,7 +131,9 @@ Ten variables are **declared in the file but carry no data**. They appear as sca
 
 `FV` · `DC` · `mHs` · `mwp` · `tshs` · `tstm1` · `tsdir` · `phibot` · `taubot_x` · `taubot_y`
 
-These look like WAM output slots that are declared but not activated — apparently a third swell system (`tshs`/`tstm1`/`tsdir`) and bottom-interaction fluxes (`phibot`/`taubot_x`/`taubot_y`). Any script that enumerates variables programmatically and assumes each is a gridded field will pick these up and get garbage. Filter on rank or on the presence of a `units` attribute (the ten placeholders have none).
+These are WAM output slots that are declared but not activated. **Confirmed by comparison with [MyWaveWAM800m](./mywavewam800m.md)**, which runs the same WAM 4.7.0 output template and populates all ten with proper long names: a third swell system (`tshs`/`tstm1`/`tsdir`), bottom-interaction fluxes (`phibot`/`taubot_x`/`taubot_y`), friction velocity (`FV`), drag coefficient (`DC`), and expected maximum wave height and period (`mHs`/`mwp`). The coastal configuration activates the shallow-water and multi-swell diagnostics that this offshore one leaves off.
+
+Any script that enumerates variables programmatically and assumes each is a gridded field will pick these up and get garbage. Filter on rank or on the presence of a `units` attribute (the ten placeholders have none). If you are writing one reader for both products, the declared variable list is identical but the populated subset is not.
 
 ### Point directional spectra (`MyWave_wam3_SPC_<CYCLE>.nc`)
 - `SPEC[time][y=1][x=711][freq=29][direction=36]`, Float32
@@ -212,13 +214,13 @@ The most economical explanation is that these are **two distributions of the sam
 **This should be confirmed with MET Norway before the two entries are cross-linked as one system.** Until then both entries stand independently, with this section flagging the overlap. The practical stakes are real: if they are the same run, ARCWAM's November 2024 altimetric data assimilation applies to this product too, and this entry's "no documented DA" would be misleading.
 
 ### MET Norway's operational wave systems
-- **This entry (MyWaveWAM3km)** — WAM Cycle 4.7.0 at ~3.34 km, pan-Arctic, 120/240 h × 2 daily, current- and ice-forced, 3-day rolling window, no archive.
-- **[WW3 4 km](./met-norway-ww3.md)** — WAVEWATCH III v6.07 at ~4.45 km, Nordic/North/Baltic Seas, 66 h × 4 daily, no current forcing, ~11-day rolling window plus a full archive back to 2021-07-02 and a continuous best-estimate aggregation. Supplies boundary spectra to the WAM800m coastal areas.
-- **[ARCWAM](./arcwam.md)** — Copernicus Marine distribution; see above.
-- **MyWaveWAM800m** — Norwegian coastal wave system with currents, on the same THREDDS server, **not yet documented in this repository**.
+- **This entry (MyWaveWAM3km)** — WAM Cycle 4.7.0 at ~3.34 km, pan-Arctic, 120/240 h alternating × 2 daily, current- and ice-forced. ~3-day rolling window, no archive, no aggregation.
+- **[WW3 4 km](./met-norway-ww3.md)** — WAVEWATCH III v6.07 at ~4.45 km, Nordic/North/Baltic Seas, 66 h × 4 daily, no current forcing. ~11-day rolling window plus a full archive back to 2021-07-02 and a gap-free best-estimate aggregation. Parent of MyWaveWAM800m.
+- **[MyWaveWAM800m](./mywavewam800m.md)** — WAM Cycle 4.7.0 at ~890 m, five Norwegian coastal domains, 66 h × 4 daily, MEPS winds and NorKyst v3 currents. Same model core and output template as this entry, different activated field set. Archive to 2023-03-30 plus per-domain aggregations.
+- **[ARCWAM](./arcwam.md)** — Copernicus Marine distribution; see the overlap analysis above.
 - **NORA3 / NORA10** — long-term hindcasts, distinct systems, not operational forecasts.
 
-**Choosing between the two THREDDS products:** WW3 4 km for short-range Nordic/Baltic forecasting, coastal work, and anything needing history. MyWaveWAM3km for Arctic coverage, medium-range (out to 10 days), and applications where wave–current interaction matters.
+**Choosing among the THREDDS products:** this entry for Arctic coverage, medium range (out to 10 days), and wave–ice interaction — accepting that you must harvest continuously to retain anything. WW3 4 km for the shelf seas including the Baltic and for anything needing history. MyWaveWAM800m for nearshore and harbour-scale Norwegian work.
 
 ---
 
