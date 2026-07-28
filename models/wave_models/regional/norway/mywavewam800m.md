@@ -75,7 +75,7 @@ Four independent runs, six hours apart, each spanning T−6 h to T+66 h, each wi
 
 ## Forcing and nesting
 - **Wind forcing:** [MEPS](../../../nwp_models/regional/norway/meps.md) (HARMONIE-AROME, 2.5 km), per the catalog description. Forcing winds published as `ff` / `dd`.
-- **Current forcing:** **NorKyst v3** surface currents, per the catalog description. Published as `Current` / `Currentdir` (`"surface current speed from ocean model"`). Currents act as a forcing field alongside the winds — this is the product's distinguishing feature.
+- **Current forcing:** surface currents from [NorKyst v3](../../../ocean_models/regional/norway/norkyst-v3.md), MET Norway's 800 m ROMS coastal ocean system, per the catalog description. Published here as `Current` / `Currentdir` (`"surface current speed from ocean model"`). Currents act as a forcing field alongside the winds — this is the product's distinguishing feature. Note that NorKyst v3 runs a 00 UTC cycle only, so the 06/12/18 UTC wave cycles are re-using current fields from the same daily ocean run.
 - **Open boundary spectra:** from **[WAVEWATCH III 4 km](./met-norway-ww3.md)**, per the catalog description.
 - **Ice forcing:** none. Unlike [MyWaveWAM3km](./mywavewam3km.md), no `SIC`/`SIT` fields — these domains are ice-free in operational practice.
 
