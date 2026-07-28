@@ -67,7 +67,7 @@ The file-level `Forcing` global attribute reads exactly: `EC_WINDS MEPS_WINDS OS
 - **Ice forcing:** OSI SAF sea ice concentration; carried in output as `ice` (sea ice area fraction).
 - **Current forcing:** **TBD.** The `CRT1`/`CRX1` switches indicate current interaction is compiled into the executable, but the `Forcing` attribute lists no current source. Whether currents are actually supplied operationally is unconfirmed.
 - **Lateral boundary spectra:** **TBD.** The previous version of this entry stated ECMWF ECWAM boundary spectra. That is **not corroborated** by any file or catalog metadata and should be treated as unverified until confirmed with MET Norway.
-- **Parent for:** supplies boundary wave spectra to MET Norway's **WAM800m** coastal wave areas via the `C*_SPC` files (see below). The WAM800m system is not yet documented in this repository.
+- **Parent for:** supplies open-boundary wave spectra to [MyWaveWAM800m](./mywavewam800m.md), MET Norway's ~890 m Norwegian coastal system, via the `C0`–`C4` `_SPC` files (see below). Confirmed from both directions: the MyWaveWAM800m catalog states its open boundaries come from WAVEWATCH III, and the five `C*_SPC` geographic extents match the five WAM800m domain bounds to two decimal places. This system does **not** feed [MyWaveWAM3km](./mywavewam3km.md), which is a separate pan-Arctic WAM run with no documented parent.
 
 ---
 
@@ -162,7 +162,9 @@ MET Norway's THREDDS is a shared public service and the operator explicitly asks
 
 - **Coverage correction.** Earlier versions of this entry described the domain as "North Atlantic, Nordic Seas, and adjacent Arctic waters" and omitted the Baltic Sea. The operational file metadata is explicit that the domain covers **Nordic Seas, North Sea, and Baltic Sea**. Baltic coverage is a substantive difference for users choosing between this and the Copernicus Baltic wave products.
 
-- **C5_SPC is undocumented and appears to duplicate C1_SPC.** The catalog description names five WAM800m boundary sets (C0–C4), but **six** are published. `C5_SPC` has an identical point count (1328), identical geographic extent, identical file size (1.007 GB), and identical sampled spectral values to `C1_SPC` at the points checked. `C5_SPC` is present throughout both the latest feed and the archive, so it is not a transient artifact. Whether it is a genuine sixth WAM800m area whose configuration has not yet diverged, a staging duplicate, or a documentation lag is **TBD** — worth confirming with MET Norway before building against it.
+- **C5_SPC is undocumented and duplicates C1_SPC.** The catalog description names five WAM800m boundary sets (C0–C4), but **six** are published. `C5_SPC` has an identical point count (1328), identical geographic extent, and identical file size (1.007 GB) to `C1_SPC`, and sampled `SPEC` values are bit-identical between the two (verified at `[time=5][x=100][freq=12:14][direction=0:2]`, 12Z cycle, 2026-07-27). It is present throughout both the latest feed and the archive, so it is not a transient artifact.
+
+  A second, independent line of evidence: [MyWaveWAM800m](./mywavewam800m.md) runs exactly **five** coastal domains (c0–c4), so only five boundary sets have a consumer. Whether `C5_SPC` is a staging duplicate, a placeholder for a planned sixth area, or a production-script artifact is **TBD** — worth confirming with MET Norway before building against it.
 
 - **Rotated-pole georeferencing.** The `rlat`/`rlon` axes are rotated-pole coordinates. Use the 2-D `latitude`/`longitude` auxiliary variables or the supplied proj4 string; treating `rlat`/`rlon` as geographic degrees will place the field in the wrong hemisphere.
 
@@ -170,11 +172,14 @@ MET Norway's THREDDS is a shared public service and the operator explicitly asks
 
 - **Field set is unusually rich for a wave product.** Stokes drift and transport, wave-to-ocean and wave-to-ice stress and energy flux, Charnock coefficient, and expected-maximum-wave statistics are all published as raw fields. This makes the product directly usable for coupled ocean/ice forcing and for offshore extreme-wave applications, not just conventional sea-state forecasting.
 
-- **Relationship to MET Norway's other wave systems.** MET Norway operates several distinct wave systems, and picking the wrong one is easy:
-  - **This entry (`ww3_4km`)** — WAVEWATCH III v6.07 at ~4.4 km, Nordic/North/Baltic Seas, 66 h × 4 daily, no DA, own THREDDS, CC BY 4.0.
-  - **[ARCWAM](./arcwam.md)** — WAM Cycle 4.7 at 3 km, full Arctic, 5/10-day alternating × 2 daily, multi-satellite DA, coupled to ARC MFC physics/ice, distributed via Copernicus Marine.
-  - **MyWaveWAM3km** (Nordic Seas) and **MyWaveWAM800m** (Norwegian coastal, with currents) — WAM-based, on the same THREDDS server, **not yet documented in this repository**. The `C0`–`C5` spectra files from this entry are the boundary input to the 800 m coastal areas.
+- **Relationship to MET Norway's other wave systems.** MET Norway publishes four operational wave products — three or four distinct model runs, depending on the unresolved ARCWAM / MyWaveWAM3km question. Picking the wrong one is easy:
+  - **This entry (`ww3_4km`)** — WAVEWATCH III v6.07 at ~4.45 km, Nordic/North/Baltic Seas, 66 h × 4 daily, no current forcing, no documented DA. Own THREDDS, CC BY 4.0, archive to 2021-07-02 plus a gap-free best-estimate aggregation. **Parent of MyWaveWAM800m.**
+  - **[MyWaveWAM3km](./mywavewam3km.md)** — WAM Cycle 4.7.0 at ~3.34 km, pan-Arctic, 120/240 h alternating × 2 daily, current- and ice-forced. Own THREDDS, CC BY 4.0, but a ~3-day rolling window and no archive.
+  - **[MyWaveWAM800m](./mywavewam800m.md)** — WAM Cycle 4.7.0 at ~890 m, five Norwegian coastal domains, 66 h × 4 daily, MEPS winds and NorKyst v3 currents. **Nests inside this system.** Archive to 2023-03-30 plus per-domain aggregations.
+  - **[ARCWAM](./arcwam.md)** — WAM Cycle 4.7 at 3 km, full Arctic, 5/10-day alternating × 2 daily, multi-satellite DA, coupled to ARC MFC physics/ice. Copernicus Marine (registration required). Possibly the same production as MyWaveWAM3km — see that entry.
   - **NORA10 / NORA3** — long-term hindcasts, distinct systems, not operational forecasts.
+
+  **Choosing among them:** this entry for shelf-seas forecasting including the Baltic, and for anything needing a long continuous history. MyWaveWAM800m for nearshore and harbour-scale work where coastal currents matter. MyWaveWAM3km or ARCWAM for the open Arctic and medium range.
 
 - **Naming.** MET Norway uses `ww3_4km` as the internal product identifier; the catalog title is "WAVEWATCH III 4km regional wave model". There is no separate marketing short-name.
 
