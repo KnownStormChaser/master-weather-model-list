@@ -52,6 +52,7 @@ Most operational radar data documented here is in the first tier.
 | [SHMÚ](./slovakia/shmu-radar.md) | SHMÚ | Slovakia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 | [KAUR](./estonia/kaur-radar.md) | KAUR (Keskkonnaagentuur) | Estonia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 | [KNMI](./netherlands/knmi-radar.md) | KNMI | Netherlands | Composite + single-site | KNMI HDF5 / NetCDF | Open with account | CC BY 4.0 |
+| [Hochficht](./austria/hochficht-radar.md) | GeoSphere Austria · Meteopress | Upper Austria (+ CZ / DE border) | Single-site volumes only | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 
 Note the licence spread: US products are public domain (NODD); OPERA and MET Norway are CC BY 4.0; the UK and Italian composites are CC BY-**SA** 4.0 (ShareAlike); DWD is GeoNutzV with mandatory attribution.
 
@@ -75,6 +76,7 @@ For the most frictionless access, these networks distribute gridded data with no
 | [HungaroMet](./hungary/hungaromet-radar.md) | https://odp.met.hu/weather/radar/composite/nc/ | HungaroMet ODP |
 | [SHMÚ](./slovakia/shmu-radar.md) | https://opendata.shmu.sk/meteorology/weather/radar/ | SHMÚ Open Data |
 | [KAUR](./estonia/kaur-radar.md) | https://avaandmed.keskkonnaportaal.ee/dhs/Active | KAIA (Keskkonnaportaal) |
+| [Hochficht](./austria/hochficht-radar.md) | https://public.hub.geosphere.at/datahub/resources/radar_volumen_hochficht-v1-5min/filelisting/ | GeoSphere Data Hub (S3-compatible) |
 
 The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, ČHMÚ, HungaroMet, and SHMÚ are plain THREDDS / HTTPS; KAUR is the KAIA SharePoint file store (direct `Content.aspx` file URLs over HTTPS).
 
@@ -98,6 +100,7 @@ observations/radar/
   slovakia/  — SHMÚ (CZRAD-style: single-site volumes + national composites)
   estonia/   — KAUR (Harku + Sürgavere: single-site volumes, products + national composite)
   netherlands/ — KNMI (national network: volumes, composites, radar/gauge QPE)
+  austria/   — Hochficht (single GeoSphere × Meteopress C-band radar; volumes only)
 ```
 
 Each entry covers a network or composite product rather than an individual radar — MRMS as one mosaic, NEXRAD as one single-site archive — with the single exception that a national service publishing genuinely distinct products (e.g. DWD's composites and single-site sweeps) documents them together in one entry.
