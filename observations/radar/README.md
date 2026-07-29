@@ -54,6 +54,7 @@ Most operational radar data documented here is in the first tier.
 | [KNMI](./netherlands/knmi-radar.md) | KNMI | Netherlands | Composite + single-site | KNMI HDF5 / NetCDF | Open with account | CC BY 4.0 |
 | [Hochficht](./austria/hochficht-radar.md) | GeoSphere Austria · Meteopress | Upper Austria (+ CZ / DE border) | Single-site volumes only | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 | [MeteoSwiss](./switzerland/meteoswiss-radar.md) | MeteoSwiss | Switzerland (+ Alpine region) | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
+| [DMI](./denmark/dmi-radar.md) | DMI | Denmark | Composite + pseudo-CAPPI + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 
 Note the licence spread: US products are public domain (NODD); OPERA and MET Norway are CC BY 4.0; the UK and Italian composites are CC BY-**SA** 4.0 (ShareAlike); DWD is GeoNutzV with mandatory attribution.
 
