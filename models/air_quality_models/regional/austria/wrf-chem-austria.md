@@ -3,7 +3,9 @@
 ## What this model is
 The GeoSphere Austria air quality forecast is an operational atmospheric-composition system based on the online-coupled chemical transport model **WRF-Chem**. It produces daily 3-day forecasts of key pollutants — ground-level ozone, particulate matter, and nitrogen dioxide — for public-health air quality guidance over Europe and, at higher resolution, Central Europe.
 
-It is distributed as two nested products: an outer **9 km** domain covering Europe (and parts of North Africa and Russia) and an inner **3 km** domain covering Central Europe.
+It is distributed as two nested products: an outer **9 km** domain covering Europe (and parts of North Africa and Russia) and an inner **3 km** domain covering Central Europe. A third dataset — a derived **Air Quality Index** — is computed from the 3 km run and published on the identical grid; it is documented here rather than given its own entry, because it is a post-processing product of this chain rather than a distinct system.
+
+GeoSphere runs a **separate WRF-Chem configuration for Saharan dust transport** on a far larger domain at 0.2°, contributing to the WMO SDS-WAS programme. That is a distinct model chain with its own entry: [WRF-Chem Desert Dust (GeoSphere Austria)](./wrf-chem-dust.md).
 
 ---
 
@@ -74,6 +76,27 @@ Daily hourly forecasts (73 hourly steps, t+0 … t+72) of four near-surface poll
 
 Both domains distribute the same four parameters. (The files split particulate matter into separate PM10 and PM2.5 fields.)
 
+### Derived product — Air Quality Index (`chem_aqi-v1-1d-3km`)
+A **daily categorical air quality index** computed from the 3 km run's forecast ozone, nitrogen dioxide, and particulate matter, following the **European Environment Agency (EEA) European Air Quality Index** banding. Distributed on the **identical 3 km `d02` grid** (450 × 450, same LCC 2SP projection, same `x`/`y` bounds, same bbox 40.91–53.75 °N / 2.86–23.74 °E — verified against a live file, 2026-07).
+
+- **Variable:** `aqi` (files) / `aqi` (API), `float32`, dimensioned `time × y × x`, `units = "1"`
+- **Values:** integers **1–6** stored as float32, per the file's `flag_value` / `flag_meaning` attributes:
+
+  | Value | Category |
+  |---|---|
+  | 1 | good |
+  | 2 | fair |
+  | 3 | moderate |
+  | 4 | poor |
+  | 5 | very_poor |
+  | 6 | extremely_poor |
+
+- **Temporal structure:** **3 daily steps**, valid 00:00 UTC on the run day and the following two days (`P1D`) — *not* hourly. The file's global `freq = 1H` attribute is inherited boilerplate from the hourly chem products and is **wrong for this dataset**; the `1d` in the dataset ID and the actual `time` coordinate are correct.
+- **⚠ Title vs coverage:** GeoSphere titles the dataset "Air Quality Index **for Austria**", but the grid is the full 3 km **Central Europe** `d02` domain — roughly 1347 km square, spanning northern Italy to Poland. Austria occupies a small part of it.
+- **⚠ Band-label mismatch:** GeoSphere's prose says the categories run from *"very good"* to *"extremely poor"*, but the file's `flag_meaning` gives the lowest band as **`good`**, matching the EEA scale. Trust the file attributes.
+- **Aggregation method not documented (TBD).** How the hourly pollutant fields are collapsed into one value per forecast day — daily maximum of the hourly index, daily mean, or worst sub-index over the day — is not stated in the dataset metadata. The EEA index itself is normally the worst sub-index across pollutants, using hourly values for NO2/O3 and 24-hour running means for PM, but GeoSphere's daily reduction step is unconfirmed.
+- **Non-CF standard name.** The `aqi` variable carries `standard_name = "air_quality_index"`, which is **not** in the CF standard-name table. Strict CF validators will reject it. The `long_name` also contains a typo (`Air qualiy index`).
+
 ---
 
 ## Data availability
@@ -98,12 +121,36 @@ Both domains distribute the same four parameters. (The files split particulate m
 
 Both products are version 2, published 22 January 2025. The 9 km and 3 km datasets share the same access portal, API, and license; users can choose whichever domain/resolution suits their workflow.
 
+### Air Quality Index dataset
+- **Dataset ID:** `chem_aqi-v1-1d-3km` — resource ID and resolution agree here (unlike the inverted pair above).
+- **File naming:** `chem_aqi_<YYYYMMDDHH>.nc`; `<YYYYMMDDHH>` is the 00 UTC run initialization.
+- **Format:** NetCDF-4 / HDF5, CF-1.8. One file per daily run holding all 3 daily steps. ~4.08 MB per file.
+- **Bulk download:** https://public.hub.geosphere.at/public/datahub.html?id=chem_aqi-v1-1d-3km/filelisting
+  - Direct raw: `https://public.hub.geosphere.at/datahub/resources/chem_aqi-v1-1d-3km/filelisting/chem_aqi_<YYYYMMDDHH>.nc`
+- **API access:** Yes — `https://dataset.api.hub.geosphere.at/v1/grid/forecast/chem_aqi-v1-1d-3km` and the matching `/timeseries/` route (geojson, netcdf, csv).
+- **Landing page:** https://data.hub.geosphere.at/en/dataset/chem_aqi-v1-1d-3km
+- **DOI:** https://doi.org/10.60669/9vem-kg63
+- **Licence:** CC BY 4.0. Version 1, published 8 June 2026.
+- **Latency:** ~**3 h 55 min** after the 00 UTC run (measured: published 03:55 UTC). This is ~30 minutes behind the parent WRF-Chem run (03:25 UTC), consistent with it being a post-processing step.
+
+### ⚠ Retention — the whole chem family keeps only 2 files
+Verified 2026-07-29 by enumerating all four buckets: `chem-v2-1h-3km`, `chem-v2-1h-9km`, and `chem_aqi-v1-1d-3km` each held **exactly two objects** — the current and previous day's run. There is **no archive**. Anything you need beyond ~48 hours must be harvested daily.
+
+### Programmatic listing (undocumented but public)
+Plain `GET` on a directory path returns `AccessDenied`, but the backing store answers anonymous S3 `ListObjectsV2` on the bucket root:
+```bash
+curl -s "https://public.hub.geosphere.at/datahub/?list-type=2&max-keys=1000\
+&delimiter=/&prefix=resources/chem_aqi-v1-1d-3km/filelisting/"
+```
+Returns `ListBucketResult` XML (`Key`, `LastModified`, `ETag`, `Size`); bucket `datahub`, key root `resources/`. Substitute any dataset ID in the prefix.
+
 ---
 
 ## Notes
 - **Why a separate system from AROME:** GeoSphere Austria runs WRF-Chem for air pollution because the chemistry/air-chemistry functionality it requires is not available in the operational [AROME Austria](../../../nwp_models/regional/austria/arome-austria.md) NWP model. WRF-Chem runs on GeoSphere's operational HPC alongside the AROME suite. It replaced the earlier CAMx photochemical model (which had been coupled to ALADIN/MM5 output).
 - **Two nested domains, one system:** The 9 km Europe and 3 km Central Europe products are the outer and inner nests of the same WRF-Chem configuration, documented internally as a two-domain run out to +72 h.
 - **Version change (v1 → v2, January 2025):** The current v2 products at 9 km / 3 km replaced the v1 products at 12 km / 4 km (`chem-v1-1h-12km` and `chem-v1-1h-4km`). The published version notes cite changes to the projection (a small shift in the coordinate centre), the spatial coverage (domain), and the horizontal resolution. GeoSphere HPC presentations from 2023 and 2025 still describe the older 12 km (512×432×48) / 4 km (256×223×48) nesting, which corresponds to the v1 configuration.
+- **`calender` typo is family-wide.** Every GeoSphere chem NetCDF — the 9 km and 3 km pollutant files, the AQI file, and the dust file — spells the time-coordinate attribute **`calender`** rather than the CF-mandated `calendar`. Harmless in practice (gregorian is the CF default when the attribute is absent), but strict CF validators will flag it, and code that reads `calendar` explicitly will find nothing. Verified across all four products, 2026-07.
 - **Relationship to siblings:** GeoSphere uses the CAMS emissions inventory, and this system is conceptually related to the European [CAMS regional air quality ensemble](../eu/cams-regional.md) (a multi-model regional AQ ensemble for Europe). The CAMS European products are coarser-resolution, multi-model, and assimilate surface observations; the GeoSphere WRF-Chem products are single-model, higher-resolution, and IFS-driven.
 - **Organizational note:** GeoSphere Austria was formed by the 2023 merger of ZAMG with the Geological Survey of Austria; older publications and documentation refer to ZAMG.
 
@@ -124,6 +171,9 @@ The v1 public products ran on a 12 km outer / 4 km inner WRF-Chem nesting. Befor
 - Dataset landing page (3 km, Central Europe): https://data.hub.geosphere.at/en/dataset/chem-v2-1h-3km
 - Bulk download (9 km): https://public.hub.geosphere.at/public/datahub.html?id=chem-v2-1h-9km/filelisting
 - Bulk download (3 km): https://public.hub.geosphere.at/public/datahub.html?id=chem-v2-1h-3km/filelisting
+- Dataset landing page (Air Quality Index): https://data.hub.geosphere.at/en/dataset/chem_aqi-v1-1d-3km
+- Bulk download (AQI): https://public.hub.geosphere.at/public/datahub.html?id=chem_aqi-v1-1d-3km/filelisting
+- EEA European Air Quality Index: https://www.eea.europa.eu/en/analysis/maps-and-charts/index
 - Dataset API documentation: https://dataset.api.hub.geosphere.at/v1/docs/
 - GeoSphere Austria homepage: https://www.geosphere.at
 
