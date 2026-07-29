@@ -53,6 +53,7 @@ Most operational radar data documented here is in the first tier.
 | [KAUR](./estonia/kaur-radar.md) | KAUR (Keskkonnaagentuur) | Estonia | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 | [KNMI](./netherlands/knmi-radar.md) | KNMI | Netherlands | Composite + single-site | KNMI HDF5 / NetCDF | Open with account | CC BY 4.0 |
 | [Hochficht](./austria/hochficht-radar.md) | GeoSphere Austria · Meteopress | Upper Austria (+ CZ / DE border) | Single-site volumes only | ODIM HDF5 | Open (no account) | CC BY 4.0 |
+| [MeteoSwiss](./switzerland/meteoswiss-radar.md) | MeteoSwiss | Switzerland (+ Alpine region) | Composite + single-site | ODIM HDF5 | Open (no account) | CC BY 4.0 |
 
 Note the licence spread: US products are public domain (NODD); OPERA and MET Norway are CC BY 4.0; the UK and Italian composites are CC BY-**SA** 4.0 (ShareAlike); DWD is GeoNutzV with mandatory attribution.
 
@@ -77,8 +78,9 @@ For the most frictionless access, these networks distribute gridded data with no
 | [SHMÚ](./slovakia/shmu-radar.md) | https://opendata.shmu.sk/meteorology/weather/radar/ | SHMÚ Open Data |
 | [KAUR](./estonia/kaur-radar.md) | https://avaandmed.keskkonnaportaal.ee/dhs/Active | KAIA (Keskkonnaportaal) |
 | [Hochficht](./austria/hochficht-radar.md) | https://public.hub.geosphere.at/datahub/resources/radar_volumen_hochficht-v1-5min/filelisting/ | GeoSphere Data Hub (S3-compatible) |
+| [MeteoSwiss](./switzerland/meteoswiss-radar.md) | https://data.geo.admin.ch/api/stac/v1/collections/ch.meteoschweiz.ogd-radar-precip (and `…-radar-hail`); https://api.meteogate.eu/eu-eumetnet-weather-radar/ | FSDI `data.geo.admin.ch` / EUMETNET MeteoGate |
 
-The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, ČHMÚ, HungaroMet, and SHMÚ are plain THREDDS / HTTPS; KAUR is the KAIA SharePoint file store (direct `Content.aspx` file URLs over HTTPS).
+The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, ČHMÚ, HungaroMet, and SHMÚ are plain THREDDS / HTTPS; KAUR is the KAIA SharePoint file store (direct `Content.aspx` file URLs over HTTPS). MeteoSwiss is the only entry served through two unrelated open APIs — a STAC catalogue for the gridded composites (plain unsigned asset URLs) and an OGC API–EDR service for the single-site volumes, whose CoverageJSON response carries the ODIM download links.
 
 ---
 
@@ -101,6 +103,7 @@ observations/radar/
   estonia/   — KAUR (Harku + Sürgavere: single-site volumes, products + national composite)
   netherlands/ — KNMI (national network: volumes, composites, radar/gauge QPE)
   austria/   — Hochficht (single GeoSphere × Meteopress C-band radar; volumes only)
+  switzerland/ — MeteoSwiss (precipitation + hail composites; polar volumes via EUMETNET ODR)
 ```
 
 Each entry covers a network or composite product rather than an individual radar — MRMS as one mosaic, NEXRAD as one single-site archive — with the single exception that a national service publishing genuinely distinct products (e.g. DWD's composites and single-site sweeps) documents them together in one entry.
@@ -117,6 +120,7 @@ Several systems were evaluated but not given full entries, for reasons worth rec
 - **Radar-derived nowcasts** — DWD RADVOR and RADOLAN-RV, KONRAD3D, the nowcast fields bundled inside MRMS (FLASH, ANC), and CWA Taiwan's next-1-hour radar QPF (`F-B0046`, echo extrapolation on the same 441 × 561 grid as its QPE sibling) project future states; they are flagged for the **nowcasting model** section rather than documented here.
 - **IDEAM (Colombia)** — genuine open single-site Level II data in Sigmet/IRIS format (`s3://s3-radaresideam`, `us-east-1`, CC BY 4.0), with a historical archive back to 2018. Noted here rather than given a full entry because the recent feed is **delayed and intermittent** rather than real-time: checked against the live bucket, the newest data typically runs 1–2 days behind, with whole days absent and only part of the network present on a given day. Valuable as a historical Level II archive — worth a full entry if IDEAM moves to a reliable real-time feed.
 - **CWA (Taiwan)** — open, real-time, genuinely gridded radar data, excluded on **container format** alone. CWA publishes a national composite reflectivity (`O-A0059` — 921 × 881 at 0.0125°, dBZ, origin 115°E/18°N on TWD67, updated every 10 minutes, blending the Wufenshan, Hualien, Chigu, Kenting, Shulin, Nantun, and Linyuan radars) and a gauge-corrected past-1-hour QPE (`O-B0045` — 441 × 561 at 0.0125°, mm, origin 118°E/20°N), both anonymously downloadable from `s3://cwaopendata/Observation/` (`ap-northeast-1`) under the Taiwan Open Government Data License. Grid geometry, units, scan order, and missing-value codes (−99 invalid, −999 outside radar coverage or QC-removed) are all properly documented in the accompanying metadata — but the field itself arrives as **comma-separated scientific-notation floats inside a JSON or XML wrapper** (~8.9 MB per composite), not GRIB2, NetCDF, or ODIM HDF5. The bucket is also **latest-only**: each product is a fixed key overwritten in place, with no date partitioning and no archive. Worth a full entry if CWA adds a binary gridded container.
+- **MeteoSwiss reflectivity and convection composites** — the MeteoSwiss open-data documentation lists both product families but marks them "(not yet realised)"; the pages are placeholders with no data. Switzerland therefore has no open gridded reflectivity composite through its national channel — only single-site polar sweeps via EUMETNET ODR, or the [OPERA](./eu/opera-composite.md) pan-European composite. Worth re-checking; the placeholders imply planned releases.
 
 Other national radar services with open **real-time** gridded feeds may be added as they are verified.
 
@@ -126,7 +130,7 @@ Other national radar services with open **real-time** gridded feeds may be added
 
 - [`../satellites/README.md`](../satellites/README.md) — the parallel observation section (spaceborne remote sensing). Radar and satellite are the two observation branches under `observations/`.
 - [`../../models/nowcasting_models/`](../../models/nowcasting_models/) — radar-derived nowcasts (DWD RADVOR / RADOLAN-RV, KONRAD3D, and similar) live here rather than in this section.
-- **NWP entries that assimilate this data** — MRMS and NEXRAD reflectivity feed the US convection-allowing models (HRRR, RAP); OPERA reflectivity is assimilated by several European limited-area models (e.g. ALADIN-HR, CHMI-LAM). The radar entries here are the observational sources those model entries reference.
+- **NWP entries that assimilate this data** — MRMS and NEXRAD reflectivity feed the US convection-allowing models (HRRR, RAP); OPERA reflectivity is assimilated by several European limited-area models (e.g. ALADIN-HR, CHMI-LAM); the MeteoSwiss radars feed [ICON-CH1/2-EPS](../../models/nwp_models/regional/switzerland/icon-ch-eps.md) via latent heat nudging, and its hail products consume an ICON-CH1-EPS freezing-level forecast in return — the one two-way case in the catalog. The radar entries here are the observational sources those model entries reference.
 
 ---
 
