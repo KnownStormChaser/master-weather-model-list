@@ -32,9 +32,11 @@ A reduced subset of ECWAM output is published through ECMWF's open data service 
 - **Grid system:** single regular latitude–longitude grid in the open-data distribution (the operational model runs on a quasi-regular reduced grid; the published product is interpolated to regular 0.25°)
 - **Core wave model:** ECWAM (IFS wave component; third-generation WAM derivative)
 - **IFS cycle:** Cycle 50r1 (operational since 12 May 2026)
-- **Spectral resolution:** **TBD** — the number of frequency and direction bins in the current operational configuration is not stated in the open-data documentation, and no spectra are distributed in the open subset from which it could be verified. See IFS Documentation Part VII for the cycle-specific configuration.
-- **Native horizontal resolution:** **TBD** — higher than the published 0.25°, available via the Product Requirements Catalogue under a service agreement, but the operational native wave grid spacing is not stated in the open-data material reviewed.
-- **Horizontal resolution (Open Data):** 0.25° (~28 km), verified
+- **Native horizontal resolution:** **~9 km (TCo1279) — the same grid as the atmospheric model.** Since Cycle 49r1 (12 November 2024) ECWAM's horizontal grid matches the resolution of whichever atmospheric configuration it is coupled to: ~9 km for the medium-range deterministic and ensemble forecasts, ~36 km (TCo319) for the sub-seasonal and seasonal systems. Full resolution is available via the Product Requirements Catalogue under a service agreement; the open subset is interpolated down to 0.25°.
+- **Horizontal resolution (Open Data):** 0.25° (~28 km), verified — a roughly 3× coarsening from native
+- **Spectral resolution:** **36 directions × 36 frequencies computed online**; the archived/output spectrum carries **36 directions × 29 frequencies**, at 6-hourly intervals. The output frequency count was cut from 36 to 29 in Cycle 49r1 to make the grid-resolution increase affordable — *online computation was not reduced*. No spectra are distributed in the open-data subset, so this is documented from ECMWF sources rather than live-verified.
+
+> **The "wave model is coarser than the atmosphere" assumption is out of date.** It held for most of ECWAM's operational history — Cycle 41r2 (March 2016) put HRES-WAM at 0.125° (~14 km) against a 9 km atmosphere, and ENS-WAM at 0.25° against 18 km. Cycle 49r1 unified them. Anyone carrying forward a pre-2024 mental model, or a pre-2024 secondary source, will understate the native resolution by roughly a third.
 - **Forecast length (verified):**
   - **360 h (15 days)** at 00 and 12 UTC
   - **144 h (6 days)** at 06 and 18 UTC
@@ -157,7 +159,6 @@ The cloud mirrors retain full archives rather than the portal's rolling window. 
 
 ## Open questions / pending verification
 - **ECMWF's open-data documentation still states 240 h (00/12) and 90 h (06/18) for `stream=wave`.** The live archive serves 360 h and 144 h. Believed to be stale pre-50r1 text — the same discrepancy affects the atmospheric `oper` stream. To be raised with ECMWF support alongside the queries listed in the [IFS](../../../nwp_models/global/eu/ifs.md#open-questions--pending-verification) and [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md#open-questions--pending-verification) entries.
-- **Spectral resolution and native grid spacing** for the current operational cycle — **TBD**, not stated in open-data material and not verifiable from the distributed integral parameters.
 - **Current operational altimeter/SAR mission list** for wave assimilation — **TBD**.
 - **Wave analysis cadence** relative to the 12-hour atmospheric assimilation window — **TBD**.
 - **Whether the 999 m bathymetry cap** is a distribution artefact or the model's internal deep-water treatment — worth confirming, since it affects anyone using `wmb` as a depth reference rather than as a model diagnostic.
@@ -176,8 +177,17 @@ The cloud mirrors retain full archives rather than the portal's rolling window. 
 ### March 2024
 - Open-data resolution increased to 0.25° (~28 km); parameter subset expanded. **Note:** archive inspection shows 0.25° files present from **1 February 2024**, ahead of the announcement date — see the [IFS entry](../../../nwp_models/global/eu/ifs.md#archive-path-schema-changes-verified-against-the-aws-mirror).
 
+### IFS Cycle 49r1 — 12 November 2024
+- **Wave grid revised to match the atmospheric resolution in all forecasts** — medium-range ECWAM grid spacing reduced to ~9 km (TCo1279) from the previous 0.125°, and sub-seasonal ECWAM to ~36 km (TCo319). This is the change that eliminated the long-standing resolution gap between ECWAM and the atmospheric model.
+- **Output spectra reduced from 36 to 29 frequencies** to offset the cost of the grid increase. Online spectral computation remained at 36 × 36.
+- New wind-input parametrizations including a gravity–capillary model and non-linear growth rates, modulating the drag coefficient with wind speed and addressing a known underestimation of extreme ocean wind speeds.
+- New sea-state-dependent heat and moisture fluxes.
+
 ### IFS Cycle 46r1 — June 2019
 - New wind-input and deep-water dissipation parametrizations (Ardhuin et al., via Météo-France) incorporated into ECWAM.
+
+### IFS Cycle 41r2 — 8 March 2016
+- HRES-WAM resolution increased from 0.25° to 0.125°; ENS-WAM (days 0–15) from 0.5° to 0.25°. Both remained coarser than their atmospheric counterparts (9 km and 18 km respectively) until Cycle 49r1.
 
 ---
 
@@ -193,11 +203,15 @@ Established on **2026-07-30** by direct inspection rather than from documentatio
 
 Where live observation and ECMWF documentation disagree, the live observation is recorded and the disagreement flagged rather than silently resolved.
 
+**Not live-verified:** native horizontal resolution, spectral discretisation, assimilation method, and coupling behaviour cannot be established from the open-data subset, which distributes only interpolated integral parameters. These are sourced from ECMWF's Forecast User Guide, the Cycle 49r1 and 50r1 newsletters, and IFS Documentation Part VII, and are labelled as such above.
+
 ---
 
 ## Official documentation
 - ECMWF open data (real-time forecasts from IFS and AIFS): https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS
 - Open data licence and parameter subset: https://www.ecmwf.int/en/forecasts/datasets/open-data
+- Forecast User Guide §2.3 — Ocean Wave Model ECWAM (resolution and spectral discretisation): https://confluence.ecmwf.int/display/FUG/Section+2.3+Ocean+Wave+Model+-+ECWAM
+- ECMWF Newsletter 181 (Cycle 49r1 wave grid unification): https://www.ecmwf.int/en/newsletter/181/earth-system-science/ifs-upgrade-improves-near-surface-wind-and-temperature
 - IFS Documentation Part VII — ECMWF Wave Model: https://www.ecmwf.int/sites/default/files/elibrary/2023/81373-ifs-documentation-cy48r1-part-vii-ecmwf-wave-model.pdf
 - IFS Cycle 50r1 implementation page: https://confluence.ecmwf.int/display/FCST/Implementation+of+IFS+Cycle+50r1
 - ECMWF Newsletter 185 (Cycle 50r1 overview): https://www.ecmwf.int/en/newsletter/185/earth-system-science/upgrade-ifs-cycle-50r1
