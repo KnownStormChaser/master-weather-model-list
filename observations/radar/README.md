@@ -80,8 +80,9 @@ For the most frictionless access, these networks distribute gridded data with no
 | [KAUR](./estonia/kaur-radar.md) | https://avaandmed.keskkonnaportaal.ee/dhs/Active | KAIA (Keskkonnaportaal) |
 | [Hochficht](./austria/hochficht-radar.md) | https://public.hub.geosphere.at/datahub/resources/radar_volumen_hochficht-v1-5min/filelisting/ | GeoSphere Data Hub (S3-compatible) |
 | [MeteoSwiss](./switzerland/meteoswiss-radar.md) | https://data.geo.admin.ch/api/stac/v1/collections/ch.meteoschweiz.ogd-radar-precip (and `…-radar-hail`); https://api.meteogate.eu/eu-eumetnet-weather-radar/ | FSDI `data.geo.admin.ch` / EUMETNET MeteoGate |
+| [DMI](./denmark/dmi-radar.md) | https://opendataapi.dmi.dk/v1/radardata/ (STAC / OGC API–Features; files via `/download/{file-name}`) | DMI Open Data |
 
-The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, ČHMÚ, HungaroMet, and SHMÚ are plain THREDDS / HTTPS; KAUR is the KAIA SharePoint file store (direct `Content.aspx` file URLs over HTTPS). MeteoSwiss is the only entry served through two unrelated open APIs — a STAC catalogue for the gridded composites (plain unsigned asset URLs) and an OGC API–EDR service for the single-site volumes, whose CoverageJSON response carries the ODIM download links.
+The US buckets and the UK bucket take `--no-sign-request`; OPERA and the Italian archive use anonymous S3 on the ECMWF European Weather Cloud; MET Norway, DWD, ČHMÚ, HungaroMet, and SHMÚ are plain THREDDS / HTTPS; KAUR is the KAIA SharePoint file store (direct `Content.aspx` file URLs over HTTPS). MeteoSwiss is the only entry served through two unrelated open APIs — a STAC catalogue for the gridded composites (plain unsigned asset URLs) and an OGC API–EDR service for the single-site volumes, whose CoverageJSON response carries the ODIM download links. DMI is the second STAC-based entry: a single service covering all three product families, where the item response gives a file name that must be passed to a separate `/download/` endpoint rather than a directly resolvable asset URL.
 
 ---
 
@@ -105,6 +106,7 @@ observations/radar/
   netherlands/ — KNMI (national network: volumes, composites, radar/gauge QPE)
   austria/   — Hochficht (single GeoSphere × Meteopress C-band radar; volumes only)
   switzerland/ — MeteoSwiss (precipitation + hail composites; polar volumes via EUMETNET ODR)
+  denmark/   — DMI (national composite, per-radar pseudo-CAPPI, polarimetric volumes)
 ```
 
 Each entry covers a network or composite product rather than an individual radar — MRMS as one mosaic, NEXRAD as one single-site archive — with the single exception that a national service publishing genuinely distinct products (e.g. DWD's composites and single-site sweeps) documents them together in one entry.
@@ -152,4 +154,4 @@ Additions and corrections to radar entries follow the same conventions as the re
 
 Radar data servers routinely mix observation and nowcast in a single tree — DWD is the clearest case, but MRMS bundles derived nowcast fields too. This section documents the observational products (reflectivity, precipitation rate, accumulation, single-site moments); where a feed also carries radar-derived nowcasts, the entry documents the observational part and flags the nowcast part for the nowcasting section.
 
-Radar feeds are also comparatively volatile: buckets get renamed (NEXRAD's Level II archive moved from `noaa-nexrad-level2` to `unidata-nexrad-level2`), access gates change (OPERA's IP whitelisting was removed in 2026), and many feeds are short rolling windows rather than deep archives. Entries note these where known, but the live endpoint is always the authoritative source — verify against it before relying on a path.
+Radar feeds are also comparatively volatile: buckets get renamed (NEXRAD's Level II archive moved from `noaa-nexrad-level2` to `unidata-nexrad-level2`), access gates change (OPERA's IP whitelisting was removed in 2026), and many feeds are short rolling windows rather than deep archives — DWD and ČHMÚ retain hours to days, while DMI's 180 days and FMI's multi-year S3 buckets are the outliers in the other direction. Entries note these where known, but the live endpoint is always the authoritative source — verify against it before relying on a path.
