@@ -26,16 +26,17 @@ The current operational version is **GFSv16** (operational since 22 March 2021),
 - **Dynamical formulation:** Non-hydrostatic, on a cubed-sphere finite-volume grid; semi-Lagrangian vertical coordinate
 - **Convection-allowing:** No (deep convection is parameterized at ~13 km resolution)
 - **Native horizontal resolution:** ~13 km (C768 cubed-sphere grid)
-- **Public output grids:**
-  - **0.25°** (~28 km) — primary distribution; hourly to +120 h, 3-hourly to +384 h
-  - **0.5°** (~55 km) — alternative resolution; 3-hourly to +384 h
-  - **1.0°** (~110 km) — alternative resolution; 3-hourly to +384 h
-  - **2.5°** — coarse coverage; 3-hourly to +384 h (subset of fields)
+- **Public output grids (live-verified 2026-07-31):**
+  - **0.25°** (~28 km) — primary distribution; hourly to +120 h, then 3-hourly to +384 h (209 steps)
+  - **0.5°** (~55 km) — 3-hourly to +384 h (129 steps)
+  - **1.0°** (~110 km) — 3-hourly to +384 h (129 steps)
 - **Vertical levels:** 127 (hybrid sigma-pressure)
 - **Model top:** ~80 km (mesopause)
 - **Forecast length:** 384 hours (16 days) for all 4 cycles
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
-- **Coupled wave model:** WAVEWATCH III, providing wave forecasts to 16 days alongside the atmospheric output
+- **Coupled wave model:** WAVEWATCH III, providing wave forecasts to 16 days alongside the atmospheric output — documented separately as [GFS-Wave](../../../wave_models/global/usa/ww3-noaa.md)
+
+> ⚠️ **There is no 2.5° GFS product.** Earlier revisions of this entry listed a 2.5° public grid. That is incorrect: no `2p50` files exist in any NODD bucket, and `https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_2p50.pl` returns **404** while the `0p25`, `0p25_1hr`, `0p50`, and `1p00` filter endpoints all return 200. The distributed grid set is 0.25°, 0.5°, and 1.0° only. (Live-verified 2026-07-31.)
 
 ---
 
@@ -68,19 +69,148 @@ GFS analysis fields (from GDAS) are also widely used as initial and boundary con
 ---
 
 ## Data availability
-- **Is the data free?** Yes
-- **Is the data downloadable?** Yes
-- **License:** Public domain (U.S. government work; CC0-equivalent)
-- **Data formats:** GRIB2 (primary), with NetCDF model history files available for some products
-- **Official download locations:**
-  - **NOMADS:** https://nomads.ncep.noaa.gov/ (real-time, 10-day rolling)
-  - **NCEI archive:** https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast (long-term archive)
-  - **AWS Open Data:** https://registry.opendata.aws/noaa-gfs-bdp-pds/ (real-time + rolling archive)
-  - **Microsoft Planetary Computer:** Available alongside GDAS analyses
-  - **Google Cloud Storage:** Available via the NOAA Big Data Program
-- **NCEP product file naming:** `gfs.tCCz.pgrb2.{0p25|0p50|1p00}.fFFF` where `CC` is cycle hour and `FFF` is forecast hour. The `pgrb2b` variant contains less-commonly-used fields.
 
-The NOAA Big Data Program provides parallel access to GFS via AWS, Azure, and GCP — typically with no rate limits and at lower latency than NOMADS for users co-located with one of those clouds.
+- **Is the data free?** Yes (no registration, no API key, no request throttling on the cloud mirrors)
+- **License:** **Public domain (U.S. government work; CC0-equivalent).** Distributed via NOAA Open Data Dissemination (NODD): data are open to the public and may be used as desired. NOAA requests attribution, prohibits stating or implying NOAA endorsement or affiliation, and requires that modified data not be presented as unaltered NOAA data.
+- **Is the data downloadable?** Yes
+- **Data formats:** GRIB2 (primary; each file paired with a `.idx` index sidecar for byte-range subsetting), NetCDF (model history and analysis files), plus a gzipped TAR bundle for BUFR soundings
+
+### Product inventory
+
+Live-verified against the `gfs.20260731/12/atmos/` cycle on 2026-07-31. All figures are per cycle.
+
+| Product family | Grid(s) | Steps | Cadence | Approx. size/step |
+|---|---|---|---|---|
+| `gfs.tCCz.pgrb2.{0p25,0p50,1p00}.fFFF` | 0.25° / 0.5° / 1.0° | 209 / 129 / 129 | 0.25° hourly→+120 then 3-hourly→+384; others 3-hourly→+384 | 533 / 158 / 45 MB |
+| `gfs.tCCz.pgrb2b.{0p25,0p50,1p00}.fFFF` | same | same | same | 230 / 68 / 19 MB |
+| `gfs.tCCz.pgrb2full.0p50.fFFF` | 0.5° only | 129 | 3-hourly→+384 | 226 MB |
+| `gfs.tCCz.sfluxgrbfFFF.grib2` | native Gaussian | 209 | hourly→+120, 3-hourly→+384 | 293 MB |
+| `gfs.tCCz.goessimpgrb2.0p25.fFFF` | 0.25° | 61 | 3-hourly→+180 | 3.8 MB |
+| `gfs.tCCz.goessimpgrb2fFFF.grd221` | AWIPS Grid 221 (Lambert conformal, N. America) | 61 | 3-hourly→+180 | small |
+| `gfs.tCCz.wgne.fFFF` | — | 60 | 3-hourly, +3→+180 | 0.7 MB |
+| `gfs.tCCz.atmfFFF.nc` | — | 13 | hourly, **+0→+12 only** | 6.7 GB |
+| `gfs.tCCz.sfcfFFF.nc` | — | 12 | hourly, **+1→+12 only** | 1.06 GB |
+| `gfs.tCCz.atmanl.nc` / `sfcanl.nc` | — | 1 each | analysis | 13.9 GB / 0.3 GB |
+| `gfs.tCCz.pgrb2{,b}.{grid}.anl` | 3 grids each | 1 each | analysis | — |
+| `gfs.tCCz.bufrsnd.tar.gz` | station soundings | 1 | — | 184 MB |
+| `gfs.tCCz.syndata.tcvitals.tm00` | — | 1 | — | tiny |
+
+**Total `atmos/` volume: ≈ 403 GB per cycle** (≈1.6 TB/day across four cycles), dominated by `pgrb2.0p25` (137 GB) and the NetCDF history files (`atmf` 87 GB, `atmanl` 14 GB, `sfcf` 13 GB).
+
+Record counts in the `.idx` sidecars: `pgrb2.0p25` carries **696 records at f000** and **743 from f012 onward** (the f000 deficit is the absent accumulation and min/max fields); `pgrb2b.0p25` carries **349**. `pgrb2full.0p50` is the union of `pgrb2` and `pgrb2b` on the 0.5° grid — its 226 MB matches the 158 + 68 MB sum of its two components.
+
+The `wave/` subtree (`gridded/`, `station/`) sits alongside `atmos/` in every channel below and is documented separately in the [GFS-Wave entry](../../../wave_models/global/usa/ww3-noaa.md).
+
+### Distribution channels
+
+**1. NOMADS (NCEP operational distribution) — real-time, short rolling window**
+
+```
+https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/
+  gfs.YYYYMMDD/CC/{atmos,wave}/
+```
+
+Retention observed on 2026-07-31: **10 days** for `gfs.*` and `gdas.*` (20260722–20260731), and only **2 days** for `enkfgdas.*` (20260730–20260731).
+
+> **Verification caveat:** the NOMADS `/pub/data/` directory listings could not be enumerated from the verification environment (persistent HTTP 502 on that path, while the NOMADS site root and CGI endpoints responded normally). The retention figures and the `atmos/` file inventory above the cloud-verified portion are read from operator-supplied directory screenshots dated 2026-07-31, not from an independent live enumeration. Everything in the AWS/Azure/GCS sections below **was** independently enumerated.
+
+**GRIB filter (parameter/level/region subsetting over HTTP):**
+```
+https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl
+https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25_1hr.pl
+https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p50.pl
+https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_1p00.pl
+```
+GFS-related filter datasets advertised on the NOMADS index: `gfs_0p25`, `gfs_0p25_1hr`, `gfs_0p25b`, `gfs_0p50`, `gfs_1p00`, `gfs_sflux`, plus `gdas_0p25` and `gfswave`. (Live-verified 2026-07-31.)
+
+> ⚠️ **Two NOMADS access routes were retired on 23 February 2026 and no longer work.**
+>
+> - **OPeNDAP / GrADS Data Server (`https://nomads.ncep.noaa.gov/dods/…`)** was terminated under **SCN 25-81** (issued 2 December 2025, updated 16 December 2025). The endpoint now returns a static retirement notice. NOAA directs former OPeNDAP users to the GRIB filter and plain HTTPS routes, and publishes an OpenDAP-to-Grib-Filter migration guide at `https://nomads.ncep.noaa.gov/info.php?page=help`.
+> - **FTPPRD (`ftpprd.ncep.noaa.gov`, `ftp.ncep.noaa.gov`)** was terminated under **SCN 25-82**, same effective date. Confirmed unreachable on 2026-07-31. The equivalent path is the NOMADS HTTPS tree above; NOAA states the two share infrastructure, so arrival times are unchanged.
+>
+> Both retirements affect other entries in this repository — see *Notes*.
+
+**2. AWS Open Data (NOAA Open Data Dissemination) — real-time + deep archive**
+
+- **S3 bucket:** `s3://noaa-gfs-bdp-pds/` — ARN `arn:aws:s3:::noaa-gfs-bdp-pds`, region **`us-east-1`**
+- **Browser access:** https://noaa-gfs-bdp-pds.s3.amazonaws.com/index.html
+- **AWS CLI (no account required):** `aws s3 ls --no-sign-request s3://noaa-gfs-bdp-pds/`
+- **SNS new-object notifications:** `arn:aws:sns:us-east-1:123901341784:NewGFSObject` (Lambda and SQS protocols only)
+- **Registry:** https://registry.opendata.aws/noaa-gfs-bdp-pds/
+
+Top-level streams and archive depth (live-enumerated 2026-07-31):
+
+| Prefix | Earliest | Notes |
+|---|---|---|
+| `gfs.YYYYMMDD/` | **2021-01-01** | forecast output |
+| `gdas.YYYYMMDD/` | **2006-01-01** | see caveat below |
+| `enkfgdas.YYYYMMDD/` | 2021-02-12 | EnKF ensemble |
+| `gfsmos.YYYYMMDD/` | 2021-02-12 | model output statistics |
+| `sst.YYYYMMDD/` | 2021-02-11 | SST forecasts |
+
+> The `gdas.*` archive reaching back to **2006** is misleading if taken at face value: those early directories hold **BUFR observation dumps** (`gdas.tCCz.1bamua`, `1bhrs3`, `adpsfc`, …), not gridded model output. Gridded GDAS/GFS output begins with the 2021 directories.
+
+**3. Microsoft Azure (NODD) — real-time, 90-day rolling window**
+
+- **Blob container:** `https://noaagfs.blob.core.windows.net/gfs` — public, anonymous, no SAS token required
+- **Region:** East US
+- **Read-only SAS token API (for BlobFuse mounts):** `https://planetarycomputer.microsoft.com/api/sas/v1/token/noaagfs/gfs`
+- **Documentation:** https://microsoft.github.io/AIforEarthDataSets/data/noaa-gfs.html
+- **Planetary Computer dataset page:** https://planetarycomputer.microsoft.com/dataset/storage/noaa-gfs
+
+> ⚠️ **Documentation-vs-reality discrepancies on Azure (both live-verified 2026-07-31):**
+>
+> 1. **Retention.** Microsoft's dataset page states "Data are retained for 30 days." The live container holds **91 days** — `gfs.20260502/` through `gfs.20260731/`, identically for `gdas.` and `enkfgdas.`. Treat 30 days as a floor, not the actual window.
+> 2. **Missing streams.** The same page lists `gfsmos` and `sst` among the container's top-level folders. Neither exists. Only `gfs.`, `gdas.`, and `enkfgdas.` are present. Users needing GFS-MOS or the SST forecasts must use AWS or GCS.
+
+> **Enumeration gotcha.** The Azure Blob list API returns **empty pages carrying a `NextMarker`**. A single un-paginated request such as `?restype=container&comp=list&delimiter=/&prefix=gfs.&maxresults=5` comes back with zero `BlobPrefix` elements and looks exactly like an absent stream. Any enumeration must follow `NextMarker` to exhaustion before concluding a prefix is empty. (This bit the verification pass for this entry and briefly produced a false "gfs. ABSENT" result.)
+
+**4. Google Cloud Storage (NODD) — real-time + deep archive**
+
+- **Bucket:** `gs://global-forecast-system/` — anonymous object read and JSON-API object listing; storage class `STANDARD`
+- **HTTPS object access:** `https://storage.googleapis.com/global-forecast-system/gfs.YYYYMMDD/CC/atmos/…`
+- **JSON API listing:** `https://storage.googleapis.com/storage/v1/b/global-forecast-system/o?prefix=…&delimiter=/`
+- **Marketplace page:** https://console.cloud.google.com/marketplace/product/noaa-public/global-forecast-system
+
+Archive depth matches AWS: `gfs.` and `gdas.` from **2021-01-01**, `enkfgdas.` from 2021-02-12, plus `gfsmos.` and `sst.`. Note that unlike AWS, GCS `gdas.` starts in 2021 — it does **not** carry the deep BUFR observation-dump tail.
+
+> Anonymous callers can list and read objects but **cannot call `storage.buckets.get`** (HTTP 401). Tooling that probes bucket metadata before listing will fail; go straight to the object-listing endpoint.
+
+**5. Google Earth Engine — curated, analysis-ready, not raw GRIB**
+
+- **Asset:** `ee.ImageCollection("NOAA/GFS0P25")`
+- **Catalog page:** https://developers.google.com/earth-engine/datasets/catalog/NOAA_GFS0P25
+
+A **22-band, atmosphere-only ImageCollection** at 27,830 m pixel size, not a mirror of the GRIB2 production tree. Covers 2-m temperature/humidity/dew point, 10-m and PBL winds, gust, precipitation and precipitation rate, precipitable water, cloud cover, four radiation flux components, PBL height, Haines index, and ventilation rate. Several bands begin only on 2025-01-15. Accumulated precipitation uses a rolling 1–6 h window keyed to `((F - 1) % 6) + 1`, so naive summation double-counts — see the band description before aggregating.
+
+> **The rendered catalog page understates availability.** On 2026-07-31 the page's "Dataset Availability" showed an end date of **2026-06-22**, and its auto-generated page summary claimed **2025-10-17**. The authoritative STAC record (`https://storage.googleapis.com/earthengine-stac/catalog/NOAA/NOAA_GFS0P25.json`) gives a temporal extent ending **2026-07-31T06:00:00Z** with `gee:status: ready` — i.e. the collection is current and the HTML page is stale. Trust the STAC.
+
+**6. NCEI — long-term archive**
+
+- https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast
+
+### Related NODD buckets
+
+- **`s3://noaa-gfs-warmstart-pds/`** — GFS warm-start initial conditions (cubed-sphere `RESTART` tiles, analysis increments `atminc.nc`, `dtfanl.nc`). SNS `arn:aws:sns:us-east-1:123901341784:NewGfsWarmStartObject`. **This dataset is frozen:** it spans 2020-12-06 → 2022-12-01 plus `v16.2/` and `v16.3/` prefixes, and has not been updated since. The AWS registry lists it alongside the live GFS bucket with no indication that it stopped updating.
+- **`s3://noaa-oar-arl-nacc-pds/`** — NOAA ARL's GFS NetCDF feed for the NACC / community air-quality workflow. **Live and current** (`inputs/20260731/` written 17:06 UTC on 2026-07-31). Carries **only the 12 UTC cycle**, hourly `gfs.t12z.atmfFFF.nc` and `gfs.t12z.sfcfFFF.nc` **out to f025**, back to 2021-03-23, at ~200 GB/day. This is a **deeper native-NetCDF horizon than the main NODD bucket**, which stops at +12 h — the practical route if you need native model history beyond half a day. Also hosts gridded Global Land Surface Datasets (canopy type, clumping index, LAI, canopy height, green vegetation fraction) matched to the GFS grid. Registry: https://registry.opendata.aws/noaa-oar-arl-nacc-pds/
+
+### Cross-cloud equivalence
+
+The three NODD object stores carry an **identical `atmos/` tree** — 2,828 objects for the 2026-07-31 12 UTC cycle on all three, with matching file families and counts.
+
+They are **byte-identical, not merely equivalent**. For `gfs.20260731/12/atmos/gfs.t12z.pgrb2.1p00.f000`:
+
+| Cloud | Size | Checksum |
+|---|---|---|
+| AWS | 40,267,617 | ETag `07d2a35f30afd3a5d9db7e497dc85271` |
+| Azure | 40,267,617 | Content-MD5 `B9KjXzCv06XZ235JfchScQ==` |
+| GCS | 40,267,617 | md5Hash `B9KjXzCv06XZ235JfchScQ==` |
+
+(The AWS hex ETag and the base64 MD5 are the same digest.) All three serve **anonymous HTTP 206 byte-range requests** with `GRIB` magic at byte 0, and all three carry the `.idx` sidecars, so `.idx`-driven partial reads (cfgrib/`kerchunk`/`wgrib2 -i`) work identically against any of them.
+
+**Choose on retention and locality, not content:** AWS and GCS for anything before the last 90 days; Azure only for recent cycles; the cloud co-located with your compute for egress cost.
+
+> **One real content difference across all three clouds.** The exploded `bufr.tCCz/` directory of individual BUFR sounding files — present on NOMADS — **stopped appearing on the cloud mirrors after 2026-02-20** (present on the 20th, absent from the 21st onward; verified by date bisection on AWS). Historical cycles retain it. Only the `bufrsnd.tar.gz` bundle survives on the clouds for current cycles. Users needing per-station BUFR files for recent runs must use NOMADS.
 
 ---
 
@@ -89,10 +219,23 @@ The NOAA Big Data Program provides parallel access to GFS via AWS, Azure, and GC
 - The current FV3-based GFS replaced the older Global Spectral Model (GSM) in **GFSv15** (12 June 2019). FV3 is also used by the [GEFS](../../../ensemble_models/global/usa/gefs.md) ensemble (since GEFS v12, 23 September 2020) and several regional UFS-based systems including the upcoming [RRFS](../../regional/usa/rrfs.md).
 - GFS is the deterministic counterpart to the [GEFS](../../../ensemble_models/global/usa/gefs.md) ensemble.
 - GFS was historically known for lagging the ECMWF IFS in headline skill scores; the GFSv16 upgrade narrowed but did not close this gap. GFSv17 (proposed for October 2026) is intended as the next major step in this direction, including coupled atmosphere–ocean–sea ice–wave forecasting and a resolution increase to ~9 km.
+- **The February 2026 NOMADS retirements affect other entries in this repository.** SCN 25-81 (OPeNDAP) and SCN 25-82 (FTPPRD) took effect 2026-02-23 and invalidate access routes still listed elsewhere in the catalog: the `nomads.ncep.noaa.gov/dods/gens_bc` OPeNDAP endpoint in [NAEFS](../../../ensemble_models/global/usa/naefs.md), and `ftpprd.ncep.noaa.gov` / `ftp.ncep.noaa.gov` in [GFS-Wave](../../../wave_models/global/usa/ww3-noaa.md), [GEFS-Wave](../../../wave_models/global/usa/gefs-wave.md), [HAFS](../../../tropical_cyclone_models/hafs.md), [RTOFS Global](../../../ocean_models/global/us/rtofs-global.md), and [P-ETSS](../../../storm_surge_models/regional/usa/petss.md). These need a correction pass.
+- **The AWS registry description is stale.** It states the operational GFS runs "at 64 layers" and that "a new version … that has 127 layers … will be implemented for operation on February 3, 2021" — text predating the actual 22 March 2021 GFSv16 implementation. The bucket contents are current; only the prose is out of date.
+- **Several products documented here are slated for removal under GFSv17** (PNS 26-30), including the entire NetCDF history/analysis family (`atmf`, `sfcf`, `atmanl`, `sfcanl`), both `goessimpgrb2` families, and all 0.5° and 1.0° GRIB2 products with their NOMADS filters. If v17 proceeds as proposed, the product inventory table above describes the *pre-v17* era. The `noaa-oar-arl-nacc-pds` NetCDF route depends on the same upstream files and would presumably be affected too — status unconfirmed (TBD).
 - GFS is widely redistributed by other national meteorological services as part of their open data programmes (the same NOAA-produced data, hosted closer to regional users):
   - **[GFS (IDEAM, Colombia)](../../regional/colombia/gfs-ideam.md)** — IDEAM redistributes selected cycles for users in Colombia and the wider Andean region
   - **[GFS (CWA, Taiwan)](../../regional/taiwan/gfs-cwa.md)** — CWA mirrors GFS on AWS in `ap-northeast-1` for Asia-Pacific users co-locating with their regional model access
-  These are not independently run global models; the mirrors are operationally useful primarily for users in those regions. Users elsewhere should generally access GFS directly from NOAA NOMADS, AWS, Azure, or GCP.
+
+  These are not independently run global models; the mirrors are operationally useful primarily for users in those regions. Users elsewhere should generally access GFS directly from NOAA NOMADS, AWS, Azure, or GCS.
+
+---
+
+## Open questions / outreach
+- **`bufr.tCCz/` removal from the cloud mirrors (2026-02-21):** no corresponding Service Change Notice was located. Was this an intentional NODD scope reduction or an unannounced sync change? → `nodd@noaa.gov`
+- **Azure retention:** live window is 91 days against 30 days documented. Which is the committed figure? → `nodd@noaa.gov`
+- **Azure missing `gfsmos.` / `sst.` streams:** documented but absent. Intentional or a sync gap? → `nodd@noaa.gov`
+- **`noaa-gfs-warmstart-pds` frozen since 2022-12-01:** is this a deliberately closed archive, or a stalled feed? The registry entry gives no end date. → `nodd@noaa.gov`
+- **NetCDF availability post-v17:** PNS 26-30 removes `atmf`/`sfcf`/`atmanl`/`sfcanl` from the production tree. Does the NACC bucket (`noaa-oar-arl-nacc-pds`) continue under v17, and if so from what source? → `rick.jiang@noaa.gov`, `patrick.c.campbell@noaa.gov`
 
 ---
 
@@ -164,6 +307,8 @@ The current operational version. Headline changes from v15:
 
 Subsequent v16 minor releases (v16.1, v16.2, v16.3) introduced additional data assimilation refinements, the WAFS (World Area Forecast System) v7.0.1 separation, and various administrative updates including geographic name conventions. The current operational tag as of early 2026 is GFSv16.3.x.
 
+The v16 transition is also visible in the archive layout: cycle directories before 22 March 2021 hold their files **directly under `gfs.YYYYMMDD/CC/`** with no `atmos/` or `wave/` subdirectory, and additionally carry raw BUFR observation dumps, WAFS blended products, and GTG turbulence files. From v16 onward the tree splits into `atmos/` and `wave/`. Anyone scripting across the 2021 boundary must handle both layouts. (Live-verified on AWS: `gfs.20210101/00/` flat, `gfs.20210401/00/` split.)
+
 ### GFSv15 — operational 12 June 2019
 Replaced the legacy Global Spectral Model (GSM) with the **FV3** dynamical core, marking the first operational deployment of the UFS atmospheric model at NCEP. Horizontal and vertical resolution were maintained from v14 (~13 km, 64 levels) to focus the upgrade on the dynamical core transition.
 
@@ -176,8 +321,14 @@ GFS has a continuous operational lineage at NCEP dating back to the late 1980s, 
 - GFS documentation: https://www.emc.ncep.noaa.gov/emc/pages/numerical_forecast_systems/gfs.php
 - GFS implementations history: https://www.emc.ncep.noaa.gov/emc/pages/numerical_forecast_systems/gfs/implementations.php
 - GFS product inventory: https://www.nco.ncep.noaa.gov/pmb/products/gfs/
+- NOMADS help and GRIB filter migration guide: https://nomads.ncep.noaa.gov/info.php?page=help
 - NOAA upcoming model changes: https://www.nco.ncep.noaa.gov/pmb/changes/
 - NWS Service Change Notices: https://www.weather.gov/notification/
 - GFSv16 implementation notice: https://www.weather.gov/media/notification/pdfs/scn20-99gfs_v16_implementation.pdf
+- SCN 25-81 (OPeNDAP retirement): https://www.weather.gov/media/notification/pdf_2025/scn25-81_UPDATED_NOMADS_Consolidate_Subsetting_Services_aaa.pdf
+- SCN 25-82 (FTPPRD termination): https://www.weather.gov/media/notification/pdf_2025/scn25-82_FTPPRD_end_ftp.pdf
 - GFSv17 project plan and charter: https://vlab.noaa.gov/documents/36902936/36930565/GFSv17+Project+Plan+and+Charter.pdf
 - Global Workflow source repository: https://github.com/NOAA-EMC/global-workflow
+- AWS Open Data registry: https://registry.opendata.aws/noaa-gfs-bdp-pds/
+- Azure / AIforEarthDataSets: https://microsoft.github.io/AIforEarthDataSets/data/noaa-gfs.html
+- Google Earth Engine catalog: https://developers.google.com/earth-engine/datasets/catalog/NOAA_GFS0P25
