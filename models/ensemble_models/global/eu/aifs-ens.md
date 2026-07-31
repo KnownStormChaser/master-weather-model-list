@@ -52,7 +52,7 @@ AIFS ENS runs operationally alongside the physics-based [IFS ENS](./ifs-ens.md) 
 | **Combined, per cycle** | | **~279 GB** |
 | **Per day (4 cycles)** | | **~1.1 TB** |
 
-The second-largest product in the ECMWF Open Data tree, behind [IFS ENS](./ifs-ens.md) at ~1,778 GB/day. AIFS ENS carries fewer parameters per member (108 records against IFS ENS's 170) but runs the full 61-step, 360 h forecast at all four cycles where IFS ENS runs 49 steps at two of them, which closes most of the gap. Cross-stream comparison table in the [ENS-WAM entry](../../../wave_models/global/eu/ecwam-ens.md#volume).
+The second-largest product in the ECMWF Open Data tree, behind [IFS ENS](./ifs-ens.md) at ~1,778 GB/day. AIFS ENS carries fewer parameters per member (108 records against IFS ENS's 170) but runs the full 61-step, 360 h forecast at all four cycles where IFS ENS runs 49 steps at two of them, which closes most of the gap. Cross-stream comparison table in the [IFS entry](../../../nwp_models/global/eu/ifs.md#volume-across-the-025-tree).
 
 ---
 
