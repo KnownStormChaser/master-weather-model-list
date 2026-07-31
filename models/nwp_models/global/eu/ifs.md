@@ -185,6 +185,28 @@ curl --range 17459800-18068845 [ROOT]/.../20260730000000-0h-oper-fc.grib2 -o 2t.
 
 Offsets change every run and must be re-read from the index each time. Multipart byte ranges are **not** reliably supported across all four channels — issue one range request per field.
 
+#### Volume across the 0.25° tree
+Measured 2026-07-30 from `Content-Length` on the 00z step-24 file of each stream, extrapolated over each stream's step count. Per-step forecast files only — the small `-ep` and `-tf` products are excluded.
+
+| Stream | MB/step | GB per 00/12 cycle | GB per 06/18 cycle | GB/day |
+|---|---|---|---|---|
+| [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md) `enfo` (50 pf) | 6,633.5 | 563.8 | 325.0 | **1,778** |
+| [AIFS ENS](../../../ensemble_models/global/eu/aifs-ens.md) `enfo` (cf + pf) | 4,570.9 | 278.8 | 278.8 | **1,115** |
+| [ENS-WAM](../../../wave_models/global/eu/ecwam-ens.md) `waef` (50 pf) | 529.3 | 45.0 | 25.9 | **142** |
+| AIFS ENS `waef` (cf + pf) | 425.2 | 25.9 | 25.9 | **104** |
+| **IFS `oper` (this entry)** | 144.7 | 12.3 | 7.1 | **39** |
+| [AIFS Single](./aifs-single.md) `oper` | 84.9 | 5.2 | 5.2 | **21** |
+| [ECWAM](../../../wave_models/global/eu/ecwam.md) `wave` | 10.6 | 0.9 | 0.5 | **3** |
+| AIFS Single `wave` | 8.1 | 0.5 | 0.5 | **2** |
+| **Whole tree** | | | | **~3,200 (3.2 TB)** |
+
+Roughly 2,950 GB/day of that is atmospheric and 250 GB/day wave. Two observations that matter when planning retrieval:
+
+- **The ensembles are 96% of the tree.** `enfo` alone across both models is ~2.9 TB/day. Deterministic streams together are under 65 GB/day — a full day of IFS `oper` plus AIFS Single `oper` plus both deterministic wave streams is smaller than *one* 06z IFS ENS step file.
+- **The IFS streams are front-loaded onto 00/12 UTC** (85 steps against 49), while both AIFS streams run 61 steps at every cycle. AIFS ENS therefore delivers a constant daily load where IFS ENS spikes.
+
+Note that CCSDS compression is content-dependent, so per-step sizes vary with the meteorology — a stormy field compresses worse than a quiet one. These are single-sample measurements; treat the totals as approximate and the ranking as robust.
+
 ### Full ECMWF Real-time Catalogue
 Since **1 October 2025**, the entire ECMWF Real-time Catalogue is licensed under CC-BY-4.0 — data costs have been removed and full-resolution 9 km IFS output can be redistributed and used commercially with attribution. However, *delivery* of high-volume data may still incur service charges to cover infrastructure costs, and full-catalogue access typically requires a Real-time Dissemination Service Agreement.
 
