@@ -43,7 +43,7 @@ AIFS ENS runs operationally alongside the physics-based [IFS ENS](./ifs-ens.md) 
 
 > **AIFS ENS is both longer and earlier than IFS ENS.** The physics-based [IFS ENS](./ifs-ens.md) runs to 360 h only at 00 and 12 UTC, dropping to 144 h at 06 and 18 UTC, and publishes at T+7h40m (00/12) or T+7h04m (06). AIFS ENS carries the full 61-step, 360 h run at **all four cycles** and lands **exactly one hour ahead** at 00/12 UTC and 24 minutes ahead at 06 UTC. For a fresh 15-day ensemble at 06 or 18 UTC, AIFS ENS is currently the only ECMWF option.
 
-### Volume — the largest product in the ECMWF Open Data tree
+### Volume
 
 | File | Per step | Per cycle (61 steps) |
 |---|---|---|
@@ -52,7 +52,7 @@ AIFS ENS runs operationally alongside the physics-based [IFS ENS](./ifs-ens.md) 
 | **Combined, per cycle** | | **~279 GB** |
 | **Per day (4 cycles)** | | **~1.1 TB** |
 
-> **This supersedes a claim made in the [ENS-WAM entry](../../../wave_models/global/eu/ecwam-ens.md), which described the wave ensemble as "by a wide margin the largest product in the ECMWF Open Data tree."** That was measured before AIFS ENS was checked and is wrong. ENS-WAM is ~142 GB/day; AIFS ENS is ~1.1 TB/day, roughly eight times larger. The ENS-WAM entry needs that sentence corrected.
+The second-largest product in the ECMWF Open Data tree, behind [IFS ENS](./ifs-ens.md) at ~1,778 GB/day. AIFS ENS carries fewer parameters per member (108 records against IFS ENS's 170) but runs the full 61-step, 360 h forecast at all four cycles where IFS ENS runs 49 steps at two of them, which closes most of the gap. Cross-stream comparison table in the [ENS-WAM entry](../../../wave_models/global/eu/ecwam-ens.md#volume).
 
 ---
 
