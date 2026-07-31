@@ -160,7 +160,11 @@ https://nomads.ncep.noaa.gov/cgi-bin/filter_rap242.pl    (ds=rap242)
 https://nomads.ncep.noaa.gov/cgi-bin/filter_rap243.pl    (ds=rap243)
 ```
 
-> **Retention is not the ~10 days previously stated here, and could not be fully verified.** All four GRIB filter pages offered only **two** directory options on 2026-07-31 (`rap.20260730`, `rap.20260731`). The `/pub/data/` directory listing returned persistent HTTP 502 from the verification environment, so the depth of the underlying tree is **TBD** — two days is a confirmed lower bound, not the retention figure. Given RAP's ~484 GB/day volume a short window is plausible. Anyone needing more than a couple of days should use AWS or GCS regardless.
+> ⚠️ **Retention is two days, not the ~10 days previously stated here.** The production root held exactly two date directories on 2026-07-31 — `rap.20260730/` and `rap.20260731/` — and all four GRIB filter pages offered the same two options. Given RAP's ~484 GB/day volume this is unsurprising, but it is materially shorter than the NOMADS window for [GFS](../../global/usa/gfs.md#data-availability) (~10 days). **Anything older than yesterday must come from AWS or GCS.**
+
+**Content NOMADS carries that the cloud mirrors do not:**
+- **`bufrsnd.tCCz/` directories** — the exploded per-station BUFR sounding files, one directory per cycle. All three clouds carry only the bundled `rap.tCCz.bufrsnd.tar.gz` (24/day). Same split as the `bufr.tCCz/` case in the [GFS](../../global/usa/gfs.md#cross-cloud-equivalence) tree.
+- **`ls-l`** — a ~646 KB plain-text directory manifest written at the end of the day (18:06 UTC on 2026-07-31). Returns HTTP 404 on AWS, Azure, and GCS.
 
 > Both the OPeNDAP (`/dods/`) and FTPPRD (`ftpprd.ncep.noaa.gov`, `ftp.ncep.noaa.gov`) routes were retired on **23 February 2026** under SCN 25-81 and SCN 25-82 respectively. Neither is a valid RAP access path any more.
 
@@ -245,7 +249,7 @@ All three serve **anonymous HTTP 206 byte-range requests** with `GRIB` magic at 
 ---
 
 ## Open questions / outreach
-- **NOMADS retention depth for `rap/prod`:** GRIB filter exposes two days; directory listing unreachable during verification. What is the committed window? → `nodd@noaa.gov` / NCEP dataflow
+- **Exploded `bufrsnd.tCCz/` soundings are NOMADS-only:** with NOMADS retention at two days, per-station BUFR soundings are effectively unarchived. Is the tarball intended as the archival form, and is the exploded set expected to stay off the clouds? → `nodd@noaa.gov`
 - **Smoke at 03 UTC only:** is the single-cycle cadence intentional (NAQFC's daily input requirement) or a residue of the experimental RAP-Smoke schedule? → NOAA GSL
 - **GCS missing `.idx` for `wrfnat`/`wrfmsl`:** systematic across the whole archive. Sync-configuration gap or deliberate? → `nodd@noaa.gov`
 - **GCS missing 2021-12-31 → 2022-01-03:** four-day hole absent from AWS. Backfillable? → `nodd@noaa.gov`
