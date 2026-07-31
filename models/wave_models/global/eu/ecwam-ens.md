@@ -44,13 +44,24 @@ ECMWF distributes ENS-WAM through the free Open Data programme as `stream=waef` 
 - **Observed publication latency:** whole run published in one batch. Measured 2026-07-30: 00z at 07:40 UTC (**T+7h40m**), 06z at 13:04 UTC (**T+7h04m**), 12z at 19:40 UTC (**T+7h40m**) — identical to the atmospheric `enfo` stream, and consistently ~6 minutes after the deterministic `wave` files of the same cycle.
 
 ### Volume
-This is by a wide margin the largest product in the ECMWF Open Data tree.
 
 | | Per step file | Per cycle |
 |---|---|---|
 | 00 / 12 UTC | 529.3 MB | **45.0 GB** (85 steps) |
 | 06 / 18 UTC | 529.3 MB | **25.9 GB** (49 steps) |
 | **Full day** | | **~142 GB** |
+
+Substantial, but third in the tree rather than first. Measured per-step across every 0.25° stream on 2026-07-30 (00z, step 24):
+
+| Stream | GB per 00/12 cycle | GB per 06/18 cycle | GB/day | Messages/day |
+|---|---|---|---|---|
+| [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md) `enfo` (50 pf) | 563.8 | 325.0 | **1,778** | 2,278,000 |
+| [AIFS ENS](../../../ensemble_models/global/eu/aifs-ens.md) `enfo` (cf + pf) | 278.8 | 278.8 | **1,115** | 1,343,952 |
+| **ENS-WAM `waef` (this entry)** | 45.0 | 25.9 | **142** | 174,200 |
+| [IFS](../../../nwp_models/global/eu/ifs.md) `oper` | 12.3 | 7.1 | 39 | 49,312 |
+| [ECWAM](./ecwam.md) `wave` | 0.9 | 0.5 | 3 | 3,484 |
+
+The atmospheric ensembles dominate because they carry far more parameters per member — 170 records per member for IFS ENS and 108 for AIFS ENS, against 13 for ENS-WAM. Member count is identical; parameter breadth is what drives the difference.
 
 Plan retrieval around the `.index` byte-range mechanism rather than whole-file downloads — see *Data availability*.
 
@@ -152,7 +163,7 @@ Mirror parity was confirmed on 2026-07-30 between the ECMWF portal and GCS for t
 
 Full access mechanics — the Azure SAS-token exchange, the GCS bucket identity, and historical path-schema changes — are documented once in the [IFS entry](../../../nwp_models/global/eu/ifs.md#data-availability).
 
-> ⚠️ **AWS throttling is the binding constraint on this stream.** Sustained requests return HTTP 503 `SlowDown`, and this product provokes it more readily than any other in the tree: a full 00z ensemble retrieval is 85 files totalling 45 GB, and per-member extraction via byte ranges multiplies request counts by 50 or 650 depending on granularity. During verification, AWS served requests intermittently and then refused entirely, while GCS and the ECMWF portal handled the same workload without complaint. **Prefer GCS for bulk ensemble work**, and implement exponential backoff regardless of channel.
+> ⚠️ **AWS throttling is the binding constraint on bulk retrieval from this stream.** Sustained requests return HTTP 503 `SlowDown`. A full 00z ensemble pull is 85 files totalling 45 GB, and per-member extraction via byte ranges multiplies request counts by 50 or 650 depending on granularity. During verification, AWS served requests intermittently and then refused entirely, while GCS and the ECMWF portal handled the same workload without complaint. **Prefer GCS for bulk ensemble work**, and implement exponential backoff regardless of channel. The same applies with more force to the two atmospheric ensembles, which are larger still — see *Volume*.
 
 **Byte-range retrieval is close to mandatory here.** Each step file carries 650 GRIB messages; an individual `swh` member field is ~845 KB against a 529 MB container. Pulling one parameter across all 50 members costs ~42 MB instead of 529 MB — a 12× saving, and far more if only a subset of members or a geographic region is needed. The `.index` sidecar gives `_offset` and `_length` per message; offsets change every run and must be re-read each cycle.
 
