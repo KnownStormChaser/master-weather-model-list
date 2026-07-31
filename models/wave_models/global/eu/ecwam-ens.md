@@ -51,17 +51,7 @@ ECMWF distributes ENS-WAM through the free Open Data programme as `stream=waef` 
 | 06 / 18 UTC | 529.3 MB | **25.9 GB** (49 steps) |
 | **Full day** | | **~142 GB** |
 
-Substantial, but third in the tree rather than first. Measured per-step across every 0.25° stream on 2026-07-30 (00z, step 24):
-
-| Stream | GB per 00/12 cycle | GB per 06/18 cycle | GB/day | Messages/day |
-|---|---|---|---|---|
-| [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md) `enfo` (50 pf) | 563.8 | 325.0 | **1,778** | 2,278,000 |
-| [AIFS ENS](../../../ensemble_models/global/eu/aifs-ens.md) `enfo` (cf + pf) | 278.8 | 278.8 | **1,115** | 1,343,952 |
-| **ENS-WAM `waef` (this entry)** | 45.0 | 25.9 | **142** | 174,200 |
-| [IFS](../../../nwp_models/global/eu/ifs.md) `oper` | 12.3 | 7.1 | 39 | 49,312 |
-| [ECWAM](./ecwam.md) `wave` | 0.9 | 0.5 | 3 | 3,484 |
-
-The atmospheric ensembles dominate because they carry far more parameters per member — 170 records per member for IFS ENS and 108 for AIFS ENS, against 13 for ENS-WAM. Member count is identical; parameter breadth is what drives the difference.
+Substantial, but third of eight in the tree rather than first — behind both atmospheric ensembles, which carry far more parameters per member (170 records for IFS ENS, 108 for AIFS ENS, against 13 here). Cross-stream comparison table in the [IFS entry](../../../nwp_models/global/eu/ifs.md#volume-across-the-025-tree).
 
 Plan retrieval around the `.index` byte-range mechanism rather than whole-file downloads — see *Data availability*.
 
