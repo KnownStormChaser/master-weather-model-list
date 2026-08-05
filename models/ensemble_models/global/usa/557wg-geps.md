@@ -220,15 +220,6 @@ No cloud mirror is documented for this product; if none exists, the two-day NOMA
 
 - **The multi-center NUOPC framework** has been operational since the mid-2010s and is documented as showing consistent skill improvement over any single contributing ensemble, particularly for surface variables. This claim is carried over from the previous version of this entry and has **not been independently verified**.
 
-### Open questions for 557 WW / NCO
-1. Is the product still 63 members (21 per center), and has the NCEP contribution been expanded to GEFS's full 31 as NAEFS did in v7.0?
-2. Why does `numberOfForecastsInEnsemble` read 0 on every derived message?
-3. What do the 54 PDT 4.0 messages contain — ensemble mean, control member, or a deterministic run?
-4. Is `derivedForecast = 2` ("std dev with respect to cluster mean") intentional, or should it be 4 ("spread of all members")?
-5. Are the contributing runs bias-corrected before pooling?
-6. Is the 240-hour / 1-degree product description stale, or does it describe a different distribution than the NOMADS one?
-7. Is there a cloud mirror, or is the 2-day NOMADS window the whole archive?
-
 ---
 
 ## Official documentation
