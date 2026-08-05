@@ -197,11 +197,6 @@ First publicly available AIFS, distributed via ECMWF Open Data as an experimenta
 
 ---
 
-## Open questions / pending verification
-- **Whether `q` at 10 hPa is a deliberate omission or an oversight** — the v2 changelog's list of variables receiving the new level excludes humidity, which is consistent with deliberate, but ECMWF does not say so explicitly. Worth confirming alongside the other ECMWF queries accumulating in the [IFS](./ifs.md#open-questions--pending-verification) and [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md#open-questions--pending-verification) entries.
-
----
-
 ## Verification record
 Established on **2026-07-30** by direct inspection rather than from documentation:
 - Directory enumeration of `aifs-single` across the 00z, 06z and 12z cycles for stream inventory, step lists and forecast horizons at every cycle
