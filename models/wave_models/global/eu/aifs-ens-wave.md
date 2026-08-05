@@ -175,15 +175,6 @@ The archive begins at the v2 go-live; there is no AI wave ensemble data before 1
 
 ---
 
-## Open questions / pending verification
-- **The 50-point mask split** between `cdww`/`wmb` and the sea-state fields, and the difference against the ECWAM mask. Systematic and reproducible, but undocumented. **TBD.**
-- **Whether `wmb` is a model input or a compatibility artefact**, and why it is duplicated across perturbed members when its values are static. **TBD.**
-- **Whether ensemble mean and spread will be added.** Their absence matches ENS-WAM but diverges from both atmospheric ensembles, which distribute `em` and `es`. Not stated.
-- **Whether the stream will gain `mp2` and `pp1d`** to reach parity with the ENS-WAM subset — not stated.
-- **How the `mwpg*` thresholds were chosen** (8, 10, 12, 15 s) and whether they are computed from `mwp` or from an internal representation — not documented. **TBD.**
-
----
-
 ## Recent version history
 
 ### AIFS ENS v2 — operational 12 May 2026 (current)
