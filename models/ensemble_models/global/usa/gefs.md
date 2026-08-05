@@ -217,15 +217,6 @@ All three serve **anonymous HTTP 206 byte-range requests** with `GRIB` magic at 
 
 ---
 
-## Open questions / outreach
-- **`bufr/` absent from all three clouds:** with 4-day NOMADS retention, GEFS station soundings have no archival route. Deliberate scope exclusion or sync gap? → `nodd@noaa.gov`
-- **GCS missing 315 wave `.idx` sidecars per cycle:** same systematic pattern as the RAP bucket. Sync-configuration issue? → `nodd@noaa.gov`
-- **Reforecast `2020/` contains only `2010070100/`:** a misfiled 2010 date under the 2020 prefix. Do real 2020 reforecasts exist, and can the misfiling be corrected? → `nodd@noaa.gov`
-- **`chem/pgrb2ap5/` holds files named `a3d_0p25`:** naming appears inconsistent with the directory's 0.5° designation. Which is authoritative? → EMC
-- **`init/` retention and intent:** 121.8 GB per cycle of native cubed-sphere ICs on all three clouds, undocumented in NOAA's GEFS product pages. Public product or operational side-effect? → `nodd@noaa.gov`
-
----
-
 ## Recent version history
 
 ### GEFSv12 — operational 23 September 2020 (current)
