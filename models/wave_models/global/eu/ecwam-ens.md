@@ -179,15 +179,6 @@ Full access mechanics — the Azure SAS-token exchange, the GCS bucket identity,
 
 ---
 
-## Open questions / pending verification
-- **AWS mirror parity for `waef`** — not established, blocked by `SlowDown` throttling at check time. Recheck from a quieter session.
-- **MARS mapping table listing `waef / cf`** — to be raised with ECMWF support alongside the `oper`/`wave` step-range discrepancy and the `enfo` probability-cycle discrepancy noted in the [IFS](../../../nwp_models/global/eu/ifs.md#open-questions--pending-verification) and [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md#open-questions--pending-verification) entries.
-- **`numberOfForecastsInEnsemble = 51` in 50-member files** — same query as for `enfo`.
-- **Whether any wave-specific stochastic perturbation exists** in the operational configuration. The documentation reviewed describes spread as inherited from the atmosphere and names no wave-side scheme, but absence of mention is not confirmation of absence. **TBD.**
-- **Current operational altimeter/SAR mission list** for wave assimilation — **TBD**.
-
----
-
 ## Recent version history
 
 ### IFS Cycle 50r1 — 12 May 2026 (current)
