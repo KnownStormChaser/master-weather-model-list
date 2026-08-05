@@ -248,16 +248,6 @@ All three serve **anonymous HTTP 206 byte-range requests** with `GRIB` magic at 
 
 ---
 
-## Open questions / outreach
-- **Exploded `bufrsnd.tCCz/` soundings are NOMADS-only:** with NOMADS retention at two days, per-station BUFR soundings are effectively unarchived. Is the tarball intended as the archival form, and is the exploded set expected to stay off the clouds? → `nodd@noaa.gov`
-- **Smoke at 03 UTC only:** is the single-cycle cadence intentional (NAQFC's daily input requirement) or a residue of the experimental RAP-Smoke schedule? → NOAA GSL
-- **GCS missing `.idx` for `wrfnat`/`wrfmsl`:** systematic across the whole archive. Sync-configuration gap or deliberate? → `nodd@noaa.gov`
-- **GCS missing 2021-12-31 → 2022-01-03:** four-day hole absent from AWS. Backfillable? → `nodd@noaa.gov`
-- **Native computational grid geometry:** distributed files are 953 × 834 rotated lat-lon; the "759 × 568 Lambert" figure in circulation is unattributed. Which describes the model's internal grid? → NOAA GSL
-- **`rap_e.` frozen since 2022-06-28:** closed archive or stalled feed? → `nodd@noaa.gov`
-
----
-
 ## Future outlook
 
 RAP is expected to be retired alongside [HRRR](./hrrr.md) as part of the eventual transition to **RRFSv2** (the MPAS-based version of the [Rapid Refresh Forecast System](./rrfs.md)). Unlike the NAM, NAM Nest, HiresW (non-Guam), HREF, and SREF — which are scheduled for retirement on October 6, 2026 under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination notice, updated July 6, 2026; RRFS/REFS implementation under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf); originally proposed under PNS 25-41) — **RAP and HRRR are explicitly not part of the RRFSv1 retirement wave**. Both are expected to continue operating in parallel with RRFSv1 until the RRFSv2 transition.
