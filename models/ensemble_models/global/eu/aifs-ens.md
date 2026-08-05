@@ -240,14 +240,6 @@ AIFS ENS is distributed at its native 0.25° resolution. Like AIFS Single, it ha
 
 ---
 
-## Open questions / pending verification
-- **The 52-subset maximum in the TC track BUFR**, against an ensemble of 51 forecasts. **TBD** what the extra subset represents. Worth raising alongside the other ECMWF queries accumulating in the [IFS](../../../nwp_models/global/eu/ifs.md#open-questions--pending-verification) and [IFS ENS](./ifs-ens.md#open-questions--pending-verification) entries.
-- **Whether `q` at 10 hPa is a deliberate omission or an oversight** — same question as for AIFS Single.
-- **Whether `gh` will be added** to bring AIFS ENS to parity with AIFS Single on pressure levels — not stated.
-- **The `120-168` / `120-240` / `168-240` aggregation windows** for `tpl01`, `tprl1`, `tprg3` and `tprg5` are undocumented in the material reviewed. Their intended use (day 5–7, 5–10 and 7–10 extended-range summaries) is inferred from the windows themselves. **TBD.**
-
----
-
 ## Version history
 
 ### AIFS ENS v2 — operational 12 May 2026 (current)
