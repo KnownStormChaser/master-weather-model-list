@@ -49,13 +49,13 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ### [AICON-Global (DWD)](./models/nwp_models/global/germany/aicon-global.md)
 - **Operator:** Deutscher Wetterdienst (DWD)
-- **Status:** Provided for evaluation, research, and training (introduced September 3, 2025; Open Data available early 2026); not part of the operational ICON suite
-- **Approach:** Standalone AI, Anemoi framework; GraphCast-like encoder–processor–decoder with a Graph-Transformer GNN, built directly on ICON's triangular mesh
-- **Training data:** ICON-DREAM reanalysis (2010–2023)
-- **Resolution:** ~13 km (native ICON R3B07 icosahedral grid; also regular lat–lon)
-- **Vertical structure:** 13 reduced ICON model levels (SLEVE), surface to ~50 hPa
-- **Forecast length:** Up to 180 hours
-- **Note:** DWD's first AI-based forecast model; complements but does not replace the physics-based [ICON](./models/nwp_models/global/germany/icon-global.md). A limited-area extension (AICON-LAM) is on the roadmap for 2026–2027.
+- **Status:** Operational — **AICON v1.0** (introduced September 3, 2025; Open Data from early 2026). DWD describes it as its operational AI forecasting system; it complements the physics-based ICON suite rather than forming part of it.
+- **Approach:** Standalone AI, Anemoi framework; GraphCast-like encoder–processor–decoder with a Graph-Transformer GNN, built directly on ICON's triangular mesh (hierarchical multi-mesh, skip connections so the network learns forecast increments)
+- **Training data:** ICON-DREAM reanalysis (2010–2023), 3-hourly, 13 km
+- **Resolution:** ~13 km — native ICON R3B07 icosahedral grid, same DWD grid number (26) and grid UUID as [ICON Global](./models/nwp_models/global/germany/icon-global.md). A regular lat–lon rendering is produced internally but is **not** distributed on Open Data.
+- **Vertical structure:** 13 reduced ICON model levels (SLEVE), ICON levels 49–119, top at 21,115 m (~50 hPa). Distributed with levels renumbered 1–13.
+- **Forecast length:** 180 h at 00/12 UTC, 120 h at 06/18 UTC; 3-hourly steps. Cycled every 3 h, but only the four main cycles reach Open Data.
+- **Note:** DWD's first AI-based forecast model; complements but does not replace the physics-based [ICON](./models/nwp_models/global/germany/icon-global.md). The regional variant **AICON-EU** became operational on June 30, 2026 (see *Regional AI models*).
 
 ### [Pangu-Weather — AIWP reforecast archive (NOAA/CIRA)](./models/nwp_models/global/usa/pangu-aiwp.md)
 - **Operator:** CIRA (Colorado State University) + NOAA-GSL, distributed via NOAA Open Data Dissemination (NODD); underlying model by Huawei Cloud (Bi et al., 2023)
@@ -97,7 +97,9 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ## Regional AI models
 
-Regional (limited-area) AI forecast systems. Unlike the global systems above, these cover a single national or continental domain, typically at convection-permitting resolution. This is a young category, expected to grow as centres extend AI methods to limited-area modelling (e.g., DWD's planned AICON-LAM).
+Regional (limited-area) AI forecast systems. Unlike the global systems above, these cover a single national or continental domain, typically at convection-permitting resolution. This is a young category and still growing as centres extend AI methods to limited-area modelling.
+
+> **AICON-EU (DWD)** — operational since June 30, 2026, but **not catalogued here yet because it is not on Open Data**. DWD's first regional AI model: ICON-EU domain at ~6.5 km (R3B08 grid, DWD grid number 27), the same 13 reduced levels and twelve parameters as [AICON-Global](./models/nwp_models/global/germany/aicon-global.md), 3-hourly, 120 h at 00/06/12/18 UTC and 48 h at the intermediate cycles. Initialized from AICON-Global rather than from an analysis, using an embedded-grid approach in which the global forecast in and around the LAM domain feeds the regional model. No `aicon-eu` directory exists under `/weather/nwp/v1/m/` as of 2026-08-05; worth monitoring. A ~2 km German-domain variant matching the ICON-D2 domain is planned (DWD's SKY nomenclature reserves the `la` domain code for it).
 
 ### [HRRR-Cast (NOAA)](./models/nwp_models/regional/usa/hrrrcast.md)
 - **Operator:** NOAA / OAR — developed by Global Systems Laboratory (GSL); run experimentally at NWS/EMC
