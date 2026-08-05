@@ -281,14 +281,6 @@ NAEFS upgrades generally track upgrades to the parent ensembles; each major GEFS
 
 - **As with all ensemble systems**, NAEFS output should be interpreted probabilistically. Its value is in calibrated probabilities and spread, not in any single-member view — which is just as well, given that no members are distributed in the `naefs.*` tree.
 
-### Open questions for NCO / ECCC
-1. Is NAEFS computed at 06 and 18 UTC and merely not published, or genuinely run twice daily? The NOMADS description says four.
-2. What distinguishes `_anf` from `_anvf` (`derivedForecast` 197 vs 198)?
-3. What does `derivedForecast = 196` denote, and is it used in any product?
-4. Why does `numberOfForecastsInEnsemble` report 50 when 52 member files exist, and why does `w` @850 alone report 30?
-5. Is there any reason percentiles are not encoded with PDT 4.6, which would make them self-describing?
-6. (ECCC) Does the NAEFS station XML still use a 21-member NCEP subset by design, or has it not been updated for v7.0?
-
 ---
 
 ## Official documentation
