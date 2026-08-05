@@ -157,14 +157,6 @@ The cloud mirrors retain full archives rather than the portal's rolling window. 
 
 ---
 
-## Open questions / pending verification
-- **ECMWF's open-data documentation still states 240 h (00/12) and 90 h (06/18) for `stream=wave`.** The live archive serves 360 h and 144 h. Believed to be stale pre-50r1 text — the same discrepancy affects the atmospheric `oper` stream. To be raised with ECMWF support alongside the queries listed in the [IFS](../../../nwp_models/global/eu/ifs.md#open-questions--pending-verification) and [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md#open-questions--pending-verification) entries.
-- **Current operational altimeter/SAR mission list** for wave assimilation — **TBD**.
-- **Wave analysis cadence** relative to the 12-hour atmospheric assimilation window — **TBD**.
-- **Whether the 999 m bathymetry cap** is a distribution artefact or the model's internal deep-water treatment — worth confirming, since it affects anyone using `wmb` as a depth reference rather than as a model diagnostic.
-
----
-
 ## Recent version history
 
 ### IFS Cycle 50r1 — 12 May 2026 (current)
