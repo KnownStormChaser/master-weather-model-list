@@ -163,14 +163,6 @@ At 8.1 MB per step file, whole-file retrieval is entirely practical here; the by
 
 ---
 
-## Open questions / pending verification
-- **The 50-point mask split** between `cdww`/`wmb` and the sea-state fields, and the 194-to-244-point difference against the ECWAM mask. Systematic and reproducible, but undocumented. **TBD** whether this reflects a different land–sea decision in the AI model or an artefact of the output pipeline.
-- **Whether `wmb` is a model input or a compatibility artefact.** A network with no propagation scheme has no obvious use for a depth field. **TBD.**
-- **Whether the stream will gain `mp2` and `pp1d`** to reach parity with the ECWAM subset — not stated.
-- **How the period-band fields are produced** — as direct network outputs or as post-processing of a predicted spectrum-like intermediate. Not documented. **TBD.**
-
----
-
 ## Recent version history
 
 ### AIFS Single v2 — operational 12 May 2026 (current)
