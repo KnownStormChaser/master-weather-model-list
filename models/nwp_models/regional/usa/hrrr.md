@@ -271,15 +271,6 @@ Alaska object counts match exactly across all three (1,952 for 2026-07-30); only
 
 ---
 
-## Open questions / outreach
-- **Exploded BUFR soundings are GCS-only:** present on NOMADS (2-day window) and Google Cloud, absent from AWS and Azure. Is this a deliberate split or a sync-configuration difference? → `nodd@noaa.gov`
-- **`nwges/hrrrdasges/` 36-member ensemble:** publicly distributed NetCDF with no accompanying product documentation. What is the retention policy, and is it intended as a public product or an operational side-effect? → `nodd@noaa.gov` / NOAA GSL
-- **Azure `/hrrr.20240416/` leading-slash prefix:** apparent ingest artifact. Removable? → `nodd@noaa.gov`
-- **Azure HRRR retention:** deep archive to 2021-03-21 with no documented policy, unlike GFS and RAP. Is the archive committed or best-effort? → `nodd@noaa.gov`
-- **2016-03-19 gap:** identical on AWS and GCS, suggesting an upstream production gap rather than a sync failure. Recoverable? → `nodd@noaa.gov`
-
----
-
 ## Future outlook
 
 HRRR is expected to be retired alongside [RAP](./rap.md) as part of the eventual transition to **RRFSv2** (the MPAS-based version of the [Rapid Refresh Forecast System](./rrfs.md)). Unlike the NAM, NAM Nest, HiresW (non-Guam), HREF, and SREF — which are scheduled for retirement on October 6, 2026 under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination notice, updated July 6, 2026; RRFS/REFS implementation under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf); originally proposed under PNS 25-41) — **HRRR and RAP are explicitly not part of the RRFSv1 retirement wave**. Both are expected to continue operating in parallel with RRFSv1 until the RRFSv2 transition. SCN 26-48 also assigns HRRR an active role in the new REFS, contributing two members (current and 6 h old cycles) to the CONUS and Alaska domains — formalising HRRR as a continuing operational input rather than just a legacy system in maintenance.
