@@ -211,16 +211,6 @@ All three serve **anonymous HTTP 206 byte-range requests** with `GRIB` magic at 
 
 ---
 
-## Open questions / outreach
-- **GCS forecast archive starts 2021-02-17 against AWS's 2018-10-31:** is the 2018–2021 backfill planned, or is AWS intended as the canonical deep archive? → `nodd@noaa.gov`
-- **Azure `cdas.*` gaps (2024-12-23→30, 2025-05-22→24):** two outage windows absent from AWS and GCS. Backfillable? → `nodd@noaa.gov`
-- **Azure retention asymmetry:** forecasts at ~90 days, analysis at full span, in the same container. Intentional? → `nodd@noaa.gov`
-- **AWS registry description:** states the bucket holds forecasts only and claims hourly data; both are contradicted by the bucket contents. → `opendata@amazon.com` / `nodd@noaa.gov`
-- **`ocnh` monthly stream:** appears in `monthly_grib_*` but has no 6-hourly counterpart. What does it contain, and why monthly-only? → EMC
-- **Reforecast/hindcast span:** the approximately-1982–2010 figure and its start-date cadence remain unconfirmed against Saha et al. (2014).
-
----
-
 ## Recent version history
 CFSv2 became operational at NCEP in March 2011, replacing CFSv1. No subsequent major operational version has superseded it. The system has been operationally stable for over fifteen years, which is unusual among the entries in this catalog and makes the archive unusually homogeneous for reforecast and verification work.
 
