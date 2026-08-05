@@ -230,15 +230,6 @@ They are **byte-identical, not merely equivalent**. For `gfs.20260731/12/atmos/g
 
 ---
 
-## Open questions / outreach
-- **`bufr.tCCz/` removal from the cloud mirrors (2026-02-21):** no corresponding Service Change Notice was located. Was this an intentional NODD scope reduction or an unannounced sync change? → `nodd@noaa.gov`
-- **Azure retention:** live window is 91 days against 30 days documented. Which is the committed figure? → `nodd@noaa.gov`
-- **Azure missing `gfsmos.` / `sst.` streams:** documented but absent. Intentional or a sync gap? → `nodd@noaa.gov`
-- **`noaa-gfs-warmstart-pds` frozen since 2022-12-01:** is this a deliberately closed archive, or a stalled feed? The registry entry gives no end date. → `nodd@noaa.gov`
-- **NetCDF availability post-v17:** PNS 26-30 removes `atmf`/`sfcf`/`atmanl`/`sfcanl` from the production tree. Does the NACC bucket (`noaa-oar-arl-nacc-pds`) continue under v17, and if so from what source? → `rick.jiang@noaa.gov`, `patrick.c.campbell@noaa.gov`
-
----
-
 ## Upcoming changes
 
 ### GFSv17 and GDASv17 — proposed for October 2026
