@@ -244,14 +244,6 @@ Historical files retain their original stream names — pre-50r1 data on the mir
 
 ---
 
-## Open questions / pending verification
-- **ECMWF Open Data documentation states 240 h / 90 h step limits** for `oper` and `wave`, while the live archive serves 360 h / 144 h. Believed to be stale pre-50r1 text. Query to be raised via the ECMWF support portal.
-- **`mmsf` seasonal stream** is documented in the file-naming convention but was not observable within the rolling window during verification. Monthly cadence makes it invisible most of the time. **TBD** — needs a check shortly after a month boundary.
-- **The MARS-to-filename mapping table** in ECMWF's documentation still lists `waef / cf → waef / ef`, implying the wave ensemble control is inside the `waef` file. Live decoding shows `waef` contains only `type=pf`, members 1–50. The table appears not to have been updated for 50r1.
-- **Earth Engine collection staleness** (last image 2026-07-07) — not ECMWF-operated, but worth a recheck before any decision to reference it.
-
----
-
 ## Upcoming changes
 
 ### 9 km Open Data subset — announced for "later in 2026", not yet live
