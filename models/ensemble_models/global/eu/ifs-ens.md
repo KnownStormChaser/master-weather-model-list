@@ -201,14 +201,6 @@ ECMWF also runs a separate **101-member sub-seasonal ensemble** at 36 km (TCo319
 
 ---
 
-## Open questions / pending verification
-- **ENS probability products at 06/18 UTC.** Documentation says they exist; enumeration finds none. Needs confirmation from ECMWF whether this is a documentation error or a suspended product. Query to be raised via the ECMWF support portal alongside the `oper` step-range discrepancy noted in the [IFS entry](../../../nwp_models/global/eu/ifs.md#open-questions--pending-verification).
-- **`numberOfForecastsInEnsemble = 51` in 50-member files.** Almost certainly an oversight in the post-50r1 encoding rather than intent, but worth confirming so downstream tooling knows whether to expect a fix.
-- **SPP perturbed-element count** is documented as 27 for Cycle 49r1. Whether 50r1's revised configuration changed that count is **TBD** — not stated in the material reviewed.
-- **`mmsf` seasonal stream** appears in the Open Data file-naming convention but was not observable in the rolling window. **TBD.**
-
----
-
 ## Recent version history
 
 ### Cycle 50r1 — operational 12 May 2026 (current)
