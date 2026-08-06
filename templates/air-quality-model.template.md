@@ -18,7 +18,7 @@
 ---
 
 ## Basic details
-- **Model type:** Air quality / atmospheric composition
+- **Model type:** <Air quality / atmospheric composition — append "(ensemble)" for ensemble configurations, e.g. "Air quality / atmospheric composition (ensemble)">
 - **Model system / core:** <e.g., CMAQ, GEM-MACH, MONARCH, CHIMERE, IFS-COMPO, FV3-Chem, WRF-Chem> (TBD)
 - **Horizontal resolution:** <e.g., ~12 km / 0.4° / ~40 km> (note native vs published grid if different)
 - **Vertical levels:** <e.g., 35> (TBD if unknown)
@@ -61,6 +61,23 @@
 - **Assimilates AQ observations:** <Yes/No> (TBD)
 - **Observation sources (if yes):** <e.g., surface monitor networks, satellite retrievals such as TROPOMI NO2 / MODIS AOD> (TBD)
 - **Method:** <e.g., 3D-Var, hybrid EnKF> (TBD, optional)
+
+---
+
+## Ensemble configuration (ensemble systems only)
+
+<**Delete this entire section for deterministic entries.** Do not leave it in place filled with TBDs — an empty ensemble block in a deterministic entry reads as missing research rather than as "not applicable.">
+
+- **Ensemble type:** <Perturbation-based (one model, perturbed members) / multi-model (independently developed models run as members) / hybrid> (TBD)
+
+  > State this before anything else. Air quality has a strong multi-model tradition — see [`cams-regional.md`](../models/air_quality_models/regional/eu/cams-regional.md), whose 11 members are separate operational models from different institutions. Spread there represents structural uncertainty between modelling approaches, not initial-condition sensitivity, and the two kinds are not interchangeable for downstream use.
+
+- **Ensemble size:** <e.g., 20 perturbed + 1 control; for a multi-model system, the member count plus the constituent models and their operators> (TBD)
+- **Source(s) of perturbations:** <List every source, not just the meteorological one. Common sources: the driving atmospheric ensemble (name it, and state member correspondence — is member *n* the composition response to atmospheric member *n*?); perturbed emissions; perturbed chemistry, deposition, or aerosol parameters; stochastic physics inside the composition model. State explicitly when the composition side is **not** independently perturbed, which is the common case.> (TBD)
+- **Chemistry / emissions differences vs deterministic sibling:** <Ensemble configurations are often run with a reduced mechanism, fewer tracked species, or a simplified aerosol treatment to fit the member count into the compute budget. Record it here, or state that the configuration is identical.> (TBD)
+- **Resolution, species, and output differences vs deterministic sibling:** <Ensemble composition output is frequently coarser, less frequent, and carries a thinner parameter set. Where the published parameter sets differ, name the missing fields rather than only giving counts. Note cycle-schedule differences too — the ensemble may publish fewer runs per day than the deterministic feed.> (TBD)
+- **Member packaging:** <Separate file per member vs a member dimension in one file; GRIB2 `perturbationNumber` / `typeOfEnsembleForecast` encoding, or the NetCDF member dimension name. Note whether a control member exists and how it is distinguished — several operators publish none at all.> (TBD)
+- **Derived products distributed:** <Ensemble mean, spread, exceedance probabilities against health or hazard thresholds, percentiles — list only what is published as raw gridded data, not what the operator renders in a viewer.> (TBD)
 
 ---
 
