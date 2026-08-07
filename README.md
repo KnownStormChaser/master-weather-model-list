@@ -19,11 +19,11 @@ No meteorology background is required to use this repository.
 - **Numerical Weather Prediction (NWP) models** (deterministic)
 - **Ensemble forecast models** (global and regional)
 - **Nowcasting systems** (0–6 h prediction by observation extrapolation, seamless extrapolation–NWP blending, or machine learning)
-- **Wave forecast models**
+- **Wave forecast models** (deterministic and ensemble)
 - **Ocean physics models** (temperature, salinity, currents, sea level, sea ice — distinct from wave models)
 - **Storm surge and coastal water level models** (deterministic and ensemble)
 - **Tropical cyclone / hurricane models**
-- **Air quality and atmospheric composition models**
+- **Air quality and atmospheric composition models** (deterministic and ensemble)
 - **Long-range forecast systems** (sub-seasonal, seasonal, and interannual prediction)
 - **AI-based and hybrid physics–AI forecast systems**
 - **Operational weather satellites** with openly distributed raw data (Level 1 calibrated radiances, Level 2 retrievals)
@@ -58,6 +58,12 @@ Forecast models are organized by:
 - **Model type** (weather, ensemble, nowcasting, wave, storm surge, ocean, tropical cyclone, air quality, long-range)
 - **Geographic scope** (global vs regional)
 - **Country or organization of origin**
+
+> **Ensembles are filed by phenomenon, not by ensemble status.** Wave, storm surge, and
+> air quality ensembles live alongside their deterministic siblings under
+> `models/wave_models/`, `models/storm_surge_models/`, and `models/air_quality_models/`,
+> cross-linked in both directions. `models/ensemble_models/` is reserved for ensembles of
+> the atmospheric *state* itself — GEFS, IFS ENS, ICON-EPS and similar.
 
 Each model has its own file describing:
 - what the model is
