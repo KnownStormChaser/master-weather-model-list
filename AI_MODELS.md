@@ -65,7 +65,7 @@ These approaches reflect genuinely different theories about how AI should enter 
 - **Resolution:** 0.25° (~28 km), 13 pressure levels
 - **Forecast length:** 240 h (10 days), 6-hourly steps; 2× daily (00/12 UTC)
 - **Period of record:** GFS-initialized ~10/2020 → present; IFS-initialized 01/2022 → present
-- **Note:** Part of the AIWP archive (`noaa-oar-mlwp-data`) alongside Aurora, FourCastNet, and GraphCast — one bucket, shared NetCDF-4 format, cadence, and open license. Distinct from Pangu-Weather in its original research form (see "What this page does not cover"). Described in Radford et al. (2025, BAMS).
+- **Note:** Part of the AIWP archive (`noaa-oar-mlwp-data`) alongside [Aurora](./models/nwp_models/global/usa/aurora-aiwp.md), [FourCastNet](./models/nwp_models/global/usa/fourcastnet-aiwp.md), and [GraphCast](./models/nwp_models/global/usa/graphcast-aiwp.md) — one bucket, shared NetCDF-4 format, cadence, and open license. Distinct from Pangu-Weather in its original research form (see "What this page does not cover"). Described in Radford et al. (2025, BAMS).
 
 ### [Aurora — AIWP reforecast archive (NOAA/CIRA)](./models/nwp_models/global/usa/aurora-aiwp.md)
 - **Operator:** CIRA (Colorado State University) + NOAA-GSL, distributed via NODD; underlying model by Microsoft Research AI for Science (Bodnar et al., 2025)
@@ -74,7 +74,25 @@ These approaches reflect genuinely different theories about how AI should enter 
 - **Resolution:** 0.25° (~28 km), 13 pressure levels
 - **Forecast length:** 240 h (10 days), 6-hourly steps; 2× daily (00/12 UTC)
 - **Period of record:** both GFS- and IFS-initialized from January 2025 → present (shorter record than the other AIWP models)
-- **Note:** Part of the AIWP archive (`noaa-oar-mlwp-data`); files are large (~4.6 GB per cycle at full 0.25°). This is the deterministic base Aurora 0.25° model — not Microsoft's newer Aurora 1.5 (ensemble/hourly). Described in Radford et al. (2025, BAMS).
+- **Note:** Part of the AIWP archive (`noaa-oar-mlwp-data`), alongside [Pangu-Weather](./models/nwp_models/global/usa/pangu-aiwp.md), [FourCastNet](./models/nwp_models/global/usa/fourcastnet-aiwp.md), and [GraphCast](./models/nwp_models/global/usa/graphcast-aiwp.md); files are large (~4.6 GB per cycle at full 0.25°). This is the deterministic base Aurora 0.25° model — not Microsoft's newer Aurora 1.5 (ensemble/hourly). Described in Radford et al. (2025, BAMS).
+
+### [GraphCast — AIWP reforecast archive (NOAA/CIRA)](./models/nwp_models/global/usa/graphcast-aiwp.md)
+- **Operator:** CIRA (Colorado State University) + NOAA-GSL, distributed via NODD; underlying model by Google DeepMind (Lam et al., 2023)
+- **Status:** Reforecast archive + near-real-time (not an operational forecast product)
+- **Approach:** Standalone AI (encode–process–decode GNN on a multi-mesh icosahedral representation), running the upstream research weights unmodified, initialized from operational analyses in two parallel streams — GFS and IFS
+- **Resolution:** 0.25° (~28 km), 13 pressure levels
+- **Forecast length:** 240 h (10 days), 6-hourly steps; 2× daily (00/12 UTC)
+- **Period of record:** GFS-initialized 2021-12-31 → present; IFS-initialized 2022-01-01 → present
+- **Note:** **Not AIGFS and not GraphCastGFS** — same architecture, different operator, weights, format, and purpose. The richest AIWP model by field coverage: the only one carrying vertical velocity or precipitation. Files ~5.7 GB (GFS) / ~3.9 GB (IFS) per cycle.
+
+### [FourCastNet — AIWP reforecast archive (NOAA/CIRA)](./models/nwp_models/global/usa/fourcastnet-aiwp.md)
+- **Operator:** CIRA (Colorado State University) + NOAA-GSL, distributed via NODD; underlying model by NVIDIA (Pathak et al., 2022; Bonev et al., 2023)
+- **Status:** Reforecast archive + near-real-time (not an operational forecast product)
+- **Approach:** Standalone AI (Spherical Fourier Neural Operator), running the upstream research weights via ECMWF's `ai-models-fourcastnetv2` plugin, initialized from operational analyses in two parallel streams — GFS and IFS
+- **Resolution:** 0.25° (~28 km), 13 pressure levels
+- **Forecast length:** 240 h (10 days), 6-hourly steps; 2× daily (00/12 UTC)
+- **Period of record:** v2-small GFS-initialized 2020-09-30 → present, IFS-initialized 2022-01-01 → present; legacy v1 (`FOUR_v100_GFS`) frozen at 2020-09-30 → 2023-10-31 and fully superseded by the backfilled v2
+- **Note:** **Not FourCastNetGFS**, which ended 2026-03-01. The only AIWP model carrying 100-m winds, surface pressure, or total column water vapour — and the only one using *relative* rather than specific humidity on pressure levels, so cross-model humidity comparison needs a conversion. Carries no vertical velocity or precipitation.
 
 ---
 
@@ -138,19 +156,21 @@ Regional (limited-area) AI forecast systems. Unlike the global systems above, th
 
 ## Experimental AI productionizations
 
-The following systems are productionizations of research AI architectures that are run experimentally by NWP centres but have not (or have not yet) become operational forecast products.
+The following systems are productionizations of research AI architectures run experimentally by NWP centres, which have not become operational forecast products. Both NOAA entries below are now **discontinued** — neither produces new forecasts, though their archives remain openly available.
 
-### GraphCastGFS (NOAA)
+### GraphCastGFS (NOAA) — discontinued
 - **Operator:** NOAA / NCEP
-- **Status:** Experimental
+- **Status:** Experimental; **ceased production 2026-05-05** (final day partial — 00 UTC only)
 - **Approach:** Productionization of Google DeepMind's GraphCast architecture, fine-tuned on GDAS+ERA5 data
-- **Lineage:** Predecessor to the operational AIGFS
+- **Lineage:** Predecessor to the operational [AIGFS](./models/nwp_models/global/usa/aigfs.md), which superseded it
+- **Data:** GRIB2, `graphcastgfs.YYYYMMDD/` prefixes in the `noaa-nws-graphcastgfs-pds` bucket (2024-02-05 → 2026-05-05). That bucket is still active, but what updates in it now is experimental AIGFS/AIGEFS development output, not GraphCastGFS.
 
-### FourCastNetGFS (NOAA)
+### FourCastNetGFS (NOAA) — discontinued
 - **Operator:** NOAA / NCEP
-- **Status:** Experimental
-- **Approach:** Productionization of NVIDIA's FourCastNet architecture using Spherical Fourier Neural Operators
-- **Lineage:** No operational counterpart announced
+- **Status:** Experimental; **ceased production 2026-03-01** (final day partial — 00/06/12 UTC only)
+- **Approach:** Productionization of NVIDIA's FourCastNet v2 architecture using Spherical Fourier Neural Operators, initialized from NCEP 0.25° GDAS analyses
+- **Lineage:** No operational descendant — NOAA's operational AI line went to GraphCast, not FourCastNet
+- **Data:** GRIB2, `fcngfs.YYYYMMDD/` prefixes in `noaa-nws-fourcastnetgfs-pds` (2024-05-02 → 2026-03-01). The AWS registry entry still describes the system in the present tense.
 
 ---
 
@@ -170,13 +190,15 @@ Most operational AI weather models trace back to a small number of research arch
 ### GraphCast lineage (Google DeepMind, 2023)
 The GraphCast research architecture has been productionized by both NOAA and ECCC, with each centre fine-tuning it on different reanalysis and analysis data:
 
-- **GraphCast** (research) → **GraphCastGFS** (NOAA experimental) → **[AIGFS](./models/nwp_models/global/usa/aigfs.md)** (NOAA operational)
+- **GraphCast** (research) → **GraphCastGFS** (NOAA experimental, ended 2026-05-05) → **[AIGFS](./models/nwp_models/global/usa/aigfs.md)** (NOAA operational)
 - **GraphCast** (research) → **[GEML](./models/nwp_models/global/canada/gdps-geml.md)** (ECCC experimental)
+- **GraphCast** (research) → redistributed *unmodified* as open GFS- and IFS-initialized reforecasts via the **[NOAA/CIRA AIWP archive](./models/nwp_models/global/usa/graphcast-aiwp.md)**
 
-The two operational lineages share architecture and a 13-pressure-level vertical structure but differ in training data, fine-tuning procedures, and operational status.
+The two fine-tuned lineages share architecture and a 13-pressure-level vertical structure but differ in training data, fine-tuning procedures, and operational status. The AIWP arm is different in kind: it runs the upstream research weights without fine-tuning, so it is a redistribution rather than a productionization. Three distinct NOAA-affiliated datasets therefore carry GraphCast output — AIGFS, GraphCastGFS, and AIWP GraphCast — and they are not interchangeable.
 
 ### FourCastNet lineage (NVIDIA, 2022)
-- **FourCastNet** (research) → **FourCastNetGFS** (NOAA experimental, no operational descendant announced)
+- **FourCastNet** (research) → **FourCastNetGFS** (NOAA experimental, ended 2026-03-01; no operational descendant)
+- **FourCastNet** (research) → redistributed *unmodified* as open GFS- and IFS-initialized reforecasts via the **[NOAA/CIRA AIWP archive](./models/nwp_models/global/usa/fourcastnet-aiwp.md)**, in both v1 and v2-small configurations
 
 ### Pangu-Weather lineage (Huawei, 2023)
 - **Pangu-Weather** (3D Earth-Specific Transformer, research) → redistributed as open GFS- and IFS-initialized reforecasts via the **[NOAA/CIRA AIWP archive](./models/nwp_models/global/usa/pangu-aiwp.md)**
@@ -192,7 +214,7 @@ The two operational lineages share architecture and a 13-pressure-level vertical
 
 ## What this page does not cover
 
-- Research-only AI models with no public data, unless they have been productionized or openly redistributed by an NWP centre. Pangu-Weather and Aurora in their original research forms fall here; the NOAA/CIRA AIWP reforecast archive redistributes both as open data and *is* covered — see the [Pangu-Weather](./models/nwp_models/global/usa/pangu-aiwp.md) and [Aurora](./models/nwp_models/global/usa/aurora-aiwp.md) entries.
+- Research-only AI models with no public data, unless they have been productionized or openly redistributed by an NWP centre. Pangu-Weather, Aurora, GraphCast, and FourCastNet in their original research forms fall here; the NOAA/CIRA AIWP reforecast archive redistributes all four as open data and *is* covered — see the [Pangu-Weather](./models/nwp_models/global/usa/pangu-aiwp.md), [Aurora](./models/nwp_models/global/usa/aurora-aiwp.md), [GraphCast](./models/nwp_models/global/usa/graphcast-aiwp.md), and [FourCastNet](./models/nwp_models/global/usa/fourcastnet-aiwp.md) entries.
 - AI post-processing and statistical correction systems that operate downstream of physics-based forecasts without participating in the forecast integration itself.
 - Climate reanalysis ML applications.
 
