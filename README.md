@@ -21,6 +21,7 @@ No meteorology background is required to use this repository.
 - **Nowcasting systems** (0–6 h prediction by observation extrapolation, seamless extrapolation–NWP blending, or machine learning)
 - **Wave forecast models**
 - **Ocean physics models** (temperature, salinity, currents, sea level, sea ice — distinct from wave models)
+- **Storm surge and coastal water level models** (deterministic and ensemble)
 - **Tropical cyclone / hurricane models**
 - **Air quality and atmospheric composition models**
 - **Long-range forecast systems** (sub-seasonal, seasonal, and interannual prediction)
@@ -38,7 +39,7 @@ No meteorology background is required to use this repository.
 ---
 
 ## What this repository does NOT include
-- Models or satellite data behind paywalls, commercial licensing, or usage-fee structures
+- Models, satellite data, or radar data behind paywalls, commercial licensing, or usage-fee structures
 - Data that requires approval gates, vetted-user programs, or commercial-use restrictions beyond simple registration
 - Models or observation systems that only provide maps or viewers without downloadable data — including nowcasting products distributed only as web radar loops, and rendered radar imagery or tile services (e.g. RIDGE-style viewers) where no gridded feed is offered
 - Research-only or one-off model runs that are not distributed by an operating agency
@@ -54,7 +55,7 @@ A note on experimental systems: some entries document systems their operators ex
 ## Repository structure
 
 Forecast models are organized by:
-- **Model type** (weather, ensemble, nowcasting, wave, ocean, tropical cyclone, air quality, long-range)
+- **Model type** (weather, ensemble, nowcasting, wave, storm surge, ocean, tropical cyclone, air quality, long-range)
 - **Geographic scope** (global vs regional)
 - **Country or organization of origin**
 
@@ -109,7 +110,7 @@ If you've found the catalog useful in your work or research, you can optionally 
 - [Buy Me a Coffee](https://buymeacoffee.com/sebastianpd)
 - [Liberapay](https://liberapay.com/KnownStormChaser)
 
-Sponsorship helps support the time this takes: tracking operational changes, verifying sources, documenting upgrades and retirements, and adding new models and satellites as they become publicly available. Even small contributions are meaningful and appreciated — but the catalog will always be free for everyone.
+Sponsorship helps support the time this takes: tracking operational changes, verifying sources, documenting upgrades and retirements, and adding new systems as they become publicly available. Even small contributions are meaningful and appreciated — but the catalog will always be free for everyone.
 
 ---
 
@@ -125,12 +126,12 @@ Always consult the official provider's documentation for:
 
 ## A note on accuracy
 
-I try to document each model and satellite as accurately as possible based on
+I try to document each entry as accurately as possible based on
 official product user manuals, technical documentation, agency publications, and
 peer-reviewed references. However, **information in this repository may be
 incomplete, out of date, or inaccurate.** This is particularly true for:
 
-- Models or satellites with limited English-language documentation
+- Systems with limited English-language documentation
 - Systems operated by agencies that do not publish detailed technical
   specifications publicly
 - Recent operational upgrades that may not yet be reflected in published
@@ -140,7 +141,7 @@ incomplete, out of date, or inaccurate.** This is particularly true for:
 - Operational role assignments for satellite constellations, which rotate over
   time as new spacecraft commission and older ones retire
 
-Operational NWP and satellite systems evolve continuously. Resolution changes,
+Operational forecast and observation systems evolve continuously. Resolution changes,
 physics upgrades, ensemble size changes, instrument decommissioning, and
 distribution channel changes can happen with little public notice, and the gap
 between documented and operational configurations can be months or years for
@@ -157,7 +158,7 @@ catalogue stays useful over time.
 
 Corrections, additions, and improvements are welcome.
 
-If you add a model or satellite, please ensure:
+If you add a model, satellite, or radar entry, please ensure:
 - the data is genuinely free and downloadable (free registration is acceptable; paywalls and approval gates are not)
 - links point to official sources
 - descriptions remain simple, factual, and non-promotional
