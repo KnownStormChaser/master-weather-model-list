@@ -45,14 +45,20 @@ NOAA's next-generation convection-allowing system for North America is now forma
 ## Recently operational (AI weather systems)
 
 ### AIGFS, AIGEFS, HGEFS — operational December 17, 2025
-NOAA's three AI-based global weather systems became operational on the same date, replacing EAGLE SOLO (deterministic) and EAGLE Ensemble. AIGFS and AIGEFS are standalone AI systems based on the GraphCast architecture; HGEFS is a "grand ensemble" combining 31 GEFS physics members with 31 AIGEFS AI members. None of the three replaces an operational physics-based system — they run alongside GFS and GEFS.
+NOAA's three AI-based global weather systems became operational on the same date, replacing EAGLE SOLO (deterministic) and EAGLE Ensemble. AIGFS and AIGEFS are standalone AI systems based on the GraphCast architecture; HGEFS pools the 31 GEFS physics members with the 31 AIGEFS AI members into a 62-member grand ensemble, though it distributes only the pooled mean and spread rather than the members themselves. None of the three replaces an operational physics-based system — they run alongside GFS and GEFS. All three are distributed on NOMADS only, with no FTP and no NODD/AWS presence.
 - **Entries:** [AIGFS](./models/nwp_models/global/usa/aigfs.md) · [AIGEFS](./models/ensemble_models/global/usa/aigefs.md) · [HGEFS](./models/ensemble_models/global/usa/hgefs.md)
-- **Authority:** NOAA press release on AI-driven global weather models, December 2025
+- **Authority:** NWS SCN 25-89 (implementation of AIGFS, AIGEFS and HGEFS), December 2025
 
 ### AIFS Single v2, AIFS ENS v2 — operational May 12, 2026
 ECMWF's AI deterministic and ensemble forecast systems both upgraded to v2, jointly with IFS Cycle 50r1 (see above). v2 was fine-tuned specifically on Cycle 50r1 esuite analyses, adds a 10 hPa pressure level, and introduces ECMWF's first data-driven wave forecasts (deterministic and ensemble) alongside a new snow cover parameter. AIFS ENS v2 replaces v1's afCRPS loss with a multi-scale loss function.
 - **Entries:** [AIFS Single](./models/nwp_models/global/eu/aifs-single.md) · [AIFS ENS](./models/ensemble_models/global/eu/aifs-ens.md)
 - **Authority:** ECMWF news release, [IFS Cycle 50r1 and AIFS v2 go live](https://www.ecmwf.int/en/about/media-centre/news/2026/ifs-cycle-50r1-aifsv2-live) (May 12, 2026)
+
+### AIGFS v1.1 — operational July 27, 2026
+NOAA upgraded the deterministic AIGFS to v1.1 at the 12 UTC cycle. Three training changes: the grid-point MSE loss function was replaced with a spherical harmonic loss using wind speed and direction rather than u/v components; the model was fine-tuned on four years of GDAS analysis; and fine-tuning was extended to train autoregressively to a 72-hour lead time. Reported improvements to tropical cyclone intensity, forecast precipitation, and the blurring of fields at long lead times. This is the AIGFSdev2.1 spectral-loss line of work reaching operations.
+- **Entry:** [AIGFS](./models/nwp_models/global/usa/aigfs.md)
+- **Authority:** NWS SCN 26-68 (AIGFS v1.1 implementation), July 27, 2026
+- **Verification note:** Product content was unchanged — grid, parameter set, cycle schedule, and forecast length all match v1.0, so this is a model-quality upgrade with no downstream ingest impact. **AIGEFS and HGEFS were not included**; the NOMADS paths still resolve to `aigefs/v1.0/` and `hgefs/v1.0/` as of 2026-08-06, so the deterministic and ensemble AI systems are no longer at matched model versions.
 
 ---
 
