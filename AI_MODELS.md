@@ -12,11 +12,11 @@ Different meteorological centres are integrating AI into weather prediction in d
 
 1. **Standalone AI forecast models.** A trained neural network replaces the physics-based forecast integration entirely. The model starts from a physics-derived analysis (initial conditions) and rolls forward autoregressively using learned dynamics. *Examples: AIFS Single, AIGFS, GEML.*
 
-2. **AI-based ensembles.** Same as above, but trained probabilistically to produce ensemble members, usually by injecting random noise during inference. *Examples: AIFS ENS, AIGEFS.*
+2. **AI-based ensembles.** Same as above, but producing ensemble members rather than a single forecast. Centres differ in how spread is generated: ECMWF's AIFS ENS is a single probabilistically-trained network that injects random noise during inference, while NOAA's AIGEFS runs members with different sets of learned model weights and inherits its initial-condition perturbations from GEFS. The two are not interchangeable in what their spread represents. *Examples: AIFS ENS, AIGEFS.*
 
 3. **Hybrid physics–AI systems.** The physics-based model continues to run the forecast, but AI predictions guide or constrain parts of it — typically through spectral nudging toward AI-generated large-scale fields. *Examples: GDPS (ECCC, operational since v10.0.0 — physics forecast nudged toward the GEML AI model).*
 
-4. **Grand ensembles combining physics and AI members.** Members from a physics-based ensemble and an AI-based ensemble are combined into a single larger ensemble for probabilistic guidance. *Examples: HGEFS.*
+4. **Grand ensembles combining physics and AI members.** Members from a physics-based ensemble and an AI-based ensemble are combined into a single larger ensemble for probabilistic guidance. The combination happens upstream of distribution: HGEFS publishes only the pooled ensemble mean and spread, not the 62 members. *Examples: HGEFS.*
 
 These approaches reflect genuinely different theories about how AI should enter operational forecasting. The physics-based NWP community has not converged on a single answer, and this repository documents multiple approaches side by side.
 
@@ -34,10 +34,11 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ### [AIGFS (NOAA)](./models/nwp_models/global/usa/aigfs.md)
 - **Operator:** NOAA / NCEP
-- **Operational since:** December 17, 2025 (replaced EAGLE SOLO)
+- **Operational since:** December 17, 2025 (replaced EAGLE SOLO); currently **v1.1** (July 27, 2026)
 - **Approach:** Standalone AI (GraphCast-derived), emulates GFS behavior
-- **Resolution:** 0.25°
-- **Forecast length:** Up to ~16 days
+- **Resolution:** 0.25° (1440 × 721), 13 pressure levels, top at 50 hPa
+- **Forecast length:** 384 h (16 days), 6-hourly, 4× daily
+- **Note:** v1.1 replaced the grid-point MSE loss with a spherical harmonic loss, fine-tuned on four years of GDAS analysis, and trained autoregressively to 72 h; product content was unchanged. Distributed on NOMADS only — the `aigfs.*` prefixes in the AWS EAGLE bucket are experimental development output with a different parameter set, not an operational mirror.
 
 ### [GEML (ECCC)](./models/nwp_models/global/canada/gdps-geml.md)
 - **Operator:** ECCC / Canadian Meteorological Centre
@@ -89,9 +90,12 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ### [AIGEFS (NOAA)](./models/ensemble_models/global/usa/aigefs.md)
 - **Operator:** NOAA / NCEP
-- **Operational since:** December 17, 2025 (replaced EAGLE Ensemble)
-- **Approach:** Standalone AI, ensemble companion to AIGFS
-- **Resolution:** ~0.25°
+- **Operational since:** December 17, 2025 (replaced EAGLE Ensemble); still **v1.0**
+- **Approach:** Standalone AI (GraphCast-derived), ensemble companion to AIGFS. Initial-condition perturbations inherited from GEFS; model uncertainty represented by running members with different sets of learned model weights — no stochastic physics and no inference-time noise injection
+- **Resolution:** 0.25° (1440 × 721), 13 pressure levels, top at 50 hPa
+- **Members:** 31 (`mem000`–`mem030`), with ensemble mean and spread distributed alongside
+- **Forecast length:** 384 h (16 days), 6-hourly, 4× daily
+- **Note:** Not upgraded alongside AIGFS v1.1. Carries one fewer surface field than AIGFS — only the 6-hour precipitation bucket, no run-total accumulation. ~162 GiB per cycle against a ~2-day NOMADS retention window, so mirror promptly.
 
 ---
 
@@ -116,10 +120,12 @@ Regional (limited-area) AI forecast systems. Unlike the global systems above, th
 
 ### [HGEFS (NOAA)](./models/ensemble_models/global/usa/hgefs.md)
 - **Operator:** NOAA / NCEP
-- **Operational since:** December 17, 2025
-- **Approach:** Grand ensemble combining 31 GEFS (physics) members with 31 AIGEFS (AI) members
-- **Total members:** 62
-- **Note:** Does not replace either GEFS or AIGEFS; provides a larger, more diverse ensemble
+- **Operational since:** December 17, 2025; still **v1.0**
+- **Approach:** Grand ensemble pooling 31 GEFS (physics) members with 31 AIGEFS (AI) members
+- **Total members:** 62 (declared in every GRIB2 message as `numberOfForecastsInEnsemble = 62`) — **but the members are not distributed**
+- **Resolution:** 0.25° (1440 × 721), 13 pressure levels, top at 50 hPa
+- **Forecast length:** 240 h (10 days), 6-hourly, 4× daily — six days shorter than either parent, for reasons NOAA has not documented
+- **Note:** Statistics-only product — the public feed carries just ensemble mean and spread, with no member files, probabilities, or percentiles. Grid and parameter set are inherited from AIGEFS, not GEFS. Does not replace either parent. The `noaa-hgefs-pds` S3 bucket exists but is empty.
 
 ### [GDPS (ECCC)](./models/nwp_models/global/canada/gem-global.md)
 - **Operator:** ECCC / Canadian Meteorological Centre
