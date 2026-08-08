@@ -7,105 +7,240 @@ REPS is the regional ensemble counterpart to the deterministic [RDPS](../../../n
 
 REPS does not run its own data assimilation cycle. Instead, it leverages ECCC's global analysis systems: it takes its upper-air initial conditions from the [GEPS](../../global/canada/geps.md) 25 km perturbed analyses recentered around the deterministic [GDPS](../../../nwp_models/global/canada/gem-global.md) G0 analysis, and its surface initial conditions directly from the GDPS surface analysis. Lateral boundary conditions are supplied at hourly intervals by GEPS control and perturbed members.
 
-The current operational version is **REPS 5.0**, implemented on June 11, 2024 (12 UTC run) as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0, RDPS 9.0.0, and GEPS 8.0.0. Headline changes from REPS 4.1 include a switch in the upper-air initial-condition source from RDPS-plus-GEPS to GDPS-G0-plus-GEPS (necessitated by the IC-4 removal of the RDPS continuous LAM assimilation cycle), introduction of the SLEVE vertical coordinate, a substantial increase in resolution of the SPP Markovian perturbation grid, and a refresh of the geophysical fields and several surface and microphysics parameters.
+The current operational version is **REPS 5.1.0**, implemented **14 April 2026** as an infrastructure port to ECCC's new supercomputing platform. The last scientific upgrade was **REPS 5.0.0** (11 June 2024, 12 UTC run), part of Innovation Cycle 4 (IC-4) alongside GDPS 9.0.0, RDPS 9.0.0, and GEPS 8.0.0. Headline changes from REPS 4.1 include a switch in the upper-air initial-condition source from RDPS-plus-GEPS to GDPS-G0-plus-GEPS (necessitated by the IC-4 removal of the RDPS continuous LAM assimilation cycle), introduction of the SLEVE vertical coordinate, a substantial increase in resolution of the SPP Markovian perturbation grid, and a refresh of the geophysical fields and several surface and microphysics parameters.
 
 ---
 
 ## Who runs it
-- **Organization:** Canadian Meteorological Centre (CMC) / Environment and Climate Change Canada
+- **Organization:** Canadian Meteorological Centre (CMC) / Canadian Centre for Meteorological and Environmental Prediction (CCMEP), Environment and Climate Change Canada (ECCC)
 - **Country / region:** Canada
 
 ---
 
 ## What area it covers
-- **Coverage:** North America and adjacent oceans
-- **Grid:** Rotated longitude–latitude LAM grid, 1108 × 1082 grid points at uniform 0.09° (~10 km) resolution
+- **Coverage:** North America and adjacent oceans, extending over the Arctic to the North Pole
+- **Distributed grid (live-verified, 2026-08-08 12 UTC):** **rotated latitude–longitude**, `gridType = rotated_ll`, **908 × 960 = 871,680 points**, uniform **0.09°** (~10 km at 60°N), `scanningMode = 64`, `shapeOfTheEarth = 6` (radius 6371229 m).
+  - Rotated-frame corners: first grid point −50.760°N 312.289°E, last 35.550°N 33.919°E
+  - Rotated south pole: **25.647°S, 269.556°E**; `angleOfRotation = 0`
+- **Real geographic extent (computed from the rotated grid):** 2.78°N to 89.99°N. The domain **includes the North Pole**, so in true coordinates the longitude span wraps the full circle. Real corner positions: SW 2.78°N 118.38°W, SE 7.93°N 69.57°W, NW 48.17°N 154.05°E, NE 59.35°N 26.61°E — the grid reaches well into eastern Siberia and northern Europe, considerably more than "North America and adjacent oceanic areas" suggests.
+
+> ⚠️ **Three different grid sizes are published for this system, and only one matches the data.**
+>
+> | Source | Grid dimensions |
+> |---|---|
+> | REPS 5.0 fact sheet | 1080 × 1054 |
+> | REPS 5.0 technical specifications | 1108 × 1082 |
+> | MSC Datamart page | **908 × 960** |
+> | **Live GRIB2 header** | **908 × 960** |
+>
+> The Datamart page is correct; the fact sheet and technical specifications are not, and they disagree with each other as well as with the data. The larger figures plausibly describe the computational domain including the piloting and blending zones (`Lam_gbpil_T = 3`, `Lam_blend_T = 6`), which are trimmed before distribution — but no document states this, and the two computational figures cannot both be right (**TBD**).
+>
+> A second, smaller mismatch: the Datamart page gives the first grid point as **50.76°N, 20.81°W**. The GRIB2 header gives **−50.760°N, 312.289°E** (= 47.71°W) in the rotated frame. The latitude magnitude matches but the sign is inverted and the longitude does not match under any convention this entry could identify (**TBD**). Take the grid definition from the GRIB2 headers, not from the documentation.
+
+> **Rotated-grid support.** Unlike the regular lat-lon grids used by [GEPS](../../global/canada/geps.md), [GDPS](../../../nwp_models/global/canada/gem-global.md), and the ECCC wave systems, REPS is distributed on the rotated grid natively — there is no unrotated version on the Datamart. Recent `wgrib2` and GDAL handle `rotated_ll`; older tooling and some naive lat/lon extraction code will silently produce wrong coordinates.
 
 ---
 
 ## Basic details
-- **Model type:** Regional ensemble NWP
-- **Model system / core:** GEM (Global Environmental Multiscale) version 5.2.0, in a hydrostatic limited-area configuration
+- **Model type:** Regional (limited-area) ensemble NWP
+- **Model system / core:** GEM (Global Environmental Multiscale) version 5.2.0, hydrostatic limited-area (LAM) configuration
 - **Dynamical formulation:** Hydrostatic primitive equations
-- **Convection-allowing:** No (~10 km horizontal resolution; deep convection is parameterized using an updated Kain–Fritsch scheme tuned for the gray zone)
+- **Convection-allowing:** No (~10 km — in the convective grey zone; deep convection is parameterized with a Kain–Fritsch scheme adapted for grey-zone resolutions)
 - **Ensemble size:** 21 (1 control + 20 perturbed)
-- **Horizontal resolution:** ~10 km (0.09°)
-- **Vertical levels:** 84 hybrid levels with lid nesting (same level set as GDPS), with the first thermal level at 10 m and the first momentum level at 20 m. SLEVE coordinate introduced in v5.0 (`Hyb_rcoef = 1., 15., 3., 100.`)
-- **Model top:** ~17 hPa (lid nesting; no upper sponge layer activated since lid piloting is used)
+- **Horizontal resolution:** ~10 km (0.09° rotated lat-lon)
+- **Vertical coordinate:** SLEVE (Smooth LEvel Vertical), introduced in v5.0 with `Hyb_rcoef = 1., 15., 3., 100.`; terrain-following hybrid coordinate based on log-hydrostatic pressure, staggered (Girard et al. 2014)
+- **Model top:** ~17 hPa, with **lid nesting** — the upper boundary is piloted by GEPS rather than being a free model top. First thermal (momentum) level at 10 (20) m. Level set otherwise matches GDPS, truncated at the lid.
 - **Forecast length:** 72 hours
-- **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
+- **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC) — all four are published
 - **Time step:** 300 seconds
-- **Time integration:** Iterative-implicit, semi-Lagrangian (3D), 2 time-level (Côté et al. 1998a, 1998b)
-- **Numerical technique:** Finite differences on the Arakawa C grid (horizontal) and Charney–Phillips grid (vertical) (Girard et al. 2014); trapeze-cubic interpolation for semi-Lagrangian trajectory calculations (Husain and Girard, 2017)
-- **Initialization scheme:** Diabatic digital filter (Fillion et al. 1995)
-- **Temporal output resolution:** Typically hourly
+- **Time integration:** Iterative-implicit, semi-Lagrangian (3D), 2 time-level
+- **Numerical technique:** Finite differences, Arakawa C grid (horizontal) and Charney–Phillips grid (vertical); trapezoid-cubic interpolation for semi-Lagrangian trajectories (Husain and Girard 2017)
+- **Model initialization scheme:** Diabatic digital filter (Fillion et al. 1995)
+- **Temporal output resolution:** 3-hourly, 000–072 h (25 steps)
+
+> **The ~17 hPa lid explains the distributed level set.** REPS publishes isobaric fields only up to 50 hPa, where [GEPS](../../global/canada/geps.md) reaches 10 hPa — because GEPS has a 0.1 hPa model top and REPS does not. Note, however, that the changelog's REPS 3.0.0 entry (July 2019) states the model top was *raised* from 16 hPa to 0.1 hPa with 84 vertical levels, which contradicts the v5.0 technical specifications' "the top is at about 17 hPa." Either the lid was lowered again in a later version or the changelog entry is wrong; no document resolves it, and the vertical level count for v5.0 is not stated anywhere located (**TBD**). What is verifiable is that the distributed isobaric set stops at 50 hPa.
 
 ---
 
 ## Data assimilation
-- **Data assimilation:** No — REPS does not run a standalone analysis cycle. Initial conditions are derived from the [GDPS](../../../nwp_models/global/canada/gem-global.md) and [GEPS](../../global/canada/geps.md) analyses (see *Initial and boundary conditions* below).
+- **Data assimilation:** **No.** REPS has no assimilation component of its own; it inherits analyses from ECCC's global systems.
 
 ---
 
 ## Initial and boundary conditions
-- **Upper-air initial conditions:** Derived from a combination of the [GDPS](../../../nwp_models/global/canada/gem-global.md) "G0" run (the 15 km uncoupled deterministic analysis) and the 25 km [GEPS](../../global/canada/geps.md) ensemble analyses. The G0 analysis is interpolated onto the REPS 3D grid and used as the recentering target. Each REPS member's perturbed initial state is obtained by:
-  1. Adding **Homogeneous Isentropic Perturbations (HIP)** to the corresponding GEPS perturbed analysis. HIP variance is 0.8 in the boundary layer, decreasing gradually to 0.5 in the upper atmosphere.
-  2. Recentering the perturbed GEPS analyses around the GDPS G0 analysis using the formula
-     X^k_REPS = X_GDPS + (X^k_GEPS − mean(X_GEPS))_int
-     where the overbar denotes the ensemble mean over the 20 GEPS perturbed analyses and the subscript "int" denotes interpolation to the REPS grid. Conceptually, the recentering applies the GEPS-derived perturbation field (deviations from the GEPS ensemble mean) on top of the GDPS deterministic analysis.
-- **Surface initial conditions:** Taken directly from the GDPS surface analysis. Surface fields are not perturbed across members.
-- **Lateral boundary conditions:** Provided by the corresponding [GEPS](../../global/canada/geps.md) control and perturbed members at hourly intervals. Each REPS member is paired with the matching GEPS member, so initial-condition and lateral-boundary perturbations remain dynamically consistent throughout the forecast.
+- **Upper-air initial conditions:** Built from two global sources. Homogeneous Isentropic Perturbations (HIP) are first added to the GEPS analyses, then the perturbed analyses are recentered around the **GDPS G0** analysis interpolated onto the REPS 3D grid:
 
-The IC-4 source change (from RDPS+GEPS to GDPS-G0+GEPS) was driven by the structural reorganization of the RDPS in v9.0.0, which removed the standalone regional LAM continuous assimilation cycle. With no continuous regional analysis to draw from, REPS 5.0 was redesigned to take its deterministic recentering target directly from the global system instead.
+  X<sup>k</sup><sub>REPS</sub> = X<sub>GDPS</sub> + (X<sup>k</sup><sub>GEPS</sub> − X̄<sub>GEPS</sub>)<sub>int</sub>
+
+  where *k* indexes the REPS member and the overbar is the mean over the 20 perturbed GEPS analyses. Equivalently, REPS applies GEPS-derived perturbations to a deterministic GDPS analysis.
+- **HIP variance:** 0.8 in the boundary layer, decreasing gradually to 0.5 in the upper atmosphere.
+- **Surface initial conditions:** Taken directly from the GDPS surface analysis and **not perturbed**. Sea ice and ocean fields come from the GIOPS analyses (new in v5.0).
+- **Boundary conditions:** Supplied by the [GEPS](../../global/canada/geps.md) control and perturbed members at **hourly** intervals — member *k* of REPS is driven by member *k* of GEPS. The GEPS 06 and 18 UTC early forecast runs exist specifically to pilot REPS.
+
+> **The piloting GEPS cycles are not public.** GEPS publishes only its 00 and 12 UTC medium-range cycles on the Datamart; the 06 and 18 UTC early forecast runs that supply REPS with initial and boundary conditions are internal. REPS's own 06 and 18 UTC cycles are public, so for two of the four REPS cycles a day the driving data cannot be independently obtained.
+
+> **G0 analysis resolution is documented inconsistently.** The technical specifications and fact sheet both state the GDPS G0 analysis is at **15 km** and is interpolated onto the REPS 3D grid. The Datamart changelog entry for v5.0.0 instead describes "a 10km component of the Global Deterministic Prediction System." The 15 km figure is consistent with the GDPS configuration of that era and is used here; the changelog wording appears to be an error (**TBD**).
 
 ---
 
 ## Perturbations and design
-- **Initial-condition perturbations:** GEPS-derived perturbations recentered on GDPS G0, with HIP applied to upper-air fields (see above). Surface fields are not perturbed.
-- **Model uncertainty representation — SPP (Stochastic Parameter Perturbation):** 22 physics parameters and algorithmic choices are perturbed continuously in space and time using Markovian random fields (McTaggart-Cowan et al. 2022a, b). Perturbed elements span deep convection (trigger thresholds over land and over water in low- and high-wind regimes, downdraft detrainment, autoconversion rate, cloud radius), boundary-layer mixing (turbulent exchange coefficients for momentum and scalars, mixing length, critical Richardson number, TKE transport), cloud microphysics and radiation (condensate threshold, ice accretion rate, cloud water/ice radii, aerosol concentration, condensation thresholds), gravity-wave drag (launch-level RMS, subgrid-scale flow blocking), and low-CAPE convection triggering. Most elements use uniform distributions (γ = 1) with a 36-hour autocorrelation decay; the deep-convection trigger thresholds (`kfctrig4`, `kfctrigwh`, `kfctrigwl`) use bell-shaped distributions (γ = 2). In v5.0 the spatial resolution of the Markovian perturbation grid was increased from 16 × 8 points globally to **384 × 192 points**, dramatically improving the spatial structure of the perturbation fields.
-- **Stochastic Kinetic Energy Backscatter (SKEB):** Not active in REPS.
-- **Control member:** Initialized from the GDPS G0 analysis without HIP and integrated without SPP perturbations; uses the GEPS control member for lateral boundary conditions.
+- **Initial condition perturbations:** GEPS analysis perturbations (deviations of the 20 perturbed GEPS analyses from their ensemble mean), plus HIP, applied to the GDPS G0 analysis as described above.
+- **Boundary condition perturbations:** Each member takes its lateral and lid boundary conditions from the corresponding GEPS member — so boundary uncertainty is sampled, not shared.
+- **Model/physics perturbations:** **Stochastic Parameter Perturbation (SPP)** only. Table 1 of the v5.0 technical specifications lists **22 perturbed parameters** spanning deep convection (`kfctrig4`, `kfctrigwh`, `kfctrigwl`, `deeprate`, `dpdd_mult`, `crad_mult`, `mid_minemf`), boundary-layer mixing (`fh_mult`, `fm_mult`, `fnnreduc`, `ml_emod`, `ricmin`, `tkediff`), cloud microphysics and radiation (`cond_hcst`, `cond_iceacc`, `rew_mult`, `rei_mult`, `aero_mult`, `hu0max`, `hu0min`), and gravity-wave drag (`rmscon`, `sgo_phic`). All use a 36-hour autocorrelation decay; the three deep-convection triggers use bell-shaped distributions (γ = 2), the rest uniform (γ = 1).
+- **SKEB:** **Not active.** Unlike GEPS, REPS represents model uncertainty entirely through SPP.
+- **SPP Markovian grid:** increased in v5.0 from 16 × 8 points globally to **384 × 192**, a substantial improvement in the spatial structure of the perturbation fields.
+- **Control member:** Initialized from the GDPS G0 analysis without HIP and integrated without SPP perturbations; driven by the GEPS control member at the boundaries.
+
+> **The REPS and GEPS SPP parameter sets differ despite sharing a name and a reference.** Both derive from McTaggart-Cowan et al. (2022a, b) and both list 22 parameters, but the sets are not identical: REPS includes `cond_iceacc` (dry accretion of ice crystals by snow) which GEPS does not, and GEPS includes `adv_rhsint` (semi-Lagrangian advection interpolation order) which REPS does not. Several shared parameters also carry different ranges — `kfctrig4` is [0.1, 0.3] m s⁻¹ in REPS against [0.05, 0.15] in GEPS, `hu0max` is [0.90, 0.99] against [0.95, 0.99], and `sgo_phic` is [0.05, 0.25] against [0.07, 0.27]. The shape parameters differ too: REPS uses γ = 1 / 2 where GEPS 8.0 uses γ = 1.4 / 2.8, reflecting the 2·ln 2 stretching applied in GEPS 8.0.0 but not in REPS 5.0.
 
 ---
 
 ## Physics configuration
-- **Surface scheme:** Mosaic approach with 4 surface types — land, water, sea ice, and glacier (Bélair et al. 2003a, 2003b). Land surface (deep soil temperature and moisture, snow depth, density, and albedo) initialized from analyses and predicted with the **ISBA** scheme (Noilhan and Planton 1989). Freezing rain treated as solid precipitation. Sea-surface temperature taken from analyses with diurnal evolution from a 1-D mixed-layer model (Zeng and Beljaars 2005). **Sea ice thickness** initialized from analyses and **evolves in time** in v5.0 (previously fixed); sea ice fraction fixed in time and checked for consistency with thickness. Sea ice `Leadfrac` parameter changed from 0.04 to 0.0 in v5.0; lake ice `Lake_leadfrac` = 0.02. Momentum roughness length over sea ice: `Z0seaice` = 0.54 mm. Glacier temperature predicted with a force-restore model.
-- **Geophysical fields:** Regenerated on the U2 supercomputer infrastructure for v5.0 using the in-house **GenPhysX** software, with no significant difference from the previous fields. Filtered topography is produced at two scales: high-resolution **ME** (5-dx cutoff filter) and a new low-resolution **MELS** field (10-dx cutoff filter) required by the SLEVE coordinate. Subgrid-scale orographic parameters use an analytically extended spectrum with a 5 km cutoff. Thermal roughness length over water uses the Deacu formulation (Deacu et al. 2012).
-- **Boundary-layer turbulent mixing:** TKE-based vertical diffusion (Benoît et al. 1989; Delage 1988a, 1988b) with a wet formulation and statistical representation of subgrid-scale clouds (Mailhot and Bélair 2002; Bélair et al. 2005). Richardson number hysteresis (McTaggart-Cowan and Zadra 2015). Regime-specific mixing length: local (Blackadar 1962) in laminar flow, non-local (Bougeault and Lacarrère 1989) in turbulent flow.
-- **Surface layer:** Monin–Obukhov similarity theory; Delage and Girard (1992) and Beljaars and Holtslag (1991) stability functions for unstable and stable stratifications respectively; saltwater correction for latent heat fluxes; Obukhov length capped to prevent surface–atmosphere decoupling in stable conditions.
-- **Grid-scale precipitation:** Sundqvist scheme (Sundqvist et al. 1989; Pudykiewicz et al. 1992). In v5.0 the dry accretion of ice crystals by snow (`Cond_iceacc`) was increased from 2.5 to 5.0, and the relative humidity threshold for condensation (`Cond_hu0min`) was increased from 0.80 to 0.85.
-- **Shallow convection:** Bechtold (2001) non-precipitating mass-flux scheme with convective momentum transport.
-- **Deep convection:** Updated Kain–Fritsch scheme tuned for the convection gray zone, with vertical momentum transfer, Lagrangian convective initiation, and object-based clouds (McTaggart-Cowan et al. 2019b).
-- **Elevated (mid-level) convection:** Mass-flux scheme that removes mid-level instability in low-CAPE environments not addressed by the deep scheme (McTaggart-Cowan et al. 2019a).
-- **Radiation:** Solar and infrared correlated-k distribution (CKD) (Li and Barker 2005) with 3-D trace gas and ozone climatologies.
-- **Orographic gravity-wave drag:** McFarlane (1987); refactored "sgo16" scheme to remove sensitivity to vertical level configuration (McTaggart-Cowan et al. 2019a).
-- **Non-orographic gravity-wave drag:** Hines (1997a, b) Doppler-spread parameterization.
-- **Low-level blocking:** Lott and Miller (1997) and Zadra et al. (2003) with enhanced drag coefficient (Wells et al. 2008; Vosper et al. 2009), refactored to remove vertical-level sensitivity.
-- **Methane oxidation:** Relaxation to climatology (McTaggart-Cowan et al. 2019a).
+- **Surface:** Mosaic approach with 4 types — land, water, sea ice, glacier (Bélair et al. 2003a, 2003b). Land surface predicted with **ISBA** (Noilhan and Planton 1989). Freezing rain treated as solid precipitation. **Sea ice thickness evolves in time** in v5.0 (previously fixed); sea ice fraction fixed and checked for consistency with thickness. `Leadfrac` changed from 0.04 to 0.0; `Lake_leadfrac` = 0.02; `Z0seaice` = 0.54 mm. Sea-surface temperature from analyses with diurnal evolution from a 1-D mixed-layer model (Zeng and Beljaars 2005). Glacier temperature from a force-restore model.
+- **Geophysical fields:** Regenerated on the U2 supercomputer infrastructure for v5.0 using in-house **GenPhysX**, with no significant difference from the previous fields. Filtered topography at two scales: **ME** (5-dx cutoff) and the new **MELS** (10-dx cutoff) required by the SLEVE coordinate. Subgrid-scale orographic parameters from an analytically extended spectrum with a 5 km cutoff. Thermal roughness length over water uses the Deacu formulation (Deacu et al. 2012).
+- **Boundary-layer turbulent mixing:** TKE-based vertical diffusion (Benoît et al. 1989; Delage 1988a, 1988b) with wet formulation and statistical subgrid cloud representation (Mailhot and Bélair 2002; Bélair et al. 2005). Richardson number hysteresis (McTaggart-Cowan and Zadra 2015). Regime-specific mixing length: local (Blackadar 1962) in laminar flow, non-local (Bougeault and Lacarrère 1989) in turbulent flow. Cloud effects active below 1.5 × boundary-layer height and only when the surface buoyancy flux is positive.
+- **Surface layer:** Monin–Obukhov similarity, with the Obukhov length limited to 20 m over soil, 5 m over glaciers, and 10 m over water and sea ice to prevent decoupling in stable conditions. Delage and Girard (1992) / Beljaars and Holtslag (1991) stability functions. Saltwater correction for latent heat flux.
+- **Grid-scale precipitation:** Sundqvist scheme (Sundqvist et al. 1989; Pudykiewicz et al. 1992). In v5.0 the accretion rate on snow (`Cond_iceacc`) went from 2.5 to 5.0 and the condensation relative-humidity threshold (`Cond_hu0min`) from 0.8 to 0.85.
+- **Deep convection:** Updated Kain–Fritsch (1990, 1993) for grey-zone resolutions, with convective momentum transport, Lagrangian treatment of convective initiation, and object-based clouds (McTaggart-Cowan et al. 2019b).
+- **Shallow convection:** Non-precipitating mass-flux scheme after Bechtold (2001).
+- **Elevated (mid-level) convection:** Mass-flux scheme with vertical momentum transfer for low-CAPE environments (McTaggart-Cowan et al. 2019a).
+- **Radiation:** Correlated-k distribution (Li and Barker 2005) with 3D trace gas and ozone climatologies.
+- **Gravity-wave drag:** Orographic (McFarlane 1987; "sgo16" scheme), non-orographic (Hines 1997a, b), low-level blocking (Lott and Miller 1997; Zadra et al. 2003) with enhanced drag coefficient.
+- **Methane oxidation:** Relaxation to climatology.
 - **Horizontal diffusion:** Del-4 (10%) on momentum, Del-6 (1%) on potential temperature. Top sponge layer not activated because lid nesting is used. Surface pressure adjustment not active (incompatible with lid nesting).
 
 ---
 
-## What it provides
-Probabilistic regional forecasts including:
-- Individual ensemble member forecasts (1 control + 20 perturbed)
-- Ensemble mean and ensemble spread
-- Three-dimensional winds, virtual temperature, geopotential, specific humidity, and surface pressure
-- Mean sea-level pressure, relative humidity, omega
-- Quantitative precipitation forecast (QPF), precipitation rate and type
-- Cloud cover, cloud condensate mixing ratio, boundary layer height
-- Turbulent kinetic energy and other boundary-layer diagnostics
-- Probability and percentile-based products derived from the 21-member ensemble
+## Member packaging and GRIB2 encoding
 
-REPS provides the primary regional-scale probabilistic NWP guidance for forecast days 1–3 in Canada, complementing the deterministic [RDPS](../../../nwp_models/regional/canada/rdps.md) and [HRDPS](../../../nwp_models/regional/canada/hrdps.md) systems and the global probabilistic guidance from [GEPS](../../global/canada/geps.md).
+**All 21 members are concatenated into a single GRIB2 file per parameter per step.** There is no member token in the filename. Unlike [GEPS](../../global/canada/geps.md), member files and probability products **share one directory** — they are distinguished only by a `-Prob` suffix on the variable token.
+
+Live-verified on the 2026-08-08 12 UTC run (ecCodes 2.48.0):
+
+| Key | Member files | `-Prob` files |
+|---|---|---|
+| `edition` | 2 | 2 |
+| `centre` | `cwao` (54), `subCentre` 0 | same |
+| `generatingProcessIdentifier` | **85** | 85 |
+| `typeOfGeneratingProcess` | 4 (ensemble forecast) | 4 |
+| `tablesVersion` | **4** | **19** |
+| `productDefinitionTemplateNumber` | 1 (instantaneous), 11 (interval) | 2, 6, 9, 10, 12 |
+| `numberOfForecastsInEnsemble` | **21** | **20** |
+| `perturbationNumber` | 0–20 (0 = control) | n/a |
+| `typeOfEnsembleForecast` | **1** (control) / **4** (perturbed) | n/a |
+| `packingType` | `grid_jpeg` (JPEG 2000) | `grid_jpeg` |
+| `bitsPerValue` | 0, 10, 12, or 16 | 12 |
+
+> ⚠️ **Member files and probability files declare different GRIB2 master table versions** — 4 and 19 — within the same cycle of the same system. Both are uniform within their own set (verified across 535 probability messages and every member parameter sampled). A decoder configured against one will be reading the other under the wrong table.
+
+> ⚠️ **`typeOfEnsembleForecast = 4` means "Multi-model forecast"** in WMO Code Table 4.6. REPS is a single-model ensemble, so the value does not describe the product; the control's `1` ("Unperturbed low-resolution control forecast") is equally inaccurate, since the control runs at the same 10 km as every member. **Discriminate members on `perturbationNumber`.** This is the same encoding choice GEPS makes — see that entry for the parallel caution.
+
+> ⚠️ **`numberOfForecastsInEnsemble = 20` on every probability message**, against the 21 members shipped in the member files. Whether the control is included in the derived statistics is not stated anywhere (**TBD**). Do not use this key to size member arrays.
+
+### Parameters that stock ecCodes cannot name
+
+Only **three** of the 79 member parameters return `shortName = unknown`:
+
+| File token | discipline/category/number |
+|---|---|
+| `APCP_SFC` | 0/1/8 |
+| `TCDC_SFC` | 0/6/1 |
+| `ULWRF_NTAT` | 0/5/4 |
+
+All three use standard WMO parameter numbers and still fail to resolve. `TCDC_SFC` additionally reports `typeOfLevel = unknown` (`typeOfFirstFixedSurface = 200`, entire atmosphere layer).
+
+> **REPS is markedly cleaner than GEPS in this respect.** GEPS encodes its radiation and soil fields with ECCC **local** parameter numbers (`DSWRF` 0/4/192, `DLWRF` 0/5/192, `ULWRF`/`OLR` 0/5/193, `SWAT` 2/0/192), none of which decode. REPS uses **standard** numbers for the same quantities — `DSWRF` = 0/4/7 (`ssrd`), `DLWRF` = 0/5/3 (`strd`), `TSOIL` = 2/3/18 (`sot`), `VSOILM` = 2/0/25 (`vsw`). Only `APCP` and `TCDC` fail in both systems. Anyone porting a GEPS parameter mapping to REPS (or the reverse) must re-derive it.
+
+Note also that **surface heat fluxes are encoded differently in the two systems**: `SHTFL` and `LHTFL` are **instantaneous W m⁻²** in REPS (PDT 4.1) but **accumulated J m⁻²** in GEPS (PDT 4.11).
+
+### Precision varies by level
+
+As in GEPS, the **40 m, 80 m and 120 m fields are packed at 10 bits** — `TMP_AGL-40m/80m/120m`, `SPFH_AGL-40m/80m/120m`, `WIND_AGL-40m/80m/120m` — against 12 bits for the 2 m and 10 m fields and 16 bits for accumulations and soil fields. These are the hub-height levels wind-energy users want, and they are the most coarsely quantized fields in the dataset.
+
+### Two publication artefacts
+
+- **`HGT_SFC` (model orography) is published as 21 identical copies.** It appears at step 000 only, as a 21-message file of 4.3 MB in which every member array is **bit-identical** (verified: one distinct array across all 21 messages). It is a static field being shipped 21 times.
+- **`DSWRF_SFC`, `DLWRF_SFC` and `SFCWRO_SFC` at step 000 are all-zero constant fields**, encoded with `bitsPerValue = 0` at ~4.6 KB for all 21 members. They carry no information — accumulations and runoff are zero at initialization — but are published for step-list uniformity.
+
+---
+
+## What it provides
+
+**79 member parameters** and **27 probability parameters**, all in one directory per step. 25 steps (000–072, 3-hourly), 4 cycles daily.
+
+### Member fields
+
+**Isobaric fields (45 files/step) — a uniform 9-level set**, unlike GEPS's ragged per-parameter level lists:
+
+| Parameter | Levels (hPa) |
+|---|---|
+| `HGT`, `TMP`, `RH`, `UGRD`, `VGRD` | 50, 100, 200, 250, 500, 700, 850, 925, 1000 |
+
+There is **no vertical velocity at any level**, no 300 or 400 hPa, and nothing above 50 hPa (see the lid note under *Basic details*).
+
+**Near-surface and single-level fields:**
+
+- **Screen level:** `TMP_AGL-2m`, `RH_AGL-2m`, `SPFH_AGL-2m`
+- **Wind-energy levels:** `TMP`, `SPFH`, `WIND` at 40, 80 and 120 m
+- **10 m wind:** `UGRD_AGL-10m`, `VGRD_AGL-10m`, `WIND_AGL-10m`
+- **Precipitation (accumulated):** `APCP` (total), `ARAIN` (rain), `ASNOW` (snow), `AFRAIN` (freezing rain), `AICEP` (ice pellets)
+- **Radiation and fluxes:** `DSWRF`, `DLWRF`, `ULWRF_NTAT` (accumulated J m⁻²); `SHTFL`, `LHTFL` (instantaneous W m⁻²)
+- **Surface / soil:** `PRES_SFC`, `PRMSL_MSL`, `TCDC_SFC`, `SNOD`, `WEASD`, `SFCWRO` (surface runoff), `TSOIL_DBS-10cm`, `VSOILM_DBS-10cm` (volumetric soil moisture)
+- **Static:** `HGT_SFC` (orography, step 000 only)
+
+**Parameter availability by step:**
+
+| Step | Files | Note |
+|---|---|---|
+| 000 | 71 | `HGT_SFC` present; the 8 accumulated/flux fields absent |
+| 003–072 | 78 | Full set; `HGT_SFC` absent |
+
+The 8 fields absent at step 000 are `APCP`, `ARAIN`, `ASNOW`, `AFRAIN`, `AICEP`, `SHTFL`, `LHTFL`, `ULWRF_NTAT`.
+
+> ⚠️ **All accumulated fields are run-totals from t = 0, not per-interval buckets.** Verified across `APCP`, `ARAIN`, `ASNOW`, `AFRAIN`, `AICEP`, `DSWRF`, `DLWRF` and `ULWRF_NTAT`: `stepRange` reads `0-3` at step 003, `0-6` at step 006, `0-12` at step 012, and `0-72` at step 072. To obtain 3-hourly precipitation, difference consecutive steps yourself. Note that the *probability* products, by contrast, use genuine fixed-width windows (`66-72` for a 6-hour accumulation at step 072), so the member and probability trees do not agree on accumulation convention.
+
+**No convective parameters are distributed at all** — no CAPE, no CIN, no MUCAPE, no vertical wind shear, and no wind gust. For a 10 km short-range ensemble whose primary use case is high-impact weather in the 0–72 h window, this is a substantial gap: [GEPS](../../global/canada/geps.md) publishes `CAPE`, `CIN`, `MUCAPE`, `VWSH` and a `GUST` probability suite at 25 km globally, while its 10 km regional nest publishes none of them.
+
+### Probability products
+
+Identified by a `-Prob` suffix on the variable token. **Every `-Prob` file carries the full statistical suite** — percentiles 10/25/50/75/90 plus all four derived forecasts (mean, spread, minimum, maximum) — with threshold probabilities added where applicable. This is more consistent than GEPS, where the suite varies from 2 to 24 messages depending on the parameter.
+
+`derivedForecast` values in use are **0** (unweighted mean), **4** (spread), **8** (minimum) and **9** (maximum). `probabilityType` is **3** (above lower limit) for precipitation, wind and warm-temperature thresholds, **4** (below upper limit) for `TMP-Min24h` and `WCF-Min24h`.
+
+**Instantaneous products, 3-hourly 003–072 — percentiles and derived only, no thresholds (9 messages each):**
+`TMP-Prob_AGL-2m`, `WCF-Prob_AGL-2m`, `HEATX-Prob_AGL-2m`, `WIND-Prob_AGL-10m`
+
+**Interval products:**
+
+| Parameter | Cadence | Msgs | Threshold set |
+|---|---|---|---|
+| `TPRATE-Accum3h-Prob` | 3-hourly, 003–072 | 19 | 10: >1 … >50 mm |
+| `TPRATE-Accum6h-Prob` | 6-hourly, 006–072 | 23 | 14: >0.2, >0.5, >1 … >100 mm |
+| `TPRATE-Accum12h-Prob` | 6-hourly, 012–072 | 23 | 14: >0.2 … >150 mm |
+| `TPRATE-Accum24h-Prob` | 6-hourly, 024–072 | 24 | 15: >0.2 … >200 mm |
+| `TPRATE-Accum48h-Prob` | 48, 72 | 23 | 14: >1 … >200 mm |
+| `TPRATE-Accum72h-Prob` | 72 only | 23 | 14: >1 … >200 mm |
+| `RPRATE-Accum6h/12h/24h-Prob` | 6-hourly | 22/23/24 | 13 / 14 / 15 |
+| `SPRATE-`, `IPRATE-`, `FPRATE-Accum6h/12h/24h-Prob` | 6-hourly | 22/20/22 | 13 / 11 / 13 |
+| `TMP-Max24h-Prob_AGL-2m` | 12-hourly, 024–072 | 24 | 15: >243.14 … >313.14 K |
+| `TMP-Min24h-Prob_AGL-2m` | 12-hourly, 024–072 | 23 | 14: <233.14 … <298.14 K |
+| `WCF-Min24h-Prob_AGL-2m` | 12-hourly, 024–072 | 20 | 11: <223.14 … <273.14 K |
+| `HEATX-Max24h-Prob_AGL-2m` | 12-hourly, 024–072 | 15 | 6: >298.14 … >315.14 K |
+| `WIND-Max12h-Prob_AGL-10m` | 12-hourly, 012–072 | 21 | 12: >5.5556 … >32.778 m s⁻¹ |
+
+Threshold sets are **not consistent across window lengths for the same parameter** — `TPRATE-Accum3h` omits the 0.2 mm threshold that every longer window carries, `TPRATE-Accum6h` uniquely adds 0.5 mm, and the 200 mm threshold appears only from the 24 h window up. Read the thresholds from the message metadata rather than assuming a fixed list.
+
+> **The 10 m wind thresholds are in genuine m s⁻¹ here.** `WIND-Max12h-Prob` uses the km/h-derived conversions (5.5556 = 20 km/h, 8.3333 = 30, 10.278 = 37, …, 32.778 = 118) correctly encoded as m s⁻¹. REPS publishes no 3-hourly or 6-hourly maximum-wind product, so it does **not** exhibit the km/h-in-an-m-s⁻¹-field problem documented for GEPS's `WIND-Max-3h` and `WIND-Max-6h`. Users combining the two systems' wind probabilities should be aware that only the GEPS short-window products need correcting.
 
 ---
 
 ## Relationship to other models
-- **[RDPS](../../../nwp_models/regional/canada/rdps.md):** Deterministic regional counterpart, sharing the GEM 5.2 core and a similar ~10 km North American footprint. The structural reorganization of RDPS in v9.0.0 (removal of the standalone regional LAM continuous assimilation cycle) drove REPS 5.0's switch from RDPS-plus-GEPS to GDPS-G0-plus-GEPS for its initial-condition source.
-- **[GEPS](../../global/canada/geps.md):** Global ensemble counterpart that supplies REPS's initial-condition perturbations and lateral boundary conditions. The 06 and 18 UTC GEPS early forecast runs are dedicated to providing analyses and pilot fields for REPS.
-- **[GDPS](../../../nwp_models/global/canada/gem-global.md):** Global deterministic system whose G0 (15 km) analysis serves as the recentering target for REPS upper-air initial conditions and as the direct source of REPS surface initial conditions.
+- **[RDPS](../../../nwp_models/regional/canada/rdps.md):** Deterministic regional counterpart, sharing the GEM 5.2 core and the same ~10 km rotated grid family. The structural reorganization of RDPS in v9.0.0 (removal of the standalone regional LAM continuous assimilation cycle) drove REPS 5.0's switch from RDPS-plus-GEPS to GDPS-G0-plus-GEPS for its initial-condition source.
+- **[GEPS](../../global/canada/geps.md):** Global ensemble counterpart supplying REPS's initial-condition perturbations and hourly lateral and lid boundary conditions. The GEPS 06 and 18 UTC early forecast runs exist to pilot REPS and are not published.
+- **[GDPS](../../../nwp_models/global/canada/gem-global.md):** Global deterministic system whose G0 analysis is the recentering target for REPS upper-air initial conditions and the direct source of REPS surface initial conditions.
 - **[HRDPS](../../../nwp_models/regional/canada/hrdps.md):** Convection-permitting deterministic counterpart at ~2.5 km, providing finer-scale guidance over a similar footprint without the probabilistic dimension.
+- **[REWPS](../../../wave_models/regional/canada/rewps-canada.md):** Great Lakes ensemble wave system, each member forced by the matching REPS member's 10 m winds.
+- **[GIOPS](../../../ocean_models/global/canada/giops.md):** Supplies the sea ice and ocean surface analyses used for REPS surface initialization from v5.0 onward.
 
 ---
 
@@ -113,54 +248,109 @@ REPS provides the primary regional-scale probabilistic NWP guidance for forecast
 - **Is the data free?** Yes (no registration required for MSC Open Data)
 - **License:** Environment and Climate Change Canada Data Servers End-use Licence (attribution required; commercial use permitted) — https://eccc-msc.github.io/open-data/licence/readme_en/
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2
-- **Official download location:** https://dd.weather.gc.ca/today/ensemble/reps/10km/grib2/
+- **Data formats:** GRIB2 (JPEG 2000 packing; no `.idx` or byte-range sidecars are published)
+- **Official download location:**
+  https://dd.weather.gc.ca/today/ensemble/reps/10km/grib2/
+  - **Path template:** `https://dd.weather.gc.ca/today/ensemble/reps/10km/grib2/{HH}/{hhh}/` — `{HH}` = `00`, `06`, `12`, `18`; `{hhh}` = 3-digit forecast hour, `000`–`072` in steps of 3
+  - **Filename convention:** `{YYYYMMDD}T{HH}Z_MSC_REPS_{VAR}_{LVLTYPE-LVL}_RLatLon0.09x0.09_PT{hhh}H.grib2`
+  - Probability products carry `-Prob` appended to the variable token, in the **same directory** as the member files
+  - **Dated archive:** `https://dd.weather.gc.ca/{YYYYMMDD}/WXO-DD/ensemble/reps/10km/grib2/…` — note the `WXO-DD/` path component, absent from the `/today/` form
+- **Retention:** ~30 days rolling. No long-term open archive.
+- **Push notification:** MSC Datamart AMQP (Sarracenia) feed
+- **Also available via:** MSC GeoMet WMS/WCS/OGC API (rendered and coverage services)
+- **Per-cycle volume (live-measured, 2026-08-08 12 UTC):**
+
+  | Content | Files | Size |
+  |---|---|---|
+  | Member files | 1,943 | ~17.8 GiB |
+  | `-Prob` files | 309 | ~1.1 GiB |
+  | **Total per cycle** | **2,252** | **~18.9 GiB** |
+
+  At four cycles a day, roughly **76 GiB/day** — comparable to [GEPS](../../global/canada/geps.md)'s ~67 GiB/day for a global 16-day ensemble, despite REPS covering a fraction of the globe for a fraction of the lead time. The 10 km grid and 3-hourly full-member output account for the difference.
+
+> **REPS uses the newer MSC filename convention** (`{YYYYMMDD}T{HH}Z_MSC_{SYSTEM}_…`), shared with [RDPS](../../../nwp_models/regional/canada/rdps.md), [GDPS-GEML](../../../nwp_models/global/canada/gdps-geml.md), and HRDPA, while [GEPS](../../global/canada/geps.md) still uses the legacy `CMC_geps-raw_…` form. Code that handles one will not parse the other.
 
 ---
 
 ## Notes
-- REPS is part of ECCC's Innovation Cycle 4 (IC-4) prediction suite. The June 11, 2024 implementation upgraded REPS, RDPS, GDPS, and GEPS together, with REPS 5.0 absorbing the consequences of the structural changes to RDPS (removal of the regional LAM continuous assimilation cycle) by repointing its initial-condition source to the global system.
+- REPS is part of ECCC's Innovation Cycle 4 (IC-4) prediction suite. The June 11, 2024 implementation upgraded REPS, RDPS, GDPS, and GEPS together, with REPS 5.0 absorbing the consequences of the structural changes to RDPS by repointing its initial-condition source to the global system.
+- The April 14, 2026 upgrade to v5.1.0 was an infrastructure port to ECCC's new supercomputing platform, with no documented scientific change. The same migration produced GEPS 8.1.0, GEWPS 1.4.0, REWPS 1.8.0, and RESPS 1.8.0. **The technical specifications and fact sheet have not been reissued for 5.1.0** — both documents linked as current describe 5.0.0 and are dated 11 June 2024.
 - REPS operates with **lid nesting** (top at ~17 hPa) rather than full upper-atmosphere coverage, with the GEPS pilot fields constraining the upper levels. Surface pressure adjustment is disabled because it is incompatible with lid nesting.
-- **SKEB is not used** in REPS — model uncertainty is represented entirely through SPP. This contrasts with GEPS, which uses both SPP and SKEB.
+- **SKEB is not used** in REPS — model uncertainty is represented entirely through SPP. This contrasts with GEPS, which uses both.
 - Open data licensing is genuinely open — no registration required, direct file access via the Datamart. Same as GDPS, RDPS, HRDPS, GEPS, GIOPS, and RIOPS.
+- **Published documentation for this dataset has several errors.** Worth knowing before building against it:
+  - The Datamart page **contradicts itself on forecast length within a single page**: the *Data location* section gives `hhh` as `[000, 003, 006, ..., 048]`, the *File name nomenclature* section gives `[000, 003, 006, ..., 072]`. The data goes to 072.
+  - The *List of variables → Individual members* heading is **empty**. There is no published list of the 79 member parameters — the same gap as in the GEPS documentation.
+  - The fact sheet and technical specifications give grid dimensions that match neither each other nor the data (see the grid caution above).
+  - The overview page states data is available "on 24 vertical levels." Nine isobaric levels are distributed, plus five height-above-ground levels and the surface and soil levels; no count of the distributed data reaches 24.
+  - The documented probability lists conflate instantaneous and interval products: `TMP` is listed with both above- and below-threshold probabilities, but the instantaneous `TMP-Prob` carries no probabilities at all — the "above" set belongs to `TMP-Max24h-Prob` and the "below" set to `TMP-Min24h-Prob`.
+  - The 200 mm threshold on `TPRATE-Accum24h/48h/72h` and `RPRATE-Accum24h` is undocumented; the documented lists stop at 150 mm.
+  - Precipitation thresholds are documented in kg/(m²·s). They are accumulations in kg m⁻² (mm).
+  - Minimum and maximum are documented as "0 percentile" and "100th percentile" but are encoded as `derivedForecast` 8 and 9, **not** as `percentileValue` 0 and 100.
+  - The linked variable XML is described as covering "the 15km grid variables" — a leftover from before the July 2019 move to 10 km.
 - As with all ensemble systems, REPS output should be interpreted probabilistically rather than as a single forecast. The system's value is in calibrated probabilities and ensemble spread, not in any single-member view.
 
 ---
 
 ## Recent version history
 
-### REPS v5.0 — operational June 11, 2024 (current)
-Implemented at the 12 UTC run on June 11, 2024 as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0, RDPS 9.0.0, and GEPS 8.0.0.
+Versions are implemented at the stated date's 12 UTC run unless noted.
+
+### REPS v5.1.0 — operational April 14, 2026 (current)
+Port to ECCC's new high-performance computing infrastructure, applied across the operational suite. No scientific or configuration change is documented; the technical specifications remain those of v5.0.0.
+
+### REPS v5.0.0 — operational June 11, 2024
+Implemented as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0, RDPS 9.0.0, and GEPS 8.0.0.
 
 Headline changes from v4.1:
-- **Initial-condition source change:** Upper-air initial conditions now drawn from the **GDPS G0** (15 km) deterministic analysis and the new 25 km **GEPS 8.0.0** ensemble analyses, replacing the previous RDPS-plus-GEPS combination. This change was forced by the IC-4 removal of the standalone RDPS continuous regional LAM assimilation cycle.
-- **SLEVE vertical coordinate introduced** with `Hyb_rcoef = 1., 15., 3., 100.`, replacing the previous hybrid coordinate configuration. A new low-resolution filtered topography field (**MELS**, with a 10-dx cutoff) was generated specifically to support the SLEVE coordinate.
-- **SPP Markovian perturbation grid resolution increased** from 16 × 8 points globally to **384 × 192 points**, substantially improving the spatial structure of the stochastic physics perturbations.
-- **Sea ice thickness now evolves in time** during the forecast (previously held fixed at the analysis value).
-- **Surface and microphysics parameter updates:**
-  - Sea ice `Leadfrac` parameter changed from 0.04 to 0.0
-  - Sundqvist dry accretion rate of ice crystals by snow (`Cond_iceacc`) increased from 2.5 to 5.0
-  - Sundqvist relative humidity threshold for condensation (`Cond_hu0min`) increased from 0.80 to 0.85
-- **Geophysical fields regenerated** on the U2 supercomputer infrastructure using the in-house GenPhysX software, with no significant differences from the previous fields apart from the new MELS topography.
+- **Initial-condition source change:** Upper-air initial conditions now drawn from the **GDPS G0** (15 km) deterministic analysis and the new 25 km **GEPS 8.0.0** ensemble analyses, replacing the previous RDPS-plus-GEPS combination. Forced by the IC-4 removal of the standalone RDPS continuous regional LAM assimilation cycle.
+- **Piloting moved to GEPS 8.0.0 at 25 km** (previously GEPS 7.x at 39 km).
+- **GIOPS analyses adopted** for sea ice and ocean surface initialization, with associated physics changes.
+- **SLEVE vertical coordinate introduced** with `Hyb_rcoef = 1., 15., 3., 100.`. A new low-resolution filtered topography field (**MELS**, 10-dx cutoff) was generated specifically to support it.
+- **SPP Markovian perturbation grid resolution increased** from 16 × 8 points globally to **384 × 192 points**.
+- **Sea ice thickness now evolves in time** during the forecast (previously held fixed at the analysis value); `Leadfrac` changed from 0.04 to 0.0.
+- **Grid-scale precipitation retuned:** `Cond_iceacc` 2.5 → 5.0, `Cond_hu0min` 0.8 → 0.85.
+- **GEM upgraded to version 5.2**; geophysical fields regenerated on the U2 infrastructure (assessed as neutral).
+
+### Earlier versions
+- **v4.1.0 — 28 June 2022:** HPC infrastructure port
+- **v4.0.0 — 1 December 2021:** major upgrade
+- **v3.1.0 — 21 January 2020:** HPC infrastructure port
+- **v3.0.0 — 3 July 2019:** GEPS 6.0.0 becomes the pilot; GEM 4.8-LTS.16 → 5.0.0; **horizontal resolution 15 km → 10 km**; vertical levels 48 → 84; **runs increased from 2× to 4× daily**; members recentered on the RDPS analysis and configured identically to RDPS. (This entry also records the model top rising from 16 hPa to 0.1 hPa, which the v5.0 technical specifications contradict — see *Basic details*.)
+- **v2.4.0 — 18 September 2018:** piloted by GEPS 5.0.0; GEM 4.6 → 4.8; trapezoidal-cubic semi-Lagrangian trajectory interpolation activated
+- **v2.2.0 — 15 December 2015:** piloted by GEPS 4.1.1 (pilot change only)
+- **v2.0.1 — 4 December 2013:** GEM 4.2.1 → 4.5.1; horizontal grid 33 km → 15 km; time step 15 min → 7.5 min; vertical levels 28 → 48; PTP perturbations suppressed in convectively unstable and strong-updraft regions
+- **v1.0.0 — 22 September 2011:** declared operational at CMC; products initially **internal to Environment Canada only**, with external distribution added later
 
 ---
 
 ## Official documentation
-- REPS open data page: https://eccc-msc.github.io/open-data/msc-data/nwp_reps/readme_reps-datamart_en/
-- REPS readme: https://eccc-msc.github.io/open-data/msc-data/nwp_reps/readme_reps_en/
-- Technical specifications (current, v5.0): https://collaboration.cmc.ec.gc.ca/cmc/CMOI/product_guide/docs/tech_specifications/tech_specifications_REPS_e.pdf
-- ECCC operational systems changelog: https://eccc-msc.github.io/open-data/msc-data/changelog_multisystems_en/
+- REPS overview: https://eccc-msc.github.io/open-data/msc-data/nwp_reps/readme_reps_en/
+- REPS on the MSC Datamart (file naming, grid, product list): https://eccc-msc.github.io/open-data/msc-data/nwp_reps/readme_reps-datamart_en/
+- Technical specifications (linked as current; content is v5.0.0): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/tech_specifications/tech_specifications_REPS_e.pdf
+- Technical specifications (v5.0.0, version-pinned): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/tech_specifications/tech_specifications_REPS_5.0.0_e.pdf
+- Technical note (v5.0.0): http://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/tech_notes/technote_reps-500_e.pdf
+- Fact sheet (v5.0.0): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/fact_sheets/factsheet_reps_e.pdf
+- REPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_reps/changelog_reps_en/
+- CMC operational suite changelog (v5.1.0 HPC migration): https://eccc-msc.github.io/open-data/msc-data/changelog_multisystems_en/
+- System dependency diagram: https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwep-dependency-diagrams/system_REPS_en.svg
+- Grid diagram: https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwp_reps/grille_reps_rlatlon.png
+- Variable element list (XML, EN/FR): https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwp_reps/reps_element.xml
+- Discovery metadata: https://open.canada.ca/data/en/dataset/13e27861-bf00-599b-9b24-9a50dbfed7ed
 - Licence: https://eccc-msc.github.io/open-data/licence/readme_en/
 
 ### Key references
-- Bélair, S., L.-P. Crevier, J. Mailhot, B. Bilodeau, and Y. Delage (2003a). Operational Implementation of the ISBA Land Surface Scheme in the Canadian Regional Weather Forecast Model. Part I: Warm Season Results. *J. Hydromet.*, 4, 352–370.
-- Bélair, S., R. Brown, J. Mailhot, B. Bilodeau, and L.-P. Crevier (2003b). Operational Implementation of the ISBA Land Surface Scheme in the Canadian Regional Weather Forecast Model. Part II: Cold Season Results. *J. Hydromet.*, 4, 371–386.
+- Bechtold, P., et al. (2001). A mass-flux convection scheme for regional and global models. *Q.J.R. Meteorol. Soc.*, 127, 869–886.
+- Bélair, S., L.-P. Crevier, J. Mailhot, B. Bilodeau, and Y. Delage (2003a). Operational implementation of the ISBA land surface scheme in the Canadian regional weather forecast model. Part I. *J. Hydromet.*, 4, 352–370.
 - Charron, M., G. Pellerin, L. Spacek, P. L. Houtekamer, N. Gagnon, H. L. Mitchell, and L. Michelin (2010). Toward Random Sampling of Model Error in the Canadian Ensemble Prediction System. *Mon. Wea. Rev.*, 138, 1877–1901.
-- Côté, J., et al. (1998a). The Operational CMC-MRB Global Environmental Multiscale (GEM) Model: Part I — Design Considerations and Formulation. *Mon. Wea. Rev.*, 126, 1373–1395.
+- Côté, J., et al. (1998a). The Operational CMC-MRB Global Environmental Multiscale (GEM) Model: Part I. *Mon. Wea. Rev.*, 126, 1373–1395.
+- Fillion, L., H. L. Mitchell, H. Ritchie, and A. Staniforth (1995). The impact of a digital filter finalization technique in a global data assimilation system. *Tellus*, 47A, 304–323.
 - Girard, C., A. Plante, M. Desgagné, and A. Zadra (2014). Staggered Vertical Discretization of the Canadian Environmental Multiscale (GEM) Model Using a Coordinate of the Log-Hydrostatic-Pressure Type. *Mon. Wea. Rev.*, 142, 1183–1196. https://doi.org/10.1175/MWR-D-13-00255.1
-- Husain, S. Z., and C. Girard (2017). Impact of Consistent Semi-Lagrangian Trajectory Calculations on NWP Performance. *Mon. Wea. Rev.*, 145, 4127–4150.
-- McTaggart-Cowan, R., et al. (2019a). Modernization of Atmospheric Physics Parameterization in Canadian NWP. *J. Adv. Model. Earth Syst.*, 11, 3593–3635. https://doi.org/10.1029/2019MS001781
-- McTaggart-Cowan, R., P. Vaillancourt, A. Zadra, L. Separovic, S. Corvec, and D. Kirshbaum (2019b). A Lagrangian Perspective on Parameterizing Deep Convection. *Mon. Wea. Rev.*, 147, 4127–4150. https://doi.org/10.1175/MWR-D-19-0164.1
-- McTaggart-Cowan, R., L. Separovic, R. Aider, M. Charron, M. Desgagné, P. L. Houtekamer, D. Paquin-Ricard, P. Vaillancourt, and A. Zadra (2022a). Using stochastic parameter perturbations to represent model uncertainty, Part I: Implementation and parameter sensitivity.
-- McTaggart-Cowan, R., L. Separovic, M. Charron, X. Deng, N. Gagnon, P. L. Houtekamer, and A. Patoine (2022b). Using stochastic parameter perturbations to represent model uncertainty, Part II: Comparison with existing techniques in an operational ensemble.
-- Yeh, K.-S., J. Côté, S. Gravel, A. Méthot, A. Patoine, M. Roch, and A. Staniforth (2002). The CMC-MRB Global Environmental Multiscale (GEM) Model. Part III: Non-hydrostatic Formulation. *Mon. Wea. Rev.*, 130, 339–356.
+- Husain, S. Z., and C. Girard (2017). Impact of consistent semi-Lagrangian trajectory calculations on NWP performance. *Mon. Wea. Rev.*, 145, 4127–4150.
+- McTaggart-Cowan, R., et al. (2019a). Modernization of Atmospheric Physics Parameterization in Canadian NWP. *J. Adv. Model. Earth Syst.*, 11. https://doi.org/10.1029/2019MS001781
+- McTaggart-Cowan, R., P. Vaillancourt, A. Zadra, L. Separovic, S. Corvec, and D. Kirshbaum (2019b). A Lagrangian Perspective on Parameterizing Deep Convection. *Mon. Wea. Rev.* https://doi.org/10.1175/MWR-D-19-0164.1
+- McTaggart-Cowan, R., L. Separovic, R. Aider, M. Charron, M. Desgagné, P. L. Houtekamer, D. Paquin-Ricard, P. Vaillancourt, and A. Zadra (2022a). Using stochastic parameter perturbations to represent model uncertainty, Part I.
+- McTaggart-Cowan, R., L. Separovic, M. Charron, D. Xingxiu, N. Gagnon, P. L. Houtekamer, and A. Patoine (2022b). Using stochastic parameter perturbations to represent model uncertainty, Part II.
+- Noilhan, J., and S. Planton (1989). A simple parameterization of land surface processes for meteorological models. *Mon. Wea. Rev.*, 117, 536–549.
+- Yeh, K. S., J. Côté, S. Gravel, A. Méthot, A. Patoine, M. Roch, and A. Staniforth (2002). The CMC-MRB Global Environmental Multiscale (GEM) model. Part III: Non-hydrostatic formulation. *Mon. Wea. Rev.*, 130, 339–356.
+- Zeng, X., and A. Beljaars (2005). A prognostic scheme of sea surface skin temperature for modeling and data assimilation. *Geophys. Res. Lett.*, 32, L14605. https://doi.org/10.1029/2005GL023030
