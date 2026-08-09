@@ -135,7 +135,7 @@ Served from OVH-hosted S3-compatible object storage. **No account, no API key, n
 
 Published on the dataset page rather than in the object store:
 
-- **`constant-eurw1s40.grib2`** ("Champs CONSTANT EURW1S40") — orography and land–sea mask on the EURW1S40 grid. **TBD** — the resource endpoint was unavailable at verification time, so message contents were not confirmed; by analogy with the ARPEGE constant files it should carry `h` and `lsm`.
+- **`constant-eurw1s40.grib2`** ("Champs CONSTANT EURW1S40") — **live-verified**: 2 messages, orography (`h`, geometrical height above ground, m) and land–sea mask (`lsm`, 0–1) on the EURW1S40 grid. Encoded unlike the forecast data: `tablesVersion = 32` (against 15), `grid_second_order` packing (against `grid_ccsds`), `generatingProcessIdentifier = 255`, `typeOfGeneratingProcess = 0` — the same divergence seen in the ARPEGE constant files.
 - **`descriptiontechnique-paquetsarome-donneespubliques-v4-20250401.pdf`** — official package description, ~209 KB, **version 01/04/2025**. Current and accurate; see *Documentation* below.
 - **`description-parametres-modeles-arpege-arome-v2-185.pdf`** — parameter glossary shared with ARPEGE, ~107 KB. Plain-language definitions and units for every parameter name, with no GRIB code mapping.
 
