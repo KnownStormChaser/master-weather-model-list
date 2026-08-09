@@ -130,7 +130,7 @@ The GRIB packages are served from OVH-hosted S3-compatible object storage. **No 
 Published on the same dataset page rather than in the object store:
 
 - **`constant-glob025.grib2`** — orography (`h`, geometrical height above ground, m) and land–sea mask (`lsm`, 0–1) on the GLOB025 grid, 2 messages, ~1.2 MB. Last updated 2025-03-10.
-- **`description-technique-paquets-arpege.pdf`** — official package/parameter description, ~90 KB. Last updated 2024-02-29.
+- **`description-paquets-modele-arpege.pdf`** — official package/parameter description covering both the 0.25° and 0.1° grids, ~90 KB, **version dated 02/01/2024** (data.gouv.fr resource last updated 2024-02-29). See *Documentation defects* below before relying on it.
 
 ### Secondary access — Météo-France API portal
 
@@ -158,6 +158,8 @@ Because output drops to 3-hourly after 48 h, the last two range files begin late
 - `049H072H` — first instantaneous step is **51**, not 49
 - `073H102H` — first instantaneous step is **75**, not 73
 
+This is by design rather than a gap: Météo-France's package description states the cadence as hourly from 0 h to 48 h and 3-hourly **from 51 h** to 102 h. The range-group names simply do not reflect it.
+
 ### Three different accumulation conventions coexist
 Within a single cycle, time-processed fields (`productDefinitionTemplateNumber = 8`) use three incompatible interval conventions:
 - **Accumulated from run start** (`0-1`, `0-2`, … `0-24`): `tp`, `tsnowp`, `ssrd`, and the SP2 flux fields
@@ -181,17 +183,17 @@ Several fields use parameter numbers in the local range (≥ 192) while declarin
 | SP3 | 0/4/198 | surface | Short-wave radiation category, accumulated |
 | SP3 | 0/19/201 | surface | Physical-atmospheric-properties category, time-minimum |
 
-Identifying these requires Météo-France's local GRIB definitions (linked from the Confluence page below) or `description-technique-paquets-arpege.pdf`. **TBD** — the resource endpoint serving that PDF was unreachable at verification time.
+Identifying these requires Météo-France's local GRIB definitions, linked from the Confluence page below. **TBD** — the official package description does not help here: **SP3 does not appear in it at all**, for either grid (see *Documentation defects*).
 
-Four further fields use **WMO-standard** numbers that ecCodes 2.48.0 nonetheless leaves as `unknown`; the WMO table interpretations are given here but have not been cross-checked against Météo-France documentation (**TBD**):
+Five further fields use **WMO-standard** numbers that ecCodes 2.48.0 nonetheless leaves as `unknown`. The first three are confirmed against Météo-France's package description; the last two are WMO Table 4.2 readings only, since SP3 is undocumented:
 
-| Package | Encoding | WMO Table 4.2 interpretation |
-|---|---|---|
-| SP1 | 0/6/1 | Total cloud cover (confirmed by value range) |
-| SP2 | 0/1/64 | Total column integrated water vapour |
-| SP2 | 0/1/6 | Evaporation |
-| SP3 | 0/6/11 | Cloud base |
-| SP3 | 0/17/4 | Lightning flash density |
+| Package | Encoding | Identification | Basis |
+|---|---|---|---|
+| SP1 | 0/6/1 | Total cloud cover | `NEBUL` in the package description; value range 0–100 % |
+| SP2 | 0/1/64 | Total column water vapour | `COLONNE_VAPO` in the package description |
+| SP2 | 0/1/6 | Evaporation flux | `FLEVAP` in the package description |
+| SP3 | 0/6/11 | Cloud base | WMO Table 4.2 only — **TBD** |
+| SP3 | 0/17/4 | Lightning flash density | WMO Table 4.2 only — **TBD** |
 
 ### Soil depth is reported inconsistently by ecCodes
 The `depthBelowLand` soil fields encode `scaledValueOfFirstFixedSurface = 250`, `scaleFactorOfFirstFixedSurface = 2` — a depth of **2.5 m**. ecCodes' integer `level` key rounds this to **3**. Use `scaledValueOfFirstFixedSurface` and `scaleFactorOfFirstFixedSurface` rather than `level` for these fields.
@@ -207,6 +209,17 @@ However `satelliteSeries`, `satelliteNumber` and `instrumentType` are **all zero
 - **`CAPE_INS` has no resolvable level type** — ecCodes reports `typeOfLevel = unknown` while the field decodes normally otherwise.
 - **`iews` and `inss`** carry ecCodes names beginning "Instantaneous … turbulent surface stress" but are encoded with `stepType = accum`. They are **time-integrated** stresses (N m⁻² s), not instantaneous values; the shortName is misleading.
 - **The constant-fields file is encoded unlike the data it accompanies**: `constant-glob025.grib2` uses `tablesVersion = 32` and `grid_second_order` packing, against `tablesVersion = 15` and `grid_ccsds` in the operational packages. It also carries `generatingProcessIdentifier = 255` and `typeOfGeneratingProcess = 0`.
+
+### Documentation defects
+`description-paquets-modele-arpege.pdf` (version 02/01/2024) is the only official parameter listing, and it has drifted from the live data. Verified discrepancies affecting this grid:
+
+- **The stated GLOB025 bounds are wrong.** The PDF gives the grid as "GLOB025 0.25 dg ( 53N 38N 8W 12E )" — a box over France — for what is a global product. Live files are 90°N–90°S, 0–359.75°E.
+- **The IP4 vorticity level counts are swapped between the two grids.** The PDF gives `TA`/`TB` (`absv`/`vo`) as 4 levels (300, 500, 700, 850 hPa) for GLOB025 and 26 levels (50–1000 hPa) for EURAT01. The live files are the exact reverse: **26 levels at 0.25°, 4 levels at 0.1°.**
+- **The 0.7 PVU surface is undocumented.** The PDF lists `u`, `v`, `z` on two `ISO_TP` surfaces (2000 and 1500). The 0.25° files carry **three** — 700, 1500 and 2000 (0.7, 1.5 and 2.0 PVU).
+- **SP3 is absent from the PDF entirely**, for both grids. All 26 of its parameter/level-type/step-type combinations — including the aviation diagnostics, soil fields and synthetic satellite channels — are undocumented.
+- **The step-dependent level truncation is undocumented.** The PDF describes IP1 and IP2 as "34 niveaux (1 à 1000 hPa)" with no mention that the ten levels above 100 hPa appear only at 3-hourly steps.
+
+The PDF is correct on the range groups, the cadence (hourly to 48 h, 3-hourly from 51 h), the packing format, and the HP and IP1/IP2/IP3 parameter lists.
 
 ### Access channels that no longer work
 - **`object.data.gouv.fr/meteofrance-pnt/…` is dead.** The host still resolves and still recognises the `meteofrance-pnt` bucket name, but every key returns `NoSuchKey`. This URL pattern appears in a good deal of third-party documentation and tooling; use the OVH endpoint above instead.
@@ -226,7 +239,7 @@ However `satelliteSeries`, `satelliteNumber` and `instrumentType` are **all zero
 - Météo-France open data portal: https://meteo.data.gouv.fr
 - Modèles et données de prévision (Confluence): https://confluence-meteofrance.atlassian.net/wiki/spaces/OpenDataMeteoFrance/pages/621019138/
 - Météo-France local GRIB definitions (for local parameter numbers): linked from the Confluence page above
-- ARPEGE package technical description (PDF): `description-technique-paquets-arpege.pdf`, linked from the dataset pages above
+- ARPEGE package description (PDF, v. 02/01/2024): `description-paquets-modele-arpege.pdf`, linked from the dataset pages above
 - Météo-France API portal (registration required): https://portail-api.meteofrance.fr
 - Etalab Open Licence v2.0: https://www.etalab.gouv.fr/licence-ouverte-open-licence
 
