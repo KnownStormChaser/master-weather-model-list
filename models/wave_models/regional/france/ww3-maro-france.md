@@ -106,7 +106,7 @@ vague-surcote-WW3-MARO__001__SP1__000H999H__<YYYY-MM-DD>T<HH>:00:00Z.nc
 ## Forcing and nesting
 - **Wind forcing:** [AROME](../../../nwp_models/regional/france/arome.md) (~1.3 km over France). This is the distinguishing feature against the sibling [WW3-MARP](./ww3-marp-france.md), which runs the same mesh under ARPEGE.
 - **Boundary conditions:** supplied by **MFWAM**, which also shares the wave physics. See [MFWAM GLOB01](../../global/france/mfwam-global-france.md).
-- **Current and water-level forcing:** **not applied to this configuration.** The documentation records that since July 2017 the *Atlantic* configuration ingests barotropic current and water height from HYCOM2D forced by ARPEGE, improving sea states over intertidal zones and in strong-current areas. No equivalent is stated for either Mediterranean configuration — consistent with the far smaller tidal range in the basin. Not independently verifiable from the file contents. **TBD.**
+- **Current and water-level forcing:** **none.** The documentation records HYCOM2D barotropic current and water-height forcing for the *Atlantic* configuration only, from July 2017. This is now confirmed from the data rather than inferred: the validity mask here is **fully static** — 78,262 valid nodes at every one of the 55 steps, zero nodes changing state — whereas [WW3-WARP](./ww3-warp-france.md) on the Atlantic mesh shows thousands of intertidal nodes wetting and drying on a 12.4 h semidiurnal cycle. No water-level forcing is active in this configuration.
 - **Bathymetry:** SHOM, developed under HOMONIM.
 
 ---
@@ -183,13 +183,15 @@ Consistently about 20 minutes behind the MFWAM GLOB01 files at the same cycle.
 ### The three WW3 coastal packages
 Météo-France distributes **three** configurations of this system openly:
 
-| Package | Domain | Wind forcing | Mesh |
-|---|---|---|---|
-| **WW3-MARO** (this entry) | Mediterranean | AROME | 89,695 nodes |
-| [WW3-MARP](./ww3-marp-france.md) | Mediterranean | ARPEGE | 89,695 nodes |
-| [WW3-WARP](./ww3-warp-france.md) | Atlantic | ARPEGE | 92,757 nodes |
+| Package | Domain | Wind forcing | Mesh | Range | Mask |
+|---|---|---|---|---|---|
+| **WW3-MARO** (this entry) | Mediterranean | AROME | 89,695 nodes | 51 h | Static |
+| [WW3-MARP](./ww3-marp-france.md) | Mediterranean | ARPEGE | 89,695 nodes | **72 h** | Static |
+| [WW3-WARP](./ww3-warp-france.md) | Atlantic | ARPEGE | 92,757 nodes | 72 h | **Tidal** |
 
-MARO and MARP share the same mesh and differ only in atmospheric forcing, making them a useful pair for isolating the effect of convection-permitting winds on coastal sea state.
+MARO and MARP run on a **byte-identical mesh** — `longitude`, `latitude`, `tri` and `MAPSTA` match exactly — and differ only in atmospheric forcing, making them a clean controlled comparison of convection-permitting versus global winds on coastal sea state. Restrict such comparisons to leads ≤ 51 h, since MARP runs 21 h further out. Mesh preprocessing computed for one is reusable verbatim for the other.
+
+MARO is also the **only one of the three with a non-uniform time axis**: its 06Z cycle carries 3 analysis fields instead of 6, and 52 steps instead of 55. Both siblings are uniform at 62 steps across all four cycles.
 
 > **There is no WW3-WARO.** The Atlantic domain has no AROME-forced configuration. The four-way `MARO`/`MARP`/`WARO`/`WARP` naming does apply to the **HYCOM2D storm surge** packages in the same portal tag and object-store tree, which makes the asymmetry easy to miss.
 
