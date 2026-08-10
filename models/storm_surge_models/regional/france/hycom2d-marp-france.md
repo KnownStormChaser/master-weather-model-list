@@ -119,6 +119,8 @@ That gives **141 messages across 103 files** per cycle. File sizes track this di
 > | Field is the mean | 0.004964 | 0.056882 |
 >
 > The residual against the maximum is consistent with 9-bit packing precision, and the field sits a hair *above* the three-hourly maximum at each point (e.g. 0.0356 against 0.0355) because the model's internal maximum is taken over sub-hourly timesteps. Any pipeline that trusts `stepType` will treat peak surge as a 3-hour mean and **under-report the hazard**.
+>
+> **The time window on this configuration is correct.** The field matches `max{N−2, N−1, N}`, exactly the range the headers declare — verified at +24 h (0.6 quantisation steps) and +48 h (0.3 q). This is worth stating explicitly because **[HYCOM2D-WARP](./hycom2d-warp-france.md) is offset**: on the Atlantic domain the same parameter excludes the end step, covering only `{N−2, N−1}`, which leaves one hour in three outside every maximum window. Do not assume the two configurations behave identically; MARP is the one that matches its metadata.
 
 > **Encoding defect 3 — `typeOfProcessedData` is unset** (`missing` rather than 1), the same defect as the MFWAM packages.
 
