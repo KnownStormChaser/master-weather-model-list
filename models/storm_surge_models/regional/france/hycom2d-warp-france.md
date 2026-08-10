@@ -199,7 +199,7 @@ Each cycle publishes in about two minutes. WARP is the **last of the four HYCOM2
   | [HYCOM2D-MARO](./hycom2d-maro-france.md) | MEDIT0042 | 1/24° | AROME | 51 h |
   | [HYCOM2D-WARO](./hycom2d-waro-france.md) | COTWEU0042 | 1/24° | AROME | 51 h |
 
-  All four verified live at those ranges on 2026-08-09. `descriptif-modele-hycom2d.pdf` describes the AROME-forced runs as 5× daily (00, 03, 06, 12, 18 UTC) at 42/39/36/42/36 h; live enumeration shows 4 cycles at 51 h. **Whether the WARO configuration shares this domain's window offset is untested** — worth checking when that entry is written, since the offset may be domain-specific rather than forcing-specific.
+  All four verified live at those ranges on 2026-08-09. `descriptif-modele-hycom2d.pdf` describes the AROME-forced runs as 5× daily (00, 03, 06, 12, 18 UTC) at 42/39/36/42/36 h; live enumeration shows 4 cycles at 51 h. **The window offset is domain-specific, not forcing-specific** — subsequently confirmed by testing all four configurations on the 2026-08-10 12Z cycle: both COTWEU (Atlantic) configurations are offset and both MEDIT (Mediterranean) ones are correct, regardless of driving atmosphere. See the [MARO entry](./hycom2d-maro-france.md#the-time-window-on-this-configuration-is-correct) for the full four-way comparison.
 
 - **Relationship to the WW3 wave family.** Same institutional origin, same HOMONIM programme, same SHOM bathymetry, same naming convention — different model core, different output geometry (regular grid rather than unstructured mesh), and a complete 2×2 matrix where WW3 has only three members. This configuration's water level feeds [WW3-WARP](../../../wave_models/regional/france/ww3-warp-france.md); nothing feeds back.
 
