@@ -205,7 +205,7 @@ Use **HD** for near-surface detail over complex terrain, for surface reflectivit
 ### Model family and relationships
 - **Parent distribution:** [AROME France](./arome-france.md) — same forecast, coarser grid, far richer content. Cross-linked in both directions.
 - **Global parent:** [ARPEGE](../../global/france/arpege-global.md) supplies lateral boundary conditions; [ARPEGE Europe](./arpege-europe.md) is its 0.1° regional distribution.
-- **Ensemble counterpart:** [PE-AROME](../../../ensemble_models/regional/fr/pe-arome.md) — 26 members over the same EURW1S40 domain, distributed through the WCS ensemble API. **There is no 0.01° ensemble distribution.**
+- **Ensemble counterpart:** PEAROME — 26 members over the same EURW1S40 domain, reachable only through the WCS ensemble API and **not published to data.gouv.fr**. **There is no 0.01° ensemble distribution.** The only AROME ensemble on open data is the New Caledonia overseas domain — see [PE-AROME New Caledonia](../../../ensemble_models/regional/fr/pe-arome-ncaled.md).
 - **Overseas sibling:** [AROME Outre-Mer](./arome-outre-mer.md) covers five overseas domains at 0.025° only.
 
 ---
