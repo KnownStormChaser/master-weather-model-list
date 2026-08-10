@@ -282,7 +282,7 @@ The PDF is correct on the cycle hours, forecast length, hourly step, packing for
 - **Forecast length:** 48 hours, extended to **78 hours when a tropical cyclone is present** in the domain
 - **Cycles (differ from deterministic):** Antilles and Guiana at 00/12 UTC; Réunion at 00/18 UTC; New Caledonia and Polynesia at 06/18 UTC
 
-PEAROME-OM covers all five domains and is documented separately under ensemble models. **It is not present in the `arome-om/` tree of the open-data bucket** — only the deterministic `0025` grids appear per domain — so its open-data availability is **TBD**.
+PEAROME-OM covers all five domains, but **only the New Caledonia domain is published to open data** — documented separately in [PE-AROME New Caledonia](../../../ensemble_models/regional/fr/pe-arome-ncaled.md). It is not in the `arome-om/` tree of the `meteofrance-pnt` bucket used by the deterministic domains; it lives in the separate `meteofrance-pe` ensemble bucket under `prod/data/arome/ncaled0025/`, which contains no other domain. The Antilles, Guiana, Polynesia and Réunion–Mayotte ensembles are reachable only through the API portal.
 
 ---
 
