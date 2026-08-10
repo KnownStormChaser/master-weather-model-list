@@ -17,6 +17,8 @@ The model was developed by **SHOM** with Météo-France under the **HOMONIM** pr
 - **Programme:** HOMONIM, under DGPR contracting authority
 - **GRIB2 originating centre (verified):** `lfpw` — French Weather Service, Toulouse (centre 85), subCentre 0, `generatingProcessIdentifier = 134`
 
+> **The process identifier is the only in-file discriminator between the four HYCOM2D configurations.** Verified values: **MARP 134**, [MARO](./hycom2d-maro-france.md) **161**, [WARO](./hycom2d-waro-france.md) **159**, [WARP](./hycom2d-warp-france.md) **131**. MARP and MARO share an identical grid, mask and parameter set, so in an archive with filenames lost this key is the only way to tell them apart.
+
 ---
 
 ## What area it covers
