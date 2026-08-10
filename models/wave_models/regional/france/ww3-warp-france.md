@@ -197,7 +197,7 @@ Consistently the **last** of the five `vague-surcote` wave products to publish a
 | Package | Domain | Wind forcing | Mesh | Range | HYCOM2D forcing |
 |---|---|---|---|---|---|
 | [WW3-MARO](./ww3-maro-france.md) | Mediterranean | AROME | 89,695 nodes | 51 h | No |
-| [WW3-MARP](./ww3-marp-france.md) | Mediterranean | ARPEGE | 89,695 nodes | TBD | No |
+| [WW3-MARP](./ww3-marp-france.md) | Mediterranean | ARPEGE | 89,695 nodes | 72 h | No |
 | **WW3-WARP** (this entry) | Atlantic | ARPEGE | 92,757 nodes | 72 h | **Yes** |
 
 WARP is the only one of the three with tidal water-level forcing and the only one on the Atlantic mesh, so it has no direct forcing-comparison partner the way MARO and MARP do.
