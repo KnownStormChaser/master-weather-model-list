@@ -211,7 +211,7 @@ Still unresolved (**TBD**): **0/6/2** (surface, instantaneous — convective clo
 - **Global distribution of this ensemble:** [PE-ARPEGE](../../global/fr/pe-arpege.md) — same 35 members at 0.25° globally, ~213 GB per cycle. Choose GLOB025 for global coverage, the near-surface thermodynamic profile, or absolute vorticity; choose EURAT01 for finer horizontal detail over Europe, full hourly content below 48 h, vertical velocity and divergence, and less than half the volume.
 - **Deterministic counterpart:** [ARPEGE Europe](../../../nwp_models/regional/france/arpege-europe.md), which publishes the deterministic forecast on the identical EURAT01 grid. Note the contrast in retention — 15 days there against ~36 hours here.
 - **Parent deterministic model:** [ARPEGE](../../../nwp_models/global/france/arpege-global.md); ARPEGE (interpolated, unperturbed) is PE-ARPEGE's control member.
-- **Regional sibling ensemble:** [PE-AROME](./pe-arome.md), the convection-permitting AROME ensemble over Western Europe, coupled to PE-ARPEGE for its lateral boundary conditions.
+- **Regional sibling ensembles:** the convection-permitting AROME ensembles, coupled to PE-ARPEGE for their lateral boundary conditions via PEARP. Only the overseas New Caledonia domain is on open data — see [PE-AROME New Caledonia](./pe-arome-ncaled.md); the metropolitan PEAROME and the four other overseas domains are API-only.
 - **Also in this bucket:** `prod/data/arome/ncaled0025/` — a New Caledonia AROME ensemble, presumably part of PEAROME-OM. **TBD** — see the PE-AROME entry.
 
 ### Forthcoming
