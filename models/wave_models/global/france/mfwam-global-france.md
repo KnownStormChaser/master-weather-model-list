@@ -7,6 +7,8 @@ This entry documents the **GLOB01** configuration: the global 0.1° grid, forced
 
 Météo-France runs MFWAM in several configurations distributed through different channels. The regional 0.025° European grid (FRANGP0025) is a separate product with its own package and cadence — see [MFWAM FRANGP0025](../../regional/france/mfwam-hr-france.md). A distinct global MFWAM at 1/12° with multi-satellite assimilation is distributed through Copernicus Marine — see [MFWAM Global (Copernicus)](./mfwam-copernicus.md). These are different operational systems, not different renderings of one run.
 
+This package has only carried global data since **25 March 2025**; before that it published a European domain, and a separate 0.5° global package existed until April 2025. Both are covered under *Recent version history* — the distinction matters for anyone working with archived files, since `01` files predating that date are Euro-Atlantic, not global.
+
 > **Naming note.** The distribution names this package `vague-surcote` ("wave–surge"), a tree it shares with Météo-France's HYCOM2D storm surge systems. The MFWAM files themselves contain no surge fields.
 
 ---
@@ -48,7 +50,9 @@ Consumers building a persistent valid-point index must rebuild it per step for w
 - **Temporal output resolution (verified):** hourly +1h to +48h, then 3-hourly +51h to +102h — **66 steps, no analysis step**
 - **Vertical levels:** not applicable — wave fields are on `meanSea` (level 0); winds on `heightAboveGround` 10 m
 
-> **Documentation conflict on forecast length — the model documentation is wrong.** `20250318-doc-mfwam.pdf` states a 114 h maximum and per-cycle lengths of 102 h (00Z), 72 h (06Z), 114 h (12Z) and 60 h (18Z). `documentation-serveur-dp2024-mfwam` states a uniform 102 h at all four cycles. Live enumeration of four consecutive cycles on 2026-08-09 found **66 files reaching 102 h at every one**. The server descriptif is correct; the model presentation document is not. The per-cycle variation it describes may reflect the full operational chain rather than this public package, but nothing in the open distribution matches it.
+> **Documentation conflict on forecast length — the model documentation carries figures from a superseded configuration.** `20250318-doc-mfwam.pdf` states a 114 h maximum and per-cycle lengths of 102 h (00Z), 72 h (06Z), 114 h (12Z) and 60 h (18Z). `documentation-serveur-dp2024-mfwam` states a uniform 102 h at all four cycles. Live enumeration of four consecutive cycles on 2026-08-09 found **66 files reaching 102 h at every one**; the server descriptif is correct.
+>
+> The likely explanation is visible in the document itself: **the same four lengths appear twice** — once attributed to GLOB01, and once in an availability section headed "Modèles sur grille GLOB05 et EURAT01," the pre-consolidation grid pair retired in 2025 (see *Recent version history*). They read as carried over from the old configuration rather than re-derived for the global GLOB01. It remains possible that the full operational chain still runs to 114 h at 12Z and the public package is truncated to 102 h, but nothing in the open distribution supports that.
 
 > **No analysis step is published.** Files begin at 001H. The data.gouv description advertises "champs d'analyse et de prévision" and `20250318-doc-mfwam.pdf` states that analyses are available 3-hourly on grids other than FRANGP0025. Neither is true of this distribution as verified.
 
@@ -156,7 +160,7 @@ Runs complete in 3–13 minutes once publication starts. Sampling the 00Z cycle 
 ## Notes
 - **Portal metadata is stale.** `temporal_coverage` on the data.gouv record still reads 2024-02-28 to 2024-02-29, from the dataset's creation in February 2024. It does not track the rolling window and should be ignored.
 
-- **The `vague-surcote` tree is shared with storm surge systems.** The same prefix carries `HYCOM2D-MARO`, `HYCOM2D-MARP`, `HYCOM2D-WARO` and `HYCOM2D-WARP`. Those are separate systems in separate packages; nothing about them appears in the MFWAM files. They belong under `storm_surge_models/` and are not yet catalogued.
+- **The `vague-surcote` label spans two other model families, distributed differently.** On the object store the prefix carries only MFWAM and the **HYCOM2D** storm surge systems (`-MARO`, `-MARP`, `-WARO`, `-WARP`, 0.04°), which belong under `storm_surge_models/` and are not yet catalogued. The portal's `pnt-vague-surcote` tag additionally covers four **WW3** high-resolution wave packages (`WW3-MARO`, `-MARP`, `-WARO`, `-WARP`, 0.1°, AROME-forced) — these are **NetCDF, published through data.gouv resources only, and absent from the S3 tree entirely**, so bucket enumeration will not find them. See the existing [WW3-MARO](../../regional/france/ww3-maro-france.md) entry. Nothing from either family appears inside the MFWAM files.
 
 - **FRANGP0025 also overruns its documentation.** The 0025 grid under `MFWAM/0025/SP1/` published 49 files reaching **51 h** at the 2026-08-10 00Z cycle, against a documented 48 h. Recorded in the [FRANGP0025 entry](../../regional/france/mfwam-hr-france.md).
 
@@ -170,10 +174,23 @@ Runs complete in 3–13 minutes once publication starts. Sampling the 00Z cycle 
 
 ## Recent version history
 
-### 2025-03-25 — domain expanded from Europe to global
-From the 06Z run, this package switched from a European extraction (72°N–20°N, 32°W–42°E) to the full global GLOB01 grid. Recorded in the dataset description on data.gouv.fr; both documentation PDFs were re-uploaded around this date (25 and 26 March 2025). The underlying model configuration was already global — what changed is the extent published in this package.
+### 2025-03/04 — two-tier consolidation onto the 0.1° global grid
+Météo-France distributed **three** MFWAM packages until spring 2025. Over two weeks the coarse global tier and the European 0.1° tier were merged into a single global 0.1° product:
 
-The stale reference to a grid named `EURAT01` in `20250318-doc-mfwam.pdf` plausibly names that pre-2025 European extraction; the same paragraph also names `GLOB05`, which appears nowhere in the current distribution. Neither grid is described elsewhere in either document.
+| Package | Grid token | Until 2025-03-25 | After |
+|---|---|---|---|
+| MFWAM 0.5° | `05` | Global | **Discontinued 2025-04-08** |
+| MFWAM 0.1° | `01` | Europe, 72°N–20°N / 32°W–42°E | **Global** (this entry) |
+| MFWAM 0.025° | `0025` | France élargie | unchanged |
+
+- **2025-03-25, 06Z run** — the 0.1° package switched from the European extraction to the full global grid. Recorded in the dataset description; both documentation PDFs were re-uploaded on 25 and 26 March 2025.
+- **2025-04-08** — the 0.5° global package was permanently withdrawn. Its dataset description states it was replaced by the 0.1° global grid. No `05` token appears anywhere in the object store's 15-day window.
+
+This makes the March change a **replacement of the 0.5° global tier**, not merely a widening of the European one. Users who were taking global waves at 0.5° before April 2025 are the population this entry's product was built to absorb.
+
+The grid names `GLOB05` and `EURAT01` in `20250318-doc-mfwam.pdf` are best read as this superseded pair — the 0.5° global grid and the 0.1° Euro-Atlantic grid respectively. The document's front section was updated for the global switch while its availability section was not, which also accounts for the forecast-length discrepancy noted under *Basic details*. Neither name appears in the current distribution.
+
+> **The retired 0.5° dataset is still live-looking on the portal.** `paquets-de-modele-de-vagues-mfwam-resolution-0-5deg` (id `65bd19fe0d61026813636c33`) is **not flagged as archived**, still declares `frequency: continuous`, and still serves 66 GRIB2 resources — frozen at the 2025-04-08 00Z and 06Z cycles. Automated harvesters keying on the portal's archive flag will treat it as an active product. Out of scope for this catalog as a discontinued system, but worth a *Systems Not in the Catalog* wiki line.
 
 ### 2024-02-02 — dataset created on data.gouv.fr
 Initial publication of the MFWAM packages on the national portal.
@@ -192,4 +209,4 @@ Per `20250318-doc-mfwam.pdf`, a stabilised global configuration entered operatio
 
 ---
 
-*Live-verified 2026-08-10 against the 2026-08-10T00:00:00Z cycle (steps 001H, 048H, 102H decoded with ecCodes 2.48.0), with cycle enumeration and publication timestamps sampled 2026-07-26 to 2026-08-10.*
+*Live-verified 2026-08-10 against the 2026-08-10T00:00:00Z cycle (steps 001H, 048H, 102H decoded with ecCodes 2.48.0), with cycle enumeration and publication timestamps sampled 2026-07-26 to 2026-08-10, and the sibling MFWAM packages surveyed via the data.gouv.fr catalog API.*
