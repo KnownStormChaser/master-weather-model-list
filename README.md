@@ -25,6 +25,9 @@ No meteorology background is required to use this repository.
 - **Tropical cyclone / hurricane models**
 - **Air quality and atmospheric composition models** (deterministic and ensemble)
 - **Long-range forecast systems** (sub-seasonal, seasonal, and interannual prediction)
+- **Hydrological models** (`models/hydrological_models/`) — river discharge, runoff, and flood forecast systems. These carry two geometries: a land surface grid where water is generated and a routing network where it moves. Reach-based vector output on a river network is admitted as a documented exception to the gridded-data rule, paralleling the station time series exception for storm surge.
+- **Fire danger models** (`models/fire_danger_models/`) — fire danger index and fire behaviour forecast systems. Named for danger ratings rather than fire weather, because the outputs are indices computed from weather rather than weather fields, and because smoke dispersion models live under `models/air_quality_models/`.
+- **Space weather models** (`models/space_weather_models/`) — Earth-referenced upper atmosphere forecast systems: ionosphere, thermosphere, aurora, and ground-level geomagnetic and geoelectric effects. Heliospheric models are out of scope: they grid a volume in heliocentric coordinates in which Earth is a single moving point, and produce no terrestrial grid.
 - **AI-based and hybrid physics–AI forecast systems**
 - **Operational weather satellites** with openly distributed raw data (Level 1 calibrated radiances, Level 2 retrievals)
 - **Operational weather radar networks and composites** with openly distributed gridded data (e.g., reflectivity mosaics and radar-derived precipitation estimation); rendered radar imagery and viewer-only web loops remain out of scope
@@ -45,6 +48,7 @@ No meteorology background is required to use this repository.
 - Research-only or one-off model runs that are not distributed by an operating agency
 - Climate **reanalysis** and other historical-only datasets (e.g., ERA5, CFSR) — note that forward-looking long-range *forecast* systems (sub-seasonal, seasonal, and interannual prediction) **are** in scope and are documented under `models/climate_models/`; only reanalyses and historical-only products are excluded
 - Commercial weather satellites and Earth observation missions outside the operational weather/atmospheric scope
+- **Sun-referenced space weather models** — heliospheric systems such as WSA-Enlil grid a spherical volume in heliocentric coordinates from roughly 0.1 to 2 AU, in which Earth is a single moving point. Only Earth-referenced terrestrial-effect models are documented, under `models/space_weather_models/`
 
 A note on free registration: some operators (notably EUMETSAT and KNMI) require a free account to download data. These are not paywalls — there is no fee, no approval gate, and no commercial-use restriction. Entries clearly note when registration is required so users know what to expect.
 
@@ -55,7 +59,7 @@ A note on experimental systems: some entries document systems their operators ex
 ## Repository structure
 
 Forecast models are organized by:
-- **Model type** (weather, ensemble, nowcasting, wave, storm surge, ocean, tropical cyclone, air quality, long-range)
+- **Model type** (weather, ensemble, nowcasting, wave, storm surge, ocean, tropical cyclone, air quality, hydrological, fire danger, space weather, long-range)
 - **Geographic scope** (global vs regional)
 - **Country or organization of origin**
 
@@ -64,6 +68,14 @@ Forecast models are organized by:
 > `models/wave_models/`, `models/storm_surge_models/`, and `models/air_quality_models/`,
 > cross-linked in both directions. `models/ensemble_models/` is reserved for ensembles of
 > the atmospheric *state* itself — GEFS, IFS ENS, ICON-EPS and similar.
+
+> **Seasonal forecasts are filed by phenomenon too, not by forecast range.** A seasonal
+> river discharge or fire danger forecast is an impact model driven by a long-range
+> atmospheric system, standing in the same relation to that system as a wave model does to
+> its driving NWP model. These live under `models/hydrological_models/` and
+> `models/fire_danger_models/` beside their medium-range siblings, cross-linked upstream to
+> the driving system's entry. `models/climate_models/` is reserved for long-range forecasts
+> of the atmospheric or coupled *state* itself, including downscalings of it.
 
 Each model has its own file describing:
 - what the model is
@@ -85,7 +97,7 @@ In addition to the directory structure, several index files make specific slices
 
 - [`AI_MODELS.md`](./AI_MODELS.md) — index of all AI-based and hybrid physics–AI forecast systems documented in the repository, organized by how AI is used (standalone deterministic, standalone ensemble, hybrid, input-consumer)
 - [`STATUS.md`](./STATUS.md) — tracker for upcoming implementations, scheduled retirements, experimental systems, version upgrades, and format changes
-- [`COPERNICUS.md`](./COPERNICUS.md) — index of all products distributed through the Copernicus Marine Service and Copernicus Atmosphere Monitoring Service, organized by operator and coverage
+- [`COPERNICUS.md`](./COPERNICUS.md) — index of all products distributed through the Copernicus programme, spanning the Marine Service, Atmosphere Monitoring Service, Climate Change Service, and Emergency Management Service, organized by operator and coverage
 - [`UFS.md`](./UFS.md) — index of all NOAA models that are part of, being consolidated into, or being retired by the Unified Forecast System, with the full programme context and rollout sequencing
 - [`observations/satellites/README.md`](./observations/satellites/README.md) — index of operational weather satellites with openly downloadable raw data, with quick-reference tables for access tiers
 - [`observations/radar/README.md`](./observations/radar/README.md) — index of operational weather-radar networks and composites with openly downloadable gridded data, with quick-reference tables for access tiers and endpoints
