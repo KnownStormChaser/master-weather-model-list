@@ -4,7 +4,7 @@ This page indexes all NOAA models in this repository that are part of, are being
 
 The goal of this index is to make a coherent programme visible. Right now UFS shows up across the repository as separate line items — RRFSv1 here, GFSv17 there, RTOFS v3.0 elsewhere, NAM retirement somewhere else — but they are all parts of the same consolidation effort, scheduled and sequenced together. This page exists to surface that coherence.
 
-Last updated: July 2026.
+Last updated: August 2026.
 
 ---
 
@@ -79,9 +79,26 @@ These are the most operationally significant UFS transitions that are either imm
   - NARRE (not in this repository) — replaced by REFS
   - NAM MOS (not in this repository) — retired alongside NAM
 - **Authority:** [NWS SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf) (implementation; May 12, 2026, updated July 6, 2026); retirements under companion [SCN 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination; updated July 6, 2026). The retirement set was originally proposed in [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025).
-- **Pre-implementation real-time feed:** On or about August 11, 2026, NOAA will publish parallel RRFS and REFS data on NOMADS at `/nccf/com/rrfs/para/` and `/nccf/com/refs/para/`. Post-implementation paths (from October 6, 2026) are `/nccf/com/rrfs/prod/` and `/nccf/com/refs/prod/`.
+- **Pre-implementation real-time feed:** Live on NOMADS since the **12 UTC cycle on
+  August 12, 2026** at `/nccf/com/rrfs/para/` and `/nccf/com/refs/para/`, with
+  AWIPS/NOAAPORT subsets at `/nccf/com/para/noaaport/rrfs/` and
+  `/nccf/com/para/noaaport/refs/`. Post-implementation paths (from October 6, 2026) are
+  `/nccf/com/rrfs/prod/` and `/nccf/com/refs/prod/`. **The `s3://noaa-rrfs-pds` prototype
+  bucket stopped updating on the same day** (RRFS after 11 UTC, REFS after 06 UTC),
+  leaving NOMADS as the sole channel for both systems — no NODD mirror of the parallel
+  feed exists. Model output is unchanged across the cutover; `.idx` sidecars, individual
+  REFS members and BUFR soundings are not carried across, and the REFS product directory
+  is renamed `enspost/` → `ensprod/`. See the
+  [RRFS](./models/nwp_models/regional/usa/rrfs.md#data-availability) and
+  [REFS](./models/ensemble_models/regional/usa/refs.md#data-availability) entries.
 - **Domains:** CONUS, Alaska (3 km), Hawaii, Puerto Rico (2.5 km), plus a separate 1.5 km fire-weather RRFS domain
-- **Deterministic forecast cadence:** RRFS runs hourly. The 00/06/12/18 UTC synoptic cycles run to 84 hours; the other 20 hourly cycles run to 18 hours.
+- **Deterministic forecast cadence:** RRFS runs hourly. The 00/06/12/18 UTC synoptic
+  cycles run to 84 hours; the other 20 hourly cycles run to 18 hours. **The published
+  product set is not uniform across those 24 cycles**: 00/06/12/18 UTC carry the full
+  hourly `prslev`/`2dfld` set to f084 plus the 13 km North America grid, 03/09/15/21 UTC
+  carry the hourly set to f018 only, and the remaining sixteen cycles carry nothing but
+  the 15-minute subhourly 2D fields. Verified on both distributions — see the
+  [RRFS output organization](./models/nwp_models/regional/usa/rrfs.md#output-organization).
 - **Ensemble forecast cadence:** REFS runs to 60 hours, 4× daily (00/06/12/18 UTC) for all domains. RRFS itself produces 5 ensemble members for those four cycles; REFS combines those with the 6-hour-old RRFS deterministic and ensemble cycles. For the CONUS and Alaska REFS domains, the HRRR contributes two additional members (current and 6 h old) — making HRRR an explicit input to a UFS-era operational system even though HRRR itself is not retired in this wave.
 - **HREF → REFS comparison:** REFS extends forecasts to 60 hours (HREF was 48 hours); REFS provides 4 cycles daily for all regions, including non-CONUS domains (HREF only ran twice daily for AK, HI, and PR).
 
