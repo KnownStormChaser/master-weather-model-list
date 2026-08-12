@@ -74,23 +74,37 @@ Probabilistic regional forecasts of:
 REFS provides the primary short-range, convection-allowing probabilistic guidance across CONUS, Alaska, Hawaii, and Puerto Rico.
 
 ### Ensemble product types
-Per SCN 26-48, REFS ensemble products are organized under `refs.YYYYMMDD/CC/ensprod/` with file pattern `refs.tCCz.${type}.fFF.${dom}.grib2`, where `dom` is one of `conus`, `ak`, `hi`, `pr`. The product types are:
+REFS ensemble products are published under `refs.YYYYMMDD/CC/ensprod/` with the file
+pattern `refs.tCCz.${type}.fFF.${dom}.grib2`, where `dom` is one of `conus`, `ak`, `hi`,
+`pr`. Lead time is a **two-digit** token (`f09`) — the deterministic
+[RRFS](../../../nwp_models/regional/usa/rrfs.md) uses three digits (`f009`). Sharing a
+lead-time formatter between the two systems is the most common way to generate 404s
+against this feed.
 
-| Type | Description |
-|---|---|
-| `mean` | Simple ensemble mean |
-| `sprd` | Ensemble spread |
-| `pmmn` | Probability-matched mean |
-| `lpmm` | Localized probability-matched mean |
-| `avrg` | Combination of the pmmn and mean fields |
-| `prob` | Probabilistic output |
-| `eas` | Ensemble agreement scale probabilistic output |
+Record counts below are decoded from the CONUS f12 files of the 2026-08-12 12 UTC cycle
+and are identical to the corresponding AWS prototype files.
 
-In addition, a CONUS-only product carries flash flood and recurrence interval exceedance probabilities:
+| Type | Description | Records (CONUS) |
+|---|---|---|
+| `mean` | Simple ensemble mean | 76 |
+| `sprd` | Ensemble spread | 82 |
+| `pmmn` | Probability-matched mean | 8 |
+| `lpmm` | Localized probability-matched mean | 3 |
+| `avrg` | Combination of the pmmn and mean fields | 2 |
+| `prob` | Probabilistic output | 183 |
+| `eas` | Ensemble agreement scale probabilistic output | 29 |
+| `ffri` | Flash flood and recurrence interval exceedance probabilities — **CONUS only** | 10 |
 
-- `refs.tCCz.ffri.fFF.conus.grib2`
+All eight are written on the same grids as the deterministic RRFS subset domains — CONUS
+is `lambert` 1799 × 1059 at 3000 m, matching RRFS exactly. Encoding is GRIB2 edition 2,
+centre `kwbc`, `tablesVersion` 2, `localTablesVersion` 1,
+**`generatingProcessIdentifier` 136** (RRFS deterministic uses 134), with
+`grid_complex_spatial_differencing` packing throughout.
 
-Full descriptions of variables and encoding are at https://www.nco.ncep.noaa.gov/pmb/products/refs.
+Every product runs **f01–f60 hourly** on every domain it covers.
+
+Full descriptions of variables and encoding are at
+https://www.nco.ncep.noaa.gov/pmb/products/refs.
 
 ---
 
@@ -115,16 +129,75 @@ REFS shares similarities with HREF in product types (mean, spread, PMM, LPMM, pr
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download locations:**
-  - **NOMADS (pre-implementation parallel feed, on or about August 11, 2026):**
+  - **NOMADS (pre-implementation parallel feed, live since 2026-08-12 12 UTC):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/para/
-    - https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs
-  - **NOMADS (post-implementation, October 6, 2026):**
+    - https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs/
+  - **NOMADS (post-implementation, from October 6, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/prod/
-  - **AWS Open Data:** https://registry.opendata.aws/noaa-rrfs/ (prototype data, including individual member output and combined ensemble products)
+
+> ⚠️ **NOMADS is currently the only channel, and the combined products are all that
+> survives.**
+>
+> `s3://noaa-rrfs-pds` last wrote REFS products at the **06 UTC** cycle on 2026-08-12
+> (final object 09:28:56 UTC); the NOMADS parallel feed picked up at **12 UTC**. No
+> replacement cloud mirror exists — `noaa-refs-pds`, `noaa-nws-refs-pds` and
+> `noaa-nws-rrfs-pds` all return 404. See the
+> [RRFS entry](../../../nwp_models/regional/usa/rrfs.md#data-availability) for the full
+> cutover record and the AWS registry-text discrepancy.
+
+### Individual members are gone
+
+The AWS prototype carried the five RRFS ensemble members under
+`rrfs_a/rrfsens.YYYYMMDD/CC/m001` … `m005`, each with `prslev` (24 steps) and `2dfld`
+(61 steps) on the CONUS, Alaska, Hawaii, Puerto Rico and North America grids, `.idx`
+sidecars for all of them, and per-member BUFR. The NOMADS parallel tree contains
+`ensprod/` and nothing else — probes for `members/`, `mem01/` and `m001/` all return 403.
+
+**Raw REFS member output therefore has no open channel as of 2026-08-12.** Users doing
+their own ensemble post-processing — custom percentiles, neighbourhood probabilities at
+non-standard thresholds, member clustering, or anything else not covered by the eight
+`ensprod` product types — have lost the input they were working from. Whether members
+appear at implementation on October 6, 2026 is not addressed in SCN 26-48 (**TBD**).
+
+### No `.idx` sidecars
+
+Every GRIB2 object on AWS carried a matching `.idx`. None exist on NOMADS. Byte-range
+subsetting is unavailable, which bites hardest on `prob` (183 records) and `sprd`
+(82 records) — a CONUS `prob` step is ~68 MB and a full f01–f60 CONUS `prob` series is
+roughly 4 GB per cycle.
+
+### Directory name differs between the two distributions
+
+The AWS prototype used **`enspost/`**; NOMADS uses **`ensprod/`**. Verified 2026-08-12 —
+`rrfs_public/refs.20260812/06/ensprod/` is empty on S3 while `enspost/` is populated, and
+on NOMADS `…/12/ensprod/` returns 200 while `…/12/enspost/` returns 403. `ensprod` is the
+name in SCN 26-48 and is the one that will carry forward to `refs/prod/`. Code written
+against the prototype layout needs this one-word change.
+
+### Publication latency
+
+The 2026-08-12 12 UTC cycle published from 14:21 to 15:46 UTC, but that cycle is
+contaminated by the feed switch-on and should not be used for scheduling. The 18 UTC
+cycle had reached f09 by 20:45 UTC (**T+2h45m**), which is a better indication pending a
+clean full-cycle measurement (**TBD**).
+
+### NOAAPORT parallel stream
+
+`https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs/` is a flat rolling
+directory carrying only **three of the eight product types** —
+`grib2.refs.tCCz.{mean|pmmn|prob}.fFF.{conus|ak|hi|pr}` — on a 3-hourly lead-time
+spacing. Its first files are stamped 2026-08-12 14:07 UTC, so unlike the RRFS NOAAPORT
+stream it began with the parallel feed rather than before it. Not a substitute for
+`refs/para/`.
 
 ---
 
 ## Status
+- **2026-08-12, 12 UTC — parallel feed live on NOMADS; AWS prototype frozen.** The
+  pre-implementation real-time feed began at the 12 UTC cycle at
+  `/pub/data/nccf/com/refs/para/`, one day later than the "on or about August 11" date
+  in SCN 26-48. The prototype bucket stopped after the 06 UTC cycle. Combined `ensprod`
+  products carried across unchanged; individual members did not.
 - Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48.
 - Targeted for operational implementation alongside the deterministic RRFS, originally "early 2026"; slipped through pre-operational evaluation.
 - SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to **October 6, 2026 at 12 UTC** and setting the real-time parallel feed to begin on or about August 11, 2026.
@@ -135,7 +208,24 @@ REFS shares similarities with HREF in product types (mean, spread, PMM, LPMM, pr
 ---
 
 ## Notes
-- In the prototype AWS distribution, individual ensemble members are stored under directories such as `rrfs_a/rrfsens.<date>/<cycle>/m###`, while combined ensemble products are stored under `rrfs_public/refs.<date>/<cycle>/ensprod/` directories reflecting the planned operational NOMADS structure.
+- **The prototype AWS layout is now historical.** Individual members were stored under
+  `rrfs_a/rrfsens.<date>/<cycle>/m###`, and combined products under
+  `rrfs_public/refs.<date>/<cycle>/`**`enspost`**`/` — note `enspost`, not `ensprod`;
+  the earlier description of that directory as "reflecting the planned operational
+  NOMADS structure" was wrong on the directory name. NOMADS uses `ensprod/`.
+- **The products themselves did not change across the transition.** All eight CONUS
+  product types were decoded at f12 from both distributions (AWS 06 UTC against NOMADS
+  12 UTC, 2026-08-12) and compared on a per-record key tuple including shortName, level,
+  statistical processing, threshold limits and probability type. **Zero records were
+  unique to either side** in any of the eight, and record counts, grid definitions,
+  `generatingProcessIdentifier` (136) and packing all match. What changed is the
+  channel, the directory name, and what is no longer shipped alongside.
+- **Ignore the 2026-08-12 12 UTC cycle when characterising lead-time coverage.** That
+  cycle starts at f09 on CONUS and Alaska, f12 on Hawaii and Puerto Rico, and f06 with
+  f07 missing for `eas.conus` — everything written before the feed was switched on at
+  14:21 UTC was never copied across. The 18 UTC cycle the same day starts cleanly at f01
+  for `mean` and `ffri` on CONUS, confirming the day-one pattern is an artifact and not
+  a design.
 - As with all ensemble systems, REFS output should be interpreted probabilistically rather than as a single deterministic forecast.
 - The member composition and ensemble design are expected to evolve as RRFS transitions to v2 with the MPAS dynamical core; when HRRR is eventually retired under that transition, the HRRR member contributions to the CONUS/AK REFS domains will change as well.
 
