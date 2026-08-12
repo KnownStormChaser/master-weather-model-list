@@ -35,7 +35,9 @@ ECCC's operational global deterministic system becomes a hybrid physics–AI sys
 - **Authority:** ECCC technical note CMC-GDPS-EXP-10.0.0-2026; GDPS 10.0.0 fact sheet and technical specifications (May 2026)
 
 ### RRFSv1 and REFS — scheduled October 6, 2026 (12 UTC)
-NOAA's next-generation convection-allowing system for North America is now formally scheduled. RRFS and REFS implement together, with legacy NAM, HREF, SREF, and HiresW (all domains except Guam) retiring on the same day. A pre-implementation real-time feed is expected on NOMADS on or about August 11, 2026. **See [UFS.md](./UFS.md) for the full UFS context including the wave of retirements that occurs on the same day.**
+NOAA's next-generation convection-allowing system for North America is now formally scheduled. RRFS and REFS implement together, with legacy NAM, HREF, SREF, and HiresW (all domains except Guam) retiring on the same day. The pre-implementation real-time feed went live on NOMADS at the 12 UTC cycle on
+**August 12, 2026**, one day after the SCN's "on or about August 11" date, and the AWS
+prototype bucket stopped updating the same day (see *Format and distribution changes*). **See [UFS.md](./UFS.md) for the full UFS context including the wave of retirements that occurs on the same day.**
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
 - **Authority:** NWS SCN 26-48 (RRFS/REFS implementation) + companion SCN 26-47 (terminations), both updated July 6, 2026 (originally May 12, 2026)
 - **Verification note:** Originally targeted early 2026, then August 31, 2026; slipped again to October 6, 2026 in the July 6, 2026 update (AAB), which also decoupled the real-time parallel feed to on or about August 11, 2026. The October 6 date is subject to the standard CWD/ECE contingency — if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. NBM v5.0 was deferred under exactly this provision earlier in 2026, so the contingency is not theoretical.
@@ -107,14 +109,28 @@ Experimental productionization of NVIDIA's FourCastNet architecture using Spheri
 
 ## Format and distribution changes
 
+### RRFS and REFS — AWS prototype frozen, NOMADS parallel feed live, August 12, 2026
+The pre-implementation parallel feed began at the 12 UTC cycle on NOMADS at
+`/pub/data/nccf/com/rrfs/para/` and `/pub/data/nccf/com/refs/para/`, one day later than
+the "on or about August 11" date in SCN 26-48. On the same day the `s3://noaa-rrfs-pds`
+prototype bucket stopped updating — RRFS after the 11 UTC cycle, REFS after 06 UTC.
+**NOMADS is now the only channel for both systems**, with no NODD/AWS, GCS or Azure
+mirror of the parallel feed. The model output is unchanged (verified by decoding matched
+file pairs), but three things do not carry across: `.idx` sidecars, individual REFS
+ensemble members, and BUFR soundings. The REFS product directory is also renamed from
+`enspost/` on AWS to `ensprod/` on NOMADS.
+- **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
+- **Authority:** NWS SCN 26-48 (parallel feed paths); AWS Open Data registry note on the prototype feed ending at the start of the parallel phase
+- **Verification note:** Cutover boundary confirmed by object listing on both sides —
+  last AWS object 2026-08-12T12:58:58Z, first NOMADS files 13:49 UTC. The AWS registry
+  text says the bucket will also carry pre-implementation and operational data; as of
+  2026-08-12 it carries none, which is unresolved. Post-implementation paths from
+  October 6, 2026 remain `/rrfs/prod/` and `/refs/prod/`.
+
 ### IFS Cycle 50r2 — tentative Q4 2026
 Complete migration of ECMWF IFS to GRIB2-only parameter representation. Affects Open Data users directly. Legacy GRIB1-style parameter references move to GRIB2-native identifiers; CCSDS compression required.
 - **Entries:** [IFS Open Data](./models/nwp_models/global/eu/ifs-open-data.md) · [ECMWF EPS](./models/ensemble_models/global/eu/ecmwf-eps.md)
 - **Authority:** ECMWF Migration to GRIB edition 2 page
-
-### MOGREPS-G parameter and forecast-length changes — late January 2026
-Extended forecast length from 198 h to 246 h; added parameters and levels; renamed `height_asl_on_pressure_levels` to `geopotential_height_on_pressure_levels`. Already effective.
-- **Entry:** [MOGREPS-G](./models/ensemble_models/global/uk/mogreps-g.md)
 
 ---
 
