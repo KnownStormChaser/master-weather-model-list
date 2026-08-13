@@ -55,6 +55,7 @@ RRFS and REFS are scheduled to become operational on **October 6, 2026 at 12 UTC
   - 3 km (CONUS), 2976 m (Alaska)
   - 2.5 km (Hawaii, Puerto Rico)
   - 1270 m (relocatable fire-weather domain, `1p5km` token)
+- **Vertical levels:** 65 (NOMADS model description)
 - **Forecast length:**
   - **84 hours** at the 00, 06, 12, and 18 UTC synoptic cycles
   - **18 hours** at the other 20 hourly cycles
@@ -123,7 +124,7 @@ it is not stated in the SCN. **Sixteen of the twenty-four cycles publish nothing
 
 | Cycles | Hourly `prslev` + `2dfld` | 13 km NA output | 15-min `subh` | GRIB2 files/cycle |
 |---|---|---|---|---|
-| **00, 06, 12, 18 UTC** | f000–f084 on all four subset grids | Yes | f001–f018 | 810 |
+| **00, 06, 12, 18 UTC** | f000–f084 on all four subset grids | f000–f084 hourly | f001–f018 | **922** |
 | **03, 09, 15, 21 UTC** | f000–f018 on all four subset grids | No | f001–f018 | 224 |
 | **All other 16 cycles** | **None** | No | f001–f018 | 72 |
 
@@ -239,9 +240,11 @@ All three were confirmed by direct request, not inferred.
    because BUFRKIT-style workflows depended on them.
 
 **Archive depth also shrinks.** AWS held roughly ten days of rolling history. The NOMADS
-parallel tree held only `rrfs.20260812/` on 2026-08-12 — 2026-08-11 and earlier return
-404. Retention cannot be measured until the feed has run for several days (**TBD**);
-NCEP `para` paths are typically two days.
+parallel tree holds **two days** — verified 2026-08-13, when 2026-08-12 and 2026-08-13
+were present and 2026-08-11 had already rolled off. Combined with the loss of `.idx`
+sidecars, this makes RRFS substantially harder to consume than it was on the prototype:
+anyone needing more than 48 hours of history must now mirror the feed themselves, at
+roughly 922 files and several hundred gigabytes per synoptic cycle.
 
 ### NOAAPORT parallel stream
 
@@ -275,6 +278,12 @@ subset and is not a substitute for the full `rrfs/para/` tree.
 - Not all legacy NAM and HiresW products are reproduced in RRFS; some products are generated via the Smartinit post-processing system applied to RRFS output.
 - A new RRFS verification website will replace the legacy regional verification graphics at EMC once RRFS is officially implemented.
 - The cycle structure (84 h at 00/06/12/18 UTC, 18 h at all other hourly cycles) means RRFS is materially different from both NAM (which produced 84-hour forecasts only 4× daily) and HRRR (which produces 18 h hourly with 48 h extended runs at 00/06/12/18 UTC). For downstream applications that depended on the NAM/HiresW 84-hour synoptic schedule, RRFS preserves that cadence at the same cycles. For applications that depended on hourly short-range cycling, RRFS provides equivalent coverage at 18 h.
+- **The 65-level count cannot be verified from the distributed output.** RRFS ships
+  `prslev` (pressure-level) and `2dfld` (single-level) products only — there is no
+  native- or hybrid-level file in the parallel feed, and none existed on the AWS
+  prototype either. The figure comes from the NOMADS model description and is recorded
+  here on that authority alone, unlike everything else in this entry's grid and encoding
+  sections.
 - **The model itself did not change across the transition.** Matched-cycle file pairs
   were decoded from both distributions (AWS 06 UTC and 10 UTC against NOMADS 12 UTC,
   15 UTC and 16 UTC, 2026-08-12) and compared on a per-record key tuple of shortName,
