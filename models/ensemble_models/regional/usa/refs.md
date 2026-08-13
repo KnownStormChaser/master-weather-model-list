@@ -48,7 +48,30 @@ REFS is scheduled to become operational on **October 6, 2026 at 12 UTC** under N
 
 ## Ensemble methodology
 
-REFS is an **ensemble product generation system** that combines forecasts from the deterministic and ensemble components of RRFS, time-lagged across cycles, with HRRR as an additional contributor for two of the four domains.
+REFS is an **ensemble product generation system** that combines forecasts from the
+deterministic and ensemble components of RRFS, time-lagged across cycles, with HRRR as an
+additional contributor for two of the four domains. The two most recent runs of each
+contributing system are used, giving:
+
+| Domain | Members | Composition |
+|---|---|---|
+| CONUS | **14** | RRFS deterministic + 5 RRFS ensemble members, current and 6 h old (12), plus HRRR current and 6 h old (2) |
+| Alaska | **14** | As CONUS |
+| Hawaii | **12** | RRFS deterministic + 5 RRFS ensemble members, current and 6 h old; no HRRR |
+| Puerto Rico | **12** | As Hawaii |
+
+> **These counts are confirmed in the data, not just the documentation.** Every `mean`
+> and `sprd` record carries `numberOfForecastsInEnsemble` — decoded on the 2026-08-12
+> 12 UTC f12 files, it reads **14** on CONUS and Alaska and **12** on Hawaii and Puerto
+> Rico, on all 76 and 82 records respectively. The arithmetic implied by the
+> [RRFS](../../../nwp_models/regional/usa/rrfs.md) entry (one deterministic run plus five
+> ensemble members, doubled by 6 h time-lagging, plus two HRRR members for CONUS/AK)
+> reproduces both numbers exactly.
+
+> ⚠️ **`numberOfForecastsInEnsemble` is absent from the probabilistic products.** It is
+> encoded on `mean` and `sprd` but is undefined on every record of `prob`, `eas` and
+> `ffri` (183, 29 and 10 records checked). Do not use this key to size member arrays or
+> to detect domain — it is only present on the two products that happen not to need it.
 
 For each REFS cycle, the membership is drawn from:
 
@@ -84,16 +107,28 @@ against this feed.
 Record counts below are decoded from the CONUS f12 files of the 2026-08-12 12 UTC cycle
 and are identical to the corresponding AWS prototype files.
 
-| Type | Description | Records (CONUS) |
-|---|---|---|
-| `mean` | Simple ensemble mean | 76 |
-| `sprd` | Ensemble spread | 82 |
-| `pmmn` | Probability-matched mean | 8 |
-| `lpmm` | Localized probability-matched mean | 3 |
-| `avrg` | Combination of the pmmn and mean fields | 2 |
-| `prob` | Probabilistic output | 183 |
-| `eas` | Ensemble agreement scale probabilistic output | 29 |
-| `ffri` | Flash flood and recurrence interval exceedance probabilities — **CONUS only** | 10 |
+| Type | Description | Records (CONUS) | Parameter scope (decoded) |
+|---|---|---|---|
+| `mean` | Arithmetic mean of all members | 76 | Broad — 34 distinct parameters across mass, wind, moisture, stability, cloud and precipitation-type fields |
+| `sprd` | Ensemble spread — how far apart the members are at a point; smaller means better agreement | 82 | Broad — 35 distinct parameters, tracking `mean` |
+| `pmmn` | Probability-matched mean, computed over the full domain at once | 8 | Narrow — total precipitation (2), orography, reflectivity, and 4 radar/local-table fields |
+| `lpmm` | Localized probability-matched mean, computed over small regions then assembled | 3 | **Total precipitation only** |
+| `avrg` | Average of the `mean` and `pmmn` fields | 2 | **Total precipitation only** |
+| `prob` | Probabilistic output — fraction of members meeting a threshold; a mix of point and neighbourhood-maximum probabilities | 183 | Broad — 23 parameters including precipitation, snowfall, wind, gusts, freezing rain, icing, visibility, flight category and lightning |
+| `eas` | Ensemble Agreement Scale probability — a smoothed fractional probability whose neighbourhood radius varies from 10 to 100 km, narrowing where members agree | 29 | **Precipitation (22) and snowfall (7) only** |
+| `ffri` | Flash Flood and Average Recurrence Interval exceedance probabilities — **CONUS only** | 10 | Total precipitation (7) and flash-flood guidance exceedance (3) |
+
+The "precipitation only" restrictions on `lpmm`, `avrg` and `eas` are stated in the
+NOMADS description and confirmed by decoding: `lpmm` and `avrg` contain nothing but `tp`,
+and `eas` contains `tp` plus total snowfall at 1, 3 and 6 h accumulations and nothing
+else. The description does not restrict `pmmn`, and correctly so — but `pmmn` is far
+narrower than `mean` despite both being described as means, which is easy to miss when
+choosing a product.
+
+Product Definition Templates differ by product and are worth knowing before writing a
+reader: `mean` and `sprd` use PDT 2 and 12 (derived forecast, instantaneous and
+interval); `prob` uses 5 and 9 (probability, instantaneous and interval); `eas` and
+`ffri` use 9 exclusively.
 
 All eight are written on the same grids as the deterministic RRFS subset domains — CONUS
 is `lambert` 1799 × 1059 at 3000 m, matching RRFS exactly. Encoding is GRIB2 edition 2,
