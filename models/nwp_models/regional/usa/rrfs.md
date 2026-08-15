@@ -182,79 +182,77 @@ HRRR, RAP, and the NAM 12 km parent domain are not retired with RRFSv1. These sy
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download locations:**
-  - **NOMADS (pre-implementation parallel feed, live since 2026-08-12 12 UTC):**
+  - **AWS S3 (NODD), pre-implementation parallel feed:**
+    - `s3://noaa-rrfs-ops-pds/` — https://noaa-rrfs-ops-pds.s3.amazonaws.com/index.html
+    - Anonymous access, no requester-pays, `us-east-1`
+  - **NOMADS, pre-implementation parallel feed:**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/para/
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/rrfs/
-  - **NOMADS (post-implementation, from October 6, 2026):**
+  - **NOMADS, post-implementation (from October 6, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/prod/
 
-> ⚠️ **NOMADS is currently the only channel. The AWS prototype bucket has stopped
-> updating and no replacement cloud mirror exists.**
->
-> `s3://noaa-rrfs-pds` last wrote deterministic output at the **11 UTC** cycle on
-> 2026-08-12 (final object timestamp 12:58:58 UTC) and ensemble member output under
-> `rrfs_a/` at the same cycle. The NOMADS parallel feed picked up at the **12 UTC**
-> cycle. The handover is clean — no cycle is duplicated and none is missing — but it
-> leaves a single point of access.
->
-> Probed on 2026-08-12 and all absent: `noaa-nws-rrfs-pds`, `noaa-rrfs-para-pds`,
-> `noaa-refs-pds`, `noaa-nws-refs-pds`, `noaa-rrfs-pds-para` (S3, 404) and
-> `gs://rrfs` (GCS, 404). There is no NODD landing zone for the parallel feed.
+The two channels carry the same data. Files pulled from each were compared by MD5 and
+are **byte-identical** — `rrfs.t12z.2dfld.2p5km.subh.f001.hi.grib2` from the 2026-08-14
+12 UTC cycle matches exactly, as does the REFS equivalent. Choose on access pattern, not
+content.
 
-> ⚠️ **The AWS registry description contradicts the bucket's observed behaviour (TBD).**
-> The registry page states that on the start of the parallel phase the prototype feed
-> will stop updating, but that users "will be able to access the pre-implementation and
-> operational data through this bucket or through the feeds noted in the Service Change
-> Notice," with bucket filenames and directory structures aligned to the SCN. As of
-> 2026-08-12 the bucket carries no post-cutover data at all. Whether NODD intends to
-> re-point the bucket at the parallel stream, or whether the sentence describes only the
-> eventual operational feed, is unresolved. Recheck before relying on AWS for any RRFS
-> data after 2026-08-12 11 UTC.
+| | `s3://noaa-rrfs-ops-pds` | NOMADS `rrfs/para/` |
+|---|---|---|
+| `.idx` sidecars | **Yes**, on every object | No |
+| Byte-range subsetting | Yes (206 responses) | Not practical without an index |
+| BUFR soundings | Yes at synoptic cycles | No |
+| Retention | ≥ 3 days, ceiling not yet known | 2 days |
+| Latency (2026-08-14 12 UTC) | first object 13:51 UTC | first file 13:50 UTC |
+| Directory listing | Reliable S3 `list-type=2` | Frequently truncated; needs retries |
 
-### What the move to NOMADS costs
+**Prefer S3.** A single CONUS `prslev` step is ~580 MB and a full 84-hour synoptic CONUS
+`prslev` series is roughly 48 GB, so the `.idx` sidecars are not a convenience — without
+them, extracting a handful of fields means downloading everything. The S3 copy lands
+within about a minute of NOMADS, so there is no latency argument for the other channel.
 
-Three capabilities present on the AWS prototype have no equivalent on the parallel feed.
-All three were confirmed by direct request, not inferred.
+> ⚠️ **`s3://noaa-rrfs-pds` — the old prototype bucket — is frozen and should not be
+> used.** It stopped at the 11 UTC cycle on 2026-08-12 for RRFS and 06 UTC for REFS, and
+> has had no new dates since. It is a different bucket with a different internal layout
+> (`rrfs_public/`, `rrfs_a/`, `retro_output_final/`); the replacement uses a flat
+> `rrfs.YYYYMMDD/` layout mirroring NOMADS. Code written against the prototype needs its
+> prefixes rewritten, not just its bucket name.
 
-1. **No `.idx` sidecars.** Every GRIB2 object on AWS carried a matching `.idx`. On
-   NOMADS, `…grib2.idx` returns 404 for every family tested (`prslev.3km.conus`,
-   `2dfld.13km.na`, `2dfld.2p5km.subh.hi`). **Byte-range subsetting is not available.**
-   This matters more for RRFS than for most entries: a single CONUS `prslev` step is
-   ~580 MB and a full 84-hour synoptic CONUS `prslev` series is roughly 48 GB. Users who
-   previously pulled a handful of fields per step with `wgrib2 -i`, cfgrib, or kerchunk
-   must now either download whole files or build their own index. NCEP's GRIB filter
-   service is a possible substitute if and when it is extended to the `para` paths —
-   it is not currently (**TBD**).
+> ⚠️ **The AWS Open Data Registry has not caught up (TBD).** As of 2026-08-14 the
+> registry entry `noaa-rrfs` still lists only `arn:aws:s3:::noaa-rrfs-pds`, still carries
+> the "[Prototype]" title, and still describes the `rrfs_public/` ÷ `rrfs_a/` layout. It
+> says users would continue to access pre-implementation data "through this bucket" —
+> which turned out not to be what happened. There is no registry page, no
+> `docs.opendata.aws` readme (404) and no SNS notification topic for
+> `noaa-rrfs-ops-pds` yet. **This is a documentation gap, not a licensing one:** the
+> bucket is anonymously readable, follows the NODD `-pds` naming convention, and the
+> underlying output is US Government work distributed unrestricted over NOMADS. Recheck
+> for a registry entry before citing CC0 specifically for the bucket.
 
-2. **No individual ensemble members.** AWS carried the five RRFS ensemble members under
-   `rrfs_a/rrfsens.YYYYMMDD/CC/m001` … `m005`, each with `prslev` (24 steps) and `2dfld`
-   (61 steps) on the CONUS, Alaska, Hawaii, Puerto Rico **and** North America grids,
-   plus `.idx` sidecars and per-member BUFR. The NOMADS `refs/para/` tree contains only
-   `ensprod/` — the combined products. **Raw member output now has no open channel.**
-   See the [REFS entry](../../../ensemble_models/regional/usa/refs.md#data-availability).
+### What the AWS→NOMADS→S3 sequence cost
 
-3. **No BUFR soundings.** AWS synoptic cycles carried `rrfs.tCCz.bufrsnd.tar.gz`,
-   `rrfs.tCCz.class1.bufr`, and an exploded `bufr.CC/` directory of ~1,900 per-station
-   files. All return 404 on the NOMADS 12 UTC cycle. These are point soundings rather
-   than gridded output and so are outside catalog scope, but the loss is worth naming
-   because BUFRKIT-style workflows depended on them.
+Two of the three capabilities lost in the 2026-08-12 cutover came back with the new
+bucket. One did not.
 
-**Archive depth also shrinks.** AWS held roughly ten days of rolling history. The NOMADS
-parallel tree holds **two days** — verified 2026-08-13, when 2026-08-12 and 2026-08-13
-were present and 2026-08-11 had already rolled off. Combined with the loss of `.idx`
-sidecars, this makes RRFS substantially harder to consume than it was on the prototype:
-anyone needing more than 48 hours of history must now mirror the feed themselves, at
-roughly 922 files and several hundred gigabytes per synoptic cycle.
+- **`.idx` sidecars — restored.** Absent from NOMADS throughout; present on every object
+  in `noaa-rrfs-ops-pds`.
+- **BUFR soundings — restored**, minus the exploded per-station `bufr.CC/` directory.
+  Point soundings are outside catalog scope but the loss was worth naming, and so is the
+  recovery.
+- **Individual ensemble members — still gone.** The prototype carried five RRFS ensemble
+  members under `rrfs_a/rrfsens.YYYYMMDD/CC/m001…m005`, each with `prslev` and `2dfld` on
+  five grids. Nothing in the new bucket replaces them, and NOMADS never carried them.
+  See the [REFS entry](../../../ensemble_models/regional/usa/refs.md#data-availability).
+- **Native-level output — still gone.** The prototype's `natlev.3km.na` files have no
+  successor in either channel.
 
 ### NOAAPORT parallel stream
 
 `https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/rrfs/` is a **flat rolling
 directory**, not a dated tree, and carries a different product subset:
 `grib2.rrfs.tCCz.{3km|13km}.fFFF.na` — North America grid only, at the 00/06/12/18 UTC
-cycles, roughly 25 steps per resolution per cycle, with a window of about 24 hours
-(oldest file 2026-08-11 20:30 UTC when checked). This stream predates the main parallel
-feed: it was already carrying 2026-08-11 cycles. It is the AWIPS/NOAAPORT distribution
-subset and is not a substitute for the full `rrfs/para/` tree.
+cycles, roughly 25 steps per resolution per cycle, over a window of about 24 hours. This
+stream predates the main parallel feed. It is the AWIPS/NOAAPORT distribution subset and
+is not a substitute for either full channel.
 
 ---
 
