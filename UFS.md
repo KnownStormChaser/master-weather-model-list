@@ -79,16 +79,18 @@ These are the most operationally significant UFS transitions that are either imm
   - NARRE (not in this repository) — replaced by REFS
   - NAM MOS (not in this repository) — retired alongside NAM
 - **Authority:** [NWS SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf) (implementation; May 12, 2026, updated July 6, 2026); retirements under companion [SCN 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination; updated July 6, 2026). The retirement set was originally proposed in [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025).
-- **Pre-implementation real-time feed:** Live on NOMADS since the **12 UTC cycle on
-  August 12, 2026** at `/nccf/com/rrfs/para/` and `/nccf/com/refs/para/`, with
-  AWIPS/NOAAPORT subsets at `/nccf/com/para/noaaport/rrfs/` and
-  `/nccf/com/para/noaaport/refs/`. Post-implementation paths (from October 6, 2026) are
-  `/nccf/com/rrfs/prod/` and `/nccf/com/refs/prod/`. **The `s3://noaa-rrfs-pds` prototype
-  bucket stopped updating on the same day** (RRFS after 11 UTC, REFS after 06 UTC),
-  leaving NOMADS as the sole channel for both systems — no NODD mirror of the parallel
-  feed exists. Model output is unchanged across the cutover; `.idx` sidecars, individual
-  REFS members and BUFR soundings are not carried across, and the REFS product directory
-  is renamed `enspost/` → `ensprod/`. See the
+- **Pre-implementation real-time feed:** Live since the **12 UTC cycle on August 12,
+  2026**, in two channels carrying byte-identical data:
+  - `s3://noaa-rrfs-ops-pds/` (NODD, from August 13) — **preferred**, since it is the
+    only channel with `.idx` sidecars and BUFR soundings, and it holds more history
+  - NOMADS `/nccf/com/rrfs/para/` and `/nccf/com/refs/para/`, with AWIPS/NOAAPORT subsets
+    at `/nccf/com/para/noaaport/{rrfs,refs}/`
+
+  Post-implementation paths (from October 6, 2026) are `/nccf/com/rrfs/prod/` and
+  `/nccf/com/refs/prod/`. The `s3://noaa-rrfs-pds` prototype bucket is **frozen** as of
+  August 12, 2026 and uses an incompatible internal layout. Model output is unchanged
+  across both moves; individual REFS members and native-level output are not carried by
+  either current channel. See the
   [RRFS](./models/nwp_models/regional/usa/rrfs.md#data-availability) and
   [REFS](./models/ensemble_models/regional/usa/refs.md#data-availability) entries.
 - **Domains:** CONUS, Alaska (3 km), Hawaii, Puerto Rico (2.5 km), plus a separate 1.5 km fire-weather RRFS domain
