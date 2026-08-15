@@ -164,66 +164,41 @@ REFS shares similarities with HREF in product types (mean, spread, PMM, LPMM, pr
 - **Is the data downloadable?** Yes
 - **Data formats:** GRIB2
 - **Official download locations:**
-  - **NOMADS (pre-implementation parallel feed, live since 2026-08-12 12 UTC):**
-    - https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/para/
-    - https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs/
-  - **NOMADS (post-implementation, from October 6, 2026):**
-    - https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/prod/
+  - **AWS S3 (NODD):** `s3://noaa-rrfs-ops-pds/refs.YYYYMMDD/CC/ensprod/` —
+    https://noaa-rrfs-ops-pds.s3.amazonaws.com/index.html
+  - **NOMADS, pre-implementation:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/para/
+  - **NOMADS, NOAAPORT subset:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs/
+  - **NOMADS, post-implementation (from October 6, 2026):**
+    https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/prod/
 
-> ⚠️ **NOMADS is currently the only channel, and the combined products are all that
-> survives.**
+REFS shares the deterministic
+[RRFS](../../../nwp_models/regional/usa/rrfs.md#data-availability) bucket rather than
+having its own — there is no `noaa-refs-ops-pds` (404). Both channels use the
+**`ensprod/`** subdirectory, so the `enspost/` ÷ `ensprod/` discrepancy that existed on
+the old prototype is gone; the naming is now consistent everywhere. A synoptic cycle is
+1740 GRIB2 files — 7 product types × 4 domains × 60 lead times, plus `ffri` on CONUS —
+with a matching `.idx` for each on S3.
+
+Files are **byte-identical** between the two channels (MD5-verified on
+`refs.t12z.avrg.f12.conus.grib2`, 2026-08-14 12 UTC).
+
+**Prefer S3.** Only the S3 copy has `.idx` sidecars, and REFS is where they matter most:
+a CONUS `prob` step carries 183 records at ~68 MB, so a full f01–f60 series is roughly
+4 GB per cycle per domain for one product type. Without an index there is no way to pull
+a single threshold field.
+
+> ⚠️ **Individual members remain unavailable.** The old prototype carried the five RRFS
+> ensemble members under `rrfs_a/rrfsens.YYYYMMDD/CC/m001…m005`, each with `prslev` (24
+> steps) and `2dfld` (61 steps) on the CONUS, Alaska, Hawaii, Puerto Rico and North
+> America grids. The replacement bucket has no `rrfsens` prefix and no `m0*` or `mem*`
+> keys under either `rrfs.*` or `refs.*`; NOMADS never carried them. **Raw member output
+> has had no open channel since 2026-08-12.**
 >
-> `s3://noaa-rrfs-pds` last wrote REFS products at the **06 UTC** cycle on 2026-08-12
-> (final object 09:28:56 UTC); the NOMADS parallel feed picked up at **12 UTC**. No
-> replacement cloud mirror exists — `noaa-refs-pds`, `noaa-nws-refs-pds` and
-> `noaa-nws-rrfs-pds` all return 404. See the
-> [RRFS entry](../../../nwp_models/regional/usa/rrfs.md#data-availability) for the full
-> cutover record and the AWS registry-text discrepancy.
-
-### Individual members are gone
-
-The AWS prototype carried the five RRFS ensemble members under
-`rrfs_a/rrfsens.YYYYMMDD/CC/m001` … `m005`, each with `prslev` (24 steps) and `2dfld`
-(61 steps) on the CONUS, Alaska, Hawaii, Puerto Rico and North America grids, `.idx`
-sidecars for all of them, and per-member BUFR. The NOMADS parallel tree contains
-`ensprod/` and nothing else — probes for `members/`, `mem01/` and `m001/` all return 403.
-
-**Raw REFS member output therefore has no open channel as of 2026-08-12.** Users doing
-their own ensemble post-processing — custom percentiles, neighbourhood probabilities at
-non-standard thresholds, member clustering, or anything else not covered by the eight
-`ensprod` product types — have lost the input they were working from. Whether members
-appear at implementation on October 6, 2026 is not addressed in SCN 26-48 (**TBD**).
-
-### No `.idx` sidecars
-
-Every GRIB2 object on AWS carried a matching `.idx`. None exist on NOMADS. Byte-range
-subsetting is unavailable, which bites hardest on `prob` (183 records) and `sprd`
-(82 records) — a CONUS `prob` step is ~68 MB and a full f01–f60 CONUS `prob` series is
-roughly 4 GB per cycle.
-
-### Directory name differs between the two distributions
-
-The AWS prototype used **`enspost/`**; NOMADS uses **`ensprod/`**. Verified 2026-08-12 —
-`rrfs_public/refs.20260812/06/ensprod/` is empty on S3 while `enspost/` is populated, and
-on NOMADS `…/12/ensprod/` returns 200 while `…/12/enspost/` returns 403. `ensprod` is the
-name in SCN 26-48 and is the one that will carry forward to `refs/prod/`. Code written
-against the prototype layout needs this one-word change.
-
-### Publication latency
-
-The 2026-08-12 12 UTC cycle published from 14:21 to 15:46 UTC, but that cycle is
-contaminated by the feed switch-on and should not be used for scheduling. The 18 UTC
-cycle had reached f09 by 20:45 UTC (**T+2h45m**), which is a better indication pending a
-clean full-cycle measurement (**TBD**).
-
-### NOAAPORT parallel stream
-
-`https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs/` is a flat rolling
-directory carrying only **three of the eight product types** —
-`grib2.refs.tCCz.{mean|pmmn|prob}.fFF.{conus|ak|hi|pr}` — on a 3-hourly lead-time
-spacing. Its first files are stamped 2026-08-12 14:07 UTC, so unlike the RRFS NOAAPORT
-stream it began with the parallel feed rather than before it. Not a substitute for
-`refs/para/`.
+> This is the one capability the new bucket did not restore, and it is the one that
+> matters for anyone doing their own post-processing — custom percentiles, neighbourhood
+> probabilities at non-standard thresholds, member clustering, or anything outside the
+> eight `ensprod` product types. Whether members appear at implementation on
+> October 6, 2026 is not addressed in SCN 26-48 (**TBD**).
 
 ---
 
@@ -245,9 +220,10 @@ stream it began with the parallel feed rather than before it. Not a substitute f
 ## Notes
 - **The prototype AWS layout is now historical.** Individual members were stored under
   `rrfs_a/rrfsens.<date>/<cycle>/m###`, and combined products under
-  `rrfs_public/refs.<date>/<cycle>/`**`enspost`**`/` — note `enspost`, not `ensprod`;
-  the earlier description of that directory as "reflecting the planned operational
-  NOMADS structure" was wrong on the directory name. NOMADS uses `ensprod/`.
+  `rrfs_public/refs.<date>/<cycle>/`**`enspost`**`/` — note `enspost`, not `ensprod`; the
+  earlier description of that directory as "reflecting the planned operational NOMADS
+  structure" was wrong on the directory name. Both current channels use `ensprod/`, so
+  this discrepancy affects only code written against the pre-2026-08-12 bucket.
 - **The products themselves did not change across the transition.** All eight CONUS
   product types were decoded at f12 from both distributions (AWS 06 UTC against NOMADS
   12 UTC, 2026-08-12) and compared on a per-record key tuple including shortName, level,
