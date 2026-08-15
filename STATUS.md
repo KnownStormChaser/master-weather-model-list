@@ -109,22 +109,32 @@ Experimental productionization of NVIDIA's FourCastNet architecture using Spheri
 
 ## Format and distribution changes
 
-### RRFS and REFS — AWS prototype frozen, NOMADS parallel feed live, August 12, 2026
-The pre-implementation parallel feed began at the 12 UTC cycle on NOMADS at
-`/pub/data/nccf/com/rrfs/para/` and `/pub/data/nccf/com/refs/para/`, one day later than
-the "on or about August 11" date in SCN 26-48. On the same day the `s3://noaa-rrfs-pds`
-prototype bucket stopped updating — RRFS after the 11 UTC cycle, REFS after 06 UTC.
-**NOMADS is now the only channel for both systems**, with no NODD/AWS, GCS or Azure
-mirror of the parallel feed. The model output is unchanged (verified by decoding matched
-file pairs), but three things do not carry across: `.idx` sidecars, individual REFS
-ensemble members, and BUFR soundings. The REFS product directory is also renamed from
-`enspost/` on AWS to `ensprod/` on NOMADS.
+### RRFS and REFS — distribution moved twice in three days, August 2026
+The pre-implementation parallel feed began at the 12 UTC cycle on **August 12, 2026** on
+NOMADS at `/pub/data/nccf/com/rrfs/para/` and `/pub/data/nccf/com/refs/para/`, one day
+later than the "on or about August 11" date in SCN 26-48. The `s3://noaa-rrfs-pds`
+prototype bucket stopped the same day — RRFS after 11 UTC, REFS after 06 UTC — leaving
+NOMADS briefly as the only channel. On **August 13 at roughly 21:30 UTC**, NODD stood up
+a replacement bucket, **`s3://noaa-rrfs-ops-pds`**, which backfilled what NOMADS still
+held and has ingested in near real time since.
+
+The replacement carries RRFS, REFS and fire-weather output under a flat
+`{rrfs|refs|firewx}.YYYYMMDD/` layout mirroring NOMADS, rather than the prototype's
+`rrfs_public/` ÷ `rrfs_a/` split. Files are byte-identical to NOMADS and land within
+about a minute of it. It **restores the `.idx` sidecars and BUFR soundings** that NOMADS
+does not carry, and holds more history than the two-day NOMADS `para` window.
+**Individual ensemble members and native-level output were not restored** and remain
+unavailable through any open channel.
+
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
-- **Authority:** NWS SCN 26-48 (parallel feed paths); AWS Open Data registry note on the prototype feed ending at the start of the parallel phase
-- **Verification note:** Cutover boundary confirmed by object listing on both sides —
-  last AWS object 2026-08-12T12:58:58Z, first NOMADS files 13:49 UTC. The AWS registry
-  text says the bucket will also carry pre-implementation and operational data; as of
-  2026-08-12 it carries none, which is unresolved. Post-implementation paths from
+- **Authority:** NWS SCN 26-48 (parallel feed paths); direct verification of both channels
+- **Verification note:** Cutover boundary confirmed by object listing on both sides — last
+  old-bucket object 2026-08-12T12:58:58Z, first NOMADS files 13:49 UTC, first
+  replacement-bucket object 2026-08-13T21:32:04Z. Byte-identity confirmed by MD5 on
+  matched RRFS and REFS files from the 2026-08-14 12 UTC cycle. **The AWS Open Data
+  Registry entry `noaa-rrfs` has not been updated** — it still lists only the frozen
+  prototype bucket, still carries the "[Prototype]" title, and there is no registry page
+  or `docs.opendata.aws` readme for the replacement. Post-implementation paths from
   October 6, 2026 remain `/rrfs/prod/` and `/refs/prod/`.
 
 ### IFS Cycle 50r2 — tentative Q4 2026
