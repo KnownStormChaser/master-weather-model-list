@@ -112,7 +112,6 @@ These systems are publicly signaled but have **no formal retirement notification
 
 - [HRRR](./models/nwp_models/regional/usa/hrrr.md) — expected with RRFSv2
 - [RAP](./models/nwp_models/regional/usa/rap.md) — expected with RRFSv2
-- NAM 12 km parent — expected with HRRR/RAP
 
 ---
 
