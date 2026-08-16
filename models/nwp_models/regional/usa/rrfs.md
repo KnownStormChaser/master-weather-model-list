@@ -173,7 +173,7 @@ RRFS is intended to replace the following legacy NCEP regional systems on Octobe
 - **NARRE** (replaced by REFS)
 - **NAM MOS** (retired alongside NAM)
 
-HRRR, RAP, and the NAM 12 km parent domain are not retired with RRFSv1. These systems are expected to be retired later in conjunction with RRFSv2, which is planned to transition to the MPAS dynamical core. HRRR additionally contributes two members (current and 6 h old cycles) to the CONUS and Alaska REFS domains, making it an explicit operational input to REFS during the RRFSv1 era.
+HRRR and RAP are not retired with RRFSv1. They are expected to be retired later in conjunction with RRFSv2, which is planned to transition to the MPAS dynamical core. The NAM 12 km parent domain is **not** in this group — SCN 26-47 discontinues the NAM North America (12 km) grid together with all nests on October 6, 2026. HRRR additionally contributes two members (current and 6 h old cycles) to the CONUS and Alaska REFS domains, making it an explicit operational input to REFS during the RRFSv1 era.
 
 ---
 
@@ -267,7 +267,7 @@ is not a substitute for either full channel.
 - Originally targeted for operational implementation in early 2026; implementation slipped through pre-operational evaluation.
 - **NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, 2026)** scheduled RRFS and REFS operational implementation for October 6, 2026 at 12 UTC, with retirement of NAM, HREF, SREF, and HiresW (except Guam) on the same day (terminations under companion SCN 26-47). Per the SCN, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. The July 6, 2026 update is the second slip, moving the date from August 31, 2026 to October 6, 2026.
 - Pre-implementation parallel data feed expected on NOMADS on or about August 11, 2026.
-- RRFSv2 (based on the MPAS dynamical core) is under development and will drive the next phase of legacy model retirements (HRRR, RAP, NAM 12 km parent).
+- RRFSv2 (based on the MPAS dynamical core) is under development and will drive the next phase of legacy model retirements (HRRR, RAP).
 
 ---
 
