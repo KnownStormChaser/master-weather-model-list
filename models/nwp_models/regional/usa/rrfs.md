@@ -191,31 +191,48 @@ HRRR and RAP are not retired with RRFSv1. They are expected to be retired later 
   - **NOMADS, post-implementation (from October 6, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/prod/
 
-The two channels carry the same data. Files pulled from each were compared by MD5 and
-are **byte-identical** — `rrfs.t12z.2dfld.2p5km.subh.f001.hi.grib2` from the 2026-08-14
-12 UTC cycle matches exactly, as does the REFS equivalent. Choose on access pattern, not
-content.
+The two channels carry the same data. Files pulled from each were compared by MD5 and are
+**byte-identical**, and since roughly mid-August 2026 that extends to the `.idx` sidecars
+as well.
 
 | | `s3://noaa-rrfs-ops-pds` | NOMADS `rrfs/para/` |
 |---|---|---|
-| `.idx` sidecars | **Yes**, on every object | No |
-| Byte-range subsetting | Yes (206 responses) | Not practical without an index |
+| `.idx` sidecars | Yes, on every object | **Yes**, on every file since ~mid-August 2026 |
+| Byte-range subsetting | Yes | Yes |
 | BUFR soundings | Yes at synoptic cycles | No |
-| Retention | ≥ 3 days, ceiling not yet known | 2 days |
+| Retention | Every date since 2026-08-12; nothing expired yet | 2 days |
 | Latency (2026-08-14 12 UTC) | first object 13:51 UTC | first file 13:50 UTC |
 | Directory listing | Reliable S3 `list-type=2` | Frequently truncated; needs retries |
+| Licence | CC0-1.0, stated in the AWS Open Data Registry | US Government work, no per-file statement |
 
-**Prefer S3.** A single CONUS `prslev` step is ~580 MB and a full 84-hour synoptic CONUS
-`prslev` series is roughly 48 GB, so the `.idx` sidecars are not a convenience — without
-them, extracting a handful of fields means downloading everything. The S3 copy lands
-within about a minute of NOMADS, so there is no latency argument for the other channel.
+**Either channel works for real-time use.** NOMADS added `.idx` sidecars between
+August 15 and 21, 2026, closing the gap that previously made S3 the only practical option
+for field-level subsetting — a CONUS `prslev` step is ~580 MB and a full 84-hour synoptic
+series roughly 48 GB, so without an index there is no way to pull a handful of fields.
+The sidecars are byte-identical between the two channels.
+
+**S3 is still the better default for anything beyond the last two days**, because NOMADS
+`para` retains only 48 hours while the bucket has kept every date since it came up. S3
+also gives reliable directory listings, which NOMADS does not, and is the only channel
+carrying BUFR soundings. Use NOMADS when you want the freshest possible file — it leads
+S3 by about a minute — or when S3 access is inconvenient.
+
+The bucket is registered in the AWS Open Data Registry as **NOAA Rapid Refresh Forecast
+System (RRFS) and RRFS Ensemble Forecast System (REFS) [Operational]**
+(https://registry.opendata.aws/noaa-rrfs-ops/), under the **Creative Commons 1.0
+Universal Public Domain Dedication (CC0-1.0)**. New-object notifications are available
+via `arn:aws:sns:us-east-1:123901341784:NewRRFSObject` (Lambda and SQS only) — note the
+different AWS account from the prototype topic, so existing subscriptions do not carry
+over.
 
 > ⚠️ **`s3://noaa-rrfs-pds` — the old prototype bucket — is frozen and should not be
-> used.** It stopped at the 11 UTC cycle on 2026-08-12 for RRFS and 06 UTC for REFS, and
-> has had no new dates since. It is a different bucket with a different internal layout
+> used.** It stopped at the 11 UTC cycle on 2026-08-12 for RRFS and 06 UTC for REFS. It
+> retains a separate registry entry titled "[Prototype]" and a different internal layout
 > (`rrfs_public/`, `rrfs_a/`, `retro_output_final/`); the replacement uses a flat
 > `rrfs.YYYYMMDD/` layout mirroring NOMADS. Code written against the prototype needs its
-> prefixes rewritten, not just its bucket name.
+> prefixes rewritten, not just its bucket name. The prototype bucket is still the only
+> source of the `retro_output_final/` retrospective parallel output, which has no
+> equivalent in the replacement.
 
 > ⚠️ **The AWS Open Data Registry has not caught up (TBD).** As of 2026-08-14 the
 > registry entry `noaa-rrfs` still lists only `arn:aws:s3:::noaa-rrfs-pds`, still carries
