@@ -136,32 +136,32 @@ Experimental productionization of NVIDIA's FourCastNet architecture using Spheri
 
 ## Format and distribution changes
 
-### RRFS and REFS — distribution moved twice in three days, August 2026
+### RRFS and REFS — distribution moved twice, then converged, August 2026
 The pre-implementation parallel feed began at the 12 UTC cycle on **August 12, 2026** on
 NOMADS at `/pub/data/nccf/com/rrfs/para/` and `/pub/data/nccf/com/refs/para/`, one day
-later than the "on or about August 11" date in SCN 26-48. The `s3://noaa-rrfs-pds`
-prototype bucket stopped the same day — RRFS after 11 UTC, REFS after 06 UTC — leaving
-NOMADS briefly as the only channel. On **August 13 at roughly 21:30 UTC**, NODD stood up
-a replacement bucket, **`s3://noaa-rrfs-ops-pds`**, which backfilled what NOMADS still
-held and has ingested in near real time since.
+later than the "on or about August 11" date in SCN 26-48 — a date NOAA subsequently
+corrected to August 12 in its own registry entry. The `s3://noaa-rrfs-pds` prototype
+bucket stopped the same day, briefly leaving NOMADS as the only channel. On **August 13**
+NODD stood up a replacement bucket, **`s3://noaa-rrfs-ops-pds`**, carrying RRFS, REFS and
+fire-weather output under a flat `{rrfs|refs|firewx}.YYYYMMDD/` layout mirroring NOMADS.
+**Between August 15 and 21, NOMADS began publishing `.idx` sidecars**, closing the last
+capability gap between the channels.
 
-The replacement carries RRFS, REFS and fire-weather output under a flat
-`{rrfs|refs|firewx}.YYYYMMDD/` layout mirroring NOMADS, rather than the prototype's
-`rrfs_public/` ÷ `rrfs_a/` split. Files are byte-identical to NOMADS and land within
-about a minute of it. It **restores the `.idx` sidecars and BUFR soundings** that NOMADS
-does not carry, and holds more history than the two-day NOMADS `para` window.
-**Individual ensemble members and native-level output were not restored** and remain
-unavailable through any open channel.
+Both channels now carry byte-identical GRIB2 and byte-identical sidecars with complete
+coverage, and land within about a minute of each other. S3 remains preferable for
+anything older than 48 hours — NOMADS `para` retains two days while the bucket has kept
+every date since inception — and is the only channel carrying BUFR soundings. The bucket
+is registered as CC0-1.0. **Individual ensemble members and native-level output were
+never restored** and remain unavailable through any open channel.
 
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
-- **Authority:** NWS SCN 26-48 (parallel feed paths); direct verification of both channels
+- **Authority:** NWS SCN 26-48; AWS Open Data Registry entry `noaa-rrfs-ops`; direct verification of both channels
 - **Verification note:** Cutover boundary confirmed by object listing on both sides — last
-  old-bucket object 2026-08-12T12:58:58Z, first NOMADS files 13:49 UTC, first
-  replacement-bucket object 2026-08-13T21:32:04Z. Byte-identity confirmed by MD5 on
-  matched RRFS and REFS files from the 2026-08-14 12 UTC cycle. **The AWS Open Data
-  Registry entry `noaa-rrfs` has not been updated** — it still lists only the frozen
-  prototype bucket, still carries the "[Prototype]" title, and there is no registry page
-  or `docs.opendata.aws` readme for the replacement. Post-implementation paths from
+  prototype object 2026-08-12T12:58:58Z, first NOMADS files 13:49 UTC, first
+  replacement-bucket object 2026-08-13T21:32:04Z. Byte-identity of GRIB2 and `.idx`
+  confirmed by MD5. Sidecar coverage confirmed set-symmetric on 2026-08-22 (922/922 RRFS,
+  1740/1740 REFS). The `.idx` addition cannot be dated more precisely than
+  August 15–21 because NOMADS retains only two days. Post-implementation paths from
   October 6, 2026 remain `/rrfs/prod/` and `/refs/prod/`.
 
 ### IFS Cycle 50r2 — tentative Q4 2026
