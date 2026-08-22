@@ -180,25 +180,32 @@ the old prototype is gone; the naming is now consistent everywhere. A synoptic c
 with a matching `.idx` for each on S3.
 
 Files are **byte-identical** between the two channels (MD5-verified on
-`refs.t12z.avrg.f12.conus.grib2`, 2026-08-14 12 UTC).
+`refs.t12z.avrg.f12.conus.grib2`), and both now publish `.idx` sidecars — 1740 GRIB2 files
+and 1740 matching sidecars per synoptic cycle in each. The sidecars are themselves
+byte-identical across channels.
 
-**Prefer S3.** Only the S3 copy has `.idx` sidecars, and REFS is where they matter most:
-a CONUS `prob` step carries 183 records at ~68 MB, so a full f01–f60 series is roughly
-4 GB per cycle per domain for one product type. Without an index there is no way to pull
-a single threshold field.
+Indexing matters more for REFS than for the deterministic model: a CONUS `prob` step
+carries 183 records at ~68 MB, so a full f01–f60 series is roughly 4 GB per cycle per
+domain for that product type alone. Either channel now supports pulling a single threshold
+field. **Prefer S3 for anything older than 48 hours**, since NOMADS `para` retains only
+two days.
 
-> ⚠️ **Individual members remain unavailable.** The old prototype carried the five RRFS
-> ensemble members under `rrfs_a/rrfsens.YYYYMMDD/CC/m001…m005`, each with `prslev` (24
-> steps) and `2dfld` (61 steps) on the CONUS, Alaska, Hawaii, Puerto Rico and North
-> America grids. The replacement bucket has no `rrfsens` prefix and no `m0*` or `mem*`
-> keys under either `rrfs.*` or `refs.*`; NOMADS never carried them. **Raw member output
-> has had no open channel since 2026-08-12.**
+> **Ensemble size is encoded, but under two different keys depending on product.** On
+> `mean` and `sprd` it is `numberOfForecastsInEnsemble`, which reads 14 on CONUS and
+> Alaska and 12 on Hawaii and Puerto Rico across all records. On `prob`, `eas` and `ffri`
+> that key is **undefined**; the same value appears instead as
+> `totalNumberOfForecastProbabilities` in PDT 5 and 9, which wgrib2 renders as
+> `prob fcst 0/14`. Verified to agree with the `mean`/`sprd` counts on every domain.
 >
-> This is the one capability the new bucket did not restore, and it is the one that
-> matters for anyone doing their own post-processing — custom percentiles, neighbourhood
-> probabilities at non-standard thresholds, member clustering, or anything outside the
-> eight `ensprod` product types. Whether members appear at implementation on
-> October 6, 2026 is not addressed in SCN 26-48 (**TBD**).
+> Two consequences. First, code that sizes member arrays from
+> `numberOfForecastsInEnsemble` alone will fail on three of the eight products — read
+> both keys. Second, because the value appears in the wgrib2 inventory, **ensemble size
+> can be read straight from the few-kilobyte `.idx` sidecar without fetching any GRIB2**.
+>
+> Note that `totalNumberOfForecastProbabilities` would ordinarily denote a count of
+> probability thresholds, not members. NCEP populating it with the ensemble size is a
+> local convention that happens to hold across all four REFS domains; do not carry the
+> assumption to other centres' output.
 
 ---
 
