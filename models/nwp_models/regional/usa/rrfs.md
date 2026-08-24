@@ -5,7 +5,7 @@ The Rapid Refresh Forecast System (RRFS) is NOAA's next-generation convection-al
 
 RRFS is built on the Unified Forecast System (UFS) framework and is designed to consolidate and replace several legacy NCEP regional modeling systems, including the NAM, HiresW (except the Guam domain), HREF, SREF, and NARRE. It provides both deterministic and ensemble guidance, with the ensemble component distributed as REFS (RRFS Ensemble Forecast System).
 
-RRFS and REFS are scheduled to become operational on **October 6, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, 2026), subject to the standard CWD/ECE postponement contingency. A pre-implementation real-time parallel feed is expected on NOMADS on or about **August 11, 2026**.
+RRFS and REFS are scheduled to become operational on **October 6, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6 and August 24, 2026), subject to the standard CWD/ECE postponement contingency. A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination.
 
 ---
 
@@ -27,17 +27,34 @@ RRFS and REFS are scheduled to become operational on **October 6, 2026 at 12 UTC
   | Alaska | `polar_stereographic`, LaD 60°N | 1649 × 1105 | 2976 m | First point 40.53°N, 181.429°E; 1,822,145 points |
   | Hawaii | `mercator`, LaD 20°N | 321 × 225 | 2500 m | First point 18.072699°N, 198.474999°E |
   | Puerto Rico | `mercator` | 544 × 310 | 2500 m | — |
-  | Fire weather | `lambert`, LoV 265°E, Latin1 = Latin2 = LaD = 25°N | varies per cycle | **1270 m** | Relocatable — see below |
+  | Fire weather | `lambert`, LoV 265°E, Latin1 = Latin2 = LaD = 25°N | 522 × 390 or 561 × 355 | **1270 m** | Relocatable, but only two placements observed — see below |
 
   All grids use `shapeOfTheEarth = 6` (spherical, 6371229 m).
 
-  **The fire-weather domain is relocatable and is not a fixed 5° × 5° box.** SCN 26-48
-  describes it as a "relocatable 1.5 km RRFS fire weather" domain. Decoding two
-  consecutive cycles shows both the grid size and the corner moving: the 2026-08-12
-  06 UTC cycle was 561 × 355 anchored at 39.442°N / 234.191°E, and the 12 UTC cycle
-  was 522 × 390 anchored at 36.454°N / 244.665°E. The actual grid increment is
-  **1270 m**, not the 1500 m implied by the `1p5km` filename token — the token is a
-  label, not a measurement.
+  **The fire-weather domain is a relocatable Lambert conformal grid, not the 5° × 5°
+  rotated latitude-longitude region the SCN describes.** SCN 26-48, through the AAC
+  update of 2026-08-24, states the fire-weather run provides "output provided over a
+  5 x 5-degree rotated latitude longitude region." Decoding the actual output contradicts
+  this on all three counts: the grid is `lambert` with LoV 265°E and
+  Latin1 = Latin2 = LaD = 25°N, the increment is **1270 m** rather than the 1500 m implied
+  by the `1p5km` filename token, and the extent is roughly 663 × 495 km rather than
+  5° × 5°.
+
+  The domain is genuinely relocatable — two distinct configurations have been observed —
+  but **it does not move freely from cycle to cycle**. Across 2026-08-12 and
+  2026-08-23/24 it took exactly two placements, strictly alternating by cycle hour:
+
+  | Cycles | Ni × Nj | First grid point | Extent |
+  |---|---|---|---|
+  | 00 and 12 UTC | 522 × 390 | 36.454°N, 244.665°E | ~663 × 495 km |
+  | 06 and 18 UTC | 561 × 355 | 39.442°N, 234.191°E | ~713 × 451 km |
+
+  Both placements were identical on 2026-08-12 and 2026-08-24, twelve days apart. Whether
+  the domain is repositioned in response to fire-weather conditions, or is fixed per cycle
+  hour in this configuration, cannot be determined from a twelve-day sample (**TBD**).
+  **Do not assume a fixed grid**: code that caches grid geometry must key it on cycle
+  hour at minimum, and should re-read the grid definition per file rather than relying on
+  the observed pattern holding.
 
   **The Alaska grid increment is 2976 m, not 3000 m**, despite the `3km` filename token.
   CONUS is a true 3000 m.
@@ -99,7 +116,10 @@ In addition to the deterministic forecast, the RRFS run produces **five ensemble
 ## Output organization
 
 Deterministic output lives under `rrfs.YYYYMMDD/CC/`; fire-weather output under a
-separate `firewx.YYYYMMDD/CC/`. Lead time is a **three-digit** token (`f000`) —
+separate `firewx.YYYYMMDD/CC/`. Every GRIB2 file is accompanied by a matching
+`.grib2.idx` wgrib2 inventory sidecar on both channels, and synoptic cycles additionally
+carry two BUFR sounding files (see [Data availability](#data-availability)). Lead time is
+a **three-digit** token (`f000`) —
 [REFS](../../../ensemble_models/regional/usa/refs.md) uses two digits, which is a
 frequent source of 404s when code is shared between the two.
 
@@ -115,12 +135,15 @@ frequent source of 404s when code is shared between the two.
 | `rrfs.tCCz.2dfld.2p5km.subh.fFFF.{hi\|pr}.grib2` | 15-minute 2D fields, Hawaii / Puerto Rico |
 | `rrfs.tCCz.prslev.1p5km.fFFF.firewx_lcc.grib2` | Pressure-level, fire weather (under `firewx.YYYYMMDD/CC/`) |
 | `rrfs.tCCz.2dfld.1p5km.fFFF.firewx_lcc.grib2` | 2D fields, fire weather (under `firewx.YYYYMMDD/CC/`) |
+| `rrfs.tCCz.bufrsnd.tar.gz` | BUFR sounding bundle, synoptic cycles only |
+| `rrfs.tCCz.class1.bufr` | BUFR class-1 soundings, synoptic cycles only |
 
 ### The 24 hourly cycles are not equivalent — three distinct tiers
 
 This is the single most consequential thing to know before scripting against RRFS, and
-it is not stated in the SCN. **Sixteen of the twenty-four cycles publish nothing but the
-15-minute subhourly files.**
+it is stated in neither the SCN (through the AAC update of 2026-08-24) nor the NOMADS
+model description. **Sixteen of the twenty-four cycles publish nothing but the 15-minute
+subhourly files.**
 
 | Cycles | Hourly `prslev` + `2dfld` | 13 km NA output | 15-min `subh` | GRIB2 files/cycle |
 |---|---|---|---|---|
@@ -133,6 +156,17 @@ and AWS cycles 00/01/03/04/09/15/21 on 2026-08-11 plus 03/09 on 2026-08-12. The 
 is identical on both, so it is a property of the model suite and not of the transition.
 A 3-hourly forecast pulled from the "hourly" model will silently fall back to subhourly
 2D fields for two cycles out of every three.
+
+> ⚠️ **Both official descriptions state the opposite of what the feed publishes.** The
+> NOMADS model description reads: "Hourly deterministic output is generated for all cycles
+> and parameters are available in pressure level (prslev) and two-dimensional (2dfld)
+> files over CONUS, Alaska, Hawaii, and Puerto Rico." SCN 26-48 AAC likewise gives only
+> the 84 h / 18 h split without noting that most cycles carry no `prslev` or `2dfld` at
+> all. **The directory listing is authoritative; the descriptions are not.**
+>
+> The NOMADS description also omits two output streams that demonstrably exist and that
+> the SCN does document: the 13 km North America grid and the relocatable 1.5 km
+> fire-weather domain.
 
 ### 13 km North America output moved from 3-hourly to hourly
 
@@ -191,31 +225,31 @@ HRRR and RAP are not retired with RRFSv1. They are expected to be retired later 
   - **NOMADS, post-implementation (from October 6, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/prod/
 
-The two channels carry the same data. Files pulled from each were compared by MD5 and are
-**byte-identical**, and since roughly mid-August 2026 that extends to the `.idx` sidecars
-as well.
+The two channels carry the same data, and as of late August 2026 they carry the same
+*set* of files. GRIB2 files, `.idx` sidecars and BUFR bundles were each compared by MD5
+and are byte-identical.
 
 | | `s3://noaa-rrfs-ops-pds` | NOMADS `rrfs/para/` |
 |---|---|---|
-| `.idx` sidecars | Yes, on every object | **Yes**, on every file since ~mid-August 2026 |
+| `.idx` sidecars | Yes, on every object | Yes, on every file since ~mid-August 2026 |
 | Byte-range subsetting | Yes | Yes |
-| BUFR soundings | Yes at synoptic cycles | No |
+| BUFR soundings | Yes at synoptic cycles | Yes, since the 2026-08-23 18 UTC cycle |
 | Retention | Every date since 2026-08-12; nothing expired yet | 2 days |
 | Latency (2026-08-14 12 UTC) | first object 13:51 UTC | first file 13:50 UTC |
 | Directory listing | Reliable S3 `list-type=2` | Frequently truncated; needs retries |
 | Licence | CC0-1.0, stated in the AWS Open Data Registry | US Government work, no per-file statement |
 
-**Either channel works for real-time use.** NOMADS added `.idx` sidecars between
-August 15 and 21, 2026, closing the gap that previously made S3 the only practical option
-for field-level subsetting — a CONUS `prslev` step is ~580 MB and a full 84-hour synoptic
-series roughly 48 GB, so without an index there is no way to pull a handful of fields.
-The sidecars are byte-identical between the two channels.
+A synoptic cycle is **922 GRIB2 files, 922 sidecars and 2 BUFR files** on both channels —
+verified set-symmetric on 2026-08-24.
 
-**S3 is still the better default for anything beyond the last two days**, because NOMADS
-`para` retains only 48 hours while the bucket has kept every date since it came up. S3
-also gives reliable directory listings, which NOMADS does not, and is the only channel
-carrying BUFR soundings. Use NOMADS when you want the freshest possible file — it leads
-S3 by about a minute — or when S3 access is inconvenient.
+**Choose on retention and listing reliability, not content.** NOMADS `para` retains 48
+hours; the bucket has kept every date since it came up. S3 also gives reliable directory
+listings, which NOMADS does not — expect truncated responses and build in retries. Use
+NOMADS when you want the freshest file, since it leads S3 by about a minute.
+
+Indexing matters here more than for most models: a CONUS `prslev` step is ~580 MB and a
+full 84-hour synoptic series is roughly 48 GB, so without a sidecar there is no practical
+way to pull a handful of fields. Both channels now support it.
 
 The bucket is registered in the AWS Open Data Registry as **NOAA Rapid Refresh Forecast
 System (RRFS) and RRFS Ensemble Forecast System (REFS) [Operational]**
@@ -234,32 +268,27 @@ over.
 > source of the `retro_output_final/` retrospective parallel output, which has no
 > equivalent in the replacement.
 
-> ⚠️ **The AWS Open Data Registry has not caught up (TBD).** As of 2026-08-14 the
-> registry entry `noaa-rrfs` still lists only `arn:aws:s3:::noaa-rrfs-pds`, still carries
-> the "[Prototype]" title, and still describes the `rrfs_public/` ÷ `rrfs_a/` layout. It
-> says users would continue to access pre-implementation data "through this bucket" —
-> which turned out not to be what happened. There is no registry page, no
-> `docs.opendata.aws` readme (404) and no SNS notification topic for
-> `noaa-rrfs-ops-pds` yet. **This is a documentation gap, not a licensing one:** the
-> bucket is anonymously readable, follows the NODD `-pds` naming convention, and the
-> underlying output is US Government work distributed unrestricted over NOMADS. Recheck
-> for a registry entry before citing CC0 specifically for the bucket.
+### What the August 2026 transitions cost, and what came back
 
-### What the AWS→NOMADS→S3 sequence cost
+The 2026-08-12 cutover to NOMADS-only briefly removed three capabilities the AWS
+prototype had provided. Two were restored, in stages, over the following eleven days.
 
-Two of the three capabilities lost in the 2026-08-12 cutover came back with the new
-bucket. One did not.
-
-- **`.idx` sidecars — restored.** Absent from NOMADS throughout; present on every object
-  in `noaa-rrfs-ops-pds`.
-- **BUFR soundings — restored**, minus the exploded per-station `bufr.CC/` directory.
-  Point soundings are outside catalog scope but the loss was worth naming, and so is the
-  recovery.
-- **Individual ensemble members — still gone.** The prototype carried five RRFS ensemble
-  members under `rrfs_a/rrfsens.YYYYMMDD/CC/m001…m005`, each with `prslev` and `2dfld` on
-  five grids. Nothing in the new bucket replaces them, and NOMADS never carried them.
+- **`.idx` sidecars — restored.** Absent from NOMADS at the cutover; present on every
+  object in `noaa-rrfs-ops-pds` from 2026-08-13, and on every NOMADS file from some point
+  between August 15 and 21, 2026. The addition cannot be dated more precisely because
+  NOMADS retains only two days.
+- **BUFR soundings — restored.** `rrfs.tCCz.bufrsnd.tar.gz` and `rrfs.tCCz.class1.bufr`
+  at synoptic cycles, on S3 from 2026-08-13 and on NOMADS from the **2026-08-23 18 UTC
+  cycle** — the 00 and 12 UTC cycles that day return 404, so that is the first cycle
+  carrying them. The exploded per-station `bufr.CC/` directory the prototype carried is
+  on neither channel. Point soundings are outside catalog scope, but the loss was worth
+  naming and so is the recovery.
+- **Individual ensemble members — never restored.** The prototype carried five RRFS
+  ensemble members under `rrfs_a/rrfsens.YYYYMMDD/CC/m001…m005`, each with `prslev` and
+  `2dfld` on five grids. Nothing in the new bucket replaces them, and NOMADS never
+  carried them. SCN 26-48 AAC describes the members but gives no output path for them.
   See the [REFS entry](../../../ensemble_models/regional/usa/refs.md#data-availability).
-- **Native-level output — still gone.** The prototype's `natlev.3km.na` files have no
+- **Native-level output — never restored.** The prototype's `natlev.3km.na` files have no
   successor in either channel.
 
 ### NOAAPORT parallel stream
@@ -274,16 +303,28 @@ is not a substitute for either full channel.
 ---
 
 ## Status
+- **2026-08-24 — SCN 26-48 updated (AAC).** Documents the `.idx` sidecars and the NOMADS
+  BUFR files. The implementation date is unchanged at October 6, 2026. The update does
+  not correct the August 11 feed date, the fire-weather domain description, or the
+  per-cycle product set; see [Notes](#notes).
+- **2026-08-23, 18 UTC — BUFR soundings added to NOMADS.** `bufrsnd.tar.gz` and
+  `class1.bufr` at synoptic cycles, byte-identical to the S3 copies. This brought the two
+  channels to full parity.
+- **~2026-08-15 to 08-21 — `.idx` sidecars added to NOMADS.** Complete coverage, 922 of
+  922 files per synoptic cycle, byte-identical to the S3 sidecars. The exact date cannot
+  be recovered because NOMADS retains only two days.
+- **2026-08-13, ~21:30 UTC — NODD replacement bucket live.** `s3://noaa-rrfs-ops-pds`
+  began ingesting, backfilling what NOMADS still held and running in near real time
+  since. Registered CC0-1.0 as an `[Operational]` dataset.
 - **2026-08-12, 12 UTC — parallel feed live on NOMADS; AWS prototype frozen.** The
   pre-implementation real-time feed began at the 12 UTC cycle at
-  `/pub/data/nccf/com/rrfs/para/`, one day later than the "on or about August 11" date
-  in SCN 26-48. The `s3://noaa-rrfs-pds` prototype bucket stopped at the 11 UTC cycle
-  the same day. NOMADS is now the sole distribution channel; see
-  [Data availability](#data-availability) for what the move costs.
+  `/pub/data/nccf/com/rrfs/para/`, one day later than the "on or about August 11" date in
+  SCN 26-48 — a date NOAA has since corrected to August 12 in its AWS Open Data Registry
+  entry, though not in the SCN itself. The `s3://noaa-rrfs-pds` prototype bucket stopped
+  at the 11 UTC cycle the same day, leaving NOMADS briefly as the sole channel.
 - Proposal for legacy model retirement published in NWS Public Information Statement 25-41 (June 26, 2025), with a public comment period through July 26, 2025.
 - Originally targeted for operational implementation in early 2026; implementation slipped through pre-operational evaluation.
-- **NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, 2026)** scheduled RRFS and REFS operational implementation for October 6, 2026 at 12 UTC, with retirement of NAM, HREF, SREF, and HiresW (except Guam) on the same day (terminations under companion SCN 26-47). Per the SCN, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. The July 6, 2026 update is the second slip, moving the date from August 31, 2026 to October 6, 2026.
-- Pre-implementation parallel data feed expected on NOMADS on or about August 11, 2026.
+- **NWS Service Change Notice 26-48 (May 12, 2026; updated July 6 and August 24, 2026)** scheduled RRFS and REFS operational implementation for October 6, 2026 at 12 UTC, with retirement of NAM, HREF, SREF, and HiresW (except Guam) on the same day (terminations under companion SCN 26-47). Per the SCN, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. The July 6, 2026 update is the second slip, moving the date from August 31, 2026 to October 6, 2026.
 - RRFSv2 (based on the MPAS dynamical core) is under development and will drive the next phase of legacy model retirements (HRRR, RAP).
 
 ---
@@ -322,11 +363,35 @@ is not a substitute for either full channel.
   Whatever each run had already written before the feed was switched on at 13:49 UTC was
   never copied across. Anyone who enumerated the tree on day one and hard-coded the
   observed start offsets will break on the next cycle.
+- **Three points in SCN 26-48 disagree with the data, and survived the AAC update.**
+  Recorded here because the catalog now differs from the current authority, not a
+  superseded one:
+  - The SCN says the parallel feed began "on or about August 11, 2026." It began at the
+    12 UTC cycle on **August 12** — observed directly, and since corrected by NOAA in its
+    AWS Open Data Registry entry, which now reads August 12th. The SCN and the registry
+    disagree with each other.
+  - The SCN describes the fire-weather output as covering "a 5 x 5-degree rotated
+    latitude longitude region." It is Lambert conformal at 1270 m, roughly 663 × 495 km.
+    See [What area it covers](#what-area-it-covers).
+  - The SCN gives the 84 h / 18 h cycle split without noting that sixteen of the
+    twenty-four cycles publish no `prslev` or `2dfld` files at all. See
+    [Output organization](#output-organization).
+- **The `.idx` sidecars make grid verification cheap.** Sampling grid geometry across
+  cycles previously meant downloading whole files — 75–90 MB for a fire-weather step,
+  ~580 MB for a CONUS `prslev` step. With sidecars, the record-1 byte range comes from
+  line 2's offset field, so `curl -r 0-<offset-1>` pulls a few hundred KB and ecCodes
+  reads the full grid definition from it. This is how the fire-weather domain alternation
+  was established. Note that NOMADS occasionally serves an HTML error page in place of the
+  sidecar, so sanitize the offset before using it.
 
 ---
 
 ## Official documentation
-- NWS Service Change Notice 26-48 (RRFS and REFS implementation; May 12, 2026, updated July 6, 2026):  
+- NWS Service Change Notice 26-48, **AAC update of August 24, 2026** — current version;
+  supersedes AAB. Documents the `.idx` sidecars and the NOMADS BUFR files. Unreliable on
+  three points verified against the data — see [Notes](#notes):  
+  https://www.weather.gov/media/notification/pdf_2026/scn26-48_updated_RRFS_and_REFS_Implementation_aac.pdf
+- NWS Service Change Notice 26-48 (AAB update, July 6, 2026 — superseded):  
   https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf
 - NWS Service Change Notice 26-47 (termination of NAM/SREF/HREF/HiresW/NAM MOS; updated July 6, 2026):  
   https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf
@@ -336,7 +401,9 @@ is not a substitute for either full channel.
   https://www.nco.ncep.noaa.gov/pmb/products/rrfs
 - RRFS output grids:  
   https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/rrfs_grids.txt
-- NOAA RRFS prototype on AWS:  
+- NOAA RRFS/REFS [Operational] on AWS (current bucket, CC0-1.0):  
+  https://registry.opendata.aws/noaa-rrfs-ops/
+- NOAA RRFS [Prototype] on AWS (frozen bucket, historical):  
   https://registry.opendata.aws/noaa-rrfs/
 - RRFS/REFS evaluation page (EMC):  
   https://www.emc.ncep.noaa.gov/users/meg/rrfsv1/index.html
