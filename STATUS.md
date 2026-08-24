@@ -39,8 +39,8 @@ NOAA's next-generation convection-allowing system for North America is now forma
 **August 12, 2026**, one day after the SCN's "on or about August 11" date, and the AWS
 prototype bucket stopped updating the same day (see *Format and distribution changes*). **See [UFS.md](./UFS.md) for the full UFS context including the wave of retirements that occurs on the same day.**
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
-- **Authority:** NWS SCN 26-48 (RRFS/REFS implementation) + companion SCN 26-47 (terminations), both updated July 6, 2026 (originally May 12, 2026)
-- **Verification note:** Originally targeted early 2026, then August 31, 2026; slipped again to October 6, 2026 in the July 6, 2026 update (AAB), which also decoupled the real-time parallel feed to on or about August 11, 2026. The October 6 date is subject to the standard CWD/ECE contingency — if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. NBM v5.0 was deferred under exactly this provision earlier in 2026, so the contingency is not theoretical.
+- **Authority:** NWS SCN 26-48 (RRFS/REFS implementation) + companion SCN 26-47 (terminations); SCN 26-48 updated July 6 and August 24, 2026 (originally May 12, 2026)
+- **Verification note:** Originally targeted early 2026, then August 31, 2026; slipped again to October 6, 2026 in the July 6, 2026 update (AAB), which also decoupled the real-time parallel feed to on or about August 11, 2026. **The August 24, 2026 update (AAC) did not change the implementation date** — its scope was limited to documenting the `.idx` and BUFR files added to NOMADS. The October 6 date is subject to the standard CWD/ECE contingency — if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. NBM v5.0 was deferred under exactly this provision earlier in 2026, so the contingency is not theoretical.
 
 ### HARMONIE-AROME Cy43 → Cy46 (KNMI / UWC-West) — planned November 2026
 UWC-West's shared HARMONIE-AROME configuration moves from Cycle 43 to Cycle 46, and
@@ -140,29 +140,33 @@ Experimental productionization of NVIDIA's FourCastNet architecture using Spheri
 The pre-implementation parallel feed began at the 12 UTC cycle on **August 12, 2026** on
 NOMADS at `/pub/data/nccf/com/rrfs/para/` and `/pub/data/nccf/com/refs/para/`, one day
 later than the "on or about August 11" date in SCN 26-48 — a date NOAA subsequently
-corrected to August 12 in its own registry entry. The `s3://noaa-rrfs-pds` prototype
-bucket stopped the same day, briefly leaving NOMADS as the only channel. On **August 13**
-NODD stood up a replacement bucket, **`s3://noaa-rrfs-ops-pds`**, carrying RRFS, REFS and
-fire-weather output under a flat `{rrfs|refs|firewx}.YYYYMMDD/` layout mirroring NOMADS.
-**Between August 15 and 21, NOMADS began publishing `.idx` sidecars**, closing the last
-capability gap between the channels.
+corrected to August 12 in its AWS Open Data Registry entry, though **not** in the SCN
+itself, which still carries August 11 as of the AAC update. The `s3://noaa-rrfs-pds`
+prototype bucket stopped the same day, briefly leaving NOMADS as the only channel. On
+**August 13** NODD stood up a replacement bucket, **`s3://noaa-rrfs-ops-pds`** (CC0-1.0),
+carrying RRFS, REFS and fire-weather output under a flat `{rrfs|refs|firewx}.YYYYMMDD/`
+layout mirroring NOMADS. NOMADS then closed the gap in two steps: **`.idx` sidecars
+between August 15 and 21**, and **BUFR soundings at the August 23 18 UTC cycle**.
 
-Both channels now carry byte-identical GRIB2 and byte-identical sidecars with complete
-coverage, and land within about a minute of each other. S3 remains preferable for
-anything older than 48 hours — NOMADS `para` retains two days while the bucket has kept
-every date since inception — and is the only channel carrying BUFR soundings. The bucket
-is registered as CC0-1.0. **Individual ensemble members and native-level output were
-never restored** and remain unavailable through any open channel.
+The two channels are now at full parity — 922 GRIB2 files, 922 sidecars and 2 BUFR files
+per synoptic cycle for RRFS, 1740 files and 1740 sidecars for REFS, all byte-identical,
+landing within about a minute of each other. Choose on retention: NOMADS `para` holds 48
+hours, the bucket has kept every date since inception. **Individual ensemble members and
+native-level output were never restored**; SCN 26-48 AAC confirms five members are
+produced but lists no dissemination path, so treat member output as not publicly
+available.
 
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
-- **Authority:** NWS SCN 26-48; AWS Open Data Registry entry `noaa-rrfs-ops`; direct verification of both channels
+- **Authority:** NWS SCN 26-48 AAC (August 24, 2026); AWS Open Data Registry entry `noaa-rrfs-ops`; direct verification of both channels
 - **Verification note:** Cutover boundary confirmed by object listing on both sides — last
   prototype object 2026-08-12T12:58:58Z, first NOMADS files 13:49 UTC, first
-  replacement-bucket object 2026-08-13T21:32:04Z. Byte-identity of GRIB2 and `.idx`
-  confirmed by MD5. Sidecar coverage confirmed set-symmetric on 2026-08-22 (922/922 RRFS,
-  1740/1740 REFS). The `.idx` addition cannot be dated more precisely than
-  August 15–21 because NOMADS retains only two days. Post-implementation paths from
-  October 6, 2026 remain `/rrfs/prod/` and `/refs/prod/`.
+  replacement-bucket object 2026-08-13T21:32:04Z. Byte-identity of GRIB2, `.idx` and BUFR
+  confirmed by MD5. Sidecar coverage set-symmetric on 2026-08-22 and 2026-08-24. BUFR
+  first cycle 2026-08-23 18 UTC, synoptic cycles only. The `.idx` addition cannot be dated
+  more precisely than August 15–21 because NOMADS retains only two days.
+  Post-implementation paths from October 6, 2026 are `/rrfs/prod/` and `/refs/prod/`; the
+  SCN also references versioned `rrfs/v1.0` and `refs/v1.0` COM paths whose public
+  browsability is unconfirmed.
 
 ### IFS Cycle 50r2 — tentative Q4 2026
 Complete migration of ECMWF IFS to GRIB2-only parameter representation. Affects Open Data users directly. Legacy GRIB1-style parameter references move to GRIB2-native identifiers; CCSDS compression required.
