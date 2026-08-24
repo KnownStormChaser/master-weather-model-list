@@ -5,7 +5,7 @@ The RRFS Ensemble Forecast System (REFS) is the **ensemble component** of NOAA's
 
 REFS is a regional, convection-allowing ensemble designed to provide probabilistic short-range forecast guidance for high-impact weather across North America. It is built on the UFS framework and is intended to replace the legacy HREF, SREF, and NARRE ensemble systems.
 
-REFS is scheduled to become operational on **October 6, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed is expected on NOMADS on or about **August 11, 2026**.
+REFS is scheduled to become operational on **October 6, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6 and August 24, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination.
 
 ---
 
@@ -68,10 +68,11 @@ contributing system are used, giving:
 > ensemble members, doubled by 6 h time-lagging, plus two HRRR members for CONUS/AK)
 > reproduces both numbers exactly.
 
-> ⚠️ **`numberOfForecastsInEnsemble` is absent from the probabilistic products.** It is
-> encoded on `mean` and `sprd` but is undefined on every record of `prob`, `eas` and
-> `ffri` (183, 29 and 10 records checked). Do not use this key to size member arrays or
-> to detect domain — it is only present on the two products that happen not to need it.
+> ⚠️ **`numberOfForecastsInEnsemble` is absent from the probabilistic products** — it is
+> undefined on every record of `prob`, `eas` and `ffri`. The same value is carried there
+> under a different key; see
+> [Data availability](#data-availability) for how to read it, including straight from the
+> `.idx` sidecar.
 
 For each REFS cycle, the membership is drawn from:
 
@@ -98,7 +99,8 @@ REFS provides the primary short-range, convection-allowing probabilistic guidanc
 
 ### Ensemble product types
 REFS ensemble products are published under `refs.YYYYMMDD/CC/ensprod/` with the file
-pattern `refs.tCCz.${type}.fFF.${dom}.grib2`, where `dom` is one of `conus`, `ak`, `hi`,
+pattern `refs.tCCz.${type}.fFF.${dom}.grib2`, each accompanied by a matching
+`.grib2.idx` sidecar, where `dom` is one of `conus`, `ak`, `hi`,
 `pr`. Lead time is a **two-digit** token (`f09`) — the deterministic
 [RRFS](../../../nwp_models/regional/usa/rrfs.md) uses three digits (`f009`). Sharing a
 lead-time formatter between the two systems is the most common way to generate 404s
@@ -138,6 +140,24 @@ centre `kwbc`, `tablesVersion` 2, `localTablesVersion` 1,
 
 Every product runs **f01–f60 hourly** on every domain it covers.
 
+#### Parameters that stock ecCodes cannot name
+
+Decoding with ecCodes 2.48.0 leaves a number of records with `shortName = unknown`. Two
+distinct causes, and the first is the surprising one:
+
+| discipline/category/number | Meaning | Where it appears |
+|---|---|---|
+| **0/1/29** | **Total snowfall — a standard WMO number** | `mean` (4 records, 1/3/6/12 h), `sprd`, `prob` (14), `eas` (7) |
+| 0/2/220, 0/6/202, 0/7/199, 0/16/198, 0/19/235 | NCEP local-table numbers (≥192) | `mean`, `pmmn`, `prob` |
+| 0/16/3, 0/16/5 | Forecast-radar-imagery category | `pmmn`, `prob` |
+
+The local-table numbers are expected — the files declare `localTablesVersion = 1` and
+resolving them requires NCEP's tables. **Total snowfall is not**: 0/1/29 is a standard
+WMO entry that ecCodes 2.48.0 still fails to name, and it is the parameter carrying every
+snow product in `eas` and a substantial share of `prob`. Anyone filtering REFS by
+`shortName` will silently drop all snowfall guidance. Filter on the
+discipline/category/number triplet instead.
+
 Full descriptions of variables and encoding are at
 https://www.nco.ncep.noaa.gov/pmb/products/refs.
 
@@ -175,20 +195,38 @@ REFS shares the deterministic
 [RRFS](../../../nwp_models/regional/usa/rrfs.md#data-availability) bucket rather than
 having its own — there is no `noaa-refs-ops-pds` (404). Both channels use the
 **`ensprod/`** subdirectory, so the `enspost/` ÷ `ensprod/` discrepancy that existed on
-the old prototype is gone; the naming is now consistent everywhere. A synoptic cycle is
-1740 GRIB2 files — 7 product types × 4 domains × 60 lead times, plus `ffri` on CONUS —
-with a matching `.idx` for each on S3.
+the old prototype is gone; the naming is now consistent everywhere.
 
-Files are **byte-identical** between the two channels (MD5-verified on
-`refs.t12z.avrg.f12.conus.grib2`), and both now publish `.idx` sidecars — 1740 GRIB2 files
-and 1740 matching sidecars per synoptic cycle in each. The sidecars are themselves
-byte-identical across channels.
+A synoptic cycle is **1740 GRIB2 files and 1740 `.idx` sidecars** on each channel —
+7 product types × 4 domains × 60 lead times, plus `ffri` on CONUS. Verified set-symmetric
+on 2026-08-22. Both the GRIB2 files and the sidecars are **byte-identical** between
+channels (MD5-verified on `refs.t12z.avrg.f12.conus.grib2` and its sidecar).
 
 Indexing matters more for REFS than for the deterministic model: a CONUS `prob` step
 carries 183 records at ~68 MB, so a full f01–f60 series is roughly 4 GB per cycle per
 domain for that product type alone. Either channel now supports pulling a single threshold
 field. **Prefer S3 for anything older than 48 hours**, since NOMADS `para` retains only
-two days.
+two days while the bucket has kept every date since it came up.
+
+> ⚠️ **Individual members are produced but not disseminated, and this now looks
+> permanent.** The old prototype bucket carried the five RRFS ensemble members under
+> `rrfs_a/rrfsens.YYYYMMDD/CC/m001…m005`, each with `prslev` (24 steps) and `2dfld` (61
+> steps) on the CONUS, Alaska, Hawaii, Puerto Rico and North America grids. Nothing in
+> `s3://noaa-rrfs-ops-pds` replaces them — no `rrfsens` prefix, no `m0*` or `mem*` keys —
+> and NOMADS never carried them. **Raw member output has had no open channel since
+> 2026-08-12.**
+>
+> SCN 26-48 AAC (2026-08-24) confirms the members exist — five, running to 60 h at the
+> 00/06/12/18 UTC cycles, over the North America domain, with perturbed initial
+> conditions, lateral boundary conditions and physics — and then gives output paths for
+> the deterministic system and the REFS `ensprod` products only. No member path is
+> listed. Treat member output as **not publicly available at implementation** unless a
+> later SCN says otherwise.
+>
+> The practical consequence falls on anyone doing their own post-processing — custom
+> percentiles, neighbourhood probabilities at non-standard thresholds, member clustering,
+> or anything outside the eight `ensprod` product types. Those users are limited to the
+> combined products.
 
 > **Ensemble size is encoded, but under two different keys depending on product.** On
 > `mean` and `sprd` it is `numberOfForecastsInEnsemble`, which reads 14 on CONUS and
@@ -210,16 +248,25 @@ two days.
 ---
 
 ## Status
+- **2026-08-24 — SCN 26-48 updated (AAC).** Documents `.idx` sidecars for all eight REFS
+  product types. Implementation date unchanged at October 6, 2026. Confirms the five RRFS
+  ensemble members but still gives no dissemination path for them.
+- **~2026-08-15 to 08-21 — `.idx` sidecars added to NOMADS.** Complete coverage, 1740 of
+  1740 files per synoptic cycle, byte-identical to the S3 sidecars.
+- **2026-08-13, ~21:30 UTC — NODD replacement bucket live.** `s3://noaa-rrfs-ops-pds`
+  carries REFS under `refs.YYYYMMDD/CC/ensprod/`, registered CC0-1.0. Combined products
+  only; no members.
 - **2026-08-12, 12 UTC — parallel feed live on NOMADS; AWS prototype frozen.** The
   pre-implementation real-time feed began at the 12 UTC cycle at
-  `/pub/data/nccf/com/refs/para/`, one day later than the "on or about August 11" date
-  in SCN 26-48. The prototype bucket stopped after the 06 UTC cycle. Combined `ensprod`
-  products carried across unchanged; individual members did not.
+  `/pub/data/nccf/com/refs/para/`, one day later than the "on or about August 11" date in
+  SCN 26-48 — a date NOAA has since corrected to August 12 in its AWS Open Data Registry
+  entry, though not in the SCN itself. The prototype bucket stopped after the 06 UTC
+  cycle. Combined `ensprod` products carried across unchanged; individual members did
+  not.
 - Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48.
 - Targeted for operational implementation alongside the deterministic RRFS, originally "early 2026"; slipped through pre-operational evaluation.
-- SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to **October 6, 2026 at 12 UTC** and setting the real-time parallel feed to begin on or about August 11, 2026.
+- SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to **October 6, 2026 at 12 UTC** and setting the real-time parallel feed to begin on or about August 11, 2026. A further update on August 24, 2026 (AAC) documented the `.idx` and BUFR files added to NOMADS, without changing the implementation date.
 - **NWS Service Change Notice 26-48 (May 12, 2026)** scheduled REFS operational implementation for August 31, 2026 at 12 UTC, with HREF, SREF, and NARRE retiring on the same day. Per SCN 26-48, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday.
-- Pre-implementation parallel data feed expected on NOMADS on or about July 7, 2026.
 - 2025 NOAA Hazardous Weather Testbed Spring Forecasting Experiment evaluations indicated REFS performed competitively with HREF for Day 1 and Day 2 forecasts, and slightly better for some objective metrics including deep convection (>40 dBZ) prediction. This supported the decision to proceed with HREF→REFS replacement.
 
 ---
@@ -250,7 +297,11 @@ two days.
 ---
 
 ## Official documentation
-- NWS Service Change Notice 26-48 (RRFS and REFS implementation, May 12, 2026):  
+- NWS Service Change Notice 26-48, **AAC update of August 24, 2026** — current version.
+  Documents `.idx` sidecars for all eight REFS product types; confirms the five RRFS
+  ensemble members but lists no dissemination path for them:  
+  https://www.weather.gov/media/notification/pdf_2026/scn26-48_updated_RRFS_and_REFS_Implementation_aac.pdf
+- NWS Service Change Notice 26-48 (original, May 12, 2026 — superseded):  
   https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf
 - NWS Public Information Statement 25-41 (legacy model retirement proposal, June 26, 2025):  
   https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf
@@ -260,5 +311,7 @@ two days.
   https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/href_product_changes.txt
 - NARRE-to-REFS product changes:  
   https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/narre_replacement.txt
-- NOAA RRFS/REFS prototype on AWS:  
+- NOAA RRFS/REFS [Operational] on AWS (current bucket, CC0-1.0):  
+  https://registry.opendata.aws/noaa-rrfs-ops/
+- NOAA RRFS [Prototype] on AWS (frozen bucket, historical):  
   https://registry.opendata.aws/noaa-rrfs/
