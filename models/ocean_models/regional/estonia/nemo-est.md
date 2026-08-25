@@ -47,7 +47,7 @@ The system is a standalone (forced) 3D hydrodynamic–sea-ice model: it provides
 ## Forcing
 - **Atmospheric forcing:** ECMWF meteorology (10 m winds `u10`/`v10`, wind speed, and surface wind stress `utau`/`vtau` are carried in the accompanying coordinate/surface file). Estonia is a full ECMWF member state and the suite runs on ECMWF HPC.
 - **River runoff:** Included — rivers are listed among the model's dynamic inputs; whether climatological or dynamic is not documented (TBD)
-- **Lateral boundary conditions:** Copernicus Marine operational Baltic Sea model (BAL MFC product), updated per cycle
+- **Lateral boundary conditions:** the Copernicus Marine Baltic Sea physics analysis and forecast — [BAL MFC-NEMO](../sweden/bal-mfc-nemo.md) (`BALTICSEA_ANALYSISFORECAST_PHY_003_006`), run at SMHI — updated per cycle
 - **Tidal forcing:** Not documented; the Baltic is microtidal, so tidal contribution is minor (TBD)
 - **Ice forcing or coupling:** Sea ice is modelled internally by the SI3 module (not externally forced)
 - **Initial conditions:** Operational restart chain (previous cycle's state), with ECMWF meteorology and Copernicus boundary conditions ingested at the start of each run. No independent data assimilation is documented for NEMO-EST itself (TBD)
@@ -55,7 +55,7 @@ The system is a standalone (forced) 3D hydrodynamic–sea-ice model: it provides
 ---
 
 ## Coupling
-- **Standalone ocean physics + sea ice:** NEMO-EST is not two-way coupled to an atmospheric model. It receives ECMWF atmospheric fields as one-way surface forcing and Copernicus Baltic fields as lateral open-boundary conditions. Ocean and sea ice (OCE + SI3) are coupled internally within NEMO.
+- **Standalone ocean physics + sea ice:** NEMO-EST is not two-way coupled to an atmospheric model. It receives ECMWF atmospheric fields as one-way surface forcing and [BAL MFC-NEMO](../sweden/bal-mfc-nemo.md) fields as lateral open-boundary conditions. Ocean and sea ice (OCE + SI3) are coupled internally within NEMO.
 
 ---
 
