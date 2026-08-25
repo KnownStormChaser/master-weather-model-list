@@ -24,10 +24,10 @@ No meteorology background is required to use this repository.
 - **Storm surge and coastal water level models** (deterministic and ensemble)
 - **Tropical cyclone / hurricane models**
 - **Air quality and atmospheric composition models** (deterministic and ensemble)
+- **Hydrological models** (river discharge, runoff, and flood forecasting)
+- **Fire danger models** (fire danger indices and fire behaviour)
+- **Space weather models** (Earth-referenced ionosphere, thermosphere, aurora, and ground-level geomagnetic effects)
 - **Long-range forecast systems** (sub-seasonal, seasonal, and interannual prediction)
-- **Hydrological models** (`models/hydrological_models/`) — river discharge, runoff, and flood forecast systems. These carry two geometries: a land surface grid where water is generated and a routing network where it moves. Reach-based vector output on a river network is admitted as a documented exception to the gridded-data rule, paralleling the station time series exception for storm surge.
-- **Fire danger models** (`models/fire_danger_models/`) — fire danger index and fire behaviour forecast systems. Named for danger ratings rather than fire weather, because the outputs are indices computed from weather rather than weather fields, and because smoke dispersion models live under `models/air_quality_models/`.
-- **Space weather models** (`models/space_weather_models/`) — Earth-referenced upper atmosphere forecast systems: ionosphere, thermosphere, aurora, and ground-level geomagnetic and geoelectric effects. Heliospheric models are out of scope: they grid a volume in heliocentric coordinates in which Earth is a single moving point, and produce no terrestrial grid.
 - **AI-based and hybrid physics–AI forecast systems**
 - **Operational weather satellites** with openly distributed raw data (Level 1 calibrated radiances, Level 2 retrievals)
 - **Operational weather radar networks and composites** with openly distributed gridded data (e.g., reflectivity mosaics and radar-derived precipitation estimation); rendered radar imagery and viewer-only web loops remain out of scope
