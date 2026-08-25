@@ -13,7 +13,7 @@ Only the **deterministic** system's ocean/ice products are published (the couple
 - **Production Unit:** UK Met Office
 - **Country:** United Kingdom
 - **Programme or coordinating body:** Met Office operational suite (Global Coupled Atmosphere-Land-Ocean-Ice system); ocean/ice component is FOAM-GC
-- **Role in any larger system:** Ocean–ice component of the Met Office global coupled NWP system; provides the interactive ocean beneath the deterministic and ensemble atmospheric forecasts. The global ocean state is also the parent for regional shelf downscalings (e.g. AMM15/NWS — parent configuration worth confirming; see cross-references).
+- **Role in any larger system:** Ocean–ice component of the Met Office global coupled NWP system; provides the interactive ocean beneath the deterministic and ensemble atmospheric forecasts. This is **not** the parent of the Met Office NWS shelf downscalings — see *Relationship to other ocean products*.
 
 ---
 
@@ -113,7 +113,7 @@ Daily-mean 3D fields, daily-mean 2D surface/ice fields, and hourly instantaneous
 
 ### Companion products from same operator
 - **[UK Met Office Global Wave Model (GloWave)](../../../wave_models/global/uk/ukmo-wave.md)** — global wave companion, same Unified Model atmospheric forcing lineage.
-- **[Met Office NWS Ocean / AMM15 (FOAM-NWSO)](../../regional/uk/amm15-nws.md)** — the regional North-West European Shelf physics downscaling; takes lateral boundary conditions from a Met Office global FOAM ocean (exact parent configuration relative to FOAM-GC worth confirming).
+- **[Met Office NWS Ocean / AMM15 (FOAM-NWSO)](../../regional/uk/amm15-nws.md)** and **[AMM7](../../regional/uk/amm7-nws-lr.md)** — the regional North-West European Shelf physics downscalings. **Neither takes its boundaries from this product.** Both NWS PUMs name the Met Office **Operational ORCA12** forecast implementation (1/12°) as the Atlantic boundary source; FOAM-GC is **ORCA025** (1/4°). Same operator, same FOAM lineage, different configuration. **The ORCA12 system is not currently documented in this repository** — a genuine gap, and the natural next global ocean entry to add.
 - Atmospheric siblings in the same coupled system: **[Met Office Global (deterministic)](../../../nwp_models/global/uk/ukmo-global.md)** and **[MOGREPS-G (ensemble)](../../../ensemble_models/global/uk/mogreps-g.md)**.
 
 ### Peer global ocean physics systems
