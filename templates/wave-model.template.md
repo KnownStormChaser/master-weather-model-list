@@ -75,6 +75,25 @@ Wave forecasts including (as available):
 
 ---
 
+## Relationship to other entries (optional)
+
+<Include only where the relationship is structural — shared run, coupling, nesting,
+or distribution variant. Do NOT enumerate a programme's portfolio; link the relevant
+index instead. Do NOT restate siblings' resolution or model core; that lives in the
+index and drifts if duplicated. Never make completeness claims ("these six form the
+full set"). Every cross-link must be reciprocal.>
+
+- **Same run, different distribution:** <another entry serving the same operational
+  output under a different identifier, licence, or grid. State what differs, and flag
+  explicitly if the identity is unconfirmed.>
+- **Coupled counterpart:** <the physics, wave, or ice half of the same coupled system.>
+- **Parent / nest:** <where lateral boundaries come from; which entries nest inside this one.>
+- **Which to use when:** <one or two lines, only where domains genuinely overlap.>
+
+<Omit any slot that doesn't apply. Omit the whole section if none do.>
+
+---
+
 ## Notes
 - <Any quirks: regional domains, coastal grids, multiple nested products, public subset vs full ops.>
 - <Coupling and family relationships: two-way wave–ocean coupling, parent global model, regional nests, or distribution variants of the same core model (e.g., a Copernicus Marine distribution vs the operator's own distribution).>
