@@ -49,6 +49,7 @@ Southern extent ~41.5°N at the corners, reaching the pole in the interior — c
 - **Projected extent:** `x` −3600 km → +3800 km; `y` −4300 km → +2800 km
 - **Georeferencing:** 2-D `latitude` / `longitude` auxiliary variables
 - **Bathymetry field:** `model_depth` (`sea_floor_depth_below_sea_level`)
+> **The ARC MFC operates two grids, not one.** This product is on the 6.25 km grid (1185 × 1137). [ARCWAM](../../../wave_models/regional/norway/arcwam.md), [TOPAZ6](../../../storm_surge_models/regional/norway/topaz6.md), and the neXtSIM-F sea ice product (`ARCTIC_ANALYSISFORECAST_PHY_ICE_002_011`) are all on a common **3 km grid of 2467 × 2367** — live-verified. Those three combine without regridding; this product does not combine with any of them without it.
 
 > **The `x`/`y` axis units are `"100  km"`** — literally, with a double space, not metres. Values run −36.0 → 38.0 and −43.0 → 28.0 with 0.0625 spacing. Multiply by 100,000 to get metres before applying the proj4 string. Code that assumes CF projection coordinates are in metres will place the grid 100,000× too small. The PUM notes that ArcGIS and QGIS users must convert.
 
@@ -250,7 +251,9 @@ This is by far the longest latency of any MET Norway marine product in this repo
 - **Downstream nesting:** [Barents-2.5km EPS](./barents-25km-eps.md) weakly nudges all 24 of its members toward this system, inheriting observational constraint indirectly rather than assimilating anything itself.
 
 - **Deliberate overlap with sibling ARC MFC products.** The PUM is unusually explicit that variables are duplicated across the Arctic portfolio, and states which product to prefer:
-  - **Surface currents and sea surface height** are duplicated in **TOPAZ6** (`ARCTIC_ANALYSISFORECAST_PHY_TIDE_002_015`), a 3 km HYCOM system with tides and atmospheric pressure at 15-minute output. The operator expects TOPAZ6 to be better near coasts and TOPAZ5 better in the open ocean, where data assimilation helps. MET Norway intends to nudge TOPAZ6 toward TOPAZ5.
+    - **Surface currents and sea surface height** are duplicated in **[TOPAZ6](../../../storm_surge_models/regional/norway/topaz6.md)** (`ARCTIC_ANALYSISFORECAST_PHY_TIDE_002_015`), a 3 km HYCOM system with 36 FES2014 tidal constituents and atmospheric pressure, at 15-minute output. The operator expects TOPAZ6 to be better near coasts and TOPAZ5 better in the open ocean, where data assimilation helps; **MET Norway intends to nudge TOPAZ6 toward TOPAZ5 in November 2026**. Two differences make the duplicated fields non-interchangeable rather than merely differently-resolved:
+    - **TOPAZ6 includes the inverse barometer effect; this product excludes it** (see *Notes*). The sea level fields differ systematically for that reason alone.
+    - **TOPAZ6's surface currents have included Stokes drift since June 2024**, making them total rather than Eulerian, while retaining the Eulerian CF standard name. This product's currents are Eulerian. Comparing the two is comparing different quantities.
   - **Sea ice variables** are duplicated in **neXtSIM-F** (`ARCTIC_ANALYSISFORECAST_PHY_ICE_002_011`). Users wanting ocean–ice consistency are directed here; users wanting more accurate ice drift are directed to neXtSIM-F. MET Norway intends to close the gap by coupling neXtSIM to HYCOM.
   - **Biogeochemistry** (`ARCTIC_ANALYSISFORECAST_BGC_002_004`) runs inside this system's forecast, but on **member 001 only** rather than the ensemble mean, for performance reasons. Out of scope for this repository, but the asymmetry matters: the BGC forecast is not consistent with the published physics ensemble mean.
 
