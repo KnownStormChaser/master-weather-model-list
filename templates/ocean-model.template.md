@@ -131,6 +131,25 @@
 
 ---
 
+## Relationship to other entries (optional)
+
+<Include only where the relationship is structural — shared run, coupling, nesting,
+or distribution variant. Do NOT enumerate a programme's portfolio; link the relevant
+index instead. Do NOT restate siblings' resolution or model core; that lives in the
+index and drifts if duplicated. Never make completeness claims ("these six form the
+full set"). Every cross-link must be reciprocal.>
+
+- **Same run, different distribution:** <another entry serving the same operational
+  output under a different identifier, licence, or grid. State what differs, and flag
+  explicitly if the identity is unconfirmed.>
+- **Coupled counterpart:** <the physics, wave, or ice half of the same coupled system.>
+- **Parent / nest:** <where lateral boundaries come from; which entries nest inside this one.>
+- **Which to use when:** <one or two lines, only where domains genuinely overlap.>
+
+<Omit any slot that doesn't apply. Omit the whole section if none do.>
+
+---
+
 ## Version history
 
 [Document major operational changes. Ocean physics systems often have important upgrades to model resolution, vertical levels, DA scheme, and assimilated observations. Match the level of detail you've used in the wave entries.]
