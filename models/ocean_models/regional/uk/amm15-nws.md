@@ -81,7 +81,9 @@ The domain deliberately extends beyond the continental shelf so that the model's
 
 The wave counterpart is **[AMM15-WW3](../../../wave_models/regional/uk/amm15-ww3-uk.md)**, whose native grid is a Spherical Multiple Cell grid at 3–1.5 km with sub-grid blocking cells for islands and headlands (Chawla and Tolman 2008), delivered on this product's regular grid. The two products are distributed together on AWS and **share the same static bathymetry, land-sea mask, and MDT** on Copernicus.
 
-> **The two PUMs disagree on the wave model version.** `CMEMS-NWS-PUM-004-013` (physics, Issue 3.0, PDF created 2025-10-14) states **WAVEWATCH III v4.18**; `CMEMS-NWS-PUM-004-014` (wave, Issue 3.0, PDF created 2026-02-19) states **WAVEWATCH III v7.1**. Same issue number, same November 2025 approval date. The wave PUM is the later document, favouring v7.1 — but its own reference list cites **Tolman (2014), the v4.18 user manual**, so the inconsistency exists inside that document as well. **Flagged, not resolved.** The AMM15-WW3 entry currently records v7.1; both entries should carry this flag until the Met Office confirms.
+> **The physics PUM's wave model version is stale.** `CMEMS-NWS-PUM-004-013` (physics, Issue 3.0) states **WAVEWATCH III v4.18**; `CMEMS-NWS-PUM-004-014` (wave, Issue 3.0) states **v7.1**; and the wave PUM's own reference list cites Tolman (2014), the **v4.18** manual. Documentation alone cannot settle this.
+>
+> **The data does.** Live AWS wave files stamp **`WAVEWATCH-III v7.12`** in their global attributes, as recorded in the [AMM15-WW3 entry](../../../wave_models/regional/uk/amm15-ww3-uk.md). Treat v7.12 as authoritative and the physics PUM's v4.18 as text carried forward from an earlier configuration. Another instance of live verification correcting current documentation.
 
 ---
 
@@ -197,7 +199,7 @@ Variable names (NetCDF), verified from live files on both channels. **The AWS di
 
 ## Relationship to other entries
 
-- **Coupled counterpart:** **[AMM15-WW3 (NWS wave)](../../../wave_models/regional/uk/amm15-ww3-uk.md)** — the wave half of the same coupled executable, on the same domain and delivery grid, distributed in the same AWS bucket and sharing the Copernicus static file set. The strongest companion link in the repository. Both products also share the same operator history (see *Version history*) and the same unresolved WAVEWATCH III version question (see *Coupling*).
+- **Coupled counterpart:** **[AMM15-WW3 (NWS wave)](../../../wave_models/regional/uk/amm15-ww3-uk.md)** — the wave half of the same coupled executable, on the same domain and delivery grid, distributed in the same AWS bucket and sharing the Copernicus static file set. The strongest companion link in the repository. Both products share the same operator history (see *Version history*), and the wave model version discrepancy between the two PUMs is resolved from AWS file metadata (see *Coupling*).
 
 - **Reciprocal boundary exchange with the Baltic.** This product takes its **Baltic** boundary (T, S, barotropic u and v) from **[BAL MFC-NEMO](../../regional/sweden/bal-mfc-nemo.md)** (`BALTICSEA_ANALYSISFORECAST_PHY_003_006`); that product in turn takes its **western** boundary from this one, at Orkney–Norway and the English Channel. **The two feed each other at their shared boundary.** Neither PUM mentions the other direction — it only surfaces from reading both. This is a mutual dependency, not a nesting hierarchy, so neither product is the other's parent.
 
