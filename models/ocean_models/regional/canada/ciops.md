@@ -18,7 +18,7 @@ The current operational version of both systems is **2.4.0**, implemented 14 Apr
 - **Country:** Canada
 - **Programme:** MSC Open Data
 - **Operational since:** 1 December 2021 (v2.0.0, when CIOPS-East and CIOPS-West moved from experimental to operational)
-- **Role in any larger system:** terminal — CIOPS feeds no downstream ECCC ocean system
+- **Role in any larger system:** terminal within ECCC — CIOPS feeds no downstream ECCC ocean system. **CIOPS-East is, however, redistributed externally**: the Copernicus Marine COLAB-MFC reformats it as `NWATL_ANALYSISFORECAST_PHY_ICE_017_001`, documented at [ciops-east-copernicus.md](./ciops-east-copernicus.md).
 - **Contact stamped in files:** `production-info@ec.gc.ca`
 
 ---
@@ -232,6 +232,8 @@ Both v2.3.0 factsheets state the upgrade was "from version 2.2.0 to 2.3.0", but 
 - **Changelog typographical errors.** The 14 April 2026 heading reads "CIOPS-Eat", and the 11 June 2024 section refers to "CIOPS-Eest". Cosmetic, but they defeat text search for "CIOPS-East" on that page.
 
 - **The AI question reaches CIOPS by two routes, and neither is documented.** CIOPS takes atmospheric forcing from HRDPS blended with GDPS-G0/G1. GDPS moved to **10.0.0** on 26 May 2026 with GEML spectral nudging, and HRDPS is itself piloted by GDPS-G0. So AI-derived information could enter CIOPS both directly through the GDPS blend and indirectly through HRDPS's pilot — and, further upstream, through [RIOPS](./riops.md) at the lateral boundaries. **None of this is documented, and the CIOPS files stamp only their own version, so there is no forensic route from the data.** **TBD:** confirm with CCMEP. See the corresponding flags in the [GIOPS](../../global/canada/giops.md) and [RIOPS](./riops.md) entries, and the open scope question about whether these systems belong in [`AI_MODELS.md`](../../../../AI_MODELS.md).
+
+- **CIOPS-East is redistributed through Copernicus Marine, one version behind.** The COLAB-MFC product `NWATL_ANALYSISFORECAST_PHY_ICE_017_001` is a reformatting of CIOPS-East by NOW Systems (Spain), confirmed from its `source` attribute. Its files stamp **`CIOPSE_230_F`** — v2.3.0 — while this distribution has stamped `240` since 14 April 2026. Since that upgrade is documented as computational only, the scientific content should be identical, but the Copernicus copy went live in July 2026 still carrying the older stamp. The redistribution also carries a **continuous archive from 2025-05-21** against this channel's 30-day retention, so the two are complementary rather than one superseding the other. See [ciops-east-copernicus.md](./ciops-east-copernicus.md).
 
 - **Volume is concentrated in one domain.** CIOPS-East alone is 80% of the family's ~105 GiB/day, and its two 3D velocity files account for roughly two-thirds of that. Users needing surface fields only should filter on `_Sfc_` and `DBS-0.5m`, which reduces East from ~21 GiB to under 0.4 GiB per cycle.
 
