@@ -3,7 +3,7 @@
 ## What this model is
 This entry documents the **Finnish Meteorological Institute (FMI) distribution of HARMONIE (MEPS)** — the MetCoOp Ensemble Prediction System, a high-resolution, convection-permitting regional NWP system based on HARMONIE-AROME.
 
-The underlying model is the **same MetCoOp production** documented in the [MEPS](../norway/meps.md) entry: FMI is a co-producing member of MetCoOp (one of the three HPC platforms that runs the MEPS ensemble is FMI's "Vinha") and redistributes the MEPS output through its own Open Data service. What differs is the **access mechanism** (an FMI WFS stored query plus a binary download service) and the **distributed subset** (FMI currently serves surface-level data only). This is not a separate forecast — it is the MetCoOp MEPS run repackaged and delivered through FMI's infrastructure.
+The underlying model is the **same MetCoOp production** documented in the [MEPS](../norway/meps.md) entry: FMI is a co-producing member of MetCoOp (one of the three HPC platforms that runs the MEPS ensemble is FMI's "Vinha") and redistributes the MEPS output through its own Open Data service. What differs is the **access mechanism** (an FMI WFS stored query plus a binary download service) and the **distributed subset** — deterministic fields only, served at the surface, on nine isobaric levels, and on model levels 12–65 at a 3×-thinned horizontal resolution, with no ensemble members, cross-sections, or archive. This is not a separate forecast — it is the MetCoOp MEPS run repackaged and delivered through FMI's infrastructure.
 
 ---
 
@@ -73,7 +73,7 @@ Nine isobaric levels (1000, 925, 850, 700, 600, 500, 400, 300, 250 hPa) on the f
 ### Model (hybrid) levels — `harmonie_scandinavia_hybrid`
 Model levels **12–65** (54 of the 65 production levels) on a 3×-thinned 316 × 356 / ~7.5 km grid. Parameters: `Pressure`, `GeomHeight`, `Temperature`, `Humidity`, `WindDirection`, `WindSpeedMS`, `WindUMS`, `WindVMS`, `VerticalVelocityMMS` (`wz`, m s⁻¹).
 
-For ensemble members, cross-sections, and the full untinned model-level structure, use the MET Norway THREDDS distribution documented in [MEPS](../norway/meps.md).
+For ensemble members, cross-sections, and the full unthinned model-level structure, use the MET Norway THREDDS distribution documented in [MEPS](../norway/meps.md).
 
 ### Duplicate stored-query namespace
 `fmi::forecast::meps::surface::grid`, `::pressure::grid`, and `::hybrid::grid` also exist and resolve to the **same three `harmonie_scandinavia_*` producers**. They are aliases, not separate products.
@@ -139,8 +139,10 @@ FMI and the community provide helper libraries for the open data interfaces:
 - **No FMI HARMONIE on AWS S3.** FMI mirrors only its SILAM atmospheric composition model and radar data to AWS Open Data; HARMONIE (MEPS) is **not** on S3 and must be accessed via the WFS / binary download routes above.
 - **No account required.** Unlike the Met Éireann distribution of the sibling UWC-West HARMONIE production (which requires free registration), FMI's open data needs no account — only acceptance of the CC BY 4.0 licence and adherence to the request limits.
 - **Companion suites.** MetCoOp also operates two related products built on the MEPS modelling grid: **MNWC** (a deterministic 12-hour nowcasting suite refreshed hourly, partly produced on FMI's Vinha HPC) and **MECaS** (a calibrated ensemble forecast of near-surface temperature, wind, and gusts). These are documented in the [MEPS](../norway/meps.md) entry's notes. FMI does not currently appear to redistribute MNWC or MECaS through this Open Data service.
+- **AI models over the same domain.** MET Norway runs [Bris](../../../ensemble_models/regional/norway/bris.md), a data-driven ensemble covering essentially the MetCoOp domain (849 × 969 — the MEPS grid less a 50-point perimeter band, same Lambert conformal projection). It is trained on MEPS analyses and partly initialized from MEPS output, so it is not independent of the production documented here. **FMI does not redistribute Bris** — it is available only from MET Norway's THREDDS server, and only as NetCDF, so none of the FMI WFS access patterns or GRIB encoding caveats in this entry apply to it. FMI's own machine-learning work is not part of this Open Data forecast-model service.
 - **Relationship to siblings:**
   - [MEPS](../norway/meps.md) — the MET Norway distribution of the same MetCoOp production (full distribution; primary reference for model internals).
+  - [Bris](../../../ensemble_models/regional/norway/bris.md) — MET Norway's AI ensemble on effectively the same grid; see the note above.
   - [AROME-Arctic](../norway/arome-arctic.md) — MET Norway's deterministic Arctic-domain HARMONIE-AROME model.
   - [HARMONIE-AROME Ireland](../ireland/harmonie-arome-ireland.md), [HARMONIE (DMI)](../denmark/harmonie-dmi.md), and other ACCORD-consortium HARMONIE-AROME / AROME deployments share the same core model.
 - **Repository location:** Like the [MEPS](../norway/meps.md) entry, this documents an ensemble system but is filed under `nwp_models/regional/` for consistency with the existing MEPS entry. The same relocation consideration noted there applies here.
