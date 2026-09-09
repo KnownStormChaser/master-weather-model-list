@@ -12,7 +12,7 @@ Different meteorological centres are integrating AI into weather prediction in d
 
 1. **Standalone AI forecast models.** A trained neural network replaces the physics-based forecast integration entirely. The model starts from a physics-derived analysis (initial conditions) and rolls forward autoregressively using learned dynamics. *Examples: AIFS Single, AIGFS, GEML.*
 
-2. **AI-based ensembles.** Same as above, but producing ensemble members rather than a single forecast. Centres differ in how spread is generated: ECMWF's AIFS ENS is a single probabilistically-trained network that injects random noise during inference, while NOAA's AIGEFS runs members with different sets of learned model weights and inherits its initial-condition perturbations from GEFS. The two are not interchangeable in what their spread represents. *Examples: AIFS ENS, AIGEFS.*
+2. **AI-based ensembles.** Same as above, but producing ensemble members rather than a single forecast. Centres differ in how spread is generated: ECMWF's AIFS ENS is a single probabilistically-trained network that injects random noise during inference, while NOAA's AIGEFS runs members with different sets of learned model weights and inherits its initial-condition perturbations from GEFS. The two are not interchangeable in what their spread represents. MET Norway's Bris is a third case and a cautionary one — it publishes no deterministic or control member at all, and its spread-generation mechanism is not documented, so what its members represent cannot be established from published material. *Examples: AIFS ENS, AIGEFS, Bris.*
 
 3. **Hybrid physics–AI systems.** The physics-based model continues to run the forecast, but AI predictions guide or constrain parts of it — typically through spectral nudging toward AI-generated large-scale fields. *Examples: GDPS (ECCC, operational since v10.0.0 — physics forecast nudged toward the GEML AI model).*
 
@@ -119,9 +119,20 @@ These approaches reflect genuinely different theories about how AI should enter 
 
 ## Regional AI models
 
-Regional (limited-area) AI forecast systems. Unlike the global systems above, these cover a single national or continental domain, typically at convection-permitting resolution. This is a young category and still growing as centres extend AI methods to limited-area modelling.
+Regional AI forecast systems — those whose distributed output covers a single national or continental domain, typically at convection-permitting resolution. This is a young category and still growing as centres extend AI methods to limited-area modelling.
+
+Note that "regional" here describes what is published, not necessarily how the model is built. HRRR-Cast is a true limited-area emulator on the HRRR grid, while Bris is architecturally global — a stretched grid that is simply run at much finer resolution over its focus areas — and distributes only a high-resolution sub-domain. The two routes to a regional AI product are worth keeping distinct, since a stretched-grid system takes no lateral boundary conditions and has no parent model driving its edges.
 
 > **AICON-EU (DWD)** — operational since June 30, 2026, but **not catalogued here yet because it is not on Open Data**. DWD's first regional AI model: ICON-EU domain at ~6.5 km (R3B08 grid, DWD grid number 27), the same 13 reduced levels and twelve parameters as [AICON-Global](./models/nwp_models/global/germany/aicon-global.md), 3-hourly, 120 h at 00/06/12/18 UTC and 48 h at the intermediate cycles. Initialized from AICON-Global rather than from an analysis, using an embedded-grid approach in which the global forecast in and around the LAM domain feeds the regional model. No `aicon-eu` directory exists under `/weather/nwp/v1/m/` as of 2026-08-05; worth monitoring. A ~2 km German-domain variant matching the ICON-D2 domain is planned (DWD's SKY nomenclature reserves the `la` domain code for it).
+
+### [Bris (MET Norway)](./models/ensemble_models/regional/norway/bris.md)
+- **Operator:** Meteorologisk institutt (MET Norway)
+- **Status:** Operational, but labelled **experimental** by MET Norway and carrying no version identifier. Operational start date is undocumented; the wiki page was published 2026-09-08
+- **Approach:** Standalone AI, **ensemble-only** — no deterministic run and no control member. Trained on historical MEPS analyses; initialized from a MEPS + ECMWF IFS hybrid (00Z cycle: MEPS analysis plus IFS forecasts for the short stream, IFS analyses for the long stream). Spread-generation mechanism not documented
+- **Coverage:** Global stretched grid — 2.5 km over the Nordic and Arctic focus areas, ~31 km elsewhere. **Only the Nordic sub-domain is distributed:** 849 × 969 at 2.5 km, the [MEPS](./models/nwp_models/regional/norway/meps.md) grid less a 50-point perimeter band, same Lambert conformal projection
+- **Resolution:** 2.5 km. Surface fields only in the short stream; a single 850 hPa level added in the long stream. No model-level output
+- **Members:** 16 (3-hourly cycles, hourly to 90 h) and 30 (12-hourly cycles, 6-hourly to 258 h)
+- **Note:** The first ensemble-only AI system in this index, and the first from a Nordic service. The ten-day 2.5 km ensemble is the point of the system — [MEPS](./models/nwp_models/regional/norway/meps.md) reaches only 61 h at the same resolution. Because MEPS supplies both the training data and part of every initialization, Bris is not an independent forecast for verification or blending. No derived mean, spread, or probability products are published. ~620 GiB/day on a rolling ~3-day window with **no archive yet**; an operational archive and a rerun archive are both stated as planned. Data: NetCDF4 via MET Norway THREDDS (direct download and OPeNDAP, no NCML).
 
 ### [HRRR-Cast (NOAA)](./models/nwp_models/regional/usa/hrrrcast.md)
 - **Operator:** NOAA / OAR — developed by Global Systems Laboratory (GSL); run experimentally at NWS/EMC
@@ -209,6 +220,7 @@ The two fine-tuned lineages share architecture and a 13-pressure-level vertical 
 ### ECMWF in-house architecture
 - **[AIFS Single](./models/nwp_models/global/eu/aifs-single.md)** and **[AIFS ENS](./models/ensemble_models/global/eu/aifs-ens.md)** use ECMWF's own encoder–processor–decoder architecture with attention-based GNN encoder/decoder and sliding-window transformer processor. Not derived from GraphCast or FourCastNet.
 - **[AICON-Global](./models/nwp_models/global/germany/aicon-global.md)** (DWD) shares the Anemoi encoder–processor–decoder framework with AIFS, applied to ICON's icosahedral mesh and model-level vertical structure rather than ECMWF's lat–lon / pressure-level setup.
+- **[Bris](./models/ensemble_models/regional/norway/bris.md)** (MET Norway) is reported to use the same Anemoi framework, applied to a global stretched grid refined over the Nordic and Arctic domains. It pairs a forecaster checkpoint with a separate temporal-interpolator checkpoint, following the HourGlass downscaling approach (Ingstad et al. 2026). **The Anemoi attribution is inferred rather than sourced** — from the `bris-inference` tooling name and the ECMWF co-authors on Nordhagen et al. (2025) — and is not stated in MET Norway's own documentation. **TBD:** confirm with MET Norway before treating this lineage as established.
 
 ---
 
