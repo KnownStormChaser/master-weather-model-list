@@ -1,5 +1,7 @@
 # HYSPLIT-Dust (NAQFC Dust Forecast)
 
+>  **Meteorological driver changes October 14, 2026.** [NWS Service Change Notice 26-78](https://www.weather.gov/media/notification/pdf_2026/scn26-78_HYSPLIT_v9.1.pdf) (September 9, 2026) upgrades operational HYSPLIT from 9.0 to 9.1, **coupling [RRFS](../../../nwp_models/regional/usa/rrfs.md) into HYSPLIT and retiring the [NAM](../../../nwp_models/regional/usa/nam.md) and [HREF](../../../ensemble_models/regional/usa/href.md) couplings** — the dispersion-side consequence of those systems being retired the same day under SCN 26-47. The model itself is unchanged; what changes is the meteorology driving it, and the timing of the output. **The dust products arrive later**: roughly 11–15 minutes at the 06 UTC cycle and 45–50 minutes at 12 UTC. **This entry documents the pre-upgrade configuration**; the October 14 changes are marked as scheduled throughout. See [Meteorological driver](#meteorological-driver).
+
 ## What this model is
 HYSPLIT-Dust is the operational atmospheric dust forecast component of NOAA/NWS's National Air Quality Forecast Capability (NAQFC). It uses the Hybrid Single-Particle Lagrangian Integrated Trajectory model (HYSPLIT) — a widely used Lagrangian transport and dispersion model developed by NOAA's Air Resources Laboratory (ARL) — configured specifically for windblown dust transport and deposition over the contiguous United States.
 
@@ -29,6 +31,7 @@ Prior to 28 June 2022, HYSPLIT also produced the operational smoke forecast guid
 - **Core model:** HYSPLIT (Hybrid Single-Particle Lagrangian Integrated Trajectory model)
 - **Forecast length:** 48 hours
 - **Update frequency:** 2× daily (06, 12 UTC)
+- **Product timing:** **changing October 14, 2026.** The higher-resolution RRFS input delays the dust output — SCN 26-78 gives `dustcs.YYYYMMDD/dustcs.t06z.{sfc,pbl}.1hr{.grib2,_227.grib2}` as **~11–15 minutes late** and the 12 UTC equivalents as **~45–50 minutes late**. Fixed-schedule pollers need wider windows from that date. (The same notice puts `canned_wfo` products 45–50 minutes late, but those are outside this entry's scope.)
 - **Temporal output resolution:** Hourly
 - **Horizontal grids:** Native ~0.1° regular lat/lon (601 × 251) and NCEP Grid 227 (Lambert, 1473 × 1025 at ~5 km over CONUS); the latter is the `_227.grib2` variant (verified, 12 UTC cycle)
 - **Output units:** log10(µg/m³) — fine-particulate (dust) mass concentration on a base-10 log scale (e.g. ~2.7 ≈ 500 µg/m³), with -99 as the below-threshold / no-data fill (verified from the GRIB2 values)
@@ -39,9 +42,27 @@ Prior to 28 June 2022, HYSPLIT also produced the operational smoke forecast guid
 ---
 
 ## Meteorological driver
-HYSPLIT is an offline-coupled dispersion model — it ingests pre-computed meteorological fields from a separate NWP run rather than computing meteorology itself. The specific NWP source used for the operational NAQFC dust forecast follows whichever NCEP NWP system is currently configured to drive it.
+HYSPLIT is an offline-coupled dispersion model — it ingests pre-computed meteorological fields from a separate NWP run rather than computing meteorology itself, in NOAA's ARL-packed format. The driving NWP source is therefore a configuration choice that follows the operational suite, and it is about to change.
 
-For the most accurate current driving model, see the AWS Open Data registry description and the NCEP AQM change log linked below.
+### Current (HYSPLIT 9.0)
+The ARL-packed inputs staged for each cycle are dominated by NAM-derived files — `hysplit.tCCz.nama`, `namf`, `namsa`, `namsf` and their regional variants (`.AK`, `.HI`, `.FW`, `.CONUS`) — plus a set of regional-ensemble inputs `hysplit.tCCz.rens.{nam,hiresw,hrrr}.m0M`. SCN 26-78 lists all of these as being removed, which is the clearest available statement of what currently drives the system.
+
+### Scheduled from October 14, 2026 (HYSPLIT 9.1)
+RRFS-derived ARL-packed files replace them, for the 00/06/12/18 UTC cycles:
+
+| Input file | Domains |
+|---|---|
+| `hysplit.tCCz.rrfs.${domain}` | `na`, `hi`, `pr`, `firewx` |
+| `hysplit.tCCz.rrfsfHH.${domain}` (HH = 00, 06, 12, 18, 24, 30, 36, 42) | `ak`, `conus` |
+| `hysplit.tCCz.rrfsa.${domain}` (archived) | `na`, `ak`, `hi`, `pr` |
+
+**Removed:** the full `hysplit.tCCz.nam*` set and all three `hysplit.tCCz.rens.*` ensemble input families.
+
+SCN 26-78 notes the upgrade increases data volume for input, output, post-processed fields and products, because of the higher spatial and vertical resolution of the RRFS input. This is the direct cause of the product delays below.
+
+> **The SCN's domain lists contradict its own prose.** The introductory text says RRFS forecasts are added over domains "including North American (na), Hawaii (hi), Alaska (ak), Puerto Rico (pr) and fire weather (firewx)", but the `hysplit.tCCz.rrfs.${domain}` line that follows enumerates only `na, hi, pr, firewx` — Alaska appears instead on the `rrfsfHH` line, alongside `conus`, which the prose does not mention at all. Treat the filename enumerations as authoritative and re-verify against the production directory after cutover.
+
+> **Disregard the CMAQ v4 note.** SCN 26-78 closes with a statement that the changes "will only be applicable to CONUS results" and that "Alaska and Hawaii will continue using CMAQ v4". CMAQ is the [AQM](./aqm.md) component of NAQFC, not HYSPLIT, and no CMAQ v4 appears anywhere in the current operational NAQFC chain. This reads as boilerplate carried over from an air-quality notice and should not be taken as a statement about HYSPLIT-Dust domains — which are CONUS-only in any case, as noted above.
 
 ---
 
@@ -71,7 +92,20 @@ The dust scheme is most active over arid and semi-arid regions of the western an
 - **Data format:** GRIB2
 - **Primary access (live) — NOMADS:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/hysplit/prod/
   - Dust is under the per-cycle `dustcs.YYYYMMDD/` directories: `dustcs.tCCz.sfc.1hr.grib2` (surface) and `dustcs.tCCz.pbl.1hr.grib2` (boundary-layer), each also on NCEP Grid 227 (~5 km CONUS) as the `_227.grib2` variant. Cycles 06 and 12 UTC.
-- **Historical archive — AWS Open Data (NODD):** `s3://noaa-nws-naqfc-pds/HYSPLIT_Dust/` (browse: https://noaa-nws-naqfc-pds.s3.amazonaws.com/index.html). This mirror spans 2020-01-01 to 2026-04-20 and has not updated since — use NOMADS for current data.
+  - **Parallel feed for HYSPLIT 9.1:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/hysplit/para/ — event-driven, per SCN 26-78.
+- **Historical archive — AWS Open Data (NODD):** `s3://noaa-nws-naqfc-pds/HYSPLIT_Dust/` (browse: https://noaa-nws-naqfc-pds.s3.amazonaws.com/index.html). **The mirror is stalled**: it spans 2020-01-01 to **2026-04-20** and has not updated since (re-verified 2026-09-10 by object listing — the last objects are the 06 UTC cycle of 2026-04-20, written 18:06:10 UTC). Use NOMADS for current data.
+
+### Archive naming differs from NOMADS
+
+The S3 archive does **not** use the NOMADS filenames, and carries a narrower product set. Files live under `HYSPLIT_Dust/CS/YYYYMMDD/{06,12}/`:
+
+| NOMADS | S3 archive |
+|---|---|
+| `dustcs.tCCz.sfc.1hr_227.grib2` | `hsp.tCCz.ave_1hr_SfcDust.YYYYMMDD.227.grib2` |
+| `dustcs.tCCz.pbl.1hr_227.grib2` | `hsp.tCCz.ave_1hr_ColDust.YYYYMMDD.227.grib2` |
+| `dustcs.tCCz.{sfc,pbl}.1hr.grib2` (native ~0.1° lat/lon) | *not archived* |
+
+Four files per day, two cycles by two products, **Grid 227 only** — the native ~0.1° lat/lon variant exists on NOMADS but has no archived counterpart, so any long-run analysis on the native grid has to be built from a live capture. Note also that the archive names the deep-layer product `ColDust` (column dust) where NOMADS calls it `pbl`; they are the same field.
 - **Operational forecast viewer:** https://airquality.weather.gov/
 
 ---
@@ -80,12 +114,16 @@ The dust scheme is most active over arid and semi-arid regions of the western an
 - Until 28 June 2022, HYSPLIT also produced the operational smoke forecast for NAQFC — that role has since transitioned to [RAP-Smoke](../../../nwp_models/regional/usa/rap.md). HYSPLIT remains in operational use within NAQFC purely as the dust component.
 - This entry intentionally focuses on the operational NAQFC dust application. HYSPLIT in its broader form (run interactively via the READY system, used for emergency response, backward trajectory analysis, and a wide range of non-NAQFC applications) is outside this repository's operational-forecast scope. For those uses, see the ARL HYSPLIT page in the official documentation below.
 - HYSPLIT-Dust is the only one of the three NAQFC component models that does **not** cover Alaska or Hawaii. Users in those domains need not look for dust forecasts in NAQFC output.
+- **The October 2026 recoupling makes HYSPLIT the first NAQFC component to consume RRFS output.** It is also the only change in the RRFS cutover that reaches an air-quality product: NAM and HREF are retired outright under SCN 26-47, and SCN 26-78 is a separate notice covering only the dispersion-side consequence. If you track the RRFS transition through SCN 26-47/26-48 alone you will miss this.
+- **The two notices share an effective date but not a contingency.** SCN 26-78 carries its own CWD/Enhanced Caution provision, worded as a possible delay "to the next business day", where SCN 26-47/26-48 specify 12 UTC on the next eligible weekday. In practice HYSPLIT 9.1 depends on RRFS being operational, so an RRFS deferral should be expected to carry HYSPLIT 9.1 with it — but the notices do not say so, and the two could in principle move independently.
 
 ---
 
 ## Official documentation
 - AWS Open Data Registry entry: https://registry.opendata.aws/noaa-nws-naqfc-pds/
 - NCEP/EMC AQM change log (covers HYSPLIT-Dust as a NAQFC component): https://www.emc.ncep.noaa.gov/mmb/aq/AQChangelog.html
+- **NWS SCN 26-78 (HYSPLIT 9.1: RRFS coupling in, NAM and HREF couplings retired; effective October 14, 2026):** https://www.weather.gov/media/notification/pdf_2026/scn26-78_HYSPLIT_v9.1.pdf
+- NWS SCN 26-47 (termination of NAM, SREF, HREF, HiresW, NAM MOS; AAB update of September 9, 2026 — the retirements that drive the recoupling): https://www.weather.gov/media/notification/pdf_2026/SCN26-47_Updated_Retire_NAM_SREF_HREF_HiresW_NAM_MOS.aab.pdf
 - NOAA Air Resources Laboratory HYSPLIT page: https://www.ready.noaa.gov/HYSPLIT.php
 - NOAA OSTI Air Quality program page: https://vlab.noaa.gov/web/osti-modeling/air-quality
 - NWS Air Quality Forecast Guidance viewer: https://airquality.weather.gov/
