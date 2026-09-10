@@ -167,7 +167,7 @@ https://www.nco.ncep.noaa.gov/pmb/products/refs.
 REFS is intended to fully replace the following legacy NCEP ensemble systems on October 14, 2026:
 - **HREF** (High-Resolution Ensemble Forecast)
 - **SREF** (Short-Range Ensemble Forecast)
-- **NARRE** (North American Rapid Refresh Ensemble) — **on the authority of PNS 25-41 only.** SCN 26-47 does not name NARRE in either its subject line or its body, through the AAB update of September 9, 2026. The replacement is signalled but not formally scheduled.
+- **NARRE** (North American Rapid Refresh Ensemble) — **already retired ahead of REFS.** **NARRE was already retired, separately and earlier.** The North American Rapid Refresh Time-Lagged Ensemble (NARRE-TL) was decommissioned on or about **January 7, 2026** under [NWS SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), which terminated the system and removed its data from NOMADS and FTPPRD. That is why NARRE is absent from SCN 26-47: it was gone nine months before the RRFSv1 cutover. PNS 25-41's grouping of NARRE into the RRFSv1 retirement wave was overtaken by events. REFS therefore takes over a role that had been vacant since January 2026, rather than displacing a running system.
 
 Compared to the legacy systems:
 - REFS extends forecasts to **60 hours** (HREF ran to 48 hours)
@@ -298,7 +298,7 @@ two days while the bucket has kept every date since it came up.
   entry, though not in the SCN itself. The prototype bucket stopped after the 06 UTC
   cycle. Combined `ensprod` products carried across unchanged; individual members did
   not.
-- Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48. HREF and SREF are named in SCN 26-47; NARRE is not, in any revision through AAB.
+- Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48. HREF and SREF are named in SCN 26-47; NARRE is not, in any revision through AAB — because NARRE-TL had already been decommissioned on or about January 7, 2026 under [SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), well ahead of the RRFSv1 cutover.
 - Targeted for operational implementation alongside the deterministic RRFS, originally "early 2026"; slipped through pre-operational evaluation.
 - SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to October 6, 2026 at 12 UTC and setting the real-time parallel feed to begin on or about August 11, 2026. A further update on August 24, 2026 (AAC) documented the `.idx` and BUFR files added to NOMADS, without changing the implementation date. The September 9, 2026 update (AAD) moved implementation to **October 14, 2026 at 12 UTC** and added the ensemble member output listing.
 - **NWS Service Change Notice 26-48 (May 12, 2026)** scheduled REFS operational implementation for August 31, 2026 at 12 UTC, with HREF, SREF, and NARRE retiring on the same day. Per SCN 26-48, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday.
