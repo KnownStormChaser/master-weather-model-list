@@ -309,10 +309,10 @@ RRFS is intended to replace the following legacy NCEP regional systems on Octobe
 
 HRRR and RAP are not retired with RRFSv1. They are expected to be retired later in conjunction with RRFSv2, which is planned to transition to the MPAS dynamical core. The NAM 12 km parent domain is **not** in this group — SCN 26-47 discontinues the NAM North America (12 km) grid together with all nests on October 14, 2026. HRRR additionally contributes two members (current and 6 h old cycles) to the CONUS and Alaska REFS domains, making it an explicit operational input to REFS during the RRFSv1 era.
 
-**NARRE is listed above on the authority of PNS 25-41, not SCN 26-47.** Neither the AAB
-subject line ("Termination of the NAM, SREF, HREF, HiresW, and NAM MOS") nor the body of
-SCN 26-47 names NARRE or gives a NARRE product path. Its replacement by REFS is signalled
-but not formally scheduled by a Service Change Notice.
+**NARRE is listed above for continuity with PNS 25-41, but it is not part of this
+retirement wave.** Neither the AAB subject line ("Termination of the NAM, SREF, HREF,
+HiresW, and NAM MOS") nor the body of SCN 26-47 names NARRE or gives a NARRE product path.
+**NARRE was already retired, separately and earlier.** The North American Rapid Refresh Time-Lagged Ensemble (NARRE-TL) was decommissioned on or about **January 7, 2026** under [NWS SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), which terminated the system and removed its data from NOMADS and FTPPRD. That is why NARRE is absent from SCN 26-47: it was gone nine months before the RRFSv1 cutover. PNS 25-41's grouping of NARRE into the RRFSv1 retirement wave was overtaken by events.
 
 ---
 
