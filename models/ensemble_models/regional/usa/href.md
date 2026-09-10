@@ -1,6 +1,6 @@
 # HREF (High-Resolution Ensemble Forecast)
 
-> ⚠️ **Scheduled for retirement October 6, 2026 at 12 UTC.** HREF is scheduled for termination under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination notice; updated July 6, 2026) and replacement by the [REFS](./refs.md) (RRFS Ensemble Forecast System), which is implemented under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf) on the same cycle. All four operational HREF domains (CONUS, Alaska, Hawaii, Puerto Rico) are included. Originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025); subject to the standard CWD/ECE postponement contingency.
+> ⚠️ **Scheduled for retirement October 14, 2026 at 12 UTC.** HREF is scheduled for termination under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/SCN26-47_Updated_Retire_NAM_SREF_HREF_HiresW_NAM_MOS.aab.pdf) (termination notice; AAB update of September 9, 2026, which moved the date from October 6) and replacement by the [REFS](./refs.md) (RRFS Ensemble Forecast System), which is implemented under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aad.pdf) on the same cycle. All four operational HREF domains (CONUS, Alaska, Hawaii, Puerto Rico) are included. Originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025); subject to the standard CWD/ECE postponement contingency.
 
 ## What this model is
 The High-Resolution Ensemble Forecast (HREF) is NOAA's operational convection-allowing regional ensemble system, providing probabilistic guidance for severe weather, heavy precipitation, winter storms, and aviation hazards across CONUS, Alaska, Hawaii, and Puerto Rico.
@@ -9,7 +9,7 @@ Structurally, **HREF is unusual among operational ensembles**: rather than runni
 
 This design is operationally efficient and exploits **member diversity from different dynamical cores** (FV3, NMMB B-grid, WRF-ARW, NMM-B), different physics suites, different DA systems, and different initialization times to produce a probabilistic spread that approximates a "true" ensemble. HREF originated from the **SPC Storm Scale Ensemble of Opportunity (SSEO)**, an experimental system at NSSL/SPC's Hazardous Weather Testbed that demonstrated skill for six years before becoming operational HREF v1 at NCEP in 2017.
 
-The current operational version is **HREFv3** (operational since May 2021), which is the **final version** of HREF. No further upgrades are planned. HREFv3 will be replaced by the [REFS](./refs.md) RRFS-based regional ensemble on October 6, 2026, as part of the broader UFS transition (termination under SCN 26-47; REFS implementation under SCN 26-48).
+The current operational version is **HREFv3** (operational since May 2021), which is the **final version** of HREF. No further upgrades are planned. HREFv3 will be replaced by the [REFS](./refs.md) RRFS-based regional ensemble on October 14, 2026, as part of the broader UFS transition (termination under SCN 26-47; REFS implementation under SCN 26-48).
 
 ---
 
@@ -122,7 +122,7 @@ HREF is **fundamentally dependent** on its constituent models. Any disruption to
 - **[HRRR](../../../nwp_models/regional/usa/hrrr.md):** Provides 4 of the 10 CONUS HREF members (current + time-lagged), and 4 of the 8 Alaska HREF members. HREFv3 added HRRR to the membership for the first time.
 - **[NAM Nest](../../../nwp_models/regional/usa/nam-nest.md):** Provides 2 members per domain (current + time-lagged). The 12-hour time-lagged NAM Nest is used for some HREF cycles.
 - **[HiresW](../../../nwp_models/regional/usa/hiresw.md) (ARW, FV3):** Provides the foundational 4 members per domain. The HiresW system is itself slated for retirement under PNS 25-41 except for the Guam domain.
-- **[REFS](./refs.md):** Replacement, operational October 6, 2026 at 12 UTC. REFS is built on the [RRFS](../../../nwp_models/regional/usa/rrfs.md) UFS infrastructure — combining current and 6 h time-lagged RRFS deterministic and ensemble cycles, plus current and 6 h time-lagged HRRR members for CONUS and Alaska — rather than the post-processing approach HREF uses. REFS runs to 60 hours (longer than HREF's 48 hours) at 4 cycles daily for all domains (HREF runs 4× daily only for CONUS; AK, HI, PR are 2× daily).
+- **[REFS](./refs.md):** Replacement, operational October 14, 2026 at 12 UTC (moved from October 6 by the September 9, 2026 updates to SCN 26-47/26-48). REFS is built on the [RRFS](../../../nwp_models/regional/usa/rrfs.md) UFS infrastructure — combining current and 6 h time-lagged RRFS deterministic and ensemble cycles, plus current and 6 h time-lagged HRRR members for CONUS and Alaska — rather than the post-processing approach HREF uses. REFS runs to 60 hours (longer than HREF's 48 hours) at 4 cycles daily for all domains (HREF runs 4× daily only for CONUS; AK, HI, PR are 2× daily).
 - **[NBM](../../../nwp_models/regional/usa/nbm.md):** Uses HREF probabilistic fields as inputs for blended guidance products.
 
 ### Heritage: SPC Storm Scale Ensemble of Opportunity (SSEO)
@@ -151,14 +151,16 @@ HREF distributes ensemble products (mean, spread, probability fields, neighborho
 - HREF is one of the relatively few operational ensemble systems with **explicit multi-dynamical-core diversity**. Other major ensembles like ECMWF ENS and GEFS use a single dynamical core across all members.
 - HREFv3's addition of HRRR was particularly impactful — HRRR's hourly DA, dense radar assimilation, and convection-allowing skill brought significantly improved member quality to the CONUS HREF.
 - HREF has been **frozen since HREFv3 (May 2021)**. The original HREFv3 announcement noted it would be "the final major upgrade of the HREF system," with REFS as the planned successor.
+- **EMC publishes the HREF→REFS transition files at two live paths that have drifted apart.** SCN 26-47 AAB cites `https://www.emc.ncep.noaa.gov/rrfs_info/…`; an older copy remains reachable at `https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/…`, and both return 200. They are not the same document. In `href_product_changes.txt` the two copies disagree on a parameter identity: the `mmb/mpyle` copy says REFS adds a **surface cloud work function (CWORK)** field and CWORK probabilities at > 0.016, 0.036 and 0.103 **J/kg**, while the SCN-cited copy says REFS adds **surface fog liquid water content (FOGLWC)** and FOGLWC probabilities at the same three thresholds in **g/kg**. The thresholds are identical and only the parameter and units changed, which reads as a corrected mislabelling rather than a product change. **Treat the `/rrfs_info/` copies as authoritative** — they are the ones the current SCN cites, and they are newer wherever the two differ. Note that three related files (`nam_retiredgrids.txt`, `namnest_grids.txt`, `narre_replacement.txt`) exist only under `mmb/mpyle/` and have no `/rrfs_info/` equivalent, so both paths still have to be consulted.
 
 ---
 
 ## Status and retirement timeline
-- **Scheduled for full retirement August 31, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026); detailed product list in companion SCN 26-47.
+- **Scheduled for full retirement October 14, 2026 at 12 UTC** under NWS Service Change Notice 26-47 (termination notice; AAB update of September 9, 2026); REFS implementation under companion SCN 26-48 (AAD update, same date).
 - Retirement covers all four HREF domains (CONUS, Alaska, Hawaii, Puerto Rico).
 - **Replacement** is the [REFS](./refs.md) RRFS-based regional ensemble, running to 60 hours (vs HREF's 48) at 4 cycles daily for all domains.
-- Originally proposed for early 2026 under PNS 25-41; the date slipped through pre-operational evaluation of RRFSv1/REFS before being scheduled in SCN 26-48. Per SCN 26-48, if August 31, 2026 is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, retirement moves to 12 UTC on the next eligible weekday.
+- Originally proposed for early 2026 under PNS 25-41; the date has slipped three times through pre-operational evaluation of RRFSv1/REFS — to August 31, 2026 in SCN 26-48 as first issued, to October 6 in the July 6, 2026 update, and to October 14 in the September 9, 2026 update. Per the SCN, if October 14, 2026 is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, retirement moves to 12 UTC on the next eligible weekday.
+- **SBN/WMO product coverage differs from HREF's.** SCN 26-47 AAB states that REFS products run at a 3-hourly forecast interval from f03 to f48 and 6-hourly to f60 for all domains and cycles, where HREF SBN products run hourly f01–f30 then 3-hourly to f48 (CONUS 00/12 UTC, AK 06/18, HI 00/12, PR 06/18), with the CONUS 06/18 UTC HREF SBN products 3-hourly f03–f36. The REFS WMO product list is not a superset of HREF's; the removals are listed by product type in the EMC file linked below. Discontinued HREF WMO headers match `Y[A-Z][CDEM][A-Z][0-9][0-9] KWBH`.
 - 2025 NOAA Hazardous Weather Testbed Spring Forecasting Experiment evaluations indicated REFS performed competitively with HREF for Day 1 and Day 2 forecasts, and slightly better for some objective metrics including deep convection (>40 dBZ) prediction. This supported the decision to proceed with HREF→REFS replacement.
 
 ---
@@ -196,7 +198,11 @@ The Storm Scale Ensemble of Opportunity ran as an experimental product at SPC an
 - HREFv3 announcement: https://www.weather.gov/news/211205-href-model-upgrade
 - HREFv3 graphics (EMC): https://www.emc.ncep.noaa.gov/mmb/mpyle/hrefv3/
 - SPC HREF Ensemble Viewer: https://www.spc.noaa.gov/exper/href/
-- NWS SCN 26-48 (RRFS and REFS implementation, HREF retirement effective August 31, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf
+- NWS SCN 26-47 (termination of NAM/SREF/HREF/HiresW/NAM MOS; AAB update of September 9, 2026, effective October 14, 2026): https://www.weather.gov/media/notification/pdf_2026/SCN26-47_Updated_Retire_NAM_SREF_HREF_HiresW_NAM_MOS.aab.pdf
+- NWS SCN 26-48 (RRFS and REFS implementation; AAD update of September 9, 2026, effective October 14, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aad.pdf
+- HREF-to-REFS product changes (SCN-cited copy): https://www.emc.ncep.noaa.gov/rrfs_info/href_product_changes.txt
+- HREF-to-REFS SBN/WMO removals: https://www.emc.ncep.noaa.gov/rrfs_info/href_sbn_removals.txt
+- HREF model software, deprecated and provided as-is: https://www.nco.ncep.noaa.gov/pmb/codes/nwprod/href.v3.1.7/
 - AWS Open Data: https://registry.opendata.aws/noaa-href/
 
 ### Key references
