@@ -113,7 +113,7 @@ These systems are scheduled for retirement on **October 14, 2026 at 12 UTC**, th
 - [HREF](./models/ensemble_models/regional/usa/href.md) — replaced by REFS (extends 48 h → 60 h)
 - [HiresW](./models/nwp_models/regional/usa/hiresw.md) — CONUS, Alaska, Hawaii, and Puerto Rico domains; see [Status and retirement](./models/nwp_models/regional/usa/hiresw.md#status-and-retirement) for the surviving Guam exception
 - SREF (not in repo) — replaced by REFS; the SCN-confirmed retirement supersedes the earlier expectation that SREF would persist into the second wave under RRFSv2
-- NARRE (not in repo) — replaced by REFS. **Discrepancy:** NARRE is carried here from PNS 25-41, but SCN 26-47 does not name it — neither the AAB subject line ("Termination of the NAM, SREF, HREF, HiresW, and NAM MOS") nor the body lists NARRE or a NARRE product path. Its retirement is therefore signalled but not formally scheduled by an SCN. Left in place pending confirmation.
+- NARRE (not in repo) — **already retired; not part of this wave.** NARRE-TL was decommissioned on or about January 7, 2026 under [NWS SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), which terminated the system and removed its data from NOMADS and FTPPRD. It is absent from SCN 26-47 for that reason, not by omission. PNS 25-41 had grouped it with the RRFSv1 retirements; SCN 25-87 overtook that.
 - NAM MOS (not in repo) — retired alongside NAM
 
 Two dispersion couplings retire on the same day but under a separate notice: the **NAM and HREF couplings into HYSPLIT**, retired by SCN 26-78 as part of the HYSPLIT 9.1 upgrade that couples RRFS in their place. See the HYSPLIT 9.1 item above.
