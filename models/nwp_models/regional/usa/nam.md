@@ -1,6 +1,6 @@
 # NAM (North American Mesoscale Forecast System)
 
-> ⚠️ **Scheduled for retirement October 6, 2026 at 12 UTC.** The NAM (12 km parent and all five high-resolution nests, NAM-DNG, DGEX, and NAM MOS) is scheduled for retirement under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf) (termination notice; updated July 6, 2026), on the same cycle that brings [RRFS](./rrfs.md) into operations under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf) (implementation notice; May 12, 2026, updated July 6, 2026). The retirement set was originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025). Implementation is subject to the standard CWD/ECE postponement contingency.
+> ⚠️ **Scheduled for retirement October 14, 2026 at 12 UTC.** The NAM (12 km parent and all five high-resolution nests, NAM-DNG, DGEX, and NAM MOS) is scheduled for retirement under [NWS Service Change Notice 26-47](https://www.weather.gov/media/notification/pdf_2026/SCN26-47_Updated_Retire_NAM_SREF_HREF_HiresW_NAM_MOS.aab.pdf) (termination notice; AAB update of September 9, 2026, which moved the date from October 6), on the same cycle that brings [RRFS](./rrfs.md) into operations under companion [SCN 26-48](https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aad.pdf) (implementation notice; May 12, 2026, updated July 6, August 24 and September 9, 2026). The retirement set was originally proposed under [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025). Implementation is subject to the standard CWD/ECE postponement contingency.
 
 ## What this model is
 The North American Mesoscale Forecast System (NAM) is NOAA's regional deterministic numerical weather prediction system covering North America at 12 km horizontal resolution, with five embedded high-resolution nests run within the same forecast integration.
@@ -90,8 +90,8 @@ The NAM uses physics broadly inherited from the Eta and WRF-NMM lineage that pre
 - **[GFS](../../global/usa/gfs.md):** Provides lateral boundary conditions for the 12 km NAM, and is blended with NAM forecasts in the DGEX (NAM Extension) product.
 - **[RAP](./rap.md):** Operational mesoscale counterpart at 13 km. RAP and NAM are similar in resolution but use different dynamical cores (NAM: NMMB B-grid; RAP: WRF-ARW), different DA systems (NAM: NDAS; RAP: hourly cycling GSI hybrid), and different update cadences (NAM: 4× daily; RAP: hourly). NAM produces longer 84-hour forecasts; RAP produces shorter forecasts more frequently.
 - **[NBM](./nbm.md):** Uses NAM fields as one of many deterministic inputs.
-- **SREF:** Multi-model regional ensemble that included NAM-NMMB members alongside other model formulations. SREF is being retired on the same day as the NAM (October 6, 2026) under SCN 26-47 and replaced by [REFS](../../ensemble_models/regional/usa/refs.md).
-- **[RRFS](./rrfs.md):** Replacement. RRFSv1 implements October 6, 2026 at 12 UTC under SCN 26-48 (NAM termination under companion SCN 26-47) and is intended to replace both the 12 km NAM parent and the [NAM Nest](./nam-nest.md) high-resolution domains. Most NAM products will continue to be produced from RRFS output via post-processing during the transition.
+- **SREF:** Multi-model regional ensemble that included NAM-NMMB members alongside other model formulations. SREF is being retired on the same day as the NAM (October 14, 2026) under SCN 26-47 and replaced by [REFS](../../ensemble_models/regional/usa/refs.md). Note that **NARRE, which PNS 25-41 grouped into the same retirement wave, is not named anywhere in SCN 26-47** — not in the subject line, not in the body, through the AAB update. Its replacement by REFS is signalled but not formally scheduled.
+- **[RRFS](./rrfs.md):** Replacement. RRFSv1 implements October 14, 2026 at 12 UTC under SCN 26-48 AAD (NAM termination under companion SCN 26-47 AAB) and is intended to replace both the 12 km NAM parent and the [NAM Nest](./nam-nest.md) high-resolution domains. Most NAM products will continue to be produced from RRFS output via post-processing during the transition.
 
 ---
 
@@ -113,19 +113,23 @@ NAM 12 km output is distributed in GRIB2 files separate from the NAM Nest output
 ## Notes
 - The NAM transitioned from the **WRF-NMM (E-grid) dynamical core to NMMB (B-grid)** in October 2011, replacing the long-running Eta/WRF-NMM lineage with the NCEP-developed NMMB. This transition required users with native-grid GRIB processing pipelines to update their software to handle B-grid staggering.
 - The NAM has been **frozen since the v4.0 implementation in March 2017**, with no scientific changes since. EMC redirected its mesoscale development effort toward what became the FV3-based [RRFS](./rrfs.md) at that time.
-- The NAM and [RAP](./rap.md) cover similar geographic areas at similar resolutions (12 km vs 13 km) but were developed for different operational purposes: the NAM provides longer-range mesoscale guidance with twice-daily-equivalent update frequency, while RAP provides hourly-updating short-range guidance optimized for aviation and rapid-evolution forecasting. Both are scheduled to be retired with the [RRFS](./rrfs.md) transition, though on different timelines (NAM with RRFSv1 on October 6, 2026; RAP and HRRR with RRFSv2, no formal SCN yet).
+- The NAM and [RAP](./rap.md) cover similar geographic areas at similar resolutions (12 km vs 13 km) but were developed for different operational purposes: the NAM provides longer-range mesoscale guidance with twice-daily-equivalent update frequency, while RAP provides hourly-updating short-range guidance optimized for aviation and rapid-evolution forecasting. Both are scheduled to be retired with the [RRFS](./rrfs.md) transition, though on different timelines (NAM with RRFSv1 on October 14, 2026; RAP and HRRR with RRFSv2, no formal SCN yet).
 - The NMMB dynamical core was developed at NCEP/EMC by Zaviša Janjić and colleagues. It uses the Arakawa B-grid horizontal staggering (different from WRF-ARW's C-grid and the original Eta E-grid), with conservative finite-difference advection and forward-backward time-stepping for fast modes. NMMB is no longer an active operational dynamical core in any other major NCEP system as of 2026.
 
 ---
 
 ## Status and retirement timeline
-- **Scheduled for full retirement October 6, 2026 at 12 UTC** under NWS Service Change Notice 26-47 (termination notice; updated July 6, 2026); RRFS/REFS implementation under companion SCN 26-48. The July 6, 2026 update moved the date from August 31, 2026 to October 6, 2026.
+- **Scheduled for full retirement October 14, 2026 at 12 UTC** under NWS Service Change Notice 26-47 (termination notice; AAB update of September 9, 2026); RRFS/REFS implementation under companion SCN 26-48 (AAD update, same date). The date has moved twice since SCN 26-48 was first issued: the July 6, 2026 update took it from August 31 to October 6, and the September 9, 2026 update took it to October 14. No reason is given for the second move.
 - Retirement covers the 12 km parent domain, all five nests, NAM-DNG, DGEX, and NAM MOS. SCN 26-47 lists the parent grid explicitly under the heading "Discontinued NAM North America (12 km) and Nests", covering all products and domains — CONUS, North America, Caribbean/Central America, Pacific, Alaska, Hawaii, and Puerto Rico. The 12 km parent is **not** deferred to the RRFSv2 wave alongside HRRR and RAP.
 - Originally proposed under PNS 25-41 (June 26, 2025) for early 2026; the date slipped through pre-operational evaluation of RRFSv1 before being scheduled in SCN 26-47/26-48.
-- Per the SCN, if October 6, 2026 is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, retirement moves to 12 UTC on the next eligible weekday — the same contingency provision that pushed NBM v5.0 from April 30 to May 5, 2026.
+- Per the SCN, if October 14, 2026 is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, retirement moves to 12 UTC on the next eligible weekday — the same contingency provision that pushed NBM v5.0 from April 30 to May 5, 2026.
+- **Discontinued WMO headers** for the NAM match `[LM][A-Z][BS][A-Z][0-9][0-9] KWBE`; NAM MOS headers match `[FJ][OQS][AMPU][AKLS][14][0-9] KWNO`. SCN 26-47 AAB also enumerates the NOMADS GRIB filter endpoints being withdrawn (`gribfilter.php?ds=nam`, `nam_ak`, `nam_ak_surf`, `nam_na`, `nam_crb`, `nam_pac`, `nam_alaskanest`, `nam_conusnest`, `nam_hawaiinest`, `nam_priconest`).
+- **NAM model software is published as-is at retirement.** NCO has posted the final code at https://www.nco.ncep.noaa.gov/pmb/codes/nwprod/nam.v4.2.13/ and https://www.nco.ncep.noaa.gov/pmb/codes/nwprod/nam_mos.v3.5.0/, deprecated and with no warranty, bug fixes, or support. Both are stated to be removed when the applications retire and thereafter available only on request — so mirror anything needed before October 14, 2026.
 - Many NAM output grids will continue to be produced from [RRFS](./rrfs.md) output via post-processing; others will be fully discontinued. EMC has published lists:
-  - NAM grids being retired: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/nam_retiredgrids.txt
-  - NAM products being discontinued: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/nam_retirements.txt
+  - NAM products being discontinued: https://www.emc.ncep.noaa.gov/rrfs_info/nam_retirements.txt (the copy SCN 26-47 AAB cites)
+  - NAM SBN products not provided by RRFS: https://www.emc.ncep.noaa.gov/rrfs_info/nam_sbn_removals.txt
+  - NAM grids being retired: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/nam_retiredgrids.txt (no `/rrfs_info/` equivalent)
+- **The two EMC transition-file paths have drifted.** `nam_retirements.txt` is live at both `https://www.emc.ncep.noaa.gov/rrfs_info/…` (cited by SCN 26-47 AAB) and `https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/…` (cited in earlier revisions of this entry), and they are **not the same file** — the SCN-cited copy carries an extra "Planned" section listing PBL-height `HGT` and the Haines Index (HINDEX) as further retirements, which the `mmb/mpyle` copy does not. Prefer the `/rrfs_info/` copies where both exist. `nam_retiredgrids.txt` exists only under `mmb/mpyle/`, so both paths still have to be consulted.
 
 ---
 
@@ -156,10 +160,12 @@ The most significant NAM architectural change since the original Eta retirement.
 - NAM at EMC: https://emc.ncep.noaa.gov/emc/pages/numerical_forecast_systems/nam.php
 - NAM Vlab page: https://vlab.noaa.gov/web/emc/nam
 - NAM Product Inventory at NCEP: https://www.nco.ncep.noaa.gov/pmb/products/nam/
-- NWS SCN 26-47 (termination of NAM/SREF/HREF/HiresW/NAM MOS, effective October 6, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-47_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS.aaa.pdf
-- NWS SCN 26-48 (RRFS and REFS implementation, effective October 6, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-048_RRFS_and_REFS_Implementation.aab.pdf
+- NWS SCN 26-47, AAB update of September 9, 2026 (termination of NAM/SREF/HREF/HiresW/NAM MOS, effective October 14, 2026): https://www.weather.gov/media/notification/pdf_2026/SCN26-47_Updated_Retire_NAM_SREF_HREF_HiresW_NAM_MOS.aab.pdf
+- NWS SCN 26-48, AAD update of September 9, 2026 (RRFS and REFS implementation, effective October 14, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aad.pdf
+- NAM products being discontinued (SCN-cited copy): https://www.emc.ncep.noaa.gov/rrfs_info/nam_retirements.txt
+- NAM SBN products not provided by RRFS: https://www.emc.ncep.noaa.gov/rrfs_info/nam_sbn_removals.txt
 - NAM grids being retired: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/nam_retiredgrids.txt
-- NAM products being discontinued: https://www.emc.ncep.noaa.gov/mmb/mpyle/rrfs_info/nam_retirements.txt
+- NAM and NAM MOS model software, deprecated and provided as-is: https://www.nco.ncep.noaa.gov/pmb/codes/nwprod/nam.v4.2.13/ · https://www.nco.ncep.noaa.gov/pmb/codes/nwprod/nam_mos.v3.5.0/
 - NCEI long-term archive: https://www.ncei.noaa.gov/products/weather-climate-models/north-american-mesoscale
 - AWS Open Data: https://registry.opendata.aws/noaa-nam/
 
