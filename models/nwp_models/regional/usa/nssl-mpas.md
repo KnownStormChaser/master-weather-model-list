@@ -3,7 +3,7 @@
 ## What this model is
 The NSSL MPAS runs are a set of experimental, real-time, convection-allowing forecasts run by NOAA's National Severe Storms Laboratory using the Model for Prediction Across Scales (MPAS) dynamical core. They are part of a collaborative effort between NSSL, NOAA's Global Systems Laboratory (GSL), and NCAR to develop the MPAS-based configuration intended for the second version of the [Rapid Refresh Forecast System (RRFS)](./rrfs.md). The runs have been distributed as three configurations that share a common codebase and 3 km CONUS domain but differ in initialization source and microphysics, which allowed direct comparison of physics choices and of MPAS against the current operational convection-allowing suite.
 
-**Only one of the three configurations is still publishing as of 2026-09-10: the HRRR-initialized `mpasht2`.** Both RRFS-initialized configurations have stopped — the 2-moment `mpasrn` after its 2026-08-12 00 UTC cycle, and the 3-moment `mpasrn3` after 2026-03-16. Their earlier cycles remain archived under the `2026/` catalog directory, but the real-time cross-configuration physics comparison is no longer available from this feed.
+**Only one of the three configurations is still publishing as of 2026-09-10: the HRRR-initialized `mpasht2`.** Both RRFS-initialized configurations have stopped — the 2-moment `mpasrn` after its 2026-08-12 00 UTC cycle, and the 3-moment `mpasrn3` after its 2026-03-16 00 UTC cycle. Their earlier cycles remain archived under the `2026/` catalog directory, but the real-time cross-configuration physics comparison is no longer available from this feed.
 
 These are experimental, pre-operational research runs — not an operational NWP product — but they are run on a fixed schedule rather than as one-off case studies, and they represent the development line that is expected to become RRFSv2.
 
@@ -38,7 +38,7 @@ These are experimental, pre-operational research runs — not an operational NWP
 |---|---|---|---|---|---|---|
 | MPAS-HTPO-NSSL | `mpasht2` | Operational [HRRR](./hrrr.md) | TEMPO (Thompson-Eidhammer for Operations) | 4× daily (00/06/12/18 UTC) | ~T+8 h 10 m | **Active** (newest cycle 2026-09-10 12 UTC) |
 | MPAS-RN-NSSL | `mpasrn` | Experimental RRFS (EMC) | NSSL 2-moment | 2× daily (00/12 UTC) | ~T+16 h 15 m (Aug 2026) | Discontinued — last cycle 2026-08-12 00 UTC |
-| MPAS-RN3-NSSL | `mpasrn3` | Experimental RRFS (EMC) | NSSL 3-moment | 2× daily (00/12 UTC) | — | Discontinued — not observed since 2026-03-16 |
+| MPAS-RN3-NSSL | `mpasrn3` | Experimental RRFS (EMC) | NSSL 3-moment | 2× daily (00/12 UTC) | — | Discontinued — last cycle 2026-03-16 00 UTC |
 
 **On `mpasrn`'s discontinuation (flag).** The last published `mpasrn` archive is the **2026-08-12 00 UTC** cycle (`https://data.nssl.noaa.gov/thredds/fileServer/FRDD/NSSL-MPAS/2026/26081200_mpasrn.tar`); nothing newer appears in the `2026/` catalog listing as of 2026-09-10. That is a four-week gap, far longer than the longest run of empty-archive stubs observed for this dataset (three consecutive cycles; see *Publication cadence and failure mode*), so it is not plausibly that failure mode. No reason from NSSL has been located — TBD.
 
@@ -46,7 +46,9 @@ The cutoff lines up with the RRFS pre-implementation cutover documented in the [
 
 An earlier revision of this entry recorded `mpasrn` as discontinued after 2026-06-16. That was wrong — the configuration was publishing normally across 2026-08-02 → 2026-08-07 (e.g. `26080700_mpasrn.tar`, 8.721 GB, posted 2026-08-07T16:15:16Z). Whether it had a genuine hiatus between mid-June and early August remains unestablished.
 
-**On `mpasrn3` (flag).** No `mpasrn3` archives appear in the `2026/` catalog after 2026-03-16 through 2026-09-10 — close to six months, during which it did not resume following NSSL's Jet→Ursa HPC transition. This supersedes the earlier six-day-window evidence, and the configuration is now recorded as discontinued. No retirement notice from NSSL has been located, and the stale CAMs run descriptions still present it as a current run (see *Notes*).
+**On `mpasrn3`'s discontinuation (flag).** The last published `mpasrn3` archive is the **2026-03-16 00 UTC** cycle (`https://data.nssl.noaa.gov/thredds/fileServer/FRDD/NSSL-MPAS/2026/26031600_mpasrn3.tar`); nothing newer appears in the `2026/` catalog listing through 2026-09-10. That is close to six months, during which it did not resume following NSSL's Jet→Ursa HPC transition. No retirement notice from NSSL has been located, and the stale CAMs run descriptions still present it as a current run (see *Notes*).
+
+The cause is TBD, but it was not the RRFS input change that likely ended `mpasrn`. Both configurations were initialized from the same experimental EMC RRFS, and `mpasrn` kept running from that source for another five months. The stop falls about two weeks before Jet's decommissioning (~31 March 2026), so a cut in runs ahead of the HPC move is plausible, but unconfirmed.
 
 ---
 
@@ -104,7 +106,7 @@ This matters for automated retrieval: the request returns HTTP 200 and a structu
 ## Recent version history
 - **2026-08-12 — `mpasrn` (MPAS-RN-NSSL) discontinued.** Last cycle 00 UTC; the 12 UTC cycle, the first missing, was the first RRFS cycle published only on NOMADS after the prototype-bucket freeze. Causal link unconfirmed (see *Configurations*).
 - **~2026-03-31 — NOAA Jet HPC decommissioned.** NSSL runs moved to Ursa; the legacy 4 km WRF-NSSL run was scheduled to cease at the same time.
-- **2026-03-16 — `mpasrn3` (MPAS-RN3-NSSL) last observed.** Did not resume after the HPC transition.
+- **2026-03-16 — `mpasrn3` (MPAS-RN3-NSSL) discontinued.** Last cycle 00 UTC. Did not resume after the HPC transition; cause unconfirmed (see *Configurations*).
 - **Fall 2024 — MPAS runs begin at GSL.** The NSSL runs now use GSL's MPAS codebase; the date of that switch is not documented.
 - **January 2023 — MPAS runs begin at NSSL.**
 
@@ -121,7 +123,7 @@ This matters for automated retrieval: the request returns HTTP 200 and a structu
 
 ## Status
 - Experimental / pre-operational. GSL states these systems are not for operational use and the supporting websites are not maintained 24/7.
-- **`mpasht2` is the only active configuration as of 2026-09-10** (newest cycle `26091012_mpasht2.tar`), on its 4×-daily cadence. `mpasrn` stopped after its 2026-08-12 00 UTC cycle and `mpasrn3` after 2026-03-16; see the flags under *Configurations*.
+- **`mpasht2` is the only active configuration as of 2026-09-10** (newest cycle `26091012_mpasht2.tar`), on its 4×-daily cadence. `mpasrn` stopped after its 2026-08-12 00 UTC cycle and `mpasrn3` after its 2026-03-16 00 UTC cycle; see the flags under *Configurations*.
 - NSSL's legacy 4 km WRF-NSSL run was scheduled to cease on or near 31 March 2026 (Jet decommissioning) as resources shifted toward MPAS development.
 - Given the empty-archive failure mode and the long publication lag, a configuration's status should be judged from a multi-week listing rather than a single check of the most recent cycles.
 - Expected to feed the eventual operational RRFSv2; once RRFSv2 is implemented and lands on NOMADS/AWS, a separate operational entry will be warranted.
