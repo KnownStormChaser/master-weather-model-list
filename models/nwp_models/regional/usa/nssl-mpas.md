@@ -36,7 +36,7 @@ These are experimental, pre-operational research runs — not an operational NWP
 
 | Configuration | File tag | Initialized from | Microphysics | Cycles | Publication lag | Status |
 |---|---|---|---|---|---|---|
-| MPAS-HTPO-NSSL | `mpasht2` | Operational [HRRR](./hrrr.md) | TEMPO (Thompson-Eidhammer for Operations) | 4× daily (00/06/12/18 UTC) | ~T+8 h 10 m | **Active** (newest cycle 2026-09-10 12 UTC) |
+| MPAS-HTPO-NSSL | `mpasht2` | Operational [HRRR](./hrrr.md) | TEMPO (Thompson-Eidhammer for Operations) | 4× daily (00/06/12/18 UTC) | ~T+8 h 10 m | **Active** (as of 2026-09-10) |
 | MPAS-RN-NSSL | `mpasrn` | Experimental RRFS (EMC) | NSSL 2-moment | 2× daily (00/12 UTC) | ~T+16 h 15 m (Aug 2026) | Discontinued — last cycle 2026-08-12 00 UTC |
 | MPAS-RN3-NSSL | `mpasrn3` | Experimental RRFS (EMC) | NSSL 3-moment | 2× daily (00/12 UTC) | — | Discontinued — last cycle 2026-03-16 00 UTC |
 
