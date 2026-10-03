@@ -78,13 +78,14 @@ These models are used to build the various NBM products, and the mix differs fro
 - RAP 13 km (NOAA) — hourly
 - RAP-EXT 13 km (NOAA) — extended RAP, 4×/day
 - RDPS 10 km (CMC)
-- NAM 12 km (NOAA) — *to be removed in v5.0.1*
+- NAM 12 km (NOAA) — *to be removed November 3, 2026 under SCN 26-89; see [Scheduled changes](#scheduled-changes)*
 
 **High-resolution / convection-allowing (deterministic)**
 - HRRR 3 km (NOAA) — hourly
 - HRRR-EXT 3 km (NOAA) — extended HRRR, 4×/day
-- HiResW ARW 3 km, HiResW ARW MEM2 3 km, HiResW FV3 3 km (NOAA HiResW family) — *to be removed in v5.0.1; resolution per the official inputs table (a 2.5 km figure appears in some sources but is unconfirmed)*
-- NAM Nest 3 km (NOAA) — *to be removed in v5.0.1*
+- HiResW ARW 3 km, HiResW ARW MEM2 3 km, HiResW FV3 3 km (NOAA HiResW family) — *to be removed November 3, 2026 under SCN 26-89; resolution per the official inputs table (a 2.5 km figure appears in some sources but is unconfirmed)*
+- NAM Nest 3 km (NOAA) — *to be removed November 3, 2026 under SCN 26-89*
+- RRFS 3 km (NOAA) — *to be added November 3, 2026 under SCN 26-89, replacing the NAM, NAM Nest and HiResW inputs*
 - HWRF 1.5 km, HMON 1.5 km (NOAA, tropical cyclone) — *listed as the TC inputs on the official v5.0 inputs table; NOAA still produces both. HAFS is the newer operational TC system, but whether it has replaced HWRF/HMON as NBM inputs is unconfirmed.*
 
 **Ensembles**
@@ -94,12 +95,13 @@ These models are used to build the various NBM products, and the mix differs fro
 - REPS 10 km (CMC) — upgraded from 15 km in v5.0; 20 members
 - NAVGEM ensemble (NAVGEME) 50 km (FNMOC) — 20 members
 - ACCESS ensemble (ACCESS-GE) 35 km (BoM) — 18 members
-- HREF 5 km (NOAA) — 8 members
+- HREF 5 km (NOAA) — 8 members — *HREF itself retires November 3, 2026 under SCN 26-47, but SCN 26-89 does not mention it as an NBM input; see [Scheduled changes](#scheduled-changes)*
+- REFS (NOAA) — *to be added November 3, 2026 under SCN 26-89 ("all RRFS-based ensemble configurations")*
 - 10 Canadian members (mix of GDPS/GEPS/RDPS/REPS) added to the winter suite in v5.0
 - SREF — *removed in v5.0* (was 16 km CONUS / 30 km AK)
 
 **Statistical / MOS / analysis**
-- GFS-MOS (GFS MOS STN), GMOS, NAM MOS (NAMMOS), ECMWF MOS (EC MOSD), ECMWF Ensemble MOS (EC MOSE)
+- GFS-MOS (GFS MOS STN), GMOS, NAM MOS (NAMMOS), ECMWF MOS (EC MOSD), ECMWF Ensemble MOS (EC MOSE) — *NAM MOS retires November 3, 2026 under SCN 26-47; SCN 26-89 does not mention it as an NBM input*
 - LAMP MOS (LAMPMOS) and gridded LAMP (GLMP, 2.5 km, hourly)
 - MELD 2.5 km (NOAA) — gridded LAMP "Meld" stream, hourly
 - QMD 2.5 km (MDL) — NBM quantile-mapped stream
@@ -154,6 +156,26 @@ These models are used to build the various NBM products, and the mix differs fro
 
 ---
 
+## Scheduled changes
+
+### RRFS/REFS input swap — November 3, 2026 (SCN 26-89)
+[NWS SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026) is the first formal notice for the NBM changes that follow from the RRFS implementation and the NAM/SREF/HiresW/HREF retirements. Effective **November 3, 2026, beginning with the 12 UTC run**, on the same cycle as RRFS/REFS implementation under SCN 26-48 and the legacy terminations under SCN 26-47. It is subject to the standard CWD/ECE contingency.
+
+- **Inputs replaced.** The NAM (12 km and 3 km), HiResW ARW, HiResW ARW2 and HRW FV3 inputs are replaced with [RRFS](./rrfs.md) and all RRFS-based ensemble configurations of [REFS](../../../ensemble_models/regional/usa/refs.md).
+- **Both systems, same roles.** The Core and quantile-mapped (QMD) NBM systems both use the new models in the same way their HiResW counterparts were used. The expert weights previously assigned to NAM and HiResW are modified and reassigned to RRFS and REFS.
+- **Domains.** The change affects NBM guidance over the CONUS, Alaska, Hawaii and Puerto Rico NDFD domains. Guam, Oceanic and Global are not named.
+- **Product discontinued.** The dry thunderstorm probability record is removed from the CONUS core files, `blend.YYYYmmDD/CC/core/blend.tCCz.core.fHHH.co.grib2`, matching the inventory line `DRYTPROB:surface:HH-HH hour acc fcst:prob >0:prob fcst 0/21:probability forecast`.
+- **SBN header discontinued.** `YYA*** KWEI` is no longer sent over SBN/NOAAPORT.
+
+**What SCN 26-89 does not say.**
+- **No version number.** The planning decks called this an interim "v5.0.1" (see below), but the formal notice gives no version. NBM numbering has since moved on through unrelated patch releases (v5.0.14 under SCN 26-70, July 28, 2026; v5.0.15 under SCN 26-74, August 21, 2026), so "v5.0.1" will not be the label.
+- **HREF is not addressed.** HREF retires the same day under SCN 26-47, so the NBM cannot keep using it. Presumably REFS takes its place, but SCN 26-89 names only NAM and HiResW as the inputs being replaced.
+- **NAM MOS is not addressed.** It also retires that day under SCN 26-47, and SCN 26-89 does not say what happens to it as an input.
+
+Contact for the change: Geoff Manikin, Chief, Statistical Modeling Division, MDL (geoffrey.manikin@noaa.gov).
+
+---
+
 ## Planned future versions
 
 > **Status:** Unofficial. As of June 2026 there is no NWS Service Change Notice or PNS for either release below, and neither appears on the NBM versions page. The details here come from NOAA/NWS presentation decks and should be treated as a planning signal, not a commitment. No implementation date is recorded here pending a formal SCN.
@@ -170,8 +192,8 @@ Outlined in the NBM user webinar (April 15, 2026) and the WPC/HMT "NBMv5 Winter 
 
 The source decks referenced a tentative timeframe, but no date is recorded here until an SCN or the NBM versions page makes it official.
 
-### NBM v5.0.1 (interim, tied to RRFS/REFSv1)
-The same decks indicate that the RRFS/REFSv1 implementation will likely force an interim **v5.0.1**, in which the **NAM and HiResW inputs are dropped from the NBM** (the new RRFS deterministic run and REFS members take their place in the relevant suites, including winter). When the decks were prepared (Feb/Apr 2026), RRFS/REFSv1 was expected around mid-July 2026; it has since been formally scheduled for **August 31, 2026 at 12 UTC** under NWS SCN 26-48, so any v5.0.1 cutover would be expected to align with that date rather than the earlier deck estimate. The RRFS/REFS-era winter input weights were described as effectively finalized but subject to change pending evaluation of RRFS/REFS output.
+### NBM "v5.0.1" (interim, tied to RRFS/REFSv1) — now formalized by SCN 26-89
+The same decks indicated that the RRFS/REFSv1 implementation would likely force an interim **v5.0.1**, in which the **NAM and HiResW inputs are dropped from the NBM** (the new RRFS deterministic run and REFS members take their place in the relevant suites, including winter). When the decks were prepared (Feb/Apr 2026), RRFS/REFSv1 was expected around mid-July 2026. SCN 26-48 then scheduled it for August 31, 2026, and later updates moved it to October 6, October 14 and finally **November 3, 2026**. **This change is no longer only a planning signal.** SCN 26-89 formalizes the input swap for November 3, 2026, without a version number — see [Scheduled changes](#scheduled-changes). The decks described the RRFS/REFS-era winter input weights as effectively finalized but subject to change pending evaluation of RRFS/REFS output. SCN 26-89 confirms that weights are reassigned but gives no values.
 
 **Sources (presentation decks, not formal notices):**
 - NBM user webinar slides, April 15, 2026: https://www.weather.gov/media/wrn/calendar/NBMUserWebinar4-15-26.pdf
@@ -200,7 +222,7 @@ Input changes in v5.0:
 - Added ECAIFS (ECMWF AI/IFS) and AIGFS as inputs for temperature, wind speed, and QPF (all domains except no QPF over GU)
 - Higher-resolution GEFS surface guidance (0.25° through 240 h; vertical profile remains at 0.5°)
 - WPC MMEBC QPF added as input (CO)
-- SREF input usage eliminated (SREF itself is subsequently scheduled for retirement on October 6, 2026 under SCN 26-47; v5.0's removal of SREF as an input is what enabled folding SREF retirement into the first-wave RRFSv1 cutover rather than holding it for RRFSv2)
+- SREF input usage eliminated (SREF itself is subsequently scheduled for retirement on November 3, 2026 under SCN 26-47, after several date moves; v5.0's removal of SREF as an input is what enabled folding SREF retirement into the first-wave RRFSv1 cutover rather than holding it for RRFSv2)
 - Significant wave height bias correction now uses ~120 ensemble member inputs (up from 13 ensemble means)
 
 ### NBM v4.3 (operational May 27, 2025)
@@ -210,5 +232,7 @@ Intermediate release prior to v5.0, primarily focused on improvements to the NBM
 - https://vlab.noaa.gov/web/mdl/nbm
 - https://vlab.noaa.gov/web/mdl/nbm-model-inputs
 - NBM version history: https://vlab.noaa.gov/web/mdl/nbm-versions
+- NWS SCN 26-89 (October 2, 2026; NBM inputs switch from NAM/HiResW to RRFS/REFS, DRYTPROB and `YYA*** KWEI` discontinued, effective November 3, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf
+- NWS SCN 26-47, AAC update of October 2, 2026 (termination of NAM/SREF/HREF/HiresW/NAM MOS, effective November 3, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf
 - NWS SCN 26-24 (NBM v5.0 implementation, AAC revision dated April 28, 2026): https://www.weather.gov/media/notification/pdf_2026/scn26-24_Updated_NBM_V5.0_aac.pdf
 - NWS SCN 25-34 (NBM v4.3 implementation): https://www.weather.gov/media/notification/pdf_2025/scn25-34NBM_V4.3.pdf
