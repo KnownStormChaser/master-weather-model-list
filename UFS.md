@@ -4,7 +4,7 @@ This page indexes all NOAA models in this repository that are part of, are being
 
 The goal of this index is to make a coherent programme visible. Right now UFS shows up across the repository as separate line items — RRFSv1 here, GFSv17 there, RTOFS v3.0 elsewhere, NAM retirement somewhere else — but they are all parts of the same consolidation effort, scheduled and sequenced together. This page exists to surface that coherence.
 
-Last updated: September 2026.
+Last updated: October 2026.
 
 ---
 
@@ -37,15 +37,15 @@ UFS is not arriving as a single cutover. Components are being absorbed into UFS 
 2. **2024 — AQM v7 migrates to UFS-based architecture.** The atmospheric composition component of NAQFC moved from offline-coupled GFS-CMAQ to UFS-based online-coupled atmosphere-chemistry.
 3. **2025 — RTOFS v2.5 deployed alongside HAFSv2.1.** RTOFS itself stays on HYCOM in v2.5; the UFS-relevant connection is that HAFSv2.1 is initialized from RTOFS v2.5, tightening the operational dependency between these systems.
 4. **October 13, 2026 — HAFS v2.2.** A version upgrade rather than a consolidation step, but it resyncs the operational hurricane system to the February 12, 2026 UFS revision and refreshes the MOM6 and WAVEWATCH III submodules, so it is where the UFS component stack lands in operations for the tropical-cyclone application. Scheduled by NWS SCN 26-76 (September 9, 2026).
-5. **October 14, 2026 — RRFSv1 + REFS replace NAM, NAM Nest, HiresW (except Guam), HREF, and SREF.** This is the largest wave of retirements and the first time UFS replaces multiple regional systems simultaneously. The set is scheduled by NWS SCN 26-47 (termination) and SCN 26-48 (RRFS/REFS implementation), both updated September 9, 2026, for the 12 UTC cycle on October 14, with the standard CWD/ECE contingency for postponement. That September 9 update is the third slip: the July 6 update had moved the date from August 31 to October 6 and decoupled the real-time parallel feed to on or about August 11, 2026 (the feed actually began on August 12); an August 24 update (AAC) documented the `.idx` and BUFR files added to NOMADS without changing the date; and the September 9 update (AAD) moved the date to October 14, gave no reason, and documented ensemble member output and 13 km North America output. Notably, SREF is included in this wave — it was previously expected to persist into the second wave under RRFSv2, but NBM v5.0's elimination of SREF as an input earlier in 2026 removed the last major operational consumer, and the SCN folded SREF retirement into the RRFSv1 cutover.
-6. **October 14, 2026 — HYSPLIT 9.1 couples RRFS and drops NAM and HREF.** The dispersion-side consequence of the same-day NAM/HREF retirement: NOAA's operational transport and dispersion system is recoupled to RRFS on the day RRFS goes operational. Scheduled by NWS SCN 26-78 (September 9, 2026). See *Models that consume UFS outputs* below.
+5. **November 3, 2026 — RRFSv1 + REFS replace NAM, NAM Nest, HiresW (except Guam), HREF, and SREF.** This is the largest wave of retirements and the first time UFS replaces multiple regional systems simultaneously. The set is scheduled by NWS SCN 26-47 (termination) and SCN 26-48 (RRFS/REFS implementation), both updated October 2, 2026, for the 12 UTC cycle on November 3, with the standard CWD/ECE contingency for postponement. That October 2 update (SCN 26-47 AAC, SCN 26-48 AAE) is the fourth slip, moving the date from October 14 with no reason given. Beyond the date, AAE adds SBN/NOAAPORT WMO headers, corrects the parallel-feed start date to August 12, and drops the `(??)` ensemble BUFR lines. Earlier history: the July 6 update had moved the date from August 31 to October 6 and decoupled the real-time parallel feed to on or about August 11, 2026 (the feed actually began on August 12); an August 24 update (AAC) documented the `.idx` and BUFR files added to NOMADS without changing the date; and the September 9 update (AAD) moved the date to October 14, gave no reason, and documented ensemble member output and 13 km North America output. A companion notice issued alongside the October 2 updates, SCN 26-89, schedules the downstream consequences for the same cycle: NBM inputs switch from NAM/HiresW to RRFS/REFS, the NAM ObsProc dumps end, and the MAG website moves to RRFS/REFS. Notably, SREF is included in this wave — it was previously expected to persist into the second wave under RRFSv2, but NBM v5.0's elimination of SREF as an input earlier in 2026 removed the last major operational consumer, and the SCN folded SREF retirement into the RRFSv1 cutover.
+6. **November 3, 2026 — HYSPLIT 9.1 couples RRFS and drops NAM and HREF.** The dispersion-side consequence of the same-day NAM/HREF retirement: NOAA's operational transport and dispersion system is recoupled to RRFS on the day RRFS goes operational. Scheduled by NWS SCN 26-78 (September 9, 2026; AAA update of October 2, 2026, which moved it from October 14 in step with RRFS). See *Models that consume UFS outputs* below.
 7. **Targeted October 2026 (proposed) — GFSv17 + GDASv17.** GFS transitions from atmosphere-centric to a fully coupled Earth-system model with MOM6 ocean, CICE6 sea ice, and WAVEWATCH III waves all coupled via CMEPS. GDAS introduces JEDI-based DA for ocean, sea ice, and snow.
 8. **Proposed (March 2026 PNS) — RTOFS v3.0.** Replaces HYCOM with MOM6 and CICE4 with CICE6, aligning RTOFS with the rest of the UFS component stack.
 9. **Future — RRFSv2 (MPAS-based) replaces HRRR and RAP.** No formal retirement notification yet for these systems; they are expected to follow once RRFSv2 is operational.
 
-Each of these has slipped at least once relative to its original target date, and further slippage should be expected. The pattern of slippage is itself worth knowing about — UFS is a major undertaking and conservative scheduling is the norm rather than the exception. RRFSv1/REFS itself was originally targeted for "early 2026" under PNS 25-41, then to August 31, 2026 under SCN 26-48, then to October 6, 2026 in the July 6, 2026 update, and then to October 14, 2026 in the September 9, 2026 update.
+Each of these has slipped at least once relative to its original target date, and further slippage should be expected. The pattern of slippage is itself worth knowing about — UFS is a major undertaking and conservative scheduling is the norm rather than the exception. RRFSv1/REFS itself was originally targeted for "early 2026" under PNS 25-41, then to August 31, 2026 under SCN 26-48, then to October 6, 2026 in the July 6, 2026 update, then to October 14, 2026 in the September 9, 2026 update, and then to November 3, 2026 in the October 2, 2026 update.
 
-Note that October 13 and 14, 2026 now carry three separate implementations — HAFS v2.2, RRFS/REFS with its retirement wave, and HYSPLIT 9.1 — under three separate notices. The CWD/ECE contingency applies to each independently, so they can decouple: HAFS v2.2 is scheduled a day earlier and its SCN does not tie it to the RRFS cutover, while HYSPLIT 9.1 depends on RRFS being operational and would presumably follow any RRFS deferral.
+The three implementations that had clustered on October 13 and 14 — HAFS v2.2, RRFS/REFS with its retirement wave, and HYSPLIT 9.1 — have now decoupled, as this page had anticipated. The October 2, 2026 updates moved RRFS/REFS and HYSPLIT 9.1 together to November 3. SCN 26-76 for HAFS v2.2 was not updated, so HAFS stays on October 13. November 3 now carries RRFS/REFS, the legacy retirements, HYSPLIT 9.1 and the SCN 26-89 downstream changes, across four separate notices. The CWD/ECE contingency still applies to each independently, and SCN 26-78 words its provision differently ("next business day") from SCN 26-47/26-48 ("12 UTC on the next eligible weekday").
 
 ---
 
@@ -74,7 +74,7 @@ These systems already run on UFS infrastructure as of May 2026.
 These are the most operationally significant UFS transitions that are either imminent or in late-stage pre-operational status as of May 2026.
 
 ### [RRFS — Rapid Refresh Forecast System](./models/nwp_models/regional/usa/rrfs.md) and [REFS — RRFS Ensemble Forecast System](./models/ensemble_models/regional/usa/refs.md)
-- **Status:** Scheduled for operational implementation **October 14, 2026 at 12 UTC**, subject to CWD/ECE contingency
+- **Status:** Scheduled for operational implementation **November 3, 2026 at 12 UTC**, subject to CWD/ECE contingency
 - **UFS components used:** FV3 dynamical core (v1); MPAS planned for v2
 - **Replaces (all retiring on the same day):**
   - [NAM](./models/nwp_models/regional/usa/nam.md) (12 km parent and all 3 km nests including fire weather)
@@ -84,7 +84,7 @@ These are the most operationally significant UFS transitions that are either imm
   - SREF (not in this repository) — replaced by REFS
   - NARRE (not in this repository) — nominally replaced by REFS, but **already decommissioned on or about January 7, 2026** under SCN 25-87, so not part of this cutover
   - NAM MOS (not in this repository) — retired alongside NAM
-- **Authority:** [NWS SCN 26-48 AAD](https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aad.pdf) (implementation; issued May 12, 2026, updated July 6, August 24 and September 9, 2026 — the September update moves the date to October 14 and documents ensemble member output, 13 km North America output, and additional `.idx` and BUFR files on NOMADS); retirements under companion [SCN 26-47 AAB](https://www.weather.gov/media/notification/pdf_2026/SCN26-47_Updated_Retire_NAM_SREF_HREF_HiresW_NAM_MOS.aab.pdf) (termination; updated September 9, 2026). The retirement set was originally proposed in [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025).
+- **Authority:** [NWS SCN 26-48 AAE](https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aae.pdf) (implementation; issued May 12, 2026, updated July 6, August 24, September 9 and October 2, 2026 — the September update documented ensemble member output, 13 km North America output, and additional `.idx` and BUFR files on NOMADS; the October update moves the date to November 3 and adds SBN/NOAAPORT WMO headers); retirements under companion [SCN 26-47 AAC](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf) (termination; updated October 2, 2026); downstream NBM/ObsProc/MAG changes under [SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026). The retirement set was originally proposed in [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025).
 - **Pre-implementation real-time feed:** Live since the **12 UTC cycle on August 12,
   2026**, in two channels now at full parity — byte-identical GRIB2, `.idx` sidecars and
   BUFR soundings, 922 + 922 + 2 files per RRFS synoptic cycle:
@@ -94,7 +94,7 @@ These are the most operationally significant UFS transitions that are either imm
     at `/nccf/com/para/noaaport/{rrfs,refs}/` — index files added between August 15 and
     21, 2026; BUFR soundings added at the August 23 18 UTC cycle
 
-  Post-implementation paths (from October 14, 2026) are `/nccf/com/rrfs/prod/` and
+  Post-implementation paths (from November 3, 2026) are `/nccf/com/rrfs/prod/` and
   `/nccf/com/refs/prod/`. The `s3://noaa-rrfs-pds` prototype bucket is **frozen** as of
   August 12, 2026 and uses an incompatible internal layout. Model output is unchanged
   across all of these moves.
@@ -105,9 +105,9 @@ These are the most operationally significant UFS transitions that are either imm
   disseminated. Verified layout: five members `m001`–`m005`, 00/06/12/18 UTC only,
   `prslevnomads` and `2dfldnomads` file types (note the `nomads` suffix, absent from
   deterministic filenames), `conus`/`ak` at 3 km and `hi`/`pr` at 2.5 km, f000–f060 hourly,
-  every GRIB2 file with an `.idx` sidecar. **No ensemble BUFR** — the AAD lists
-  `class1.bufr` and `bufrsnd` lines but marks both with a literal `(??)`, and neither
-  exists in the bucket. Presence on NOMADS is unconfirmed (NOMADS was unreachable when this
+  every GRIB2 file with an `.idx` sidecar. **No ensemble BUFR** — the AAD listed
+  `class1.bufr` and `bufrsnd` lines but marked both with a literal `(??)`, and neither
+  exists in the bucket. The AAE update of October 2, 2026 removed both lines. Presence on NOMADS is unconfirmed (NOMADS was unreachable when this
   was checked); the AAD's own wording implies it should be there. Native-level output
   remains undistributed. The 13 km North America grid that the AAD also "adds" has in fact
   been present since the bucket opened on August 13, 2026 — that part of the update is
@@ -144,14 +144,14 @@ These are the most operationally significant UFS transitions that are either imm
   - Higher-resolution GDPS (15 km) and REPS (10 km) inputs (these are Canadian, not UFS-related)
   - **AIGFS** (NOAA's operational AI global model) added as input for temperature, wind speed, and QPF
   - **ECAIFS** (ECMWF's AI/IFS hybrid) similarly added
-  - **SREF eliminated** as an input — this is operationally significant because it removed the last major downstream consumer of SREF, and the August 31, 2026 SCN folded SREF retirement into the first wave alongside RRFSv1/REFS rather than holding it for RRFSv2
-- **Notes:** NBM's evolving input set tracks the UFS rollout indirectly. As GFSv17, RRFSv1, and REFS go operational, expect future NBM upgrades to incorporate them and remove their predecessors.
+  - **SREF eliminated** as an input — this is operationally significant because it removed the last major downstream consumer of SREF, and SCN 26-47 folded SREF retirement into the first wave alongside RRFSv1/REFS rather than holding it for RRFSv2
+- **Notes:** NBM's evolving input set tracks the UFS rollout indirectly. For RRFSv1 and REFS this is now formally scheduled: [SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026) replaces the NBM's NAM and HiresW inputs with RRFS and REFS on November 3, 2026. GFSv17 has no equivalent notice yet.
 
 ---
 
 ## Scheduled retirements (first wave — with RRFSv1)
 
-These systems are scheduled for retirement on **October 14, 2026 at 12 UTC**, on the same cycle that brings RRFSv1 and REFS into operations. The retirement set was originally proposed in NWS PNS 25-41 (June 26, 2025); the retirements are scheduled by NWS SCN 26-47 (termination) and RRFS/REFS implementation by companion SCN 26-48, both updated September 9, 2026 (which moved the date from October 6 to October 14). Subject to the standard CWD/ECE contingency.
+These systems are scheduled for retirement on **November 3, 2026 at 12 UTC**, on the same cycle that brings RRFSv1 and REFS into operations. The retirement set was originally proposed in NWS PNS 25-41 (June 26, 2025); the retirements are scheduled by NWS SCN 26-47 (termination) and RRFS/REFS implementation by companion SCN 26-48, both updated October 2, 2026 (which moved the date from October 14 to November 3). Subject to the standard CWD/ECE contingency.
 
 | Retiring system | Replacement | Notes |
 |---|---|---|
@@ -163,12 +163,13 @@ These systems are scheduled for retirement on **October 14, 2026 at 12 UTC**, on
 | NARRE (not in repo) | REFS | **Already retired**, on or about January 7, 2026 under [SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf) — not named in SCN 26-47 and not part of this wave. Its hourly 12-h ensemble guidance is succeeded by REFS's 60-h forecasts |
 | NAM MOS (not in repo) | Post-processed RRFS-based statistical guidance | Retired alongside NAM |
 | NAM and HREF coupling into HYSPLIT | RRFS coupling into HYSPLIT | Retired under a separate notice, SCN 26-78 (HYSPLIT 9.1), on the same day. Removes the `hysplit.tCCz.nam*` and `hysplit.tCCz.rens.{hiresw,hrrr,nam}.m0M` ARL-packed input files |
+| NAM and HiresW inputs to the NBM; NAM ObsProc dumps; NAM, SREF and HRW pages on the MAG website | RRFS and REFS (NBM, MAG); none (ObsProc) | Retired under a separate notice, SCN 26-89, on the same day. HREF and NAM MOS are not addressed as NBM inputs |
 
 ---
 
 ## Expected future retirements (second wave — with RRFSv2)
 
-These systems are publicly signaled (through NOAA roadmap documents) but have **no formal retirement notification** as of May 2026. They are expected to be retired when RRFSv2 (MPAS-based) is operational, which has no announced date.
+These systems are publicly signaled (through NOAA roadmap documents) but have **no formal retirement notification** as of early October 2026 (NWS notification index re-checked 2026-10-03). They are expected to be retired when RRFSv2 (MPAS-based) is operational, which has no announced date.
 
 | Retiring system | Replacement | Status |
 |---|---|---|
@@ -177,7 +178,7 @@ These systems are publicly signaled (through NOAA roadmap documents) but have **
 
 These represent the second major retirement wave under UFS. Users with operational dependencies on HRRR or RAP should plan for migration to RRFS but should not expect this to happen in 2026.
 
-Note that SREF, which was previously listed in this second-wave table, was moved to the first wave — its retirement is now formally scheduled for October 14, 2026 under SCN 26-47.
+Note that SREF, which was previously listed in this second-wave table, was moved to the first wave — its retirement is now formally scheduled for November 3, 2026 under SCN 26-47.
 
 ---
 
@@ -205,14 +206,14 @@ The remaining UFS components in the 8-system target include atmospheric ensemble
 Some operational models do not themselves run on UFS but incorporate UFS-derived inputs:
 
 ### [NBM (National Blend of Models)](./models/nwp_models/regional/usa/nbm.md)
-NBM is a statistical post-processor, not a UFS component. But as UFS systems become operational, NBM ingests their output and discontinues legacy inputs. NBM v5.0 (May 2026) eliminated SREF as an input and added AIGFS — a pattern that will continue as RRFSv1, REFS, and GFSv17 go operational.
+NBM is a statistical post-processor, not a UFS component. But as UFS systems become operational, NBM ingests their output and discontinues legacy inputs. NBM v5.0 (May 2026) eliminated SREF as an input and added AIGFS. The next step is formally scheduled: under [SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026), the NBM replaces its NAM (12 km and 3 km) and HiresW inputs with RRFS and all RRFS-based REFS configurations on November 3, 2026, in both the Core and QMD systems, with the expert weights reassigned. The notice does not address HREF or NAM MOS as inputs, though both retire the same day. GFSv17 has no comparable notice yet.
 
-### [HYSPLIT](./models/air_quality_models/regional/usa/hysplit-dust.md) — RRFS coupling from October 14, 2026
-HYSPLIT is an offline-coupled Lagrangian dispersion model: it ingests pre-computed meteorological fields rather than computing meteorology itself, so its driving NWP source is a configuration choice that follows the operational suite. **HYSPLIT 9.1 (SCN 26-78, effective October 14, 2026) couples RRFS in and retires the NAM and HREF couplings**, on the same day those systems are retired. New ARL-packed input files are `hysplit.tCCz.rrfs.${domain}`, `hysplit.tCCz.rrfsfHH.${domain}` (HH = 00–42 in 6 h steps) and archived `hysplit.tCCz.rrfsa.${domain}`, for the 00/06/12/18 UTC cycles; the `hysplit.tCCz.nam*` set and the `hysplit.tCCz.rens.{hiresw,hrrr,nam}.m0M` regional-ensemble inputs are removed.
+### [HYSPLIT](./models/air_quality_models/regional/usa/hysplit-dust.md) — RRFS coupling from November 3, 2026
+HYSPLIT is an offline-coupled Lagrangian dispersion model: it ingests pre-computed meteorological fields rather than computing meteorology itself, so its driving NWP source is a configuration choice that follows the operational suite. **HYSPLIT 9.1 (SCN 26-78, AAA update of October 2, 2026, effective November 3, 2026) couples RRFS in and retires the NAM and HREF couplings**, on the same day those systems are retired. New ARL-packed input files are `hysplit.tCCz.rrfs.${domain}`, `hysplit.tCCz.rrfsfHH.${domain}` (HH = 00–42 in 6 h steps) and archived `hysplit.tCCz.rrfsa.${domain}`, for the 00/06/12/18 UTC cycles; the `hysplit.tCCz.nam*` set and the `hysplit.tCCz.rens.{hiresw,hrrr,nam}.m0M` regional-ensemble inputs are removed.
 
-This makes HYSPLIT the first NAQFC component to consume RRFS output, and it carries a **timing cost for catalogued data**: the higher-resolution input delays the dust products under `dustcs.YYYYMMDD/` by roughly 11–15 minutes at 06 UTC and 45–50 minutes at 12 UTC, with `canned_wfo` products 45–50 minutes late. Fixed-schedule pollers need wider windows from October 14.
+This makes HYSPLIT the first NAQFC component to consume RRFS output, and it carries a **timing cost for catalogued data**: the higher-resolution input delays the dust products under `dustcs.YYYYMMDD/` by roughly 11–15 minutes at 06 UTC and 45–50 minutes at 12 UTC, with `canned_wfo` products 45–50 minutes late. Fixed-schedule pollers need wider windows from November 3.
 
-The SCN's domain enumerations do not match its own prose — the intro lists `na, hi, ak, pr, firewx` for the RRFS forecast files, while the filename line lists `na, hi, pr, firewx` and puts `ak` on the `rrfsfHH` line together with `conus`. Treat the filename lines as authoritative and re-verify against `/pub/data/nccf/com/hysplit/prod/` after cutover. The notice also closes with a statement that Alaska and Hawaii "will continue using CMAQ v4" — CMAQ belongs to the [AQM](./models/air_quality_models/regional/usa/aqm.md) component rather than HYSPLIT, and no CMAQ v4 is documented in the current NAQFC chain, so this reads as carried-over boilerplate rather than a HYSPLIT statement. HYSPLIT-Dust is CONUS-only regardless.
+The SCN's domain enumerations do not match its own prose — the intro lists `na, hi, ak, pr, firewx` for the RRFS forecast files, while the filename line lists `na, hi, pr, firewx` and puts `ak` on the `rrfsfHH` line together with `conus`. Treat the filename lines as authoritative and re-verify against `/pub/data/nccf/com/hysplit/prod/` after cutover. The notice also closes with a statement that Alaska and Hawaii "will continue using CMAQ v4" — CMAQ belongs to the [AQM](./models/air_quality_models/regional/usa/aqm.md) component rather than HYSPLIT, and no CMAQ v4 is documented in the current NAQFC chain, so this reads as carried-over boilerplate rather than a HYSPLIT statement. HYSPLIT-Dust is CONUS-only regardless. The AAA update changed only the date and left both problems in place.
 
 ### Downstream coupled systems
 [HAFS](./models/tropical_cyclone_models/hafs.md) is initialized from [RTOFS](./models/ocean_models/global/us/rtofs-global.md), so RTOFS upgrades flow into HAFS in subsequent cycles. When RTOFS migrates to MOM6/CICE6 in v3.0, HAFS's ocean initialization will follow. Note the open question above about whether HFSA is still on HYCOM after v2.2 — if it has moved to MOM6, the RTOFS initialization path described here changes with it.
