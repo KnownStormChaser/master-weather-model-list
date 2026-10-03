@@ -5,7 +5,7 @@ The RRFS Ensemble Forecast System (REFS) is the **ensemble component** of NOAA's
 
 REFS is a regional, convection-allowing ensemble designed to provide probabilistic short-range forecast guidance for high-impact weather across North America. It is built on the UFS framework and is intended to replace the legacy HREF, SREF, and NARRE ensemble systems.
 
-REFS is scheduled to become operational on **October 14, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24 and September 9, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination. The five contributing RRFS ensemble members, unavailable through August, began publishing separately on **September 9, 2026** — see [Data availability](#data-availability).
+REFS is scheduled to become operational on **November 3, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24, September 9 and October 2, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination. The five contributing RRFS ensemble members, unavailable through August, began publishing separately on **September 9, 2026** — see [Data availability](#data-availability).
 
 ---
 
@@ -164,7 +164,7 @@ https://www.nco.ncep.noaa.gov/pmb/products/refs.
 ---
 
 ## Relationship to other models
-REFS is intended to fully replace the following legacy NCEP ensemble systems on October 14, 2026:
+REFS is intended to fully replace the following legacy NCEP ensemble systems on November 3, 2026:
 - **HREF** (High-Resolution Ensemble Forecast)
 - **SREF** (Short-Range Ensemble Forecast)
 - **NARRE** (North American Rapid Refresh Ensemble) — **already retired ahead of REFS.** **NARRE was already retired, separately and earlier.** The North American Rapid Refresh Time-Lagged Ensemble (NARRE-TL) was decommissioned on or about **January 7, 2026** under [NWS SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), which terminated the system and removed its data from NOMADS and FTPPRD. That is why NARRE is absent from SCN 26-47: it was gone nine months before the RRFSv1 cutover. PNS 25-41's grouping of NARRE into the RRFSv1 retirement wave was overtaken by events. REFS therefore takes over a role that had been vacant since January 2026, rather than displacing a running system.
@@ -174,6 +174,16 @@ Compared to the legacy systems:
 - REFS provides **00, 06, 12, and 18 UTC** cycles for all regions, including non-CONUS domains (HREF only ran twice daily for AK, HI, and PR — at 06Z/18Z for AK and PR, and at 00Z/12Z for HI)
 - NARRE's hourly 12-hour ensemble guidance is replaced by REFS's 60-hour forecasts updated every 6 hours
 - SREF, which had already lost its largest downstream consumer when NBM v5.0 (May 2026) eliminated SREF as an input, is folded into the REFS replacement set under SCN 26-48
+
+**REFS becomes an NBM input on the same cycle.** Under [SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf)
+(2026-10-02), the National Blend of Models replaces its NAM and HiresW inputs with RRFS and
+"all RRFS-based ensemble configurations" of REFS, in both the NBM Core and QMD systems, with
+the expert weights previously assigned to NAM and HiresW reassigned to RRFS and REFS. The
+same notice moves the Model Analysis and Guidance (MAG) website from HREF to REFS and
+removes SREF and its storm tracks. Separately, [SCN 26-78](https://www.weather.gov/media/notification/pdf_2026/scn26_78_Updated_HYSPLIT_%20v9.1_aaa.pdf)
+(HYSPLIT 9.1) retires the HREF coupling into HYSPLIT, including the
+`hysplit.tCCz.rens.{hiresw,hrrr,nam}.m0M` member inputs, and couples the deterministic RRFS
+in its place. No REFS coupling is added.
 
 REFS shares similarities with HREF in product types (mean, spread, PMM, LPMM, probabilities, EAS), but differs in membership composition and ensemble design. Where HREF was a "post-processing ensemble of opportunity" combining whatever convection-allowing models happened to be operationally available, REFS is built around the deterministic and ensemble components of a single UFS-based system (RRFS) with HRRR contributing supplemental members for CONUS/AK.
 
@@ -188,7 +198,7 @@ REFS shares similarities with HREF in product types (mean, spread, PMM, LPMM, pr
     https://noaa-rrfs-ops-pds.s3.amazonaws.com/index.html
   - **NOMADS, pre-implementation:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/para/
   - **NOMADS, NOAAPORT subset:** https://nomads.ncep.noaa.gov/pub/data/nccf/com/para/noaaport/refs/
-  - **NOMADS, post-implementation (from October 14, 2026):**
+  - **NOMADS, post-implementation (from November 3, 2026):**
     https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/prod/
 
 REFS shares the deterministic
@@ -208,9 +218,28 @@ domain for that product type alone. Either channel now supports pulling a single
 field. **Prefer S3 for anything older than 48 hours**, since NOMADS `para` retains only
 two days while the bucket has kept every date since it came up.
 
+**SBN/NOAAPORT subset.** The NOMADS `para/noaaport/refs/` directory is the AWIPS/NOAAPORT
+distribution subset, not a full channel. The AAE update of SCN 26-48 (2026-10-02) gives
+its WMO headers for the first time:
+
+| Region | Grid spacing | WMO headers |
+|---|---|---|
+| Alaska | 3 km | `A*[A-Q]*## KWDB` |
+| CONUS | 3 km | `Y*[A-Q]*## KWDB` |
+| Hawaii | 2.5 km | `H*[A-Q]*## KWDB` |
+| Puerto Rico | 2.5 km | `P*[A-Q]*## KWDB` |
+
+Per SCN 26-47, the SBN products are **3-hourly from f03 to f48 and then 6-hourly to f60**,
+for all domains and cycles — coarser than the hourly f01–f60 of the full `ensprod` feed.
+That cadence also differs from HREF's SBN products, which were hourly to f30, and the
+REFS WMO product list is different too. The removals are listed at
+https://www.emc.ncep.noaa.gov/rrfs_info/href_sbn_removals.txt, and the full header list is
+at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/. The contents of the NOAAPORT
+directory have not been checked against the SCN here.
+
 > **Individual members are now disseminated, as of 2026-09-09.** This reverses the
 > position recorded here through August 2026, when raw member output had had no open
-> channel since the 2026-08-12 cutover. SCN 26-48 AAD (2026-09-09) lists the members for
+> channel since the 2026-08-12 cutover. SCN 26-48 AAD (2026-09-09) listed the members for
 > the first time, and they appeared in the bucket the same day — the first object under
 > `s3://noaa-rrfs-ops-pds/rrfsens.20260909/` at 13:40:14 UTC, at the 12 UTC cycle.
 >
@@ -228,9 +257,9 @@ two days while the bucket has kept every date since it came up.
 > members as running "over the same NA region as the deterministic RRFS". The parameter
 > set is also much narrower than the deterministic files: `prslevnomads` carries 112
 > records (8 parameters on 14 pressure levels) against 675 in deterministic `prslev`, and
-> `2dfldnomads` carries 58 against 318. There is **no ensemble BUFR** — the AAD lists
-> `class1.bufr` and `bufrsnd` lines for the members but marks both with a literal `(??)`,
-> and neither exists.
+> `2dfldnomads` carries 58 against 318. There is **no ensemble BUFR** — the AAD listed
+> `class1.bufr` and `bufrsnd` lines for the members but marked both with a literal `(??)`,
+> and neither exists. The AAE update of 2026-10-02 removed both lines.
 >
 > The practical consequence for REFS users is that custom post-processing — bespoke
 > percentiles, neighbourhood probabilities at non-standard thresholds, member clustering —
@@ -273,6 +302,14 @@ two days while the bucket has kept every date since it came up.
 ---
 
 ## Status
+- **2026-10-02 — SCN 26-48 updated (AAE); implementation moved to November 3, 2026.**
+  The fourth slip, from October 14, with no reason given. REFS `ensprod` output is
+  unchanged in the listing. What the update adds for REFS is the SBN/NOAAPORT header
+  table (see [Data availability](#data-availability)). It also corrects the parallel-feed
+  start to August 12 and removes the `(??)` ensemble BUFR lines from the RRFS member
+  listing. Companion SCN 26-47 AAC moves the HREF and SREF terminations to the same date,
+  and the new SCN 26-89 makes REFS an NBM input — see [Relationship to other
+  models](#relationship-to-other-models).
 - **2026-09-09 — SCN 26-48 updated (AAD); implementation moved to October 14, 2026.**
   The third slip, from October 6, with no reason given. REFS `ensprod` output is unchanged
   by the update — the eight product types, four domains and f01–f60 coverage are as
@@ -294,13 +331,14 @@ two days while the bucket has kept every date since it came up.
 - **2026-08-12, 12 UTC — parallel feed live on NOMADS; AWS prototype frozen.** The
   pre-implementation real-time feed began at the 12 UTC cycle at
   `/pub/data/nccf/com/refs/para/`, one day later than the "on or about August 11" date in
-  SCN 26-48 — a date NOAA has since corrected to August 12 in its AWS Open Data Registry
-  entry, though not in the SCN itself. The prototype bucket stopped after the 06 UTC
+  SCN 26-48 — a date NOAA later corrected to August 12, first in its AWS Open Data
+  Registry entry and then in the SCN itself with the AAE update of 2026-10-02. The
+  prototype bucket stopped after the 06 UTC
   cycle. Combined `ensprod` products carried across unchanged; individual members did
   not.
-- Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48. HREF and SREF are named in SCN 26-47; NARRE is not, in any revision through AAB — because NARRE-TL had already been decommissioned on or about January 7, 2026 under [SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), well ahead of the RRFSv1 cutover.
+- Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48. HREF and SREF are named in SCN 26-47; NARRE is not, in any revision through AAC (2026-10-02) — because NARRE-TL had already been decommissioned on or about January 7, 2026 under [SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), well ahead of the RRFSv1 cutover.
 - Targeted for operational implementation alongside the deterministic RRFS, originally "early 2026"; slipped through pre-operational evaluation.
-- SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to October 6, 2026 at 12 UTC and setting the real-time parallel feed to begin on or about August 11, 2026. A further update on August 24, 2026 (AAC) documented the `.idx` and BUFR files added to NOMADS, without changing the implementation date. The September 9, 2026 update (AAD) moved implementation to **October 14, 2026 at 12 UTC** and added the ensemble member output listing.
+- SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to October 6, 2026 at 12 UTC and setting the real-time parallel feed to begin on or about August 11, 2026. A further update on August 24, 2026 (AAC) documented the `.idx` and BUFR files added to NOMADS, without changing the implementation date. The September 9, 2026 update (AAD) moved implementation to October 14, 2026 and added the ensemble member output listing. The October 2, 2026 update (AAE) moved it to **November 3, 2026 at 12 UTC** and added the SBN/NOAAPORT WMO headers.
 - **NWS Service Change Notice 26-48 (May 12, 2026)** scheduled REFS operational implementation for August 31, 2026 at 12 UTC, with HREF, SREF, and NARRE retiring on the same day. Per SCN 26-48, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday.
 - 2025 NOAA Hazardous Weather Testbed Spring Forecasting Experiment evaluations indicated REFS performed competitively with HREF for Day 1 and Day 2 forecasts, and slightly better for some objective metrics including deep convection (>40 dBZ) prediction. This supported the decision to proceed with HREF→REFS replacement.
 
@@ -336,15 +374,22 @@ two days while the bucket has kept every date since it came up.
 ---
 
 ## Official documentation
-- NWS Service Change Notice 26-48, **AAD update of September 9, 2026** — current version.
-  Moves implementation to October 14, 2026 and gives output paths for the five RRFS
-  ensemble members for the first time:  
+- NWS Service Change Notice 26-48, **AAE update of October 2, 2026** — current version.
+  Moves implementation to November 3, 2026 and adds the REFS and RRFS SBN/NOAAPORT WMO
+  headers:  
+  https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aae.pdf
+- NWS Service Change Notice 26-48 (AAD update, September 9, 2026 — superseded). The first
+  revision giving output paths for the five RRFS ensemble members:  
   https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aad.pdf
 - NWS Service Change Notice 26-48 (AAC update, August 24, 2026 — superseded). The last
   revision that documented the members without giving them a dissemination path:  
   https://www.weather.gov/media/notification/pdf_2026/scn26-48_updated_RRFS_and_REFS_Implementation_aac.pdf
-- NWS Service Change Notice 26-47, **AAB update of September 9, 2026** (termination of NAM/SREF/HREF/HiresW/NAM MOS):  
-  https://www.weather.gov/media/notification/pdf_2026/SCN26-47_Updated_Retire_NAM_SREF_HREF_HiresW_NAM_MOS.aab.pdf
+- NWS Service Change Notice 26-47, **AAC update of October 2, 2026** (termination of NAM/SREF/HREF/HiresW/NAM MOS):  
+  https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf
+- NWS Service Change Notice 26-89 (October 2, 2026) — downstream changes, including REFS as an NBM input:  
+  https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf
+- NWS Service Change Notice 26-78, **AAA update of October 2, 2026** (HYSPLIT 9.1; retires the HREF coupling):  
+  https://www.weather.gov/media/notification/pdf_2026/scn26_78_Updated_HYSPLIT_%20v9.1_aaa.pdf
 - NWS Service Change Notice 26-48 (original, May 12, 2026 — superseded):  
   https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf
 - NWS Public Information Statement 25-41 (legacy model retirement proposal, June 26, 2025):  
