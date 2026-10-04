@@ -166,7 +166,8 @@ https://radar.dhz.hr/~aladinhr/opendata/sailing
 
 ## Notes
 - The publicly accessible endpoints are a **subset** of the full operational ALADIN-HR system. Additional high-resolution and specialized outputs are produced internally or for partner institutions and are not part of this public distribution.
-- **Related systems run by / with DHMZ that are *not* part of this deterministic suite and are not described here:** the **A-LAEF** and **C-LAEF (AlpeAdria)** ALARO-based limited-area *ensemble* systems (developed within RC LACE and jointly with GeoSphere Austria; no confirmed open feed at the time of writing), and the **INCA** nowcasting/analysis system installed and configured for the Croatian domain in 2025 (DHMZ + GeoSphere Austria, via the EUMETNET Weather Forecasting Cooperation). INCA is a candidate for separate cataloging under the nowcasting category.
+- **C-LAEF AlpeAdria:** DHMZ co-develops and co-operates **C-LAEF AlpeAdria** with GeoSphere Austria and ARSO. It is a 1 km AROME-based convection-permitting ensemble (16 perturbed members + 1 control) covering the extended Alpine and Alps–Adriatic region, and it went operational in 2026. GeoSphere Austria publishes it as open data under CC BY 4.0, cataloged as [C-LAEF AlpeAdria](../../../ensemble_models/regional/austria/c-laef-alpeadria.md) (ensemble) and [C-LAEF AlpeAdria deterministic](../austria/c-laef-alpeadria-deterministic.md) (control member). The public GeoSphere grid stops at 43.0 °N, so it covers northern and central Croatia and the northern Adriatic but not southern Dalmatia. It is a separate system from ALADIN-HR and does not replace it.
+- **Related systems run by / with DHMZ that are *not* part of this deterministic suite and are not described here:** the **A-LAEF** ALARO-based limited-area *ensemble* system (developed within RC LACE; no confirmed open feed at the time of writing), and the **INCA** nowcasting/analysis system installed and configured for the Croatian domain in 2025 (DHMZ + GeoSphere Austria, via the EUMETNET Weather Forecasting Cooperation). INCA is a candidate for separate cataloging under the nowcasting category.
 - Other ALADIN/ALARO Central European deployments include [ALADIN Slovakia](../slovakia/aladin-slovakia.md), [ALADIN Slovenia](../slovenia/aladin-slovenia.md), [ALARO Belgium](../belgium/alaro-belgium.md), and the Hungarian and Czech systems documented under their respective country directories.
 - DHMZ is a member of the **RC LACE** regional cooperation and the broader **ACCORD** consortium; ALADIN-HR's data assimilation development (radar, all-sky IASI, future MTG-S1 IRS) is coordinated within these frameworks.
 
@@ -199,8 +200,8 @@ The earlier operational chain documented in Tudor et al. (2013) ran ALADIN at 8 
 ---
 
 ## Plans (per the 2024 RC LACE DA status report and 2025–2026 national posters)
-- Preparation of all-sky code for assimilation of **IASI** data (in the C-LAEF context; observation-error modeling implemented into cy48t3 and tested via a C-LAEF 3D-EnVar member as of 2025–2026 — research, not yet operational in ALADIN-HR)
-- Work on assimilation of **IRS data from MTG-S1** (in the C-LAEF context)
+- Preparation of all-sky code for assimilation of **IASI** data, in the [C-LAEF AlpeAdria](../../../ensemble_models/regional/austria/c-laef-alpeadria.md) context. Observation-error modeling was implemented in cy48t3 and tested through a C-LAEF 3D-EnVar member in 2025–2026. This is research and not yet operational in ALADIN-HR; whether it has reached the operational C-LAEF AlpeAdria configuration is TBD.
+- Work on assimilation of **IRS data from MTG-S1** (in the C-LAEF AlpeAdria context)
 
 > *METMONIC automatic-station integration, previously listed here as a plan, was completed — see version history (2026).*
 
