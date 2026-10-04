@@ -12,7 +12,7 @@ Its primary purpose is **monitoring during high-impact weather events**, where f
 - **Country / region:** Italy
 - **Model core developed by:** Deutscher Wetterdienst (DWD), within the ICON partnership (MPI-M, DWD, KIT, DKRZ, CSCS, COSMO, CLM)
 
-Responsibility for national NWP passed from Arpae Emilia-Romagna to Agenzia ItaliaMeteo in 2025; under a collaboration agreement, the two agencies now jointly maintain and develop the system.
+Responsibility for national NWP passed from Arpae Emilia-Romagna to Agenzia ItaliaMeteo in 2025; under a collaboration agreement, the two agencies now jointly maintain and develop the system. The suites are financed by ItaliaMeteo; the RUC (and the ensemble) are operated by Arpae personnel, while the main deterministic ICON-2I run is operated by Cineca personnel. Handover of suite management to Cineca is in progress, with development remaining under Arpae (Arpae contribution to the Italian national report, COSMO General Meeting 2026).
 
 ---
 
@@ -30,7 +30,8 @@ Responsibility for national NWP passed from Arpae Emilia-Romagna to Agenzia Ital
 - **Horizontal resolution:** 2.2 km (same as ICON-2I)
 - **Vertical levels:** 65 height-based terrain-following levels
 - **Forecast length:** Up to 24 hours
-- **Update frequency / cycles:** 6× daily, at 03, 06, 09, 15, 18, 21 UTC (interleaving with the 00/12 UTC main ICON-2I deterministic run)
+- **Update frequency / cycles:** 8× daily, every 3 hours (00, 03, 06, 09, 12, 15, 18, 21 UTC) — **live-verified 2026-10-04**. The 00 and 12 UTC RUC cycles run alongside, not instead of, the main ICON-2I deterministic runs at those times; both appear as separate cycle directories on MeteoHub.
+- **Temporal output resolution:** Hourly — **verified**: 25 messages per parameter file (steps 0–1440 min, encoded in minutes), identical at 00, 03, 12 and 21 UTC.
 - **Configuration:** Shares the operational ICON-2I configuration, including the **MICROFISICA-NEW** microphysics update (model version 2025-04) introduced on 26 May 2025.
 - **HPC:** Cineca (Galileo100 / Leonardo, and ItaliaMeteo's dedicated "Marco Polo" system)
 
@@ -79,10 +80,12 @@ Deterministic forecasts of:
 ---
 
 ## Notes
-- ICON-2I-RUC is the rapid-update sibling of the deterministic [ICON-2I](./icon-2i.md) — same model core, domain, 2.2 km grid, vertical levels, and data assimilation system, but more frequent initialization (6× daily) and a shorter +24 h forecast range. The two systems run in parallel and complement each other; the 20-member ensemble [ICON-2I-EPS](./icon-2i-eps.md) is documented separately.
-- It plays a role analogous to DWD's ICON-D2-RUC relative to ICON-D2, though the cadence differs (ICON-2I-RUC is 6× daily / +24 h; ICON-D2-RUC is hourly / +14 h).
+- ICON-2I-RUC is the rapid-update sibling of the deterministic [ICON-2I](./icon-2i.md) — same model core, domain, 2.2 km grid, vertical levels, and data assimilation system, but more frequent initialization (8× daily) and a shorter +24 h forecast range. The two systems run in parallel and complement each other; the 20-member ensemble [ICON-2I-EPS](./icon-2i-eps.md) is documented separately.
+- It plays a role analogous to DWD's ICON-D2-RUC relative to ICON-D2, though the cadence differs (ICON-2I-RUC is 3-hourly / +24 h; ICON-D2-RUC is hourly / +14 h).
 - Cycle directories on MeteoHub follow the format `YYYYMMDDHH/` (e.g. `2026042703/` for the 27 April 2026 03 UTC run). Each cycle directory contains one subdirectory per output parameter (see parameter index file linked above).
-- **Initial-time discrepancy in source material:** ItaliaMeteo's detailed operational tables list the six RUC initial times as 03, 06, 09, 15, 18, 21 UTC (interleaving with the 00/12 UTC main run); one summary slide instead lists eight 3-hourly times (00, 03, 06, 09, 12, 15, 18, 21 UTC). The six-time schedule is used here as the more consistent operational description, but this is worth confirming against the live MeteoHub cycle listing before publishing.
+- **Initial-time discrepancy resolved by live check (2026-10-04):** ItaliaMeteo's detailed operational tables list only six RUC initial times (03, 06, 09, 15, 18, 21 UTC), while one summary slide lists eight. The MeteoHub listing settles it in favour of **eight**: 32 of 34 3-hourly slots from 2026-09-30 00 UTC to 2026-10-04 03 UTC were present, including every 00 and 12 UTC slot except 2026-10-04 00 UTC, and the 00/12 UTC `T_2M` files are byte-identical in size (28,961,225 B) and step structure to the 03/21 UTC ones. The detailed tables appear to be out of date.
+- **Occasional missing cycles:** 2026-10-03 09 UTC and 2026-10-04 00 UTC were absent from the listing on 2026-10-04 while later cycles were present. Harvesters should not assume an unbroken 3-hourly sequence.
+- **File layout (verified):** one GRIB file per parameter per cycle containing all 25 hourly steps, named `ICON_2I_RUC_<YYYYMMDDHH>_<typeOfLevel>-<level>.grib` (e.g. `ICON_2I_RUC_2026100300_heightAboveGround-2.grib` under `T_2M/`).
 
 ---
 
