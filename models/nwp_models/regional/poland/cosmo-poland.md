@@ -1,13 +1,15 @@
 # COSMO (IMGW-PIB, Poland)
 
 ## What this model is
-COSMO is the convection-permitting regional deterministic limited-area model run operationally by IMGW-PIB over Poland and neighbouring Central Europe at 2.8 km. Since June 2020 the operational 2.8 km configuration has used the **EULAG** dynamical core (COSMO-EULAG, referred to by IMGW as **COSMO-CE PL**) in place of the earlier Runge–Kutta core, built on COSMO model version 5.05. It is nested in IMGW's coarser 7 km COSMO PL 7 run, which supplies its lateral boundary conditions and is itself driven by DWD's global ICON.
+COSMO is the convection-permitting regional deterministic limited-area model run operationally by IMGW-PIB over Poland and neighbouring Central Europe at 2.8 km. Since June 2020 the operational 2.8 km configuration has used the **EULAG** dynamical core (COSMO-EULAG, referred to by IMGW as **COSMO-CE PL**) in place of the earlier Runge–Kutta core. It was built on COSMO model version 5.05 at the switch and is now at **version 6.01** per IMGW's 2026 operational table. It is nested in IMGW's coarser 7 km COSMO PL 7 run, which supplies its lateral boundary conditions and is itself driven by DWD's global ICON.
 
 The full model output is published as GRIB1 through IMGW-PIB's public data portal under the product family `COSMO_HVD_*`. Unlike the [ALARO](./alaro-poland.md) and [AROME](./arome-poland.md) public products, **this feed is not regridded, not cropped and not downsampled in time**: it is delivered on the native rotated grid, at full domain size, on all 50 model levels, hourly to the full operational range.
 
-IMGW-PIB has stated (June 2026) that it is moving its public model data from COSMO to ICON-LAM. **No transition date has been announced**, and the COSMO feed remains live and complete as of the verification date below. This entry documents the feed as it currently exists; it is expected to be superseded by an ICON-LAM entry when that product appears.
+IMGW-PIB has stated (June 2026) that it is moving its public model data from COSMO to ICON-LAM. **No transition date has been announced** — the COSMO General Meeting 2026 report does not give one either — and the COSMO feed remains live and complete (re-checked 2026-10-04: no ICON-LAM product on either portal host). This entry documents the feed as it currently exists; it is expected to be superseded by an ICON-LAM entry when that product appears.
 
 > **Live-verified 2026-08-16** against the `COSMO_HVD_*` datastore using ecCodes 2.48.0 on the 2026-08-15 06 UTC cycle (`+000` and `+012` from both output streams, plus the constant file), together with HTTP probing of the full step and cycle space and the portal's own `getFilesList` / `getProductList` endpoints. Fields marked **(verified)** were read from the GRIB headers or from live server responses rather than taken from documentation. The `readme.txt` shipped with the data contradicts the files on several points — see *Decoding notes*.
+>
+> **Spot re-check 2026-10-04:** portal product list (no ICON-LAM product on `dane.imgw.pl` or `danepubliczne.imgw.pl`), and the 2026-10-03 00 UTC `+012` `/01` file (unchanged size, 120 messages, 50 hybrid layers).
 
 ---
 
@@ -47,29 +49,29 @@ Bounding box ≈ **46.60–57.70 N, 10.96–28.38 E**. Model orography (`HSURF`)
 
 ## Basic details
 - **Model type:** Regional deterministic NWP (limited-area), convection-permitting
-- **Model system / core:** COSMO 5.05 with the **EULAG** compressible semi-implicit dynamical core (COSMO-EULAG / "COSMO-CE PL"). **Flag:** the portal never states which dynamical core the public product comes from, and `generatingProcessIdentifier = 132` does not distinguish cores. The COSMO-CE identification rests on the IMGW poster series, which records the June 2020 switch and lists COSMO-CE PL as the only operational deterministic 2.8 km run since.
+- **Model system / core:** COSMO **6.01** with the **EULAG** compressible semi-implicit dynamical core (COSMO-EULAG / "COSMO-CE PL"). The version comes from IMGW's 2026 operational table (COSMO General Meeting 2026), which settles the 5.05 vs 6.01 conflict in the 2025 poster in favour of 6.01; the upgrade date is not documented. **Flag:** the portal never states which dynamical core the public product comes from, and `generatingProcessIdentifier = 132` does not distinguish cores. The COSMO-CE identification rests on the IMGW poster series, which records the June 2020 switch and lists COSMO-CE PL as the only operational deterministic 2.8 km run since.
 - **Dynamical formulation:** Non-hydrostatic
 - **Convection-allowing:** Yes (2.8 km; deep convection explicitly resolved). Note that the files nevertheless carry convective diagnostics — convective cloud cover, convective rain and snow, convective cloud base/top, CAPE_CON — so a shallow-convection scheme is active and the mass-flux diagnostics remain populated. See *What it provides*.
 - **Horizontal resolution:** 2.8 km (native, and as distributed — no regridding)
 - **Grid dimensions:** **380 × 405 (verified)**
-- **Vertical levels:** **50 model layers / 51 half levels (verified)**. Terrain-following height-based coordinate; the `pv` array gives reference-atmosphere parameters `p0sl = 100000 Pa`, `t0sl = 288.15 K`, `dt0lp = 42`, `vcflat = 11357 m`, and `pv[0] = 102` which on COSMO's convention (`ivctype + 100 · irefatm`) decodes to `irefatm = 1`, `ivctype = 2` — Gal-Chen-type height coordinate with reference atmosphere 1. *(Decode inferred from the COSMO convention, not from IMGW documentation — flag.)*
+- **Vertical levels:** **50 model layers / 51 half levels (verified, re-checked 2026-10-04)**. *Flag:* IMGW's 2026 operational table gives the 2.8 km grid as "380x405 x 41". The live files contradict this — the 2026-10-03 00 UTC `+012` `/01` file still carries 120 messages with hybrid-layer indices 1–50 and the same 36,980,160 B size as in August — so the table figure is treated as an error. Terrain-following height-based coordinate; the `pv` array gives reference-atmosphere parameters `p0sl = 100000 Pa`, `t0sl = 288.15 K`, `dt0lp = 42`, `vcflat = 11357 m`, and `pv[0] = 102` which on COSMO's convention (`ivctype + 100 · irefatm`) decodes to `irefatm = 1`, `ivctype = 2` — Gal-Chen-type height coordinate with reference atmosphere 1. *(Decode inferred from the COSMO convention, not from IMGW documentation — flag.)*
 - **Model top:** **22 km (verified** — half-level 1 is a constant 22000.0 m; the topmost layer's mean pressure at +12 h was 46.8 hPa**)**
 - **Forecast length:** **60 h (verified** — steps `+000` through `+060` all resolve; `+061` does not**)**
 - **Update frequency / cycles:** **4× daily (00, 06, 12, 18 UTC) — verified.** Four consecutive cycles were simultaneously resident on 2026-08-16.
 - **Temporal output resolution:** **Hourly (verified** — 61 files per cycle per stream, no gaps**)**
-- **Time step:** 20 s
+- **Time step:** 15 s (IMGW 2026 operational table; earlier posters gave 20 s)
 
 ---
 
 ## Data assimilation
 - **Data assimilation:** Yes — **nudging** (Newtonian relaxation), per the IMGW poster series, which lists a nudging assimilation scheme for COSMO-CE PL in every year sampled. The GRIB headers carry no assimilation indicator, so the files can neither confirm nor contradict this.
-- **Related but separate:** IMGW also runs a **COSMO-RUC** rapid-update configuration at 2.8 km with latent heat nudging of radar precipitation composites, feeding the SCENE / HAIL / SPT nowcasting systems at 10-minute resolution. That output is not part of this public feed.
+- **Related but separate:** IMGW also runs a **COSMO-RUC** rapid-update configuration at 2.8 km — 1 h analysis, 3 h forecasts, refreshed every **30 minutes (48 runs/day)** — assimilating OPERA radar surface rain intensity (SRI) via latent heat nudging, AMDAR, and ~380 telemetric surface stations. It serves aviation, nowcasting and flash-flood applications (SCENE / HAIL / SPT). Planned: replacing 15-minute OPERA input with 5/10-minute RainGRS+ composites, and two-moment microphysics (graupel and hail) "to be running operationally soon" (COSMO GM 2026). That output is not part of this public feed.
 
 ---
 
 ## Initial and boundary conditions
 - **Initial conditions:** Own nudging analysis on the 2.8 km domain
-- **Boundary conditions:** LBC from **COSMO PL 7** (7 km, 415 × 445, 40 levels, ~+86 h range), **1 h coupling interval**. COSMO PL 7 is in turn driven by **ICON Global** (DWD) with a 3 h LBC update interval. COSMO PL 7 output is **not** published on the public portal.
+- **Boundary conditions:** LBC from **COSMO PL 7** (7 km, 415 × 445, **51 levels**, **+96 h**, COSMO 6.01, dt = 40 s, per the 2026 operational table — earlier posters gave 40 levels and +86 h), **1 h coupling interval**. COSMO PL 7 is in turn driven by **ICON Global** (DWD) with a 3 h LBC update interval. COSMO PL 7 output is **not** published on the public portal.
 
 ---
 
@@ -184,22 +186,23 @@ No pressure-level output of any kind, and no precipitating hydrometeor mixing ra
 - **Retention is exactly four cycles (~24 h), with no archive.** On 2026-08-16 at 18:20 UTC the resident cycles were 2026-08-15 06/12/18 UTC and 2026-08-16 00 UTC; 2026-08-15 00 UTC and earlier returned nothing, and 2026-08-16 06 UTC had not yet appeared — a publication lag of **at least 18 h** after nominal cycle time, consistent with the ~16 h lag observed for ALARO/AROME. Critically, **COSMO does not appear in the portal's `Dane archiwalne` (archive) product list at all**, whereas `ALARO_pub` and `AROME_pub` do, with year folders 1970 and 2018–2026. The rolling 24 h window is the entire available history.
 - **Missing files return HTTP 200 with an HTML error page, not 404.** This differs from ALARO/AROME, which 404 cleanly. A harvester testing existence by status code will treat every absent step as present and every error page as data. Reliable tests: `Content-Type` (`application` for real files, `text/html` otherwise) on a HEAD request, or the `GRIB` magic bytes. **Range requests are ignored** — the server returns the whole file — so byte-probing is expensive.
 - **Concurrent requests produce false negatives.** An initial parallel probe (10 workers) of the 61-step space reported roughly 24 steps missing in each stream; sequential re-probing with retries found **all 61 present in both**. The server evidently throttles or drops concurrent connections in a way that is indistinguishable from a missing file given the point above. Serialise the probes and retry before concluding anything is absent.
-- **Ensemble sibling is not published.** IMGW runs **COSMO PL – TLE**, a 20-member time-lagged ensemble on the same 2.8 km / 380 × 405 domain, 4× daily to +60 h, with no data assimilation. It is used internally for EPS-based products (visibility/fog, tornado index, ML post-processing) and is **not** on the public portal — it belongs on the Wiki's "Systems Not in the Catalog" page rather than in an `ensemble_models/` entry, unless a feed appears.
-- **Parent model is also unpublished.** COSMO PL 7 (7 km) supplies the LBCs and is not distributed.
-- **Successor system:** IMGW's **ICON PL** (ICON-LAM, ~2.5 km equivalent, R2B10, 65 levels, +48 h, 4× daily, no DA, nested in R3B7 ICON Global) has run alongside COSMO since 2019 and, in IMGW's own verification, outperforms COSMO-CE PL for most surface and upper-air parameters. IMGW-PIB stated in June 2026 that the public data would move from COSMO to ICON-LAM, but **has given no date** and the ICON-LAM output is not yet on the portal. This entry should be revisited when it appears — as a new `icon-pl.md` entry rather than an edit here, since the two are different models.
+- **Ensemble sibling is not published.** IMGW runs **COSMO PL – TLE**, a 20-member time-lagged ensemble on the same 2.8 km / 380 × 405 domain, 4× daily to +60 h, with no data assimilation (soil perturbations of `T_SO` and soil physics; IC/BC via ICON → COSMO 7 km). IMGW plans to move it to ICON-LAM and widen its perturbation setup to increase spread (COSMO GM 2026). It is used internally for EPS-based products (visibility/fog, tornado index, ML post-processing) and is **not** on the public portal — it belongs on the Wiki's "Systems Not in the Catalog" page rather than in an `ensemble_models/` entry, unless a feed appears.
+- **Parent and coarse models are also unpublished.** COSMO PL 7 (7 km) supplies the LBCs and is not distributed. IMGW's 2026 table also lists a **COSMO 14 km** run (v5.05, 4× daily, +78 h, ICON-driven) that is likewise absent from the portal.
+- **Successor system:** IMGW's **ICON PL** (ICON-LAM version **2024.03**, ~2.5 km, R2B10, **294,638 cells** over a 14° × 14° domain, 65 levels, dt = 24 s, +48 h, 4× daily, no DA, 3-hourly ICON Global boundaries) has run alongside COSMO since 2019 and, in IMGW's own verification (2026 report, against COSMO-CE PL 6.01), outperforms COSMO-CE PL for most surface and upper-air parameters — with systematic wind speed/direction bias differences, more convective-season rain, and worse performance near the model top as open issues. A ~1 km configuration is running non-operationally; hectometric nests and ECOCLIMAP-SG + TERRA_URB are planned. IMGW-PIB stated in June 2026 that the public data would move from COSMO to ICON-LAM, but **has given no date** and the ICON-LAM output is not yet on the portal. This entry should be revisited when it appears — as a new `icon-pl.md` entry rather than an edit here, since the two are different models.
 - **Consortium context:** developed within the **COSMO** consortium. IMGW-PIB contributes the EULAG dynamical core work and leads/participates in the AWARE, INSPECT, CITTA, EPOCS, EGALITE and MILEPOST priority projects. Related COSMO deployments elsewhere in the catalogue should be cross-linked as they are added.
 
 ---
 
 ## Recent configuration history
-*(from the IMGW EWGLAM/SRNWP poster series, 2016–2025; the public feed carries no version metadata, so these are documentation-sourced rather than verified.)*
+*(from the IMGW EWGLAM/SRNWP poster series, 2016–2025, and the COSMO General Meeting 2026 report; the public feed carries no version metadata, so these are documentation-sourced rather than verified.)*
 
 - **2016 and earlier:** COSMO PL 7 km (415 × 445, 40 levels, +78 h) and COSMO PL 2.8 km (380 × 405, dt = 20 s, **+36 h**), plus a 2.8 km EPS.
 - **2019:** 2.8 km deterministic at **model version 5.01 with the Runge–Kutta core**, +48 h; COSMO PL 7 extended to +82 h. ICON PL begins semi-operational running in June 2019 at 00 UTC only.
 - **June 2020:** the operational 2.8 km run is **switched from Runge–Kutta (v5.01) to the EULAG core (v5.05)** — COSMO PL 2.8 becomes COSMO-CE PL. COSMO PL 7 extended to +86 h.
 - **2021:** configuration stable — COSMO-CE PL 2.8 km / +48 h / nudging / 1 h coupling from COSMO PL 7; ICON PL at 65 levels, 2× daily (00/12 UTC).
 - **Between Sept 2021 and Oct 2024:** deterministic and ensemble forecast range extended **+48 h → +60 h**; ICON PL moves to 4× daily at +48 h. The 60 h range matches the public feed as verified.
-- **2025:** ICON PL 2.6.2.2 verified against COSMO-CE PL 6.01 over JJA2024–MAM2025, with ICON PL better or equal for essentially all surface parameters. **Flag:** the 2025 poster gives the COSMO-CE PL version as **6.01** in the verification text while the operational-suite box on the same poster still reads **5.05**. The discrepancy is unresolved and the files carry no version field.
+- **2025:** ICON PL 2.6.2.2 verified against COSMO-CE PL 6.01 over JJA2024–MAM2025, with ICON PL better or equal for essentially all surface parameters. **Flag:** the 2025 poster gives the COSMO-CE PL version as **6.01** in the verification text while the operational-suite box on the same poster still reads **5.05**. The 2026 operational table lists 6.01, which resolves this in favour of 6.01 (the files still carry no version field).
+- **2026:** operational table (COSMO GM 2026) lists COSMO 2k8 at **v6.01**, dt = 15 s, +60 h, 4× daily; COSMO 7k at v6.01, 51 levels, +96 h; a COSMO 14k run (v5.05, +78 h); ICON-LAM at version 2024.03. COSMO-RUC documented at 30-minute refresh. No public-data transition date given.
 
 ---
 
@@ -212,6 +215,7 @@ No pressure-level output of any kind, and no precipitating hydrometeor mixing ra
 - COSMO GRIB I/O conventions (local tables, level coding, `pv` array): https://www.cosmo-model.org/content/model/cosmo/coreDocumentation/cosmo_io_guide_6.00.pdf
 
 ### Key references
+- Mazur, A. (on behalf of Wyszogrodzki, A.) (2026). *NWP/HPC @ IMGW-PIB: status and plans.* COSMO General Meeting 2026.
 - Mazur, A., Interewicz, W., Jaczewski, A., Jurczyk, A., Ośródka, K., Surowiecki, A., Szaton, M., Szturc, J., Wyszogrodzki, A. (2025). *Numerical Weather Prediction at IMGW-PIB.* 47th EWGLAM & 32nd SRNWP Meeting, 22–25 September 2025.
 - Linkowska, J., Jaczewski, A., Jurczyk, A., Ośródka, K., Szturc, J., Wyszogrodzki, A., Ziemiański, M., Interewicz, W. (2024). *Numerical Weather Prediction at IMGW-PIB.* 46th EWGLAM & 31st SRNWP Meeting, 30 September – 3 October 2024.
 - Linkowska, J., Mazur, A., Wójcik, D., Ziemiański, M. (2021). *Numerical Weather Prediction at IMGW-PIB.* 43rd EWGLAM & 28th SRNWP Meeting, 27 September – 1 October 2021.
