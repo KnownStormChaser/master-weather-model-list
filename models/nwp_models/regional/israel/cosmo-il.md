@@ -78,12 +78,17 @@ Access is "open to the public, upon signing term of use." To obtain permissions,
 
 ## Notes
 - **Related ECMWF-HPC suite:** IMS also runs a 2.5 km COSMO suite on ECMWF's HPC facility under the Optional Programme for Co-operating States — the deterministic **CO-IL2.5** and the 20-member ensemble **CO-IL-EPS** (Eastern Mediterranean, 25–39°E / 26–36°N, twice daily, ICs/LBCs from ECMWF ENS+HRES; developed with Arpae-SIMC, using MeteoSwiss FieldExtra). This is a distinct configuration from the downloadable 2.8 km COSMO-IL; the resolution difference (2.8 km vs 2.5 km) reflects the two separate setups. CO-IL-EPS would warrant its own ensemble entry if/when its raw data access is confirmed.
+  - **Possible replacement (COSMO GM 2026):** IMS's 2026 talk lists no COSMO ensemble. Its 20-member ensemble is now shown as **ICON-EPS** / "ICON EC 20 ensemble members" (2.5 km, IFS-driven, 00/12 UTC, +120 h). This suggests CO-IL-EPS has been superseded by an ICON-based ensemble; not confirmed by any IMS announcement. Any future ensemble entry should be based on the ICON system, not CO-IL-EPS.
+- **Resolution inconsistency in IMS material:** the 2026 talk's text list gives "COSMO: 2.8km resolution based on IFS", but the same slide's model-comparison panel labels it "COSMO-IMS/EC 2.5 km", and the domain slide shows "COSMO-IFS 2.5 km, 00/12, +90". The 2.5 km labels probably refer to the ECMWF-HPC CO-IL2.5 setup; this entry keeps 2.8 km for the downloadable product, pending a check of the data itself (*TBD*).
 - **Sibling model:** the IMS deterministic ICON-IL (ICON-LAM) covers a much larger southeast-Europe domain (separate entry).
 - **Same portal:** the Data Access page also offers INCA nowcasts (1 km, 72 h) — tracked separately under nowcasting — alongside radar and rain-analysis graphics and meteograms (rendered images, out of scope).
 
 ---
 
 ## Recent version history
+
+### 2026 — COSMO General Meeting talk
+No COSMO configuration change reported. IMS's operational focus has moved to ICON (six regional systems listed: four ICON, one WRF, one COSMO).
 
 ### 2014 — earlier local configuration (COSMO V4.26, 7 km + nested 2.8 km)
 Semi-operational IMS setup: COSMO V4.26 at 7 km with a nested 2.8 km domain, 50 vertical levels, driven by IFS/GME, run on a local SGI Linux cluster / AMD cores (Khain et al., COSMO poster, Sep–Oct 2014).
