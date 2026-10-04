@@ -10,7 +10,7 @@ The systems are designed for the topographically challenging Alpine region, wher
 ## Who runs it
 - **Organization:** MeteoSwiss (Federal Office of Meteorology and Climatology)
 - **Country / region:** Switzerland
-- **Compute:** Swiss National Supercomputing Centre (CSCS), "Alps" platform
+- **Compute:** Swiss National Supercomputing Centre (CSCS), "Alps" platform, run as HPC services across two sites (Lugano and Lausanne). Production runs on the vCluster **tasna** (44 GPU nodes with 4 × NVIDIA A100 each, plus 18 CPU nodes); failover and R&D on the vCluster **balfrin** (COSMO GM 2026 report)
 - **Model development:** ICON is developed jointly by DWD and the Max Planck Institute for Meteorology; MeteoSwiss participates via the C2SM (ETH Zurich et al.) and the COSMO consortium
 
 ---
@@ -27,7 +27,7 @@ The systems are designed for the topographically challenging Alpine region, wher
 - **Model system / core:** ICON (Icosahedral Nonhydrostatic), limited-area configuration
 - **Dynamical formulation:** Non-hydrostatic, on a triangular (icosahedral) horizontal grid
 - **Convection-allowing:** Yes — deep convection is explicitly resolved at both 1 km and 2.1 km; no deep-convection parameterization
-- **Horizontal resolution:** ~1 km (ICON-CH1-EPS) / ~2.1 km (ICON-CH2-EPS), on the native icosahedral grid
+- **Horizontal resolution:** ~1 km (ICON-CH1-EPS, grid **R19B08**) / ~2.1 km (ICON-CH2-EPS, grid **R19B07**), on the native icosahedral grid
 - **Vertical levels:** 80 full levels (81 half levels), terrain-following height-based coordinate (Lorenz staggering), model top at exactly 22,000 m (flat). Levels are numbered from top to bottom
 - **Model topography:** Reaches 4,440 m at its highest point (ICON-CH1-EPS; `HSURF` max = 4,439.98 m, min = −14.65 m)
 - **Horizontal grid cells:** 1,147,980 (ICON-CH1-EPS) / 283,876 (ICON-CH2-EPS) triangle centres — verified from the GRIB2 `numberOfDataPoints` key
@@ -50,6 +50,7 @@ The systems are designed for the topographically challenging Alpine region, wher
 ## Data assimilation
 - **System:** KENDA (Kilometre-scale Ensemble Data Assimilation)
 - **Method:** Local Ensemble Transform Kalman Filter (LETKF), producing an analysis ensemble that supplies the slightly differing initial conditions for the forecast ensemble
+- **Analysis ensemble size:** 40 members + 1 deterministic, run with the ICON-CH1 setup including **SPPT** stochastic physics perturbations (COSMO GM 2026 report)
 - **Cadence / grid:** The analysis ensemble is cycled **hourly** on the ICON-CH1-EPS 1 km / 80-level grid. ICON-CH2-EPS initial conditions are obtained by **upscaling** (interpolating) the ICON-CH1-EPS analysis to the 2.1 km grid every 6 hours
 - **Radar:** Weather-radar data are assimilated via **latent heat nudging (LHN)**, particularly valuable in the first forecast hours
 - **Observations:** Ground-based stations, radiosoundings, aircraft (AMDAR and Mode-S), wind profilers/radar, wind lidar, and ship/buoy reports
@@ -59,7 +60,7 @@ The systems are designed for the topographically challenging Alpine region, wher
 
 ## Initial and boundary conditions
 - **Initial conditions:** KENDA / LETKF analysis ensemble (see above)
-- **Boundary conditions:** ECMWF **IFS ENS** global ensemble (~9 km), which drives both ICON-CH1-EPS and ICON-CH2-EPS
+- **Boundary conditions:** ECMWF **IFS ENS** global ensemble (~9 km), which drives both ICON-CH1-EPS and ICON-CH2-EPS. The LBC feed is refreshed **4× per day**. *(The COSMO GM 2026 slide gives the resolution as "9 (18) km" without explaining the parenthetical — TBD.)*
 
 ---
 
@@ -162,21 +163,33 @@ Accumulated fields (`TOT_PREC`, `RAIN_GSP`, `SNOW_GSP`, `GRAU_GSP`, `RUNOFF_S`, 
 - **Known errors in the official parameter CSV** (verified against decoded GRIB2, July 2026): the pollen rows give `Standard Unit` as `60`, which is the GRIB2 `parameterNumber` for specific number concentration rather than a unit; and `TOT_PREC` is listed as `kg m-2 s-1` although the GRIB message decodes as `kg m**-2` accumulated from reference time (`stepRange 0-6`, PDT 11). Trust the GRIB keys over the CSV for units.
 - **Documented vs. actual forecast length:** the MeteoSwiss summary table states 33 h for ICON-CH1-EPS without qualification. Live STAC queries confirm the 03 UTC cycle genuinely extends to 45 h while all other cycles stop at 33 h.
 - **24 h retention** is the most operationally significant constraint for downstream archiving.
+- **Open Data launch date:** MeteoSwiss dates the public launch of its Open Data offering to **22 May 2025**.
+- **Possible future access route (not public):** MeteoSwiss reports a **pre-operational** DestinE Data-bridge deployment (FDB + Polytope) offering semantic access, feature extraction and an OGC EDR API. Whether this will be exposed publicly is not stated; the STAC route above remains the only open channel.
+- **Announced next release (autumn 2026 — not yet approved):** the COSMO GM 2026 report (status 16 September 2026) lists a release package in parallel testing with final approval pending. Several items would change **output definitions**, not just skill:
+  - revised **gust diagnostic** (`VMAX_10M` series would not be homogeneous across the change);
+  - revised **visibility diagnostic** (day/night; `VIS`);
+  - a new **precipitation-type diagnostic (PTYPE)**, which may appear as a new Open Data parameter;
+  - subgrid radiation–topography corrections with new EXTPAR fields, distinct from the grid-scale slope/shading active since March 2026;
+  - **TERRA-URB** urban scheme; revised APT soil-moisture handling; SSO drag, horizontal shear and Rayleigh damping changes; updated trace-gas concentrations.
+  - **3D radar reflectivity assimilation** (KENDA + EMVORADO) has a separate end-2026 target.
+  Record these under version history only once an ICON Info notice confirms them.
 
 ---
 
 ## Recent version history
 
-MeteoSwiss announces changes through two channels, both indexed on the [ICON-CH1/2-EPS changelog page](https://opendatadocs.meteoswiss.ch/e-forecast-data/e2-e3-numerical-weather-forecasting-model-changelog): **"ICON Info"** PDF notices for meteorological and assimilation changes, and plain changelog rows for dataset extensions. Notices cover **ICON-CH1-EPS, ICON-CH2-EPS and KENDA-CH1 jointly** — MeteoSwiss upgrades the three as a single model system, so a notice describing analysis changes is also a forecast change. No model version strings are published; upgrades are identified by effective date and occasionally by an ICON repository commit.
+MeteoSwiss announces changes through two channels, both indexed on the [ICON-CH1/2-EPS changelog page](https://opendatadocs.meteoswiss.ch/e-forecast-data/e2-e3-numerical-weather-forecasting-model-changelog): **"ICON Info"** PDF notices for meteorological and assimilation changes, and plain changelog rows for dataset extensions. Notices cover **ICON-CH1-EPS, ICON-CH2-EPS and KENDA-CH1 jointly** — MeteoSwiss upgrades the three as a single model system, so a notice describing analysis changes is also a forecast change. No model version strings are published on Open Data; upgrades are identified there by effective date and occasionally by an ICON repository commit. The **COSMO GM 2026 report** (speaker notes) does give the internal model and DA versions, recorded below.
 
 Note that the changelog lists five rows but records **four** upgrades: the "2026 Q1" row and the "2026-03-24" row link to two revisions of the same notice — the November 2025 advance announcement and the March 2026 confirmation — not to separate changes.
 
 ### 12 August 2026 — Adaptive Parameter Tuning (effective 12 UTC run)
+- **Versions:** ICON `icon-2025.10-mch-1.0`, DACE `2.27` (COSMO GM 2026 report). Introduced in KENDA-CH1 at 10 UTC and in both forecast ensembles at 12 UTC.
 - **Adaptive Parameter Tuning (APT)** introduced (Zängl 2023, 2026). Empirical land-surface parameters governing 2 m temperature and 2 m relative humidity are now adjusted automatically and continuously from time-averaged KENDA-CH1 analysis increments, varying in both time and space. The increment memory lives in the assimilation cycle and is passed to the forecasts at initialisation. **Consequence worth recording: the surface configuration is no longer static between upgrades** — these parameters drift with recently observed model error rather than being fixed at release.
 - Improvement is uneven across components: largest in KENDA-CH1, moderate in ICON-CH1-EPS, smallest in ICON-CH2-EPS — MeteoSwiss attributes the last to errors diagnosed on the 1 km analysis grid not always being representative of the 2.1 km forecast grid.
 - Mean error and error standard deviation both fall for `T_2M` and `RELHUM_2M` against surface and radiosonde observations. **`TD_2M` error standard deviation degrades slightly** — an expected trade-off, since dew point is derived from the tuned temperature and humidity fields. Wind, pressure, cloudiness and precipitation are essentially unaffected.
 - **Sea-surface and soil perturbations added to the KENDA-CH1 LETKF**, alongside a LETKF software update: sea-surface temperature, soil temperature and soil water content are now perturbed. This **increases ensemble spread in `T_2M` and `TD_2M`** in both forecast ensembles, which MeteoSwiss describes as a more realistic representation of forecast uncertainty. Relevant when comparing spread or reliability statistics across this date.
 - **External parameter fields corrected**, removing block-pattern artefacts in direct downward shortwave radiation. The ERA5 topography used to compute the reference pressure for vertical distribution of aerosol optical thickness is now bilinearly interpolated to the ICON grid instead of conservatively remapped; a sea-salt AOT artefact was also fixed, with only minor effect over the Alpine domain. ICON model repository commit `11fc76ba`.
+- Further items listed only in the COSMO GM 2026 report: additional **stratocumulus and interception-store tuning**, **AMDAR thinning**, and alignment of the DA configuration with DWD.
 - No user action required; no GRIB2 encoding change.
 
 ### 21 July 2026 — extended open data variable set
@@ -191,6 +204,7 @@ Note that the changelog lists five rows but records **four** upgrades: the "2026
 - ICON-CH2-EPS extended with pollen specific number concentration on the lowest full model level, control member only. See **What it provides** for the five species and their seasonal windows. Not added to ICON-CH1-EPS, which remains without pollen fields.
 
 ### 24 March 2026 — precipitation, radiation and temperature (effective 12 UTC run)
+- **Versions:** ICON `icon-2024.10-mch-1.0`, DACE `2.23` (COSMO GM 2026 report). Introduced in KENDA-CH1 at 10 UTC and in both forecast ensembles at 12 UTC. Technical changes alongside: CSCS software stack v8 and CUDA graphs in the forecast models.
 - **Single-moment cloud microphysics recalibrated** to reduce local overestimation of high precipitation intensities (> 5 mm/h), chiefly in convective situations: the saturation adjustment now permits supersaturation in updrafts (1% per 2 m s⁻¹ of updraft speed, capped by the cloud-liquid-to-specific-humidity ratio); the assumed rain drop size distribution shape now depends on local specific rainwater content, with the large-droplet shift applied only at light-to-moderate values; snow-to-graupel conversion efficiency by riming reduced; snow terminal fall velocity slightly reduced.
   - Caveats stated by MeteoSwiss: mean precipitation over larger regions and catchments is **not** substantially reduced; intense winter precipitation degrades slightly where it was already underestimated; and **summer convective precipitation ensemble spread is slightly reduced**.
 - **Slope correction and orographic shading of shortwave radiation activated**, substantially cutting the overestimation of global radiation and sunshine duration in Alpine valleys (largest reduction in winter, present in all seasons) and the winter daytime warm bias there. The Swiss Plateau is virtually unaffected.
@@ -210,3 +224,6 @@ Note that the changelog lists five rows but records **four** upgrades: the "2026
 - KENDA-CH1 analysis data: https://opendatadocs.meteoswiss.ch/e-forecast-data/e5-numerical-weather-analysis-data
 - Terms of use (CC BY 4.0): https://opendatadocs.meteoswiss.ch/general/terms-of-use
 - Example notebooks (data retrieval to visualization): https://github.com/MeteoSwiss/opendata-nwp-demos
+
+### Key references
+- Fuhrer, O. (2026). *Operational NWP and projects at MeteoSwiss.* COSMO General Meeting 2026, 17 September 2026.
