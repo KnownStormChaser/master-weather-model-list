@@ -12,7 +12,7 @@ It represents the Italian implementation of ICON, designed to resolve small-scal
 - **Country / region:** Italy
 - **Model core developed by:** Deutscher Wetterdienst (DWD), within the ICON partnership (MPI-M, DWD, KIT, DKRZ, CSCS, COSMO, CLM)
 
-Responsibility for national NWP passed from Arpae Emilia-Romagna to Agenzia ItaliaMeteo in 2025; under a collaboration agreement, the two agencies now jointly maintain and develop the system.
+Responsibility for national NWP passed from Arpae Emilia-Romagna to Agenzia ItaliaMeteo in 2025; under a collaboration agreement, the two agencies now jointly maintain and develop the system. The suites are financed by ItaliaMeteo; the main deterministic ICON-2I run is operated by Cineca personnel, while the ensemble and RUC suites are operated by Arpae personnel. Handover of all suite management to Cineca is in progress, with development remaining under Arpae (Arpae contribution to the Italian national report, COSMO General Meeting 2026).
 
 ---
 
@@ -86,6 +86,15 @@ ICON-2I output is also used as input ("downstream") for other operational models
 - ItaliaMeteo and Arpae participate in the COSMO Consortium, which adopted ICON as its primary modeling framework in 2021; ICON-2I development is coordinated within that community.
 - **Related variants (separate entries):** the operational ICON-2I chain also includes a rapid-update deterministic configuration (**ICON-2I-RUC**) and a 20-member ensemble (**ICON-2I-EPS**), documented separately.
 - A high-resolution regional reanalysis based on ICON-2I (**I-DREAM-IT**) is planned, and work toward a 1.1 km configuration (ICON-1I) is ongoing.
+- **Backup suite:** Arpae maintains an internal backup suite on the same grid and configuration, driven by **ICON-EU initial and boundary conditions with no data assimilation**. Whether backup-chain cycles ever reach the public archive, and whether they would be distinguishable there, is TBD.
+- **Institutional status (2026):** ItaliaMeteo reports that it is in a transitional phase under **special administration** (Special Commissioner Fabio Ciciliano), with full continuity of operational activities stated. Worth watching for changes to MeteoHub hosting or terms; ICON-2I cycles were still being published 2× daily under `/nwp/ICON-2I_SURFACE_PRESSURE_LEVELS/` on 2026-10-04.
+
+---
+
+## Recent version history
+- **26 May 2025:** MICROFISICA-NEW configuration (model version 2025-04) replaces model version 2.6.5.1.
+- **18 June 2024:** ICON-2I fully operational, replacing COSMO-2I.
+- **17 April 2024:** radar-volume assimilation (KENDA) combined with LHN becomes operational.
 
 ---
 
