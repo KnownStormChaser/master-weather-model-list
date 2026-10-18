@@ -16,8 +16,8 @@ At 2.2 km horizontal resolution it resolves deep convection explicitly, making i
 ## What area it covers
 - **Coverage:** Central Europe — Germany, Switzerland, Austria, the Benelux countries, and parts of neighbouring countries
 - **Native mesh extent:** 4.16°W – 20.54°E, 43.04°N – 58.17°N
-- **Lat–lon product extent:** 3.94°W – 20.34°E, 43.18°N – 58.08°N (a slightly inset rectangle; see *Data availability*)
 - **Topography range:** −51.93 m to 4,080.44 m (`HHL` half-level 66, excluding masked cells)
+- **Legacy lat–lon product extent (until 30 November 2026):** 3.94°W – 20.34°E, 43.18°N – 58.08°N
 
 ---
 
@@ -27,16 +27,20 @@ At 2.2 km horizontal resolution it resolves deep convection explicitly, making i
 - **Dynamical formulation:** Non-hydrostatic, on a triangular (icosahedral) horizontal grid
 - **Convection-allowing:** Yes (2.2 km; deep convection resolved explicitly)
 - **Horizontal resolution:** 2.2 km — R19B07 limited-area triangular grid, **542,040 cells**
-  - Verified from live GRIB2 headers: `gridType = unstructured_grid`, `numberOfDataPoints = 542040`, `numberOfGridUsed = 47`, `uuidOfHGrid = c6b12daa91ad64045b26c1b6452a2a20`. Matching grid file: `icon_grid_0047_R19B07_L.nc.bz2`. Identical grid identity to [ICON-D2-EPS](../../../ensemble_models/regional/de/icon-d2-eps.md), [ICON-D2-RUC](./icon-d2-ruc.md), and [ICON-D2-RUC-EPS](../../../ensemble_models/regional/de/icon-d2-ruc-eps.md).
-- **Public output grids:** native triangular grid **and** a **regular** latitude–longitude grid at 0.02°, 1215 × 746 = 906,390 points (see correction below)
+  - Verified from live GRIB2 headers (v1 feed, 2026-10-18 18 UTC run): `gridType = unstructured_grid`, `numberOfDataPoints = 542040`, `numberOfGridUsed = 47`, `uuidOfHGrid = c6b12daa91ad64045b26c1b6452a2a20`. Matching grid file: `icon_grid_0047_R19B07_L.nc`. Identical grid identity to [ICON-D2-EPS](../../../ensemble_models/regional/de/icon-d2-eps.md), [ICON-D2-RUC](./icon-d2-ruc.md), and [ICON-D2-RUC-EPS](../../../ensemble_models/regional/de/icon-d2-ruc-eps.md).
+- **Public output grid:** **native triangular grid.** The additional regular 0.02° lat–lon product **ends after 30 November 2026** — see *Data availability*.
 - **Vertical levels:** **65 full levels** (66 `HHL` half-levels), all published
-- **Model top:** **22,000 m** exactly — `HHL` half-level 1, spatially constant (`bitsPerValue = 0`). *This resolves the TBD carried in earlier versions of this entry.*
-- **Forecast length:** **48 hours, all eight cycles** (49 hourly steps, 0–48 h)
+- **Model top:** **22,000 m** exactly — `HHL` half-level 1, spatially constant (`bitsPerValue = 0`)
+- **Forecast length:** **48 hours, all eight cycles**
 - **Update frequency / cycles:** 8× daily, every 3 hours (00, 03, 06, 09, 12, 15, 18, 21 UTC)
-- **Temporal output resolution:** Hourly
-- **Cloud microphysics:** Single-moment bulk scheme. The rapid-update sibling [ICON-D2-RUC](./icon-d2-ruc.md) uses the two-moment Seifert–Beheng scheme. The published field set shows the difference directly: ICON-D2 distributes `qc`, `qi`, `qr`, `qs`, `qg` and a `q_sedim` diagnostic, but **no `qh` (hail)** and no `tqh` — those exist only in the two-moment configurations.
+- **Temporal output resolution:** two cadences
+  - **15-minutely, 0–48 h (193 steps)** for 29 precipitation, radiation, convective and column-integrated fields — see *What it provides*
+  - **Hourly, 0–48 h (49 steps)** for everything else
+- **Cloud microphysics:** Single-moment bulk scheme. The rapid-update sibling [ICON-D2-RUC](./icon-d2-ruc.md) uses the two-moment Seifert–Beheng scheme. The published field set shows the difference directly: ICON-D2 distributes `QC`, `QI`, `QR`, `QS`, `QG` and a `Q_SEDIM` diagnostic, but **no `QH` (hail)** and no `TQH` — those exist only in the two-moment configurations.
 
-> **Resolution wording — flag resolved.** Earlier versions flagged a tension between "2.2 km" and "~2.1 km average grid spacing." Both refer to the same grid (DWD grid number 47, R19B07, 542,040 cells). 2.2 km is DWD's official published figure and is used consistently across the ICON-D2 family; ~2.1 km appears in development-era COSMO General Meeting material as an average-spacing estimate. Use 2.2 km; the ~2.1 km figure is not a different configuration.
+> **Correction — temporal resolution.** Earlier versions gave ICON-D2's output as hourly only. According to DWD's 2 September 2026 newsletter, the legacy tree packed quarter-hour steps into hourly files (DWD's "1h windows", with `TOT_PREC` as the named example); legacy `tot_prec` file sizes are consistent with four steps per file. The v1 feed publishes each quarter-hour step as its own file, which is what makes the 15-minute cadence visible in a directory listing.
+
+> **Resolution wording.** 2.2 km is DWD's official figure for grid 47 (R19B07, 542,040 cells). A ~2.1 km average-spacing figure appears in development-era COSMO General Meeting material; it describes the same grid, not a different configuration.
 
 ---
 
@@ -57,29 +61,37 @@ The rapid-update [ICON-D2-RUC](./icon-d2-ruc.md) tightens this to an hourly cycl
 
 ## What it provides
 
-**131 parameter directories** per cycle. Level structure verified live 2026-08-06:
+**131 parameter directories** in the v1 tree. Against the legacy tree: `VIS` is gone and `FRZ_RAIN` is new; the count happens to be unchanged. Verified live 2026-10-18.
 
-| Level type | Levels | Parameters |
+| Level type (v1 `lvt1`) | Levels | Parameters |
 |---|---|---|
-| Single-level | — | the bulk of the set |
-| Model-level | **1–65** (1–66 for half-level fields) | `t`, `u`, `v`, `w`, `p`, `qv`, `qc`, `qi`, `qr`, `qs`, `qg`, `q_sedim`, `clc`, `tke` |
-| Pressure-level | **200, 250, 300, 400, 500, 600, 700, 850, 950, 975, 1000 hPa** (11) | `fi`, `t`, `u`, `v`, `relhum`, `omega` |
-| Soil-level | 0, 1, 2, 3, 5, 6, 9, 18, 27, 54, 81, 162, 243, 486, 729, 1458 | `t_so`, `w_so`, `w_so_ice`, `smi` |
-| Time-invariant | — | `hhl`, `hsurf`, `clat`, `clon`, `elat`, `elon`, `fr_land`, `fr_lake`, `depth_lk`, `soiltyp`, `plcov`, `lai`, `rootdp` |
+| Single-level (no `lvt1`) | — | 95 forecast fields + 13 time-invariant |
+| Model level (`150`) | **1–65** (1–66 for half-level fields) | `T`, `U`, `V`, `W`, `P`, `QV`, `QC`, `QI`, `QR`, `QS`, `QG`, `Q_SEDIM`, `CLC`, `TKE`, `HHL` |
+| Pressure level (`100`) | **11**: 200, 250, 300, 400, 500, 600, 700, 850, 950, 975, 1000 hPa (in Pa in the path) | `FI`, `T`, `U`, `V`, `RELHUM`, `OMEGA` |
+| Soil level (`106`) | `T_SO`: 0, 0.005, 0.02, 0.06, 0.18, 0.54, 1.62, 4.86, 14.58 m; `W_SO`/`W_SO_ICE`/`SMI`: 0, 0.01, 0.03, 0.09, 0.27, 0.81, 2.43, 7.29 m | `T_SO`, `W_SO`, `W_SO_ICE`, `SMI` |
+| Radar reflectivity threshold (`25`) | 18 dBZ | `ECHOTOP` |
+| Time-invariant | — | `HSURF`, `CLAT`, `CLON`, `ELAT`, `ELON`, `FR_LAND`, `FR_LAKE`, `FR_ICE`, `DEPTH_LK`, `SOILTYP`, `PLCOV`, `LAI`, `ROOTDP` (plus `HHL`) |
 
-Content includes temperature, wind, precipitation by type, humidity, pressure, cloud and hydrometeor fields; convection-allowing severe-weather diagnostics (`lpi`/`lpi_max`, `uh_max`/`uh_max_low`/`uh_max_med`, `sdi_2`, `dbz_850`/`dbz_cmax`/`dbz_ctmax`, `echotop`, `tcond_max`/`tcond10_mx`, `w_ctmax`, `vorw_ctmax`, `cape_ml`/`cin_ml`); aviation-relevant fields (`ceiling`, `vis`, `hzerocl`, `snowlmt`) migrated from COSMO-D2 in February 2021; lake (FLake) variables; and **synthetic Meteosat brightness temperatures** (`synmsg_bt_cl_ir10.8`, `synmsg_bt_cl_wv6.2`).
+**15-minute fields (193 steps):** `TOT_PREC`, `RAIN_GSP`, `RAIN_CON`, `SNOW_GSP`, `SNOW_CON`, `GRAU_GSP`, `PRR_GSP`, `PRS_GSP`, `PRG_GSP`, `ASWDIR_S`, `ASWDIFD_S`, `CAPE_ML`, `CIN_ML`, `LPI`, `SDI_2`, `DBZ_850`, `DBZ_CMAX`, `HZEROCL`, `SNOWLMT`, `HBAS_SC`, `HTOP_SC`, `TQC`, `TQI`, `TQR`, `TQS`, `TQG`, `TQV`, `SYNMSG_BT_CL_IR10.8`, `SYNMSG_BT_CL_WV6.2`. Every other single-level forecast field is hourly (49 steps); `WW` has 48 (no step 000).
 
-Time-integration conventions, verified by decoding `stepType`/`stepRange` at +12 h:
+Content includes temperature, wind, precipitation by type, humidity, pressure, cloud and hydrometeor fields; convection-allowing severe-weather diagnostics (`LPI`/`LPI_MAX`, `UH_MAX`/`UH_MAX_LOW`/`UH_MAX_MED`, `SDI_2`, `DBZ_850`/`DBZ_CMAX`/`DBZ_CTMAX`, `ECHOTOP`, `TCOND_MAX`/`TCOND10_MX`, `W_CTMAX`, `VORW_CTMAX`, `CAPE_ML`/`CIN_ML`); aviation-relevant fields (`CEILING`, `HZEROCL`, `SNOWLMT`); lake (FLake) variables; and **synthetic Meteosat brightness temperatures** (`SYNMSG_BT_CL_IR10.8`, `SYNMSG_BT_CL_WV6.2`).
+
+### Field changes in 2026
+- **`MH` — mixed layer depth (`mld`, metres)** — is now published on the native mesh (`/v1/m/icon-d2/p/MH/`, 49 steps). Until the v1 delivery it existed only in the lat–lon rendering; that version ends with the legacy tree.
+- **`VIS` (near-surface visibility)** is not carried into the v1 tree and disappears entirely after 30 November 2026. DWD's aviation weather service judged the ICON visibility field unsuitable for forecasting visibility under visual flight rules, and does not use it in any of its own aviation products. `CEILING` remains.
+- **`FRZ_RAIN` — accumulated freezing rain water equivalent** (`fzrawe`, `paramId = 231001`, kg m⁻², accumulated from run start, 49 steps). New in the v1 tree; its directory was created on 9 September 2026. It is not mentioned in DWD's 2 September newsletter and has no counterpart in the legacy tree.
+
+Time-integration conventions, verified by decoding `stepType`/`stepRange` (v1, 2026-10-18 18 UTC run):
 
 | Convention | `stepType` | PDT | Examples |
 |---|---|---|---|
-| Accumulated from run start | `accum` | 8 | `tot_prec`, `rain_gsp`, `rain_con`, `snow_gsp`, `grau_gsp`, `runoff_s` |
-| Averaged from run start | `avg` | 8 | `asob_s`, `athb_s`, `aswdir_s`, `alhfl_s` |
-| Max over the preceding hour | `max` | 8 | `vmax_10m` (`11-12`), `lpi_max`, `uh_max`, `w_ctmax` |
-| Max/min since last 6 h boundary | `max` / `min` | 8 | `tmax_2m` (`6-12`), `tmin_2m` |
-| Instantaneous | `instant` | 0 | `t_2m`, `pmsl`, `ww`, `cape_ml`, and all multi-level fields |
+| Accumulated from run start | `accum` | 8 | `TOT_PREC`, `RAIN_GSP`, `RAIN_CON`, `SNOW_GSP`, `GRAU_GSP`, `RUNOFF_S`, `FRZ_RAIN` |
+| Averaged from run start | `avg` | 8 | `ASOB_S`, `ATHB_S`, `ASWDIR_S`, `ALHFL_S` |
+| Max over the preceding hour | `max` | 8 | `VMAX_10M` (`11-12`), `LPI_MAX`, `UH_MAX`, `W_CTMAX` |
+| Max/min since last 6 h boundary | `max` / `min` | 8 | `TMAX_2M` (`6-12`), `TMIN_2M` |
+| Instantaneous | `instant` | 0 | `T_2M`, `PMSL`, `WW`, `CAPE_ML`, `MH`, and all multi-level fields |
 
-`ww` (WMO weather interpretation) has 48 steps rather than 49 — no step 000. Everything else, including `vmax_10m` and `tmax_2m`, carries a step-000 file.
+**Quarter-hour steps are encoded in minutes.** `TOT_PREC` at `PT012H15M` decodes as `stepUnits = m`, `stepRange = 0m-735m` (0 to 12 h 15 min). Hourly steps decode in hours (`0-12`). Tooling that assumes hours throughout will misread the 15-minute accumulation windows by a factor of 60 — the same hazard as [ICON-D2-RUC](./icon-d2-ruc.md).
 
 ---
 
@@ -87,58 +99,71 @@ Time-integration conventions, verified by decoding `stepType`/`stepRange` at +12
 - **Is the data free?** Yes — anonymous HTTPS, no registration
 - **License:** **CC BY 4.0**, attribution required. DWD's legal notice states that all open spatial data and spatial data services of DWD, as well as all DWD services designated as **EU High Value Datasets (HVD)**, may be re-used under CC BY 4.0 with source acknowledgement.
 - **Is the data downloadable?** Yes
-- **Data formats:** GRIB2, bzip2-wrapped (`.grib2.bz2`)
-- **Official download location:**
-  - https://opendata.dwd.de/weather/nwp/icon-d2/grib/
-  - Layout: `/<cycle>/<parameter>/icon-d2_germany_<grid>_<leveltype>_<YYYYMMDDHH>_<step>_<level|2d>_<param>.grib2.bz2`
-  - `<grid>` is `icosahedral` or `regular-lat-lon`; single-level files carry the literal token `2d` where multi-level files carry the numeric level.
-- **Server manifest:** https://opendata.dwd.de/weather/nwp/content.log.bz2
-- **Retention:** each cycle directory holds exactly one run — verified 2026-08-06, all eight cycles containing a single run date each. With eight cycles, a ~24 h rolling window.
-- **Volume:** **~53.4 GB and 108,589 files per run**, near-constant across cycles, so roughly **427 GB/day**. Split by grid: 22.37 GB / 54,272 files icosahedral, 30.87 GB / 54,317 files lat–lon.
-- **Publication latency:** first files ~43 min 50 s after cycle time; run completes ~1 h 16 min after. Measured 2026-08-06 00 UTC: 00:43:53 → 01:59:53 UTC.
+- **Data formats:** GRIB2, one message per file, **plain `.grib2`** (no bzip2 wrapper)
+- **GRIB2 packing:** `grid_ccsds` (CCSDS/AEC lossless), `bitsPerValue = 16`. A GRIB library without libaec/CCSDS support cannot decode these files.
+- **GRIB2 tables:** `tablesVersion = 19`, `localTablesVersion = 1`, `centre = edzw`, `typeOfProcessedData = fc`, `generatingProcessIdentifier = 11`, `missingValue = 9999`
+- **Bitmap:** every physical field carries one — `bitmapPresent = 1`, **16,968 of 542,040 cells masked (3.13%)**, the lateral boundary relaxation zone. `CLAT`/`CLON` cover the full mesh without a bitmap, so apply the bitmap before pairing coordinates with values.
+- **Official download location:** https://opendata.dwd.de/weather/nwp/v1/m/icon-d2/
 
-### The two grids differ in more than geometry
+### Path structure (v1)
+- **Single-level and time-invariant:**
+  `/p/{PARAM}/r/{YYYY-MM-DD}T{HH}%3A00/s/PT{hhh}H{mm}M.grib2`
+- **Multi-level:**
+  `/p/{PARAM}/lvt1/{25|100|106|150}/lv1/{level}/r/{run}/s/PT{hhh}H{mm}M.grib2`
 
-> **Correction to earlier versions of this entry.** This entry described the second output grid as a **rotated** lat–lon grid at 0.02°, "same spacing as the former COSMO-D2 lat-lon output". It is a **plain regular** lat–lon grid: `gridType = regular_ll`, with no rotated-pole keys present. COSMO-D2 did use a rotated grid, and the description appears to have carried over from it. The spacing is indeed 0.02°.
+Pressure levels are given in Pa, soil depths in metres, `ECHOTOP` by dBZ threshold. The run token's colon is percent-encoded as `%3A`. Example:
 
-| | Icosahedral | Regular lat–lon |
-|---|---|---|
-| `gridType` | `unstructured_grid` | `regular_ll` |
-| Points | 542,040 | **906,390** (1215 × 746) |
-| Spacing | 2.2 km | 0.02° × 0.02° |
-| Extent | native mesh | 356.06–20.34°E, 43.18–58.08°N |
-| **Packing** | **`grid_ccsds`** | **`grid_simple`** |
-| Masked cells (`t_2m` +12 h) | 16,968 (3.1%) | 151,528 (16.7%) |
-| Parameters | 130 | 127 |
+`https://opendata.dwd.de/weather/nwp/v1/m/icon-d2/p/U_10M/r/2026-10-18T18%3A00/s/PT000H00M.grib2`
 
-Three consequences worth planning around:
+- **Server manifest:** https://opendata.dwd.de/weather/nwp/content.log.bz2 (covers the v1 tree)
+- **Retention:** each run has its own directory; ~24 h rolling window across the eight cycles.
+- **Volume (v1):** **~27.3 GB and 58,641 files per run**, near-constant across cycles — roughly **218 GB/day**. More files than the legacy icosahedral set (54,272) because the 15-minute steps are no longer bundled; about half the legacy tree's combined daily volume, since the lat–lon copy is gone.
+- **Publication latency (v1):** first files ~43 min 50 s after cycle time; run completes ~1 h 15–17 min after. Measured 2026-10-18 00 UTC: 00:43:51 → 01:16:05 UTC.
 
-- **Only the native grid is CCSDS-packed.** The 16 June 2026 CCSDS switch applied to the icosahedral output; the lat–lon rendering is still `grid_simple`. Verified across `t_2m`, `tot_prec`, `pmsl`, and `cape_ml`. So a GRIB library without libaec can still read the lat–lon tree — the reverse of what the switch implies — while the lat–lon files are correspondingly larger (`t_2m` at +12 h: 973,926 bytes lat–lon vs 686,886 icosahedral, both bzip2-wrapped).
-- **The lat–lon grid is a rectangle over a non-rectangular domain**, so 16.7% of its points are masked, against 3.1% on the native mesh (the lateral boundary relaxation zone). Both carry `bitmapPresent = 1` and `missingValue = 9999`; readers that ignore the bitmap will see 9999 as a physical value, far more of it on the lat–lon grid.
-- **The parameter sets are not identical.** `clat`, `clon`, `elat`, `elon` are icosahedral-only (they are the mesh coordinates, meaningless on a regular grid). But **`mh` — mixed layer depth (`mld`, in metres) — is published only on the regular lat–lon grid**, verified live in both the manifest and the directory listing. There is no way to obtain it on the native mesh.
+### Legacy tree — discontinued after 30 November 2026
+The old layout at https://opendata.dwd.de/weather/nwp/icon-d2/grib/ (and `icon-d2-eps/`) stops after **30 November 2026** (DWD Open Data newsletter, 2 September 2026). With it goes the only regular lat–lon rendering in the D2 family.
 
-DWD ships CDO grid description and weight files for users interpolating the native grid themselves:
-- https://opendata.dwd.de/weather/lib/cdo/
-  - `icon_grid_0047_R19B07_L.nc.bz2` — grid description matching `numberOfGridUsed = 47`
-  - `ICON_D2_002_EASY.tar.bz2` — weights to a 0.02° target grid over the D2 domain
+- Layout: `/<cycle>/<parameter>/icon-d2_germany_<grid>_<leveltype>_<YYYYMMDDHH>_<step>_<level|2d>_<param>.grib2.bz2`, with `<grid>` either `icosahedral` or `regular-lat-lon`
+- **Lat–lon grid:** plain regular 0.02° (`gridType = regular_ll`, 1215 × 746 = 906,390 points, not rotated), still `grid_simple`-packed, 16.7% of points masked
+- 15-minute fields bundled four steps per hourly file
+- `VIS` present; no `FRZ_RAIN`; `MH` on the lat–lon grid only
+- ~22.9 GB / 54,272 files icosahedral plus ~31.7 GB / 54,317 files lat–lon per run; the lat–lon half finished ~2 h 00 min after cycle time
+
+### Grid files and regridding
+- **Grid definition file:** `icon_grid_0047_R19B07_L.nc`, from https://icon-downloads.mpimet.mpg.de/dwd_grids.xml (MPI-M).
+- **Regridding guide:** https://gitlab.opencode.de/dwd/open-data/regrid-native-icon-grid (cdo-based; produces the weights file as a by-product).
+- **`/weather/lib/cdo/` is deleted after 30 November 2026**, including `icon_grid_0047_R19B07_L.nc.bz2` and the prebuilt `ICON_D2_002_EASY.tar.bz2` weights for a 0.02° target grid. Users of the lat–lon product who want to keep that grid will need to generate their own weights.
 
 ---
 
 ## Notes
-- ICON-D2 is the convection-permitting limited-area member of DWD's ICON suite, driven by [ICON-EU](./icon-eu.md) boundaries. Its rapid-update sibling is [ICON-D2-RUC](./icon-d2-ruc.md) — same core, same domain, same grid, same 65 levels and 22 km model top, but **hourly cycling, a +27 h range, sub-hourly output, and two-moment microphysics**.
-- Ensemble counterparts: [ICON-D2-EPS](../../../ensemble_models/regional/de/icon-d2-eps.md) (3-hourly, +48 h, 20 members) and [ICON-D2-RUC-EPS](../../../ensemble_models/regional/de/icon-d2-ruc-eps.md) (hourly, **+27 h**, 20 members).
-- **ICON-D2 is the only member of the D2 family with a lat–lon product.** ICON-D2-EPS, ICON-D2-RUC, and ICON-D2-RUC-EPS are all distributed on the native mesh only. Anyone building a workflow around the lat–lon rendering of ICON-D2 will hit a wall the moment they reach for the ensemble or rapid-update siblings.
-- Standard ICON-D2 is distributed under the main `/weather/nwp/icon-d2/` path with the flat `<cycle>/<parameter>/` layout and bzip2-wrapped GRIB2. The newer `/weather/nwp/v1/m/` tier (hierarchical `p/…/r/…/s/` paths, uncompressed GRIB2) hosts ICON-D2-RUC, ICON-D2-RUC-EPS, [AICON-Global](../../global/germany/aicon-global.md), and the ICON-ART family.
-- **The 48-hour range applies to all eight cycles.** Verified live — every cycle reaches step 048 with 49 hourly steps. The predecessor COSMO-D2 ran 27 h with 45 h at 03 UTC only; that asymmetry no longer exists.
+- ICON-D2 is the convection-permitting limited-area member of DWD's ICON suite, driven by [ICON-EU](./icon-eu.md) boundaries. Its rapid-update sibling is [ICON-D2-RUC](./icon-d2-ruc.md) — same core, same domain, same grid, same 65 levels and 22 km model top, but **hourly cycling, a +27 h range, 5-minute precipitation output, and two-moment microphysics**.
+- Ensemble counterparts: [ICON-D2-EPS](../../../ensemble_models/regional/de/icon-d2-eps.md) (3-hourly, +48 h, 20 members) and [ICON-D2-RUC-EPS](../../../ensemble_models/regional/de/icon-d2-ruc-eps.md) (hourly, +27 h, 20 members).
+- **After 30 November 2026 the whole D2 family is native-grid only**, and all four systems share the same v1 path scheme. Workflows built on the ICON-D2 lat–lon rendering need regridding from that date.
+- **The 48-hour range applies to all eight cycles.** The predecessor COSMO-D2 ran 27 h with 45 h at 03 UTC only; that asymmetry no longer exists.
 - The ICON model code has been open source under a permissive licence since January 2024 (repository: https://gitlab.dkrz.de/icon/icon-model).
-- **ICON-D05** — a ~500 m configuration operational since 27 February 2025 per DWD's ICON Database Reference. It is initialized from an **interpolated ICON-D2 analysis** rather than running its own data assimilation, with 3-hourly cycling and a 48 h range. Earlier versions of this entry described it as a "nested domain" spawned by ICON-D2; "driven by an interpolated ICON-D2 analysis" is the more accurate framing, and it is closer to a separate limited-area configuration than to the two-way ICON↔ICON-EU nest. **ICON-D05 does not appear anywhere under `/weather/nwp/`** as of 2026-08-06, despite being referenced in DWD's 16 June 2026 CCSDS notice as already compressed — implying an internal or restricted distribution. Not catalogued; worth re-checking for an Open Data release.
+- **ICON-D05** — a ~500 m configuration operational since 27 February 2025 per DWD's ICON Database Reference, initialized from an interpolated ICON-D2 analysis rather than its own data assimilation, with 3-hourly cycling and a 48 h range. It does not appear anywhere under `/weather/nwp/` (re-checked 2026-10-18, including `v1/m/`). Not catalogued; worth re-checking for an Open Data release.
 
 ---
 
 ## Recent version history
 
+> Model-change notices are covered through 18 February 2026. Entries dated after that are Open Data distribution changes; DWD's ICON-D2 change notices since then have not yet been reviewed for this entry.
+
+### 30 November 2026 (scheduled) — lat–lon product, legacy tree, `VIS` and `lib/cdo` withdrawn
+Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon-d2/` and `/weather/nwp/icon-d2-eps/` stops after 30 November, ending the regular lat–lon product. `VIS` is withdrawn from all ICON Open Data deliveries. `/weather/lib/cdo/` is deleted.
+
+### 9 September 2026 — `FRZ_RAIN` appears in the v1 tree
+Accumulated freezing rain water equivalent added as a new ICON-D2 parameter (directory date). Not covered by the 2 September newsletter.
+
+### 2 September 2026 — v1 URL scheme
+ICON-D2 and ICON-D2-EPS published under `/weather/nwp/v1/m/`: native grid only, plain CCSDS-packed GRIB2, quarter-hour steps and ensemble members split into separate files, ISO 8601 run/step tokens. `MH` available on the native grid for the first time.
+
+### 16 June 2026 — CCSDS compression (effective 09 UTC run)
+All ICON, ICON-EPS, ICON-D2, and ICON-D2-EPS GRIB2 output switched to lossless CCSDS packing. In the legacy tree this applied to the icosahedral files only; the lat–lon rendering stayed `grid_simple`.
+
 ### 18 February 2026 — model version `icon-2025.04-dwd-4.0` (effective 09 UTC run)
-- **Revised ceiling diagnostic:** now uses a cloud-overlap assumption consistent with the layer-wise cloud cover fractions (`clcl`, `clcm`, …), diagnosing ceiling as the lowest layer where upward-integrated cloud fraction exceeds 50%. Fill value for grid points with too little cloud changed to **16 km above ground**, matching observation reports, rather than the height above sea level of the uppermost model level.
+- **Revised ceiling diagnostic:** now uses a cloud-overlap assumption consistent with the layer-wise cloud cover fractions (`CLCL`, `CLCM`, …), diagnosing ceiling as the lowest layer where upward-integrated cloud fraction exceeds 50%. Fill value for grid points with too little cloud changed to **16 km above ground**, matching observation reports, rather than the height above sea level of the uppermost model level.
 - **Revised visibility diagnostic:** the humidity contribution (relevant absent fog and precipitation) was reworked.
 - **ICON-D2-specific:** additional output field for SSO-corrected 10 m winds; adaptive surface friction restricted to grid points with small SSO standard deviation.
 
@@ -169,7 +194,7 @@ Extended adaptive parameter tuning (soil hydraulic diffusivity, land albedo, sno
 First assimilation of volumetric reflectivity and radial wind from **9 French radar stations** via EUMETNET OPERA. Also: removal of a rudimentary bias correction for near-saturated humidity observations, and correction of the vertical influence of SYNOP observations in the LETKF.
 
 ### 23 April 2024 — near-surface visibility output (effective 09 UTC run)
-`VIS` (near-surface visibility) added as an output variable for ICON-D2 and ICON-EU, requested by DWD's aviation forecasting offices for use alongside ceiling in VFR forecasting.
+`VIS` (near-surface visibility) added as an output variable for ICON-D2 and ICON-EU, requested by DWD's aviation forecasting offices for use alongside ceiling in VFR forecasting. (Withdrawn from Open Data after 30 November 2026.)
 
 ### 24 January 2024 — sea-ice bottom heat flux, `icon-2.6.6-nwp2` (effective 12 UTC run)
 Sea-ice scheme revised to account for ocean-to-ice heat flux; external parameter bugfix for false glacier points; adaptive time-step reduction extended to horizontal CFL exceedances.
@@ -191,9 +216,12 @@ ICON-D2 replaced COSMO-D2 as part of DWD's migration from the COSMO model family
 - DWD ICON-D2 change notices: https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/nwv_aenderungen_icon_d2_gesamt.html
 - DWD ICON change notices (all-configuration changes): https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/nwv_aenderungen_icon_gesamt.html
 - DWD ICON Database Reference Manual: https://www.dwd.de/DWD/forschung/nwv/fepub/icon_database_main.pdf
+- DWD Open Data newsletter, 2 September 2026 (v1 URL scheme, lat–lon shutdown, MH, VIS, lib/cdo): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_september2026_1.html
 - DWD Open Data root and terms: https://opendata.dwd.de/README.txt
 - DWD legal notice / licensing (CC BY 4.0, HVD): https://www.dwd.de/EN/service/legal_notice/legal_notice_node.html
-- DWD CDO grid description and weight files: https://opendata.dwd.de/weather/lib/cdo/
+- DWD Open Data v1 tree: https://opendata.dwd.de/weather/nwp/v1/m/icon-d2/
+- ICON grid definition files (MPI-M): https://icon-downloads.mpimet.mpg.de/dwd_grids.xml
+- DWD regridding guide for native ICON grids: https://gitlab.opencode.de/dwd/open-data/regrid-native-icon-grid
 - ICON open source repository: https://gitlab.dkrz.de/icon/icon-model
 
 ### Key references
@@ -203,4 +231,4 @@ ICON-D2 replaced COSMO-D2 as part of DWD's migration from the COSMO model family
 
 ---
 
-*Live verification performed 2026-08-06 against `https://opendata.dwd.de/weather/nwp/icon-d2/grib/` (all eight cycles, 2026-08-05 03 UTC through 2026-08-06 00 UTC) and the `/weather/nwp/content.log.bz2` manifest. GRIB2 headers decoded with ecCodes 2.48.0.*
+*Live verification performed 2026-10-18 against `https://opendata.dwd.de/weather/nwp/v1/m/icon-d2/` (full parameter and step census of the 18 UTC run; all eight cycles in the manifest), the legacy `https://opendata.dwd.de/weather/nwp/icon-d2/grib/` tree, and the `/weather/nwp/content.log.bz2` manifest. GRIB2 headers decoded with ecCodes 2.50.0.*
