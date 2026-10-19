@@ -1,7 +1,7 @@
 # ICON-ART-EPS (Global Mineral Dust Ensemble)
 
 ## What this model is
-ICON-ART-EPS is the 10-member ensemble configuration of DWD's global [ICON-ART](./icon-art.md) mineral-dust forecast. It runs the same ICON dynamical core with the same online-coupled ART (Aerosols and Reactive Trace gases) module on the same ~26 km icosahedral grid as its deterministic sibling, and provides probabilistic guidance on mineral-dust emission, transport, sedimentation, and deposition — chiefly Saharan dust transported toward Europe — alongside a standard set of meteorological fields.
+ICON-ART-EPS is the 10-member ensemble configuration of DWD's global [ICON-ART](./icon-art.md) mineral-dust forecast. It runs the same ICON dynamical core with the same online-coupled ART (Aerosols and Reactive Trace gases) module on the same ~20 km icosahedral grid as its deterministic sibling (~26 km until 6 October 2026), and provides probabilistic guidance on mineral-dust emission, transport, sedimentation, and deposition — chiefly Saharan dust transported toward Europe — alongside a standard set of meteorological fields.
 
 It was published on the DWD Open Data Server in **April 2025** together with the deterministic ICON-ART, the regional ICON-ART-EU, and ICON-ART-EU-EPS, on the `/weather/nwp/v1/m/` tier that uses DWD's new URL scheme.
 
@@ -20,8 +20,9 @@ It was published on the DWD Open Data Server in **April 2025** together with the
 
 ## What area it covers
 - **Coverage:** Global
-- **Native grid (verified):** ICON icosahedral **R3B06** unstructured triangular mesh — **737,280 cells**, `numberOfGridUsed = 36`, `gridDefinitionTemplateNumber = 101`, `gridType = unstructured_grid`. ~26 km nominal spacing. Identical to the deterministic [ICON-ART](./icon-art.md) and to global [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md).
-- **Georeferencing:** GRIB2 messages carry **no lat/lon**. Either pair the files with the matching grid description (`icon_grid_0036_R03B06_G.nc.bz2` at https://opendata.dwd.de/weather/lib/cdo/), or use the `CLAT` and `CLON` parameter folders, which DWD publishes as GRIB fields on this tier specifically as a lighter alternative to the full grid file.
+- **Native grid (since 6 October 2026, verified):** DWD grid **#39**, unstructured triangular mesh — **1,310,720 cells**, `numberOfGridUsed = 39`, `uuidOfHGrid = 49c340e2248d11e58105c12d5e3b00a4`, `gridDefinitionTemplateNumber = 101`, `gridType = unstructured_grid`. ~20 km nominal spacing. Identical to the deterministic [ICON-ART](./icon-art.md) and to global [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md), which moved to the same grid on the same day.
+  - **Until 5 October 2026:** R3B06 grid #36, 737,280 cells, ~26 km. Data on the two grids cannot be combined cell by cell.
+- **Georeferencing:** GRIB2 messages carry **no lat/lon**. Use the `CLAT`/`CLON` (cell centres) and `ELAT`/`ELON` (vertices) folders, which DWD publishes as GRIB fields at step 0 — they changed with the grid on 6 October, so re-download them — or fetch the grid definition for grid number **39** from MPI-M (https://icon-downloads.mpimet.mpg.de/dwd_grids.xml). DWD's regridding guide is at https://gitlab.opencode.de/dwd/open-data/regrid-native-icon-grid. The old `/weather/lib/cdo/` directory never held a grid #39 file and is deleted after 30 November 2026.
 
 ---
 
@@ -29,21 +30,21 @@ It was published on the DWD Open Data Server in **April 2025** together with the
 - **Model type:** Air quality / atmospheric composition (ensemble)
 - **Model system / core:** ICON (Icosahedral Nonhydrostatic) + ART module, online-coupled — same core, grid, vertical structure, and physics as the deterministic ICON-ART
 - **Coupling:** Online — dust and meteorology evolve together within a single integration, with dust–radiation and dust–cloud feedbacks acting on the forecast
-- **Horizontal resolution:** ~26 km (R3B06). **Not coarsened relative to the deterministic sibling** — unusual for an ensemble, and worth noting when comparing against ICON/ICON-EPS, where the ensemble *is* coarser than the deterministic run.
-- **Vertical levels:** 120 model levels (verified from the published level indices, which reach 120 for full levels and 121 for `HHL` half levels). Only small subsets are distributed — see *What it provides*.
+- **Horizontal resolution:** ~20 km (grid #39) since 6 October 2026; ~26 km (grid #36) before. **Not coarsened relative to the deterministic sibling** — DWD's change notice states that for ICON-ART "the deterministic forecast and the ensemble forecasts (10 additional members) are conducted with the same resolution". Worth noting when comparing against ICON/ICON-EPS, where the ensemble *is* coarser than the deterministic run.
+- **Vertical levels:** 120 model levels (verified from the published level indices and the `HHL` header, `nlev = 121`). Unchanged by the October grid switch. Only small subsets are distributed — see *What it provides*.
 - **Forecast length (verified):**
   - **00 / 12 UTC:** +180 h
   - **06 / 18 UTC:** +120 h, meteorology only
 - **Update frequency / cycles:** 4× daily published (00, 06, 12, 18 UTC); **dust parameters at 00 and 12 UTC only**
 - **Temporal output resolution:** Parameter-dependent, with ten distinct step schedules in the 00/12 cycles — see *What it provides*. The 06/18 cycles are uniformly 6-hourly.
-- **Observed publication latency (verified, 2026-08-06 00 UTC run):** first files at 02:38 UTC, last at 03:15 UTC — roughly **T+2h40m to T+3h15m**, with lead times released progressively.
+- **Observed publication latency (v1, measured 2026-10-18/19):** first files ~2 h 37–41 min after cycle time; run complete ~3 h 13 min (06/18 UTC) to ~3 h 17–21 min (00/12 UTC). Example: 2026-10-19 00 UTC run 02:37:05 → 03:17:17 UTC; 2026-10-18 18 UTC run 20:38:48 → 21:13:52 UTC.
 
 ---
 
 ## Meteorological driver
 - **Driving NWP model:** Self — ICON-ART-EPS *is* ICON with ART, run as an ensemble. There is no external meteorological driver.
 - **Coupling:** Online (two-way)
-- **Initial and boundary conditions:** TBD. DWD does not document how the ICON-ART-EPS members are initialized or whether they inherit initial conditions from the 40-member global [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md) LETKF analysis. The shared R3B06 grid is suggestive but not evidence — see *Ensemble configuration*.
+- **Initial and boundary conditions:** TBD. DWD does not document how the ICON-ART-EPS members are initialized or whether they inherit initial conditions from the 40-member global [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md) LETKF analysis. The shared grid (#36 until October, #39 since) is suggestive but not evidence — see *Ensemble configuration*.
 
 ---
 
@@ -131,33 +132,43 @@ Only a fraction of the 120 model levels is published, and the subset differs sha
 
 > **The prognostic dust modes are surface-only in practice.** `DUSTA`/`B`/`C` — the actual prognostic variables — are published on just three near-surface levels, while the *diagnostic* `DUST_TOTAL_MC` gets 44 levels. Vertical dust structure is therefore available only as total mass concentration and backscatter, not resolved by mode.
 
-### Step schedules (00/12 UTC cycles, verified on the 2026-08-06 00 UTC run)
+### Step schedules (00/12 UTC cycles, re-verified on the 2026-10-18 12 UTC run)
 
-Ten distinct schedules coexist in a single run. Assuming a uniform time axis across parameters will silently drop data.
+Ten distinct schedules coexist in a single run — unchanged by the October grid switch except that `FI` and `RELHUM` were found to follow three different schedules depending on pressure level (earlier versions of this entry gave 22 steps for all levels). Assuming a uniform time axis across parameters, or across levels of one parameter, will silently drop data.
 
 | Steps | Schedule | Parameters |
 |---|---|---|
 | 180 | Hourly, 1–180 h | `VMAX_10M` |
-| 111 | Hourly to 75 h, then 3-hourly to 180 h | 34 params incl. `T_2M`, `TOT_PREC`, `PMSL`, `CLCT`, `W_SO`, `OMEGA` |
+| 111 | Hourly to 75 h, then 3-hourly to 180 h | 34 params incl. `T_2M`, `TOT_PREC`, `PMSL`, `CLCT`, `HTOP_CON`, `W_SO`, `OMEGA`; plus `FI` and `RELHUM` on the 300–1000 hPa levels (250 hPa excluded) |
 | 109 | Hourly to 72 h, then 3-hourly to 180 h | `TAOD_DUST` |
 | 61 | 3-hourly, 0–180 h | 19 params — all 15 dust accumulations, plus `DUST_TOTAL_MC`, `DUST_TOTAL_MC_VI`, `USTAR`, `USTAR_THRES` |
 | 60 | 3-hourly, 3–180 h (no step 0) | `ASWDIFD_S`, `ASWDIR_S` |
 | 49 | Hourly to 48 h | `LPI_CON_MAX` |
-| 31 | 6-hourly, 0–180 h | 11 params incl. `T`, `QV`, `P`, `T_SO` |
+| 31 | 6-hourly, 0–180 h | 11 params incl. `T`, `QV`, `P`, `T_SO`, `CLCT_MOD`, `PS`, `RELHUM_2M`; also `FI`/`RELHUM` at 250 hPa |
 | 30 | 6-hourly, 6–180 h (no step 0) | `TMAX_2M`, `TMIN_2M`, `ALHFL_S`, `ASHFL_S`, `ASWDIFU_S` |
-| 22 | 6-hourly to 72 h, then 12-hourly to 180 h | `FI`, `RELHUM`, `FR_ICE`, `H_ICE`, `H_SNOW`, `T_SNOW` |
+| 22 | 6-hourly to 72 h, then 12-hourly to 180 h | `FR_ICE`, `H_ICE`, `H_SNOW`, `T_SNOW`; also `FI`/`RELHUM` on the 1–200 hPa levels |
 | 20 | 6-hourly to 48 h, then 12-hourly to 180 h | 9 params — `AER_DUST`, `DUSTA`/`B`/`C`, `DUSTA0`/`B0`/`C0`, `CEIL_BSC_DUST`, `SAT_BSC_DUST` |
 | 1 | Step 0 only (invariant) | `CLAT`, `CLON`, `ELAT`, `ELON`, `FR_LAND`, `HHL`, `HSURF`, `SSO_STDH` |
 
 ### 06 / 18 UTC cycles
 
-Structurally a different product: **49 of the 97 parameters**, all meteorological, **zero ART fields**, on a uniform 6-hourly axis from 0 to +120 h (21 steps). Ensemble size is unchanged at 10 members. Present: `T_2M`, `TD_2M`, `U_10M`/`V_10M`, `VMAX_10M`, `TOT_PREC`, `PMSL`, `PS`, cloud layers, radiation terms, `T`/`QV`/`QC`/`QI`/`P` on the three near-surface levels, `T_SO`, and the invariant fields. Absent: every dust parameter, plus `CAPE_ML`, `RELHUM`, `FI`, `OMEGA`, `W_SO`, `TQV`/`TQC`/`TQI`, `RAIN_CON`/`RAIN_GSP`, `SNOW_CON`/`SNOW_GSP`, `FR_ICE`, `T_SNOW`, `W_SNOW`, `ALHFL_S`, `ASHFL_S`, `HBAS_CON`, `SSO_STDH`.
+Structurally a different product: **51 of the 97 parameters**, all meteorological, **zero ART fields**, mostly on a 6-hourly axis from 0 to +120 h (21 steps). Ensemble size is unchanged at 10 members. Re-verified on the 2026-10-18 06 and 18 UTC runs:
+
+- **6-hourly, 0–120 h (21 steps):** `T_2M`, `T_2M_L`, `TD_2M`, `TD_2M_L`, `U_10M`/`V_10M`, `TOT_PREC`, `PMSL`, `PS`, `RELHUM_2M`, `T_G`, `Z0`, `CLCH`/`CLCL`/`CLCM`/`CLCT`/`CLCT_MOD`, `ASOB_S`, `ASOB_S_CS`, `ASOB_T`, `ATHB_S`, `ATHB_T`, `SOBS_RAD`, `THBS_RAD`, and `T`/`U`/`V`/`P`/`QV`/`QC`/`QI` on the three near-surface model levels
+- **`FI` and `RELHUM` at 500 and 850 hPa only**, 21 steps. Earlier versions of this entry listed both as absent from 06/18; they are present, but on two levels only.
+- **6-hourly from +6 h (20 steps):** `ASWDIR_S`, `ASWDIFD_S`, `ASWDIFU_S`, `TMAX_2M`, `TMIN_2M`
+- **6-hourly to +72 h, then 12-hourly (17 steps):** `T_SO`, `H_ICE`, `H_SNOW`
+- **Hourly from +1 h to +120 h:** `VMAX_10M` (120 steps)
+- **Hourly to +48 h only:** `LPI_CON_MAX` and — unlike at 00/12 — `HTOP_CON` (49 steps)
+- **Step 0 only:** `CLAT`, `CLON`, `ELAT`, `ELON`, `FR_LAND`, `HHL`, `HSURF`
+
+Absent: every dust parameter (27), `USTAR`, `USTAR_THRES`, and `CAPE_ML`, `OMEGA`, `W_SO`, `TQV`/`TQC`/`TQI`, `RAIN_CON`/`RAIN_GSP`, `SNOW_CON`/`SNOW_GSP`, `FR_ICE`, `T_SNOW`, `W_SNOW`, `ALHFL_S`, `ASHFL_S`, `HBAS_CON`, `SSO_STDH`.
 
 ---
 
 ## Data availability
 - **Is the data free?** Yes
-- **License:** DWD Open Data licence (GeoNutzV; CC BY 4.0-compatible, attribution required). Covered by the EU High Value Datasets regulation.
+- **License:** **CC BY 4.0**, attribution required. DWD's legal notice places all its open spatial data and its EU High Value Datasets under CC BY 4.0 with source acknowledgement.
 - **Is the data downloadable?** Yes — plain HTTP, no registration
 - **Data format:** GRIB2, **uncompressed** (no `.bz2` wrapper on this tier). Internal `grid_ccsds` (CCSDS/AEC lossless) packing at `bitsPerValue = 16`, no bitmap. `tablesVersion = 19`, `localTablesVersion = 1`, `centre = edzw`.
 - **Official download location:**
@@ -167,12 +178,15 @@ Structurally a different product: **49 of the 97 parameters**, all meteorologica
   - `…/p/{PARAM}/lvt1/{levelType}/lv1/{level}/r/{run}/e/{NN}/s/PT{hhh}H{mm}M.grib2` — multi-level fields
   - `…/p/{PARAM}/wvl1/{nm}/lvt1/{levelType}/lv1/{level}/r/{run}/e/{NN}/s/PT{hhh}H{mm}M.grib2` — `CEIL_BSC_DUST` and `SAT_BSC_DUST` only
 
-  where `{levelType}` is the numeric GRIB2 `typeOfFirstFixedSurface` (100 = isobaric, 106 = depth below land surface, 150 = generalized vertical height coordinate), `{run}` is ISO-8601 (`2026-08-06T00:00`, URL-encoded as `2026-08-06T00%3A00`), and `{NN}` is the zero-padded member number.
+  where `{levelType}` is the numeric GRIB2 `typeOfFirstFixedSurface` (100 = isobaric, 106 = depth below land surface, 150 = generalized vertical height coordinate), `{run}` is ISO-8601 (`2026-10-18T12:00`, URL-encoded as `2026-10-18T12%3A00`), and `{NN}` is the zero-padded member number.
+
+  Example: `https://opendata.dwd.de/weather/nwp/v1/m/icon-art-eps/p/TAOD_DUST/r/2026-10-18T12%3A00/e/01/s/PT024H00M.grib2`
 
   **Requesting `…/{PARAM}/r/` on a multi-level parameter returns 404, not an empty listing** — the `lvt1/` segment is mandatory there. Probe `…/p/{PARAM}/` first to determine which variant applies.
 
 - **Decoding:** DWD specifies its GRIB definitions for ecCodes v2.32.0 or newer. Verification for this entry decoded all sampled messages, including the ART parameter names, with stock ecCodes 2.48.0.
-- **Retention (observed):** Roughly 24 hours of rolling coverage. Older runs retain their **complete** step list — the 2026-08-05 12 UTC run still carried all 109 `TAOD_DUST` steps from 0 to 180 h nearly 17 hours after initialization, and the 2026-08-05 06 UTC run all 21 of its steps at nearly 23 hours. **No pruning of elapsed lead times was observed.** This differs from the retention note carried in the [ICON-ART](./icon-art.md) and [ICON-ART-EU](../../regional/germany/icon-art-eu.md) entries, which describe elapsed steps being removed as a run ages; that claim should be re-verified on the deterministic feeds.
+- **Run volume (server manifest, 2026-10-18/19, all 10 members):** ~198 GB / 164,590 files per 00/12 UTC run; ~21.8 GB / 15,440 files per 06/18 UTC run. A full 00/12 run is the largest single download in DWD's ICON-ART family.
+- **Retention (observed):** Roughly 24 hours of rolling coverage — the four most recent runs. Older runs retain their **complete** step list; **no pruning of elapsed lead times** (re-confirmed 2026-10-19: the 2026-10-18 06 UTC run still held all 15,440 files about 18 hours after completion). The deterministic [ICON-ART](./icon-art.md) and [ICON-ART-EU](../../regional/germany/icon-art-eu.md) feeds have since been checked and behave the same way; their entries no longer describe pruning.
 
 ---
 
@@ -182,11 +196,13 @@ Structurally a different product: **49 of the 97 parameters**, all meteorologica
   - It states the forecast range is +120 h with the 00/12 UTC runs of **ICON-ART (global)** as the sole exception at +180 h. In fact the 00/12 UTC runs of **ICON-ART-EPS** also reach +180 h.
   - It states temporal resolution is "as a rule hourly to +51 h, then 3-hourly." Observed transitions are at +72 h (`TAOD_DUST`) and +75 h (the 111-step meteorological group), and eight further schedules exist that the sentence does not describe at all.
 
-  The announcement is accurate on member count (10), resolution (~26 km, Grid #36), native-grid-only distribution, per-member file splitting, and the absence of bzip2.
+  The announcement is accurate on member count (10), native-grid-only distribution, per-member file splitting, and the absence of bzip2. Its resolution (~26 km, Grid #36) was correct at the time but has been superseded by the 6 October 2026 upgrade to ~20 km, grid #39.
 
-- **No ART output in half the cycles is the single most important operational fact.** A pipeline that polls all four cycles will find meteorology four times a day and dust twice, with no error and no warning — the dust directories simply do not exist under `r/2026-08-05T06:00`. Poll 00 and 12 UTC for dust.
+- **No ART output in half the cycles is the single most important operational fact.** A pipeline that polls all four cycles will find meteorology four times a day and dust twice, with no error and no warning — the dust directories simply do not exist under the 06 and 18 UTC run folders (re-confirmed 2026-10-18). Poll 00 and 12 UTC for dust.
 
-- **The ensemble is not coarser than the deterministic run.** Same R3B06 mesh, same 737,280 cells, same 180 h range at 00/12 UTC. This is the opposite of the ICON/ICON-EPS pairing, where the ensemble runs at R3B06 against the deterministic model's R3B07. Users pairing ICON-ART and ICON-ART-EPS are working at a single resolution, which makes the pair unusually clean for spread–error analysis.
+- **The 6 October 2026 grid change splits any archive.** Grid #36 (26 km) before, grid #39 (20 km) after. Check `numberOfGridUsed` before stacking data across that date or building a climatology of member spread.
+
+- **The ensemble is not coarser than the deterministic run.** Same grid #39, same 1,310,720 cells, same 180 h range at 00/12 UTC. This is the opposite of the ICON/ICON-EPS pairing, where the ensemble (~20 km, grid #39) runs coarser than deterministic ICON Global (~13 km, grid #26). Users pairing ICON-ART and ICON-ART-EPS are working at a single resolution, which makes the pair unusually clean for spread–error analysis.
 
 - **`numberOfForecastsInEnsemble` is trustworthy here.** It reports 10 and ten members are published. This is worth stating explicitly because the equivalent key is unreliable in ECMWF's post-Cycle-50r1 open data (see [ENS-WAM](../../../wave_models/global/eu/ecwam-ens.md)); no such inconsistency exists on this feed.
 
@@ -200,11 +216,11 @@ Structurally a different product: **49 of the 97 parameters**, all meteorologica
 
 ## Relationship to other models
 
-- **[ICON-ART](./icon-art.md):** The deterministic global sibling — same core, grid, resolution, vertical structure, and ART configuration. Differences are in publication only: 139 parameters against 97, dust in all four cycles against two, and `DUST_MAX_TOTAL_MC_LAYER` present only in the deterministic feed.
-- **[ICON-ART-EU-EPS](../../regional/germany/icon-art-eu-eps.md):** The regional ensemble counterpart, also 10 members, on the same `/weather/nwp/v1/m/` tier.
+- **[ICON-ART](./icon-art.md):** The deterministic global sibling — same core, grid (#39), resolution, vertical structure, and ART configuration. Differences are in publication only: 139 parameters against 97, dust in all four cycles against two, and `DUST_MAX_TOTAL_MC_LAYER` present only in the deterministic feed.
+- **[ICON-ART-EU-EPS](../../regional/germany/icon-art-eu-eps.md):** The regional ensemble counterpart, also 10 members, on the ~10 km ICON-ART-EU-NA² nest (grid #61) — the nested domain of this same system per DWD's change notice.
 - **[ICON-ART-EU](../../regional/germany/icon-art-eu.md):** The regional deterministic dust forecast.
 - **[ICON-ART Pollen](../../regional/germany/icon-art-pollen.md):** DWD's limited-area ICON-ART pollen forecast — a separate configuration on a separate channel (daily-mean NetCDF under `/climate_environment/health/forecasts/pollen/`). It has **no ensemble counterpart** on the `v1/m/` tier, which carries only the four dust configurations.
-- **[ICON-EPS](../../../ensemble_models/global/de/icon-eps.md):** DWD's 40-member global meteorological ensemble, on the same R3B06 grid. The relationship to ICON-ART-EPS's 10 members is **not documented** — see *Ensemble configuration*.
+- **[ICON-EPS](../../../ensemble_models/global/de/icon-eps.md):** DWD's 40-member global meteorological ensemble, on the same grid #39 since 6 October 2026 (grid #36 before). The relationship to ICON-ART-EPS's 10 members is **not documented** — see *Ensemble configuration*.
 - **[CAMS Global](../eu/cams-global.md):** ECMWF's IFS-based global composition ensemble-free forecast, covering a far wider species set. For probabilistic composition guidance beyond dust, CAMS rather than ICON-ART-EPS is the relevant system.
 
 ---
@@ -212,6 +228,12 @@ Structurally a different product: **49 of the 97 parameters**, all meteorologica
 ## Recent version history
 
 ICON-ART-EPS has no independent change-notice series. It is upgraded as part of the wider ICON system; see the [ICON Global](../../../nwp_models/global/germany/icon-global.md#recent-version-history) and [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md#recent-version-history) entries for the full sequence.
+
+### After 30 November 2026 — `/weather/lib/cdo/` removed
+Announced in DWD's Open Data newsletter of 2 September 2026. This feed is already on the v1 URL scheme and never carried `VIS`, so the shutdown of the legacy ICON trees and the withdrawal of visibility on that date do not otherwise affect it.
+
+### 6 October 2026 — resolution increase (effective 06 UTC run)
+Per DWD's change notice of 6 October 2026 and the 28 July 2026 newsletter: ICON-ART (deterministic and the 10-member ensemble) refined from 26 km to 20 km globally (grid #36 → grid #39, 1.78× the grid points) and from 13 km to 10 km in the ICON-ART-EU-NA² nest (grid #51 → grid #61). Vertical resolution unchanged. ICON-EPS received the same global change. `CLAT`/`CLON`/`ELAT`/`ELON` changed with the grid. Test data for the 2026-07-15 00 UTC run were offered beforehand under `https://opendata.dwd.de/test/weather/nwp/v1/m/icon-art-eps/`. The CRPS gains DWD reports in the notice (typically 1–3% at the surface and in the lower troposphere) are for ICON-EPS meteorology; no dust-specific scores were given.
 
 ### 16 June 2026 — CCSDS packing
 DWD switched ICON-family GRIB2 output to CCSDS packing. On this tier the files are distributed uncompressed, so the change is visible directly as the `grid_ccsds` packing type rather than through a `.bz2` wrapper.
@@ -230,7 +252,12 @@ Mineral dust forecasting with ICON-ART became technically operational, after sev
 - DWD ICON-ART / COSMO-ART overview: https://www.dwd.de/EN/research/weatherforecasting/num_modelling/03_environmental_forecasts/icon_art_cosmo_art_en.html
 - ICON model / ART parameter documentation: https://docs.icon-model.org/atmosphere/art/art.html
 - KIT ICON-ART: https://www.icon-art.kit.edu/
-- DWD CDO grid descriptions and weight files: https://opendata.dwd.de/weather/lib/cdo/
+- DWD ICON grids at MPI-M: https://icon-downloads.mpimet.mpg.de/dwd_grids.xml
+- Regridding guide: https://gitlab.opencode.de/dwd/open-data/regrid-native-icon-grid
+- DWD Open Data newsletter, October resolution change (28 July 2026): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_juli2026_2.html
+- DWD Open Data newsletter, new URL scheme / VIS / lib/cdo (2 September 2026): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_september2026_1.html
+- DWD ICON-EPS / ICON-ART resolution upgrade notice (6 October 2026, `pdf_icon_eps_06_10_2026.pdf`): on DWD's ICON-EPS model-change notices page
+- DWD legal notice / licensing (CC BY 4.0, HVD): https://www.dwd.de/EN/service/legal_notice/legal_notice_node.html
 - DWD GRIB definitions for ecCodes: https://opendata.dwd.de/weather/lib/grib/
 
 ### Key references
@@ -240,4 +267,4 @@ Mineral dust forecasting with ICON-ART became technically operational, after sev
 
 ---
 
-*Live verification performed 2026-08-06 against `https://opendata.dwd.de/weather/nwp/v1/m/icon-art-eps/` (2026-08-05 06/12/18 UTC and 2026-08-06 00 UTC cycles). All 97 parameter folders enumerated for structure, level sets, cycle coverage, and step schedules; GRIB2 headers decoded with ecCodes 2.48.0; member distinctness confirmed by value comparison across members 01, 02, 05, and 10.*
+*Live verification performed 2026-08-06 against `https://opendata.dwd.de/weather/nwp/v1/m/icon-art-eps/` (2026-08-05 06/12/18 UTC and 2026-08-06 00 UTC cycles). All 97 parameter folders enumerated for structure, level sets, cycle coverage, and step schedules; GRIB2 headers decoded with ecCodes 2.48.0; member distinctness confirmed by value comparison across members 01, 02, 05, and 10. Re-verified 2026-10-18/19 after the 6 October grid change (2026-10-18 06/12/18 UTC and 2026-10-19 00 UTC runs): parameter list, step schedules and level sets from the server manifest (`content.log.bz2`), grid and ensemble keys from decoded headers; the member-spread figures above date from August, on the old grid.*
