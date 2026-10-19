@@ -27,7 +27,8 @@ ICON-EU-EPS is the probabilistic counterpart of DWD's deterministic [ICON-EU](..
 - **Convection-allowing:** No (deep convection parameterized)
 - **Ensemble size:** **40 members, numbered 1–40, inherited from ICON-EPS. There is no separate unperturbed control run.**
 - **Native horizontal grid (since 6 October 2026):** nest grid #63, **342,428 cells**, ~10 km
-  - Verified from live GRIB2 headers (v1 feed and legacy tree): `gridType = unstructured_grid`, `numberOfDataPoints = 342428`, `numberOfGridUsed = 63`, `uuidOfHGrid = f0e39c8238525790474a63af800a2dc0`. The cell density matches an R2B08 nest of the parent R2B07 global grid; DWD has not confirmed the grid name in anything reviewed for this entry.
+  - Verified from live GRIB2 headers (v1 feed and legacy tree): `gridType = unstructured_grid`, `numberOfDataPoints = 342428`, `numberOfGridUsed = 63`, `uuidOfHGrid = f0e39c8238525790474a63af800a2dc0`. DWD's 28 July 2026 Open Data newsletter confirms the change: 13 km → 10 km, new grid #63 with 2.08 times the grid points (164,984 × 2.08 ≈ 343,000). The newsletter does not name the grid type; the cell density matches an R2B08 nest of the parent R2B07 global grid.
+  - Not the same grid as ICON-ART-EU-EPS, which moved to a separate 10 km grid #61 on the same date.
   - Until 5 October 2026: R3B07 nest grid #37, 164,984 cells, ~13 km (`uuidOfHGrid = ae487d28fe2e11e4af85e50a2a56a360`). Data on the two grids cannot be combined cell-by-cell.
 - **Public output grid:** Native triangular grid only. **No regular latitude–longitude output is distributed.**
 - **Vertical levels:** **74 full levels** (75 `HHL` half-levels)
@@ -186,7 +187,7 @@ ICON-EU-EPS has no independent change-notice series. It is upgraded as part of t
 Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon-eu-eps/` stops after 30 November; `/weather/lib/cdo/` is deleted on the same date.
 
 ### 6 October 2026 — resolution increase and domain enlargement
-Nest mesh changed from R3B07 grid #37 (164,984 cells, ~13 km) to grid #63 (342,428 cells, ~10 km), with the domain extended — chiefly southward, to about 24.8°N. The global ensemble moved to ~20 km at the same time. Announced in DWD's 28 July 2026 Open Data newsletter; applies to both download trees. Vertical structure unchanged.
+Nest mesh changed from R3B07 grid #37 (164,984 cells, ~13 km) to grid #63 (342,428 cells, ~10 km), with the domain extended — chiefly southward, to about 24.8°N. The global ensemble moved to ~20 km at the same time. Announced in DWD's 28 July 2026 Open Data newsletter (13 → 10 km, grid #63, 2.08× the grid points, enlarged EU-nest domain), which also noted that the `CLAT`/`CLON` and `ELAT`/`ELON` coordinate fields change with the grid and offered test data for the 2026-07-15 00 UTC run under `/test/weather/nwp/icon-eu-eps/`. Applies to both download trees. Vertical structure unchanged.
 
 ### 2 September 2026 — v1 URL scheme
 Published additionally under `/weather/nwp/v1/m/icon-eu-eps/` (directory created 21 August 2026): one member per file, plain CCSDS GRIB2, ISO 8601 run/step tokens. Undocumented differences from the legacy tree: 91-step surface and pressure-level output, hourly `VMAX_10M`, pressure-level `T`/`U`/`V` in the 06/18 UTC cycles, and `HHL` reduced to half-levels 72–75.
