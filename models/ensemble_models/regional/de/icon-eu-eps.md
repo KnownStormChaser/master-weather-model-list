@@ -181,12 +181,14 @@ The old layout at https://opendata.dwd.de/weather/nwp/icon-eu-eps/grib/ stops af
 
 ICON-EU-EPS has no independent change-notice series. It is upgraded as part of the global ICON/ICON-EPS system, and DWD's notices state that changes apply to all global ICON configurations including the EU nests and ensemble systems. The nest-relevant items are listed here; see the [ICON-EPS](../../global/de/icon-eps.md#recent-version-history) and [ICON Global](../../../nwp_models/global/germany/icon-global.md#recent-version-history) entries for the full sequence.
 
-> Model-change notices are covered through 30 June 2026. Later entries are taken from Open Data newsletters and live data; the change notice for the 6 October 2026 upgrade has not been reviewed for this entry.
+> Model-change notices are covered through 6 October 2026. The September and November entries come from DWD's Open Data newsletters and live data.
 
 ### 30 November 2026 (scheduled) — legacy tree and `lib/cdo` withdrawn
 Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon-eu-eps/` stops after 30 November; `/weather/lib/cdo/` is deleted on the same date.
 
-### 6 October 2026 — resolution increase and domain enlargement
+### 6 October 2026 — resolution increase and domain enlargement (effective 06 UTC run)
+Per DWD's ICON-EPS change notice of 6 October 2026: the ensemble's European nest refined from 13 km to 10 km (the global part from 26 km to 20 km), vertical resolution unchanged. The nest domain — shared with deterministic ICON-EU — was enlarged mostly to the south, with a few rows added in the west and north to fully include Iceland and Norway. DWD reports CRPS reductions of typically 1–3% at the surface and in the lower troposphere from the higher ensemble resolution, mainly from better-resolved orography; the domain enlargement had no measurable impact on forecast quality.
+
 Nest mesh changed from R3B07 grid #37 (164,984 cells, ~13 km) to grid #63 (342,428 cells, ~10 km), with the domain extended — chiefly southward, to about 24.8°N. The global ensemble moved to ~20 km at the same time. Announced in DWD's 28 July 2026 Open Data newsletter (13 → 10 km, grid #63, 2.08× the grid points, enlarged EU-nest domain), which also noted that the `CLAT`/`CLON` and `ELAT`/`ELON` coordinate fields change with the grid and offered test data for the 2026-07-15 00 UTC run under `/test/weather/nwp/icon-eu-eps/`. Applies to both download trees. Vertical structure unchanged.
 
 ### 2 September 2026 — v1 URL scheme
@@ -222,6 +224,7 @@ ICON-EU-EPS became operational with ICON-EPS, at 20 km and 60 nest levels, with 
 - DWD ICON Database Reference Manual: https://www.dwd.de/DWD/forschung/nwv/fepub/icon_database_main.pdf
 - DWD ICON-EPS change notices: https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/nwv_aenderungen_icon_eps_gesamt.html
 - DWD ICON change notices (carry most post-2024 ensemble changes): https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/nwv_aenderungen_icon_gesamt.html
+- DWD ICON-EPS resolution upgrade notice (6 October 2026, `pdf_icon_eps_06_10_2026.pdf`): on the ICON-EPS change-notices page above
 - DWD ICON-EPS resolution upgrade notice (November 2022): https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/icon_eps/pdf_2022/pdf_icon_eps_23_11_2022.pdf
 - DWD Open Data newsletter, 2 September 2026 (v1 URL scheme, legacy shutdown, lib/cdo): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_september2026_1.html
 - DWD Open Data newsletter, 28 July 2026 (6 October resolution and domain change): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_juli2026_2.html
