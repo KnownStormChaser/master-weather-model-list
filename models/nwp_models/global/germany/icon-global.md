@@ -41,7 +41,7 @@ ICON replaced DWD's previous global model (GME) on 20 January 2015. The model co
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC). Unlike [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md), the deterministic global run has no intermediate 3-hourly cycles on Open Data.
 - **Temporal output resolution:** Hourly to +78 h, then 3-hourly to +180 h
   - 113 output steps for 00/12 UTC (79 hourly + 34 three-hourly); 93 steps for 06/18 UTC (79 + 14). Identical in the old and new download trees — verified 2026-10-18 for `U_10M`, `ASWDIR_S`, `T_2M` (v1) against `u_10m` (legacy tree).
-  - **One exception in the v1 feed: `VMAX_10M` is hourly to +180 h** (180 files, steps 001–180). See *Time-integration conventions*.
+  - **One exception in the v1 feed: `VMAX_10M` is hourly to +180 h** (180 files, steps 001–180). See *Time-integration conventions*. Every other forecast field — single-level, pressure-level, model-level and soil — follows the 113/93 pattern, except `TKE` (to +48 h only) and `SMI` (analysis only). Verified 2026-10-18 for all 69 single-level forecast fields and one level of each multi-level field.
 
 ---
 
@@ -74,7 +74,7 @@ The v1 Open Data tree carries **104 parameter directories**, identical across al
   - `T`, `U`, `V`, `P`, `QV`, `QC`, `QI` — full levels 1–120
   - `W`, `HHL` — half-levels 1–121
   - `CLC`, `DEN` — levels 39–120 only (82 levels)
-  - `TKE` — levels 61–121 only (61 levels)
+  - `TKE` — levels 61–121 only (61 levels), and **only to +48 h** (49 hourly steps). Same in the legacy tree.
 - **Soil levels — `T_SO` (9):** 0, 0.005, 0.02, 0.06, 0.18, 0.54, 1.62, 4.86, 14.58 m (layer boundaries)
 - **Soil levels — `W_SO` / `W_SO_ICE` / `SMI` (8):** 0, 0.01, 0.03, 0.09, 0.27, 0.81, 2.43, 7.29 m (layer mid-depths)
 
