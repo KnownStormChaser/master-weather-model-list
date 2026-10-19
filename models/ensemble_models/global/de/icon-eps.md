@@ -189,12 +189,14 @@ ICON-EPS is part of the ICON framework, jointly developed with the Max Planck In
 
 Since January 2024, ICON-EPS changes have generally been announced through the main ICON change notices rather than a separate ICON-EPS series — the notices state that changes apply to all global ICON configurations including the EU nests and the ensemble systems. The ensemble-relevant items are listed here; see the [ICON Global entry](../../../nwp_models/global/germany/icon-global.md#recent-version-history) for the full sequence.
 
-> Model-change notices are covered through 30 June 2026. Later entries are taken from DWD's Open Data newsletters (28 July and 2 September 2026) and live data. The ICON/ICON-EPS model change notice for the 6 October upgrade has not been reviewed, so any physics or data-assimilation changes made alongside the grid change are not recorded here.
+> Model-change notices are covered through 6 October 2026. The September and November entries come from DWD's Open Data newsletters and live data.
 
 ### 30 November 2026 (scheduled) — legacy tree and `lib/cdo` withdrawn
 Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon-eps/` stops after 30 November; `/weather/lib/cdo/` is deleted on the same date.
 
-### 6 October 2026 — resolution increase and nest enlargement
+### 6 October 2026 — resolution increase and nest enlargement (effective 06 UTC run)
+Per DWD's change notice of 6 October 2026: ICON-EPS refined from 26 km to 20 km globally and from 13 km to 10 km in the European nest; vertical resolution unchanged; deterministic ICON and ICON-EU resolution unchanged. The ICON-EU nest domain was enlarged at the same time, mostly to the south, with a few grid rows added in the west and north so Iceland and Norway are fully covered. DWD reports **CRPS reductions of typically 1–3% at the surface and in the lower troposphere and about 1% from the mid-troposphere upward**, against both SYNOP and radiosonde observations, attributed mainly to better-resolved orography. The domain enlargement itself had no measurable effect on forecast quality. ICON-ART mineral-dust forecasts received the same resolution increase.
+
 Global ensemble mesh changed from R3B06 (grid #36, 737,280 cells, ~26 km) to an R2B07 mesh (grid #39, 1,310,720 cells, ~20 km); European nest from grid #37 (164,984 cells, ~13 km) to grid #63 (342,428 cells, ~10 km) with a larger domain. Announced in DWD's 28 July 2026 Open Data newsletter, which gave 26 → 20 km and 1.78× the grid points for the global ensemble and 13 → 10 km and 2.08× for the nest, warned that `CLAT`/`CLON`/`ELAT`/`ELON` change with the grid, and offered test data for the 2026-07-15 00 UTC run under `/test/weather/nwp/icon-eps/`. Applies to both download trees. Vertical structure unchanged (120 levels, 75 km top). The deterministic ICON Global grid (#26) was not changed.
 
 ### 2 September 2026 — v1 URL scheme
@@ -239,6 +241,7 @@ Developed as part of DWD's transition from the legacy GME global model and COSMO
 - DWD ICON Database Reference Manual: https://www.dwd.de/DWD/forschung/nwv/fepub/icon_database_main.pdf
 - DWD ICON-EPS change notices: https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/nwv_aenderungen_icon_eps_gesamt.html
 - DWD ICON change notices (carry most post-2024 ICON-EPS changes): https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/nwv_aenderungen_icon_gesamt.html
+- DWD ICON-EPS resolution upgrade notice (6 October 2026, `pdf_icon_eps_06_10_2026.pdf`): on the ICON-EPS change-notices page above
 - DWD ICON-EPS resolution upgrade notice (November 2022): https://www.dwd.de/DE/fachnutzer/forschung_lehre/numerische_wettervorhersage/nwv_aenderungen/_functions/DownloadBox_modellaenderungen/icon_eps/pdf_2022/pdf_icon_eps_23_11_2022.pdf
 - DWD Open Data newsletter, 2 September 2026 (v1 URL scheme, legacy shutdown, lib/cdo): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_september2026_1.html
 - DWD Open Data newsletter, 28 July 2026 (6 October resolution and domain change): https://www.dwd.de/DE/leistungen/opendata/neuigkeiten/opendata_juli2026_2.html
