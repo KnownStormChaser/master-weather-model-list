@@ -28,7 +28,8 @@ It is not a separately initialized limited-area model but the **two-way coupled 
 - **Convection-allowing:** No (deep convection parameterized at ~6.5 km)
 - **Native horizontal grid:** R3B08 nest grid, **768,608 cells**, ~6.5 km
   - Verified from live GRIB2 headers (v1 feed, 2026-10-18 18 UTC run): `gridType = unstructured_grid`, `numberOfDataPoints = 768608`, `numberOfGridUsed = 62`, `uuidOfHGrid = 832c1507fbc73eb384139890094d2c60`. DWD's 2 September 2026 newsletter names the matching grid file `icon_grid_0062_R03B08_N02.nc`, which settles the R3B08 identity this entry previously could not confirm.
-  - Grid #62 replaced grid #27 on **6 October 2026**, when the nest domain was enlarged (announced in DWD's 28 July 2026 Open Data newsletter). Data on the two grids cannot be concatenated cell-by-cell.
+  - Grid #62 replaced grid #27 on **6 October 2026**, when the nest domain was enlarged. DWD's 28 July 2026 Open Data newsletter describes it as an extended EU-nest domain with 1.15 times the grid points; the resolution itself did not change. Data on the two grids cannot be concatenated cell-by-cell.
+  - The same newsletter states that the legacy 0.0625° lat–lon product kept its grid through the change.
 - **Public output grid:** **native triangular grid** in the v1 feed. The regular 0.0625° lat–lon product (1377 × 657 = 904,689 points) **ends after 30 November 2026** — see *Data availability*.
 - **Vertical levels:** **74 full levels** (75 `HHL` half-levels), all published
 - **Model top:** **22,770.33 m** — `HHL` half-level 1, spatially constant (`bitsPerValue = 0`). Unchanged by the grid switch. Identical to [ICON-EU-EPS](../../../ensemble_models/regional/de/icon-eu-eps.md), as expected for the same vertical grid.
@@ -172,7 +173,7 @@ ICON-EU has no independent change-notice series — it is upgraded as part of th
 Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon-eu/` and `/weather/nwp/icon-eu-eps/` stops after 30 November. ICON-EU is no longer available on a regular lat–lon grid from DWD. `VIS` ends with it. `/weather/lib/cdo/` is deleted.
 
 ### 6 October 2026 — enlarged nest domain, native grid #27 → #62
-The European nest domain was expanded, moving the native mesh from grid #27 to grid #62 (`icon_grid_0062_R03B08_N02`, 768,608 cells). Announced in DWD's 28 July 2026 Open Data newsletter; applies to the v1 delivery. ICON-EU-EPS changed resolution and domain on the same date.
+The European nest domain was expanded, moving the native mesh from grid #27 to grid #62 (`icon_grid_0062_R03B08_N02`, 768,608 cells, 1.15 times the previous count). Announced in DWD's 28 July 2026 Open Data newsletter, which also noted that the regular lat–lon product would keep its grid. Applies to the v1 delivery. ICON-EU-EPS (→ 10 km, grid #63) and ICON-ART-EU (→ 10 km, grid #61) changed on the same date.
 
 ### 2 September 2026 — native-grid v1 delivery
 ICON-EU published on its native triangular grid for the first time, under `/weather/nwp/v1/m/icon-eu/`: plain CCSDS-packed GRIB2, ISO 8601 run/step tokens, `MH` on the native grid. DWD describes the parameter set and time resolution as otherwise unchanged; live checks found several step-pattern differences (see *Basic details*).
