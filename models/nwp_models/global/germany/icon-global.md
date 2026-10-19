@@ -187,6 +187,9 @@ The ICON modelling system became open source in **January 2024** under a permiss
 ### 30 November 2026 (scheduled) — legacy Open Data tree and `lib/cdo` withdrawn
 Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon/` and `/weather/nwp/icon-eps/` stops after 30 November; `/weather/lib/cdo/` (grid files and CDO weights) is deleted on the same date. Grid files move to MPI-M exclusively.
 
+### 6 October 2026 — enlarged EU nest; finer ensemble (effective 06 UTC run)
+Global ICON's own 13 km grid (#26) is unchanged. Within the same integration the ICON-EU nest domain was slightly enlarged (mostly southward; Iceland and Norway now fully covered), and ICON-EPS was refined from 26/13 km to 20/10 km. See [ICON-EU](../../regional/germany/icon-eu.md) and [ICON-EPS](../../../ensemble_models/global/de/icon-eps.md).
+
 ### 2 September 2026 — v1 URL scheme for ICON, ICON-EU, ICON-D2 and their ensembles
 All six systems published additionally under `/weather/nwp/v1/m/`: native grid only, plain CCSDS-packed GRIB2 without bzip2, one file per ensemble member and per sub-hourly step, ISO 8601 run and step tokens. Two new global ICON parameters, `DEN` (density of moist air) and `SMI` (soil moisture index). DWD states that parameter set, range and time resolution are otherwise unchanged; live checks on 2026-10-18 found one undocumented difference for global ICON — `VMAX_10M` is hourly to +180 h in v1.
 
