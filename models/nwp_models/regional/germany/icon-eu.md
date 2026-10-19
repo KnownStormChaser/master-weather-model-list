@@ -167,12 +167,14 @@ The old layout at https://opendata.dwd.de/weather/nwp/icon-eu/grib/ stops after 
 
 ICON-EU has no independent change-notice series — it is upgraded as part of the global ICON system, and DWD's notices state that changes apply to all global ICON configurations including the EU nests. The nest-relevant items are listed here; see the [ICON Global entry](../../global/germany/icon-global.md#recent-version-history) for the full sequence.
 
-> Model-change notices are covered through 5 August 2026. Entries dated after that are Open Data distribution and grid changes; DWD's ICON change notices since August have not yet been reviewed for this entry.
+> Model-change notices are covered through 5 August 2026, plus the 6 October 2026 domain change. Other ICON change notices since August have not yet been reviewed for this entry.
 
 ### 30 November 2026 (scheduled) — lat–lon product, legacy tree, `VIS` and `lib/cdo` withdrawn
 Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon-eu/` and `/weather/nwp/icon-eu-eps/` stops after 30 November. ICON-EU is no longer available on a regular lat–lon grid from DWD. `VIS` ends with it. `/weather/lib/cdo/` is deleted.
 
-### 6 October 2026 — enlarged nest domain, native grid #27 → #62
+### 6 October 2026 — enlarged nest domain, native grid #27 → #62 (effective 06 UTC run)
+Per DWD's change notice of 6 October 2026, the ICON-EU domain was "slightly expanded" at the request of customers and consortium partners: mostly to the south, with just a few grid rows added in the west and north so that Iceland and Norway are fully included. Resolution (6.5 km) and vertical levels unchanged. DWD found no measurable impact on forecast quality.
+
 The European nest domain was expanded, moving the native mesh from grid #27 to grid #62 (`icon_grid_0062_R03B08_N02`, 768,608 cells, 1.15 times the previous count). Announced in DWD's 28 July 2026 Open Data newsletter, which also noted that the regular lat–lon product would keep its grid. Applies to the v1 delivery. ICON-EU-EPS (→ 10 km, grid #63) and ICON-ART-EU (→ 10 km, grid #61) changed on the same date.
 
 ### 2 September 2026 — native-grid v1 delivery
