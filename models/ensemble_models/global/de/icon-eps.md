@@ -30,7 +30,7 @@ The current configuration dates from **6 October 2026**, when DWD increased the 
 - **Convection-allowing:** No (deep convection parameterized)
 - **Ensemble size:** **40 members, numbered 1–40. There is no separate unperturbed control run.**
 - **Native horizontal grid (since 6 October 2026):** **1,310,720 cells**, ~20 km — an R2B07 global grid (20 × 256² = 1,310,720 cells exactly)
-  - Verified from live GRIB2 headers (v1 feed, 2026-10-18 12 UTC run, and the legacy tree): `gridType = unstructured_grid`, `numberOfDataPoints = 1310720`, `numberOfGridUsed = 39`, `uuidOfHGrid = 49c340e2248d11e58105c12d5e3b00a4`. The matching grid definition file is grid number 39 on MPI-M's list (see *Grid files and regridding*).
+  - Verified from live GRIB2 headers (v1 feed, 2026-10-18 12 UTC run, and the legacy tree): `gridType = unstructured_grid`, `numberOfDataPoints = 1310720`, `numberOfGridUsed = 39`, `uuidOfHGrid = 49c340e2248d11e58105c12d5e3b00a4`. DWD's 28 July 2026 Open Data newsletter gives the same figures: 26 km → 20 km, new grid #39 with 1.78 times the grid points. The matching grid definition file is grid number 39 on MPI-M's list (see *Grid files and regridding*). ICON-ART and ICON-ART-EPS moved to the same grid #39 that day.
   - Until 5 October 2026: R3B06 grid #36, 737,280 cells, ~26 km (`uuidOfHGrid = ae487d14fe2e11e4af85e50a2a56a360`). Data on the two grids cannot be combined cell-by-cell.
   - The deterministic ICON Global runs on R3B07 (2,949,120 cells) — about 2.25 times as many cells as the ensemble.
 - **Public output grid:** Native triangular grid only. **No regular latitude–longitude output is distributed.**
@@ -189,13 +189,13 @@ ICON-EPS is part of the ICON framework, jointly developed with the Max Planck In
 
 Since January 2024, ICON-EPS changes have generally been announced through the main ICON change notices rather than a separate ICON-EPS series — the notices state that changes apply to all global ICON configurations including the EU nests and the ensemble systems. The ensemble-relevant items are listed here; see the [ICON Global entry](../../../nwp_models/global/germany/icon-global.md#recent-version-history) for the full sequence.
 
-> Model-change notices are covered through 30 June 2026. Later entries are taken from Open Data newsletters and live data; the ICON/ICON-EPS change notice for the 6 October 2026 upgrade has not been reviewed for this entry, so details beyond the grid change itself are not recorded here.
+> Model-change notices are covered through 30 June 2026. Later entries are taken from DWD's Open Data newsletters (28 July and 2 September 2026) and live data. The ICON/ICON-EPS model change notice for the 6 October upgrade has not been reviewed, so any physics or data-assimilation changes made alongside the grid change are not recorded here.
 
 ### 30 November 2026 (scheduled) — legacy tree and `lib/cdo` withdrawn
 Per DWD's 2 September 2026 newsletter: delivery under `/weather/nwp/icon-eps/` stops after 30 November; `/weather/lib/cdo/` is deleted on the same date.
 
 ### 6 October 2026 — resolution increase and nest enlargement
-Global ensemble mesh changed from R3B06 (grid #36, 737,280 cells, ~26 km) to an R2B07 mesh (grid #39, 1,310,720 cells, ~20 km); European nest from grid #37 (164,984 cells, ~13 km) to grid #63 (342,428 cells, ~10 km) with a larger domain. Announced in DWD's 28 July 2026 Open Data newsletter; applies to both download trees. Vertical structure unchanged (120 levels, 75 km top).
+Global ensemble mesh changed from R3B06 (grid #36, 737,280 cells, ~26 km) to an R2B07 mesh (grid #39, 1,310,720 cells, ~20 km); European nest from grid #37 (164,984 cells, ~13 km) to grid #63 (342,428 cells, ~10 km) with a larger domain. Announced in DWD's 28 July 2026 Open Data newsletter, which gave 26 → 20 km and 1.78× the grid points for the global ensemble and 13 → 10 km and 2.08× for the nest, warned that `CLAT`/`CLON`/`ELAT`/`ELON` change with the grid, and offered test data for the 2026-07-15 00 UTC run under `/test/weather/nwp/icon-eps/`. Applies to both download trees. Vertical structure unchanged (120 levels, 75 km top). The deterministic ICON Global grid (#26) was not changed.
 
 ### 2 September 2026 — v1 URL scheme
 ICON-EPS published additionally under `/weather/nwp/v1/m/icon-eps/`: one member per file, plain CCSDS GRIB2, ISO 8601 run/step tokens. Undocumented differences from the legacy tree: hourly-to-75 h / 3-hourly-to-180 h output in the 00/12 UTC runs, hourly `VMAX_10M` in all cycles, and `HHL` reduced to half-levels 99–121.
