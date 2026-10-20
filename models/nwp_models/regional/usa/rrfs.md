@@ -5,7 +5,7 @@ The Rapid Refresh Forecast System (RRFS) is NOAA's next-generation convection-al
 
 RRFS is built on the Unified Forecast System (UFS) framework and is designed to consolidate and replace several legacy NCEP regional modeling systems, including the NAM, HiresW (except the Guam domain), HREF, SREF, and NARRE. It provides both deterministic and ensemble guidance, with the ensemble component distributed as REFS (RRFS Ensemble Forecast System).
 
-RRFS and REFS are scheduled to become operational on **November 3, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24, September 9 and October 2, 2026), subject to the standard CWD/ECE postponement contingency. The October 2 update is the fourth slip, from October 14. A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination. The five RRFS ensemble members, unavailable through August, began publishing on **September 9, 2026** — see [Ensemble member output](#ensemble-member-output-disseminated-since-september-9-2026).
+RRFS and REFS are scheduled to become operational on **November 3, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24, September 9, October 2 and October 15, 2026), subject to the standard CWD/ECE postponement contingency. The October 2 update is the fourth slip, from October 14. The October 15 update keeps that date and changes product content instead: precipitation type is now diagnosed thermodynamically, and the freezing-rain and sleet accumulation fields are removed — live in the parallel feed from the 2026-10-15 12 UTC cycle. See [Precipitation type and freezing-rain fields](#precipitation-type-and-freezing-rain-fields-changed-2026-10-15). A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination. The five RRFS ensemble members, unavailable through August, began publishing on **September 9, 2026** — see [Ensemble member output](#ensemble-member-output-disseminated-since-september-9-2026).
 
 ---
 
@@ -49,29 +49,37 @@ RRFS and REFS are scheduled to become operational on **November 3, 2026 at 12 UT
   directory described under [Data availability](#noaaport-parallel-stream).
 
   **The fire-weather domain is a relocatable Lambert conformal grid, not the 5° × 5°
-  rotated latitude-longitude region the SCN describes.** SCN 26-48, through the AAE
-  update of 2026-10-02, states the fire-weather run provides "output provided over a
+  rotated latitude-longitude region the SCN describes.** SCN 26-48, through the AAF
+  update of 2026-10-15, states the fire-weather run provides "output provided over a
   5 x 5-degree rotated latitude longitude region." Decoding the actual output contradicts
   this on all three counts: the grid is `lambert` with LoV 265°E and
   Latin1 = Latin2 = LaD = 25°N, the increment is **1270 m** rather than the 1500 m implied
   by the `1p5km` filename token, and the extent is roughly 663 × 495 km rather than
   5° × 5°.
 
-  The domain is genuinely relocatable — two distinct configurations have been observed —
-  but **it does not move freely from cycle to cycle**. Across 2026-08-12 and
-  2026-08-23/24 it took exactly two placements, strictly alternating by cycle hour:
+  The domain is relocatable in design, but **in the parallel feed it takes exactly two
+  placements, strictly alternating by cycle hour**:
 
-  | Cycles | Ni × Nj | First grid point | Extent |
-  |---|---|---|---|
-  | 00 and 12 UTC | 522 × 390 | 36.454°N, 244.665°E | ~663 × 495 km |
-  | 06 and 18 UTC | 561 × 355 | 39.442°N, 234.191°E | ~713 × 451 km |
+  | Cycles | Nest centre (from location file) | Ni × Nj | First grid point | Extent |
+  |---|---|---|---|---|
+  | 00 and 12 UTC | 39.0°N, 112.0°W (central Utah) | 522 × 390 | 36.454°N, 244.665°E | ~663 × 495 km |
+  | 06 and 18 UTC | 42.0°N, 122.3°W (southern Oregon) | 561 × 355 | 39.442°N, 234.191°E | ~713 × 451 km |
 
-  Both placements were identical on 2026-08-12 and 2026-08-24, twelve days apart. Whether
-  the domain is repositioned in response to fire-weather conditions, or is fixed per cycle
-  hour in this configuration, cannot be determined from a twelve-day sample (**TBD**).
-  **Do not assume a fixed grid**: code that caches grid geometry must key it on cycle
-  hour at minimum, and should re-read the grid definition per file rather than relying on
-  the observed pattern holding.
+  The grid definitions were decoded identically on 2026-08-12, 2026-08-24 and all four
+  cycles of 2026-10-18 — two months apart, spanning the late fire season — so the
+  placement has not moved in response to fire-weather conditions over that period.
+
+  **A placement file has been published since the 2026-10-15 12 UTC cycle**, added under
+  SCN 26-48 AAF: `firewx.YYYYMMDD/CC/input/rrfs.tCCz.firewxnest_center_latlon`, a single
+  line giving the nest centre as decimal latitude and longitude (e.g. `39.0 -112.0`). It
+  is the RRFS counterpart of the NAM's `namsf.FW.center.txt`, and it is the cheapest way
+  to find the domain — a few bytes rather than a GRIB2 header. It is on both channels and
+  byte-identical between them. Every cycle checked from 2026-10-15 12 UTC to 2026-10-19
+  12 UTC carries one of the two centres above, matching the cycle-hour pattern.
+
+  **Still do not hard-code the two grids.** The location file exists precisely because
+  the nest can be moved, and two months without a move is not a guarantee. Read the
+  location file, or the grid definition, per cycle.
 
   **The Alaska grid increment is 2976 m, not 3000 m**, despite the `3km` filename token.
   CONUS is a true 3000 m.
@@ -159,6 +167,9 @@ Verified structure (full enumeration of `rrfsens.20260909/`, 9,760 objects):
   existed before August 2026.
 - **`.idx` sidecars from the first object.** Unlike the deterministic feed, which went
   eleven days without them, member output has been indexed since it came up.
+- **On NOMADS too.** Confirmed 2026-10-19: `rrfsens.YYYYMMDD/` is present under
+  `/pub/data/nccf/com/rrfs/para/`, with all five members and 488 GRIB2 files per member
+  at 12 UTC, matching the bucket.
 - **No BUFR.** SCN 26-48 AAD listed `rrfsens.…class1.bufr` and `bufrsnd.CC/bufr.*` but
   marked **both lines with a literal `(??)`** in the notice text, and neither exists in the
   bucket. The AAE update of 2026-10-02 removed both lines, so the SCN and the bucket now
@@ -173,7 +184,7 @@ deterministic counterparts:
 | File family | Records | Scope (decoded) |
 |---|---|---|
 | `prslevnomads` | **112** | 8 parameters — `HGT`, `TMP`, `RH`, `DPT`, `SPFH`, `UGRD`, `VGRD`, `ABSV` — on 14 pressure levels (1000, 975, 950, 925, 900, 850, 800, 750, 700, 600, 500, 400, 300, 250 hPa) |
-| `2dfldnomads` | **58** | 42 distinct parameters, surface and near-surface |
+| `2dfldnomads` | **56** (58 before 2026-10-15 12 UTC) | 41 distinct parameters, surface and near-surface — `FRZR` accumulations removed under SCN 26-48 AAF |
 | *deterministic* `prslev` | *675* | *for comparison* |
 | *deterministic* `2dfld` | *318* | *for comparison* |
 
@@ -231,13 +242,14 @@ frequent source of 404s when code is shared between the two.
 | `rrfs.tCCz.prslev.1p5km.fFFF.firewx_lcc.grib2` | Pressure-level, fire weather (under `firewx.YYYYMMDD/CC/`) |
 | `rrfs.tCCz.2dfld.1p5km.fFFF.firewx_lcc.grib2` | 2D fields, fire weather (under `firewx.YYYYMMDD/CC/`) |
 | `rrfs.tCCz.m00#.{prslev\|2dfld}nomads.{3km\|2p5km}.fFFF.${dom}.grib2` | Ensemble members (under `rrfsens.YYYYMMDD/CC/m00#/`); reduced parameter set |
+| `rrfs.tCCz.firewxnest_center_latlon` | Fire-weather nest centre, one line of decimal lat/lon (under `firewx.YYYYMMDD/CC/input/`); since 2026-10-15 12 UTC |
 | `rrfs.tCCz.bufrsnd.tar.gz` | BUFR sounding bundle, synoptic cycles only |
 | `rrfs.tCCz.class1.bufr` | BUFR class-1 soundings, synoptic cycles only |
 
 ### The 24 hourly cycles are not equivalent — three distinct tiers
 
 This is the single most consequential thing to know before scripting against RRFS, and
-it is stated in neither the SCN (through the AAE update of 2026-10-02) nor the NOMADS
+it is stated in neither the SCN (through the AAF update of 2026-10-15) nor the NOMADS
 model description. **Sixteen of the twenty-four cycles publish nothing but the 15-minute
 subhourly files.**
 
@@ -261,7 +273,7 @@ A 3-hourly forecast pulled from the "hourly" model will silently fall back to su
 > ⚠️ **Both official descriptions state the opposite of what the feed publishes.** The
 > NOMADS model description reads: "Hourly deterministic output is generated for all cycles
 > and parameters are available in pressure level (prslev) and two-dimensional (2dfld)
-> files over CONUS, Alaska, Hawaii, and Puerto Rico." SCN 26-48 (through AAE) likewise gives only
+> files over CONUS, Alaska, Hawaii, and Puerto Rico." SCN 26-48 (through AAF) likewise gives only
 > the 84 h / 18 h split without noting that most cycles carry no `prslev` or `2dfld` at
 > all. **The directory listing is authoritative; the descriptions are not.**
 >
@@ -276,13 +288,53 @@ per family, 58 GRIB2 files per synoptic cycle. On the NOMADS parallel feed it is
 **hourly**, 85 steps per family. This is the only cadence change observed anywhere across
 the transition.
 
-Records per file, decoded and confirmed identical on both distributions:
+Records per file at a mid-range step (f012; f001 for `subh`), decoded and confirmed
+identical on both distributions. Counts changed with the 2026-10-15 12 UTC cycle — see the
+next section:
 
-| Family | Records |
-|---|---|
-| `prslev` (every grid, including 13 km NA and fire weather) | 675 |
-| `2dfld` | 318 |
-| `2dfld … subh` | 157 |
+| Family | Records now | Before 2026-10-15 12 UTC |
+|---|---|---|
+| `prslev` (every grid, including 13 km NA and fire weather) | 675 | 675 (unchanged) |
+| `2dfld` (CONUS, AK, HI, PR, 13 km NA) | 314 | 318 |
+| `2dfld` (fire weather) | 299 | 303 |
+| `2dfld … subh` | 149 | 157 |
+| `2dfld_awipsubset` | 18 | 18 (unchanged) |
+
+### Precipitation type and freezing-rain fields (changed 2026-10-15)
+
+SCN 26-48 AAF (2026-10-15) changes RRFS post-processing in response to RRFS/REFS
+**over-forecasting freezing rain and under-forecasting sleet**. The change took effect in
+the parallel feed straight away — **the first cycle carrying it is 2026-10-15 12 UTC**,
+published around 13:52 UTC, minutes after the notice was issued at 13:45 UTC. Every cycle
+from 00 to 11 UTC that day still has the old fields, and every cycle from 12 UTC onward
+has the new layout (checked hour by hour on the `subh` files).
+
+- **Instantaneous precipitation type is now diagnosed thermodynamically**, replacing the
+  model-generated, microphysics-based product. The four component fields — `CSNOW`,
+  `CICEP`, `CFRZR`, `CRAIN` — keep their names, record positions and encoding; only their
+  values come from a different method. **Nothing in the file distinguishes old from new**,
+  so any climatology or verification of precipitation type needs to split at 2026-10-15
+  12 UTC by date.
+- **Freezing-rain (`FRZR`) and sleet (`FROZR`) accumulations are removed.** Decoded
+  before and after on S3 (2026-10-14 vs 2026-10-16, 12 UTC):
+
+  | File | Records removed (at f012, or f001 for `subh`) |
+  |---|---|
+  | `2dfld` on CONUS, AK, HI, PR and 13 km NA | 4 — `FRZR` and `FROZR`, run-total and 1-hour |
+  | `2dfld … subh` | 8 — `FRZR` and `FROZR` at 15, 30, 45 and 60 minutes |
+  | `2dfld` fire weather | 4 — as above |
+  | `m00#.2dfldnomads` (members) | 2 — `FRZR` only; **members never carried `FROZR`** |
+  | `prslev` (all grids) | none |
+  | `2dfld_awipsubset` | none |
+
+  The SCN does not name the fire-weather file, but it is affected all the same. It also
+  does not mention the AWIPS subset or `prslev`, and the decode confirms both are
+  untouched.
+
+> ⚠️ **The SCN's list of affected files has two errors.** It gives the 13 km file as
+> `rrfs.tCCz.13km.fFFF.na.grib2`; no such file exists — the affected file is
+> `rrfs.tCCz.2dfld.13km.fFFF.na.grib2`. And it heads the list "RRFS and REFS Ensemble
+> Member Product Updates", though most of the files listed are deterministic.
 
 ### Publication latency (NOMADS, measured)
 
@@ -347,17 +399,19 @@ applications from the retiring models onto RRFS at implementation:
   - **NOMADS, post-implementation (from November 3, 2026):**
     - https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/prod/
 
-The two channels carry the same data, and as of late August 2026 they carry the same
-*set* of files. GRIB2 files, `.idx` sidecars and BUFR bundles were each compared by MD5
-and are byte-identical.
+The two channels carry the same data and the same *set* of files. GRIB2 files and BUFR
+bundles were compared by MD5 and are byte-identical. **The `.idx` sidecars were
+byte-identical in August but no longer are for every file family** — see the table below.
 
 | | `s3://noaa-rrfs-ops-pds` | NOMADS `rrfs/para/` |
 |---|---|---|
 | `.idx` sidecars | Yes, on every object | Yes, on every file since ~mid-August 2026 |
 | Byte-range subsetting | Yes | Yes |
 | BUFR soundings | Yes at synoptic cycles | Yes, since the 2026-08-23 18 UTC cycle |
-| AWIPS subset grid | Yes, since the 2026-08-27 12 UTC cycle | Unverified |
-| Ensemble members | Yes, since the 2026-09-09 12 UTC cycle | Unverified |
+| AWIPS subset grid | Yes, since the 2026-08-27 12 UTC cycle | Yes (confirmed 2026-10-19; sidecar identical to S3) |
+| Ensemble members | Yes, since the 2026-09-09 12 UTC cycle | Yes (confirmed 2026-10-19; five members, 488 GRIB2 files each at 12 UTC) |
+| Fire-weather location file | Yes, since the 2026-10-15 12 UTC cycle | Yes (byte-identical) |
+| Sidecar parameter names | 21 local-table records in `2dfld` printed as `var discipline=…` | Same records named (`QPFARI`, `QPFFFG`, `SBTA18x`, `FRADPOW`, `WFIREPOT`) |
 | Retention | Every date since 2026-08-12; nothing expired yet | 2 days |
 | Latency (2026-08-14 12 UTC) | first object 13:51 UTC | first file 13:50 UTC |
 | Directory listing | Reliable S3 `list-type=2` | Frequently truncated; needs retries |
@@ -367,15 +421,33 @@ A deterministic synoptic cycle is **947 GRIB2 files, 947 sidecars and 2 BUFR fil
 S3 as of 2026-09-09, up from 922 when the AWIPS subset stream was added on 2026-08-27.
 Member output adds a further **2,440 GRIB2 files and 2,440 sidecars** under
 `rrfsens.YYYYMMDD/CC/`. The 922-file figure was verified set-symmetric across both
-channels on 2026-08-24; **the two streams added since then have been verified on S3 only**,
-because NOMADS was unreachable at the time of checking. SCN 26-48 AAD presents both as
-NOMADS additions, so the expectation is that they are on both channels, but that is not
-confirmed here.
+channels on 2026-08-24. The two streams added since then were verified on S3 first, and
+on 2026-10-19 both were confirmed on NOMADS as well.
+
+> **The sidecars now differ between channels in naming only.** In the `2dfld` and
+> `2dfldnomads` families, NOMADS sidecars are produced by a wgrib2 build that knows more
+> NCEP local-table parameters. Where the S3 sidecar prints `var discipline=1 center=7
+> local_table=1 parmcat=1 parm=196` (21 such records in a CONUS `2dfld` file), the
+> NOMADS sidecar prints `QPFARI`, `QPFFFG`, `SBTA1810`, `FRADPOW`, `WFIREPOT` and so on.
+> Aerosol lines also differ by a trailing colon. **Record numbers and byte offsets are
+> identical**, and so are the GRIB2 files, so byte-range downloads work the same from
+> either. Code that selects records by name will not: a pattern for `QPFARI` matches on
+> NOMADS and finds nothing on S3. Filter on the offsets or decode the GRIB2 instead. The
+> S3 sidecars have used the unnamed form all along (21 such lines on 2026-10-14 too), so
+> the change is on the NOMADS side; when it happened cannot be dated because NOMADS keeps
+> only two days. `prslev` and REFS `ensprod` sidecars are still byte-identical.
 
 **Choose on retention and listing reliability, not content.** NOMADS `para` retains 48
 hours; the bucket has kept every date since it came up. S3 also gives reliable directory
 listings, which NOMADS does not — expect truncated responses and build in retries. Use
 NOMADS when you want the freshest file, since it leads S3 by about a minute.
+
+> ⚠️ **NOMADS directory listings fail over HTTP/2 (observed 2026-10-19).** The server
+> sends a `Content-Length` header padded with trailing spaces, which curl rejects with
+> error 92 ("Invalid HTTP header field") — the request returns HTTP 200 but an empty
+> body, so a script that does not check curl's exit code sees an empty directory. Forcing
+> HTTP/1.1 (`curl --http1.1`) works. File downloads were not affected in testing, only
+> the directory index pages.
 
 Indexing matters here more than for most models: a CONUS `prslev` step is ~580 MB and a
 full 84-hour synoptic series is roughly 48 GB, so without a sidecar there is no practical
@@ -414,7 +486,7 @@ four weeks.
   carrying them. The exploded per-station `bufr.CC/` directory the prototype carried is
   still on neither channel, **notwithstanding SCN 26-48, which since AAD has listed the
   BUFR output as `rrfs.YYYYMMDD/CC/bufrsnd.tCCz/bufr.*.YYYYMMDDCC` where AAC listed the
-  tarball.** The AAE update of 2026-10-02 keeps the AAD wording. The bucket still carries the tarball and no exploded directory. Point
+  tarball.** The AAE and AAF updates keep the AAD wording. The bucket still carries the tarball and no exploded directory. Point
   soundings are outside catalog scope, but the loss was worth naming and so is the
   recovery.
 - **Individual ensemble members — restored 2026-09-09, in reduced form.** The prototype
@@ -427,8 +499,8 @@ four weeks.
   comparison, and the [REFS
   entry](../../../ensemble_models/regional/usa/refs.md#data-availability).
 - **Native-level output — never restored.** The prototype's `natlev.3km.na` files have no
-  successor in either channel, and neither the AAD nor the AAE update of SCN 26-48 adds
-  a path for them.
+  successor in either channel, and no update of SCN 26-48 through AAF adds a path for
+  them.
 
 ### NOAAPORT parallel stream
 
@@ -459,6 +531,17 @@ header list is at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/.
 ---
 
 ## Status
+- **2026-10-15, 12 UTC — precipitation-type change live in the parallel feed.** The first
+  cycle without `FRZR`/`FROZR` accumulations and with the diagnosed precipitation type;
+  the fire-weather location file appears at the same cycle. See [Precipitation type and
+  freezing-rain fields](#precipitation-type-and-freezing-rain-fields-changed-2026-10-15).
+- **2026-10-15 — SCN 26-48 updated (AAF); implementation date unchanged at November 3,
+  2026.** A content-only update, issued at 13:45 UTC: thermodynamically diagnosed
+  precipitation type replaces the microphysics-based product, `FRZR` and `FROZR`
+  accumulations are removed, three REFS products change (see the [REFS
+  entry](../../../ensemble_models/regional/usa/refs.md#status)), and the fire-weather
+  location file is added. The stated reason is over-forecasting of freezing rain and
+  under-forecasting of sleet. SCN 26-47 was not updated alongside it.
 - **2026-10-02 — SCN 26-48 updated (AAE); implementation moved to November 3, 2026.**
   The fourth slip, from October 14, again with no reason given. Beyond the date, the update
   adds a section on SBN/NOAAPORT dissemination with WMO headers (see [NOAAPORT parallel
@@ -503,7 +586,7 @@ header list is at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/.
   at the 11 UTC cycle the same day, leaving NOMADS briefly as the sole channel.
 - Proposal for legacy model retirement published in NWS Public Information Statement 25-41 (June 26, 2025), with a public comment period through July 26, 2025.
 - Originally targeted for operational implementation in early 2026; implementation slipped through pre-operational evaluation.
-- **NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24, September 9 and October 2, 2026)** schedules RRFS and REFS operational implementation for November 3, 2026 at 12 UTC, with retirement of NAM, HREF, SREF, and HiresW (except Guam) on the same day (terminations under companion SCN 26-47, updated to AAC on the same date). Per the SCN, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. The July 6, 2026 update was the second slip, moving the date from August 31 to October 6; the September 9, 2026 update was the third, moving it to October 14; the October 2, 2026 update is the fourth, moving it to November 3.
+- **NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24, September 9, October 2 and October 15, 2026)** schedules RRFS and REFS operational implementation for November 3, 2026 at 12 UTC, with retirement of NAM, HREF, SREF, and HiresW (except Guam) on the same day (terminations under companion SCN 26-47, updated to AAC on the same date). Per the SCN, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. The July 6, 2026 update was the second slip, moving the date from August 31 to October 6; the September 9, 2026 update was the third, moving it to October 14; the October 2, 2026 update is the fourth, moving it to November 3. The October 15, 2026 update did not move it.
 - RRFSv2 (based on the MPAS dynamical core) is under development and will drive the next phase of legacy model retirements (HRRR, RAP).
 
 ---
@@ -542,8 +625,8 @@ header list is at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/.
   Whatever each run had already written before the feed was switched on at 13:49 UTC was
   never copied across. Anyone who enumerated the tree on day one and hard-coded the
   observed start offsets will break on the next cycle.
-- **Two points in SCN 26-48 still disagree with the data after the AAE update of
-  2026-10-02.** Recorded here because the catalog differs from the current authority, not
+- **Two points in SCN 26-48 still disagree with the data after the AAF update of
+  2026-10-15.** Recorded here because the catalog differs from the current authority, not
   a superseded one:
   - The SCN describes the fire-weather output as covering "a 5 x 5-degree rotated
     latitude longitude region." It is Lambert conformal at 1270 m, roughly 663 × 495 km.
@@ -572,14 +655,20 @@ header list is at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/.
     `rrfsens.…m00#.class1.bufr` and `rrfsens.…bufrsnd.CC/bufr.*.YYYYMMDDCC` with a
     trailing `(??)`, apparently an unresolved internal query left in the published
     document. Neither file exists in the bucket. AAE removed both lines.
-  - **The BUFR listing changed without explanation — still present in AAE.** AAC listed
-    `rrfs.tCCz.bufrsnd.tar.gz`; AAD and AAE list `bufrsnd.tCCz/bufr.*.YYYYMMDDCC`, the
+  - **The BUFR listing changed without explanation — still present in AAF.** AAC listed
+    `rrfs.tCCz.bufrsnd.tar.gz`; AAD, AAE and AAF list `bufrsnd.tCCz/bufr.*.YYYYMMDDCC`, the
     exploded per-station form. The bucket still carries the tarball and no exploded
     directory.
   - **The AWIPS subset line had a typo — fixed in AAE.** AAD printed `{grib2,rib2.idx}`
     rather than `{grib2,grib2.idx}`. The sidecars are named `.grib2.idx` as everywhere
     else.
-- **The SCN's description of the member domain does not match the output.** AAD and AAE say the
+- **AAF's new section has its own two errors.** It gives a non-existent 13 km filename,
+  `rrfs.tCCz.13km.fFFF.na.grib2`, for what is `rrfs.tCCz.2dfld.13km.fFFF.na.grib2`, and it
+  heads a mostly deterministic file list "RRFS and REFS Ensemble Member Product Updates".
+  It also leaves out two changes visible in the data: the fire-weather `2dfld` loses the
+  same four records, and REFS `sprd` loses its `REFC` record (see the [REFS
+  entry](../../../ensemble_models/regional/usa/refs.md#ensemble-product-types)).
+- **The SCN's description of the member domain does not match the output.** AAD through AAF say the
   five members run "over the same NA region as the deterministic RRFS", but member files
   are published on the CONUS, Alaska, Hawaii and Puerto Rico grids only. There is no
   13 km North America member output, although the frozen prototype bucket carried one.
@@ -594,10 +683,14 @@ header list is at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/.
 ---
 
 ## Official documentation
-- NWS Service Change Notice 26-48, **AAE update of October 2, 2026** — current version;
-  supersedes AAD. Moves implementation to November 3, 2026 and adds SBN/NOAAPORT WMO
-  headers. Still unreliable on several points verified against the data — see
+- NWS Service Change Notice 26-48, **AAF update of October 15, 2026** — current version;
+  supersedes AAE. Implementation date unchanged; changes precipitation-type
+  post-processing, removes the `FRZR`/`FROZR` accumulations, and adds the fire-weather
+  location file. Still unreliable on several points verified against the data — see
   [Notes](#notes):  
+  https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation.aaf.pdf
+- NWS Service Change Notice 26-48 (AAE update, October 2, 2026 — superseded). Moved
+  implementation to November 3, 2026 and added the SBN/NOAAPORT WMO headers:  
   https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aae.pdf
 - NWS Service Change Notice 26-48 (AAD update, September 9, 2026 — superseded). Retained
   because it is the first revision documenting the ensemble member output and the
