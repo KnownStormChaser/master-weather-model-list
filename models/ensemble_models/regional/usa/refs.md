@@ -5,7 +5,7 @@ The RRFS Ensemble Forecast System (REFS) is the **ensemble component** of NOAA's
 
 REFS is a regional, convection-allowing ensemble designed to provide probabilistic short-range forecast guidance for high-impact weather across North America. It is built on the UFS framework and is intended to replace the legacy HREF, SREF, and NARRE ensemble systems.
 
-REFS is scheduled to become operational on **November 3, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24, September 9 and October 2, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination. The five contributing RRFS ensemble members, unavailable through August, began publishing separately on **September 9, 2026** — see [Data availability](#data-availability).
+REFS is scheduled to become operational on **November 3, 2026 at 12 UTC** under NWS Service Change Notice 26-48 (May 12, 2026; updated July 6, August 24, September 9, October 2 and October 15, 2026), subject to the standard CWD/ECE postponement contingency, alongside the deterministic [RRFS](../../../nwp_models/regional/usa/rrfs.md). A pre-implementation real-time parallel feed has been live since the 12 UTC cycle on **August 12, 2026**, on NOMADS and on AWS S3 via NOAA Open Data Dissemination. The five contributing RRFS ensemble members, unavailable through August, began publishing separately on **September 9, 2026** — see [Data availability](#data-availability). The October 15 update changes three REFS products — `prob`, `sprd` and `pmmn` — from the 2026-10-15 12 UTC cycle; see [Ensemble product types](#ensemble-product-types).
 
 ---
 
@@ -106,17 +106,20 @@ pattern `refs.tCCz.${type}.fFF.${dom}.grib2`, each accompanied by a matching
 lead-time formatter between the two systems is the most common way to generate 404s
 against this feed.
 
-Record counts below are decoded from the CONUS f12 files of the 2026-08-12 12 UTC cycle
-and are identical to the corresponding AWS prototype files.
+Record counts below were decoded from the CONUS f12 files of the 2026-08-12 12 UTC cycle,
+where they were identical to the corresponding AWS prototype files. Three products changed
+with the **2026-10-15 12 UTC cycle** under SCN 26-48 AAF; the table gives current counts,
+with the earlier count where it differs (re-decoded 2026-10-14 vs 2026-10-16 and checked on
+all four domains).
 
 | Type | Description | Records (CONUS) | Parameter scope (decoded) |
 |---|---|---|---|
 | `mean` | Arithmetic mean of all members | 76 | Broad — 34 distinct parameters across mass, wind, moisture, stability, cloud and precipitation-type fields |
-| `sprd` | Ensemble spread — how far apart the members are at a point; smaller means better agreement | 82 | Broad — 35 distinct parameters, tracking `mean` |
-| `pmmn` | Probability-matched mean, computed over the full domain at once | 8 | Narrow — total precipitation (2), orography, reflectivity, and 4 radar/local-table fields |
+| `sprd` | Ensemble spread — how far apart the members are at a point; smaller means better agreement | **80** (82 before 2026-10-15 12 UTC) | Broad — tracking `mean`; since 2026-10-15 no longer carries composite reflectivity (`REFC`) spread or the duplicate surface-height record |
+| `pmmn` | Probability-matched mean, computed over the full domain at once | 8 | Narrow — total precipitation (2), orography, reflectivity, and 4 radar/local-table fields. `REFC` and 1 km `REFD` are floored at 0 since 2026-10-15 |
 | `lpmm` | Localized probability-matched mean, computed over small regions then assembled | 3 | **Total precipitation only** |
 | `avrg` | Average of the `mean` and `pmmn` fields | 2 | **Total precipitation only** |
-| `prob` | Probabilistic output — fraction of members meeting a threshold; a mix of point and neighbourhood-maximum probabilities | 183 | Broad — 23 parameters including precipitation, snowfall, wind, gusts, freezing rain, icing, visibility, flight category and lightning |
+| `prob` | Probabilistic output — fraction of members meeting a threshold; a mix of point and neighbourhood-maximum probabilities | **169** (183 before 2026-10-15 12 UTC) | Broad — precipitation, snowfall, wind, gusts, icing, visibility, flight category and lightning. **Freezing-rain accumulation probabilities removed** 2026-10-15 |
 | `eas` | Ensemble Agreement Scale probability — a smoothed fractional probability whose neighbourhood radius varies from 10 to 100 km, narrowing where members agree | 29 | **Precipitation (22) and snowfall (7) only** |
 | `ffri` | Flash Flood and Average Recurrence Interval exceedance probabilities — **CONUS only** | 10 | Total precipitation (7) and flash-flood guidance exceedance (3) |
 
@@ -139,6 +142,38 @@ centre `kwbc`, `tablesVersion` 2, `localTablesVersion` 1,
 `grid_complex_spatial_differencing` packing throughout.
 
 Every product runs **f01–f60 hourly** on every domain it covers.
+
+#### What changed on 2026-10-15 (SCN 26-48 AAF)
+
+The changes appear at the **2026-10-15 12 UTC cycle**, the cycle running when the notice
+went out, and they are the REFS side of an RRFS-wide fix for **over-forecast freezing rain
+and under-forecast sleet**. The same update switches RRFS to a thermodynamically diagnosed
+precipitation type, and removes the freezing-rain and sleet accumulations from the RRFS
+deterministic and member files — so the precipitation-type fields in `mean`, and
+everything REFS computes from member precipitation type, change method at the same cycle
+without any change to the file layout. See the [RRFS
+entry](../../../nwp_models/regional/usa/rrfs.md#precipitation-type-and-freezing-rain-fields-changed-2026-10-15).
+
+- **`prob` — 14 freezing-rain records removed.** All `FRZR` accumulation probabilities go:
+  at f12, thresholds of 0.254, 2.54 and 6.35 mm on the 1, 3, 6 and 12 h windows, plus
+  12.7 mm on the 6 and 12 h windows. Every domain drops from 183 to 169 records at f12.
+- **`sprd` — two records removed, one of them unannounced.** The SCN removes the duplicate
+  `HGT:surface` record; before the change `sprd` carried two identical surface-height
+  records, and one remains. **It also removes the composite reflectivity (`REFC`) spread,
+  which the SCN does not mention.** 1 km `REFD` spread is kept. Confirmed on all four
+  domains at f01, f24 and f60 on 2026-10-18, so it is deliberate and not a one-cycle
+  glitch.
+- **`pmmn` — negative reflectivity removed.** The SCN says the `REFC` and 1 km `REFD`
+  probability-matched means now "ignore negative reflectivity values". Decoded on CONUS
+  f12, before and after: previously about half the grid carried negative values, down to
+  −20 dBZ (957,533 of 1,905,141 points for `REFC`, 1,028,952 for `REFD`), with a median
+  of −0.7 and −10 dBZ. Afterwards **both fields have a minimum of exactly 0** and no
+  negative points. The record list and count (8) are unchanged, so code filtering for
+  echo with a `> 0` threshold behaves as before, but code that treated values ≤ 0 as
+  distinct from "no data" will see a hard floor.
+
+None of the other five products changed, and the file count is unchanged: a 12 UTC cycle
+on 2026-10-18 still carries 1740 GRIB2 files and 1740 sidecars.
 
 #### Parameters that stock ecCodes cannot name
 
@@ -249,7 +284,8 @@ directory have not been checked against the SCN here.
 > **three-digit** lead-time token, matching the deterministic RRFS rather than the
 > two-digit REFS convention: code that handles all three streams needs two formatters, not
 > one. Five members, 00/06/12/18 UTC, f000–f060 hourly, `.idx` on every file from the
-> first object.
+> first object. Present on NOMADS `rrfs/para/` as well as the bucket (confirmed
+> 2026-10-19).
 >
 > **What the restored stream does not give back.** The prototype carried members on five
 > grids including North America; the replacement carries four — CONUS and Alaska at 3 km,
@@ -257,7 +293,8 @@ directory have not been checked against the SCN here.
 > members as running "over the same NA region as the deterministic RRFS". The parameter
 > set is also much narrower than the deterministic files: `prslevnomads` carries 112
 > records (8 parameters on 14 pressure levels) against 675 in deterministic `prslev`, and
-> `2dfldnomads` carries 58 against 318. There is **no ensemble BUFR** — the AAD listed
+> `2dfldnomads` carries 56 against 314 (58 and 318 before the 2026-10-15 freezing-rain
+> removal). There is **no ensemble BUFR** — the AAD listed
 > `class1.bufr` and `bufrsnd` lines for the members but marked both with a literal `(??)`,
 > and neither exists. The AAE update of 2026-10-02 removed both lines.
 >
@@ -302,6 +339,15 @@ directory have not been checked against the SCN here.
 ---
 
 ## Status
+- **2026-10-15 — SCN 26-48 updated (AAF); implementation date unchanged at November 3,
+  2026.** A content-only update, effective in the parallel feed from the 12 UTC cycle the
+  same day. For REFS: freezing-rain accumulation probabilities removed from `prob`, the
+  duplicate surface-height record removed from `sprd` (along with the `REFC` spread, which
+  the SCN does not mention), and negative reflectivity removed from the `pmmn` `REFC` and
+  `REFD` fields. On the RRFS side it switches to a diagnosed precipitation type and
+  removes the freezing-rain and sleet accumulations from the deterministic and member
+  files that REFS is built from. See [What changed on
+  2026-10-15](#what-changed-on-2026-10-15-scn-26-48-aaf).
 - **2026-10-02 — SCN 26-48 updated (AAE); implementation moved to November 3, 2026.**
   The fourth slip, from October 14, with no reason given. REFS `ensprod` output is
   unchanged in the listing. What the update adds for REFS is the SBN/NOAAPORT header
@@ -338,7 +384,7 @@ directory have not been checked against the SCN here.
   not.
 - Proposed retirement of HREF and NARRE was announced in NWS Public Information Statement 25-41 (June 26, 2025); SREF was added to the same retirement wave by SCN 26-48. HREF and SREF are named in SCN 26-47; NARRE is not, in any revision through AAC (2026-10-02) — because NARRE-TL had already been decommissioned on or about January 7, 2026 under [SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), well ahead of the RRFSv1 cutover.
 - Targeted for operational implementation alongside the deterministic RRFS, originally "early 2026"; slipped through pre-operational evaluation.
-- SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to October 6, 2026 at 12 UTC and setting the real-time parallel feed to begin on or about August 11, 2026. A further update on August 24, 2026 (AAC) documented the `.idx` and BUFR files added to NOMADS, without changing the implementation date. The September 9, 2026 update (AAD) moved implementation to October 14, 2026 and added the ensemble member output listing. The October 2, 2026 update (AAE) moved it to **November 3, 2026 at 12 UTC** and added the SBN/NOAAPORT WMO headers.
+- SCN 26-48 was updated July 6, 2026 (AAB), moving implementation from August 31, 2026 to October 6, 2026 at 12 UTC and setting the real-time parallel feed to begin on or about August 11, 2026. A further update on August 24, 2026 (AAC) documented the `.idx` and BUFR files added to NOMADS, without changing the implementation date. The September 9, 2026 update (AAD) moved implementation to October 14, 2026 and added the ensemble member output listing. The October 2, 2026 update (AAE) moved it to **November 3, 2026 at 12 UTC** and added the SBN/NOAAPORT WMO headers. The October 15, 2026 update (AAF) kept that date and changed product content.
 - **NWS Service Change Notice 26-48 (May 12, 2026)** scheduled REFS operational implementation for August 31, 2026 at 12 UTC, with HREF, SREF, and NARRE retiring on the same day. Per SCN 26-48, if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday.
 - 2025 NOAA Hazardous Weather Testbed Spring Forecasting Experiment evaluations indicated REFS performed competitively with HREF for Day 1 and Day 2 forecasts, and slightly better for some objective metrics including deep convection (>40 dBZ) prediction. This supported the decision to proceed with HREF→REFS replacement.
 
@@ -374,8 +420,12 @@ directory have not been checked against the SCN here.
 ---
 
 ## Official documentation
-- NWS Service Change Notice 26-48, **AAE update of October 2, 2026** — current version.
-  Moves implementation to November 3, 2026 and adds the REFS and RRFS SBN/NOAAPORT WMO
+- NWS Service Change Notice 26-48, **AAF update of October 15, 2026** — current version.
+  Implementation date unchanged; changes the REFS `prob`, `sprd` and `pmmn` products and
+  the RRFS precipitation-type post-processing:  
+  https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation.aaf.pdf
+- NWS Service Change Notice 26-48 (AAE update, October 2, 2026 — superseded). Moved
+  implementation to November 3, 2026 and added the REFS and RRFS SBN/NOAAPORT WMO
   headers:  
   https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aae.pdf
 - NWS Service Change Notice 26-48 (AAD update, September 9, 2026 — superseded). The first
