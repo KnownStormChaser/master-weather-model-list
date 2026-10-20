@@ -76,7 +76,7 @@ Deterministic forecasts of 52 fields (per the `.ctl` descriptors), including:
 - **Resolution conflict:** The gov.br PNT service page lists "BRAMS Ambiental 20 km", which matches neither the current ~8 km feed nor the discontinued ~15 km streams. The dataserver paths and descriptors are treated as authoritative here.
 - **Air-quality lineage:** BRAMS's coupled chemistry configuration (CCATT-BRAMS) was previously published as the `ams_15km` streams, and this model was catalogued under air quality on that basis. With those streams stopped, it is filed here as regional NWP. If the chemistry streams return, an air-quality entry would be warranted again.
 - **Relationship to siblings:** Run alongside the [Eta](./eta-cptec.md) and [WRF](./wrf-cptec.md) regional systems, and complements [BAM](../../global/brazil/bam-cptec.md) (global). BRAMS also contributes to CPTEC's SMEC multi-model ensemble (Eta + WRF + BRAMS).
-- **Older data:** Only recent data is served operationally; older data requires a request to CPTEC and is subject to availability.
+- **Archive:** The dataserver holds complete daily `ams_08km` runs back to 1 January 2025 (verified October 2026). This conflicts with the gov.br PNT service page, which says only the current month is online and older data must be requested; the dataserver is treated as authoritative here.
 
 ---
 
