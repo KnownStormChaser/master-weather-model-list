@@ -5,7 +5,7 @@ ECWAM is the ocean wave component of ECMWF's **Integrated Forecasting System (IF
 
 Within the IFS, ECWAM is two-way coupled to the atmospheric model (and, in the coupled Earth-system configuration, to the NEMO ocean model), so the sea state feeds back on surface roughness and air–sea fluxes rather than being a passive downstream product.
 
-A reduced subset of ECWAM output is published through ECMWF's open data service at 0.25° in GRIB2, alongside the open IFS atmospheric fields.
+A reduced subset of ECWAM output is published through ECMWF's open data service in GRIB2, alongside the open IFS atmospheric fields, in two resolution tiers: **0.25°**, and since **20 October 2026 (06 UTC run)** also **0.1°**, which arrives **2 hours after** the 0.25° data. The parameter set is identical in both.
 
 > **Naming note:** This system was previously catalogued here as "ECMWF Wave Model (MFWAM)." That was a misnomer — ECMWF's wave model is **ECWAM**. **MFWAM** is the closely related *Météo-France* wave model, which is built on the ECWAM-IFS source code. See the two MFWAM entries for that distribution: [MFWAM Global (Copernicus)](../france/mfwam-copernicus.md) and [MFWAM GLOB01](../france/mfwam-global-france.md).
 
@@ -21,19 +21,21 @@ A reduced subset of ECWAM output is published through ECMWF's open data service 
 
 ## What area it covers
 - **Coverage:** Global oceans
-- **Open Data grid (verified):** regular latitude–longitude, **1440 × 721**, 0.25° × 0.25°, 1,038,240 total grid points — the same grid geometry as the open IFS atmospheric fields
-- **Grid origin:** first grid point 90°N / 180°, last 90°S / 179.75°, scanning mode 0 (west→east, north→south). The longitude axis begins at the dateline in the raw GRIB header; see the [IFS entry](../../../nwp_models/global/eu/ifs.md#what-area-it-covers).
-- **Sea mask:** fields carry a **GRIB bitmap**. Of the 1,038,240 grid points, **665,628 are valid (64.11%)** and 372,612 are masked. The bitmap is **static** — byte-for-byte identical valid-point counts at steps 0, 24, 144 and 360 — so it represents land plus permanently ice-covered ocean, not a time-varying ice edge.
+- **Open Data grids (verified)** — the same grid geometry as the open IFS atmospheric fields at each tier:
+  - **0.25° tier:** regular latitude–longitude, **1440 × 721**, 1,038,240 total grid points
+  - **0.1° tier:** regular latitude–longitude, **3600 × 1801**, 6,483,600 total grid points
+- **Grid origin (both tiers):** first grid point 90°N / 180°, last 90°S / 179.75° (0.25°) or 179.9° (0.1°), scanning mode 0 (west→east, north→south). The longitude axis begins at the dateline in the raw GRIB header; see the [IFS entry](../../../nwp_models/global/eu/ifs.md#what-area-it-covers).
+- **Sea mask:** fields carry a **GRIB bitmap**. At 0.25°, of the 1,038,240 grid points, **665,628 are valid (64.11%)** and 372,612 are masked. At 0.1°, **4,162,514 of 6,483,600 are valid (64.20%)**. The bitmap is **static** — at 0.25°, byte-for-byte identical valid-point counts at steps 0, 24, 144 and 360 — so it represents land plus permanently ice-covered ocean, not a time-varying ice edge. Valid rows run from 86.75°N to 78.0°S at 0.25° and from 86.9°N to 78.0°S at 0.1°.
 
 ---
 
 ## Basic details
 - **Model type:** Deterministic wave model
-- **Grid system:** single regular latitude–longitude grid in the open-data distribution (the operational model runs on a quasi-regular reduced grid; the published product is interpolated to regular 0.25°)
+- **Grid system:** regular latitude–longitude grids in the open-data distribution (the operational model runs on a quasi-regular reduced grid; the published product is interpolated to regular 0.25° or 0.1°)
 - **Core wave model:** ECWAM (IFS wave component; third-generation WAM derivative)
 - **IFS cycle:** Cycle 50r1 (operational since 12 May 2026)
-- **Native horizontal resolution:** **~9 km (TCo1279) — the same grid as the atmospheric model.** Since Cycle 49r1 (12 November 2024) ECWAM's horizontal grid matches the resolution of whichever atmospheric configuration it is coupled to: ~9 km for the medium-range deterministic and ensemble forecasts, ~36 km (TCo319) for the sub-seasonal and seasonal systems. Full resolution is available via the Product Requirements Catalogue under a service agreement; the open subset is interpolated down to 0.25°.
-- **Horizontal resolution (Open Data):** 0.25° (~28 km), verified — a roughly 3× coarsening from native
+- **Native horizontal resolution:** **~9 km (TCo1279) — the same grid as the atmospheric model.** Since Cycle 49r1 (12 November 2024) ECWAM's horizontal grid matches the resolution of whichever atmospheric configuration it is coupled to: ~9 km for the medium-range deterministic and ensemble forecasts, ~36 km (TCo319) for the sub-seasonal and seasonal systems. Full resolution is available via the Product Requirements Catalogue under a service agreement; the open subset is interpolated to 0.25° or 0.1°.
+- **Horizontal resolution (Open Data):** two tiers, verified — **0.25°** (~28 km, roughly 3× coarser than native) and **0.1°** (~11 km, close to native). Where both grids share a point, the values are identical (e.g. `swh` along 43.5°N from 8.5°W to 9.5°W on the 2026-10-21 00z +24 h field), consistent with both being interpolations of the same field.
 - **Spectral resolution:** **36 directions × 36 frequencies computed online**; the archived/output spectrum carries **36 directions × 29 frequencies**, at 6-hourly intervals. The output frequency count was cut from 36 to 29 in Cycle 49r1 to make the grid-resolution increase affordable — *online computation was not reduced*. No spectra are distributed in the open-data subset, so this is documented from ECMWF sources rather than live-verified.
 
 > **The "wave model is coarser than the atmosphere" assumption is out of date.** It held for most of ECWAM's operational history — Cycle 41r2 (March 2016) put HRES-WAM at 0.125° (~14 km) against a 9 km atmosphere, and ENS-WAM at 0.25° against 18 km. Cycle 49r1 unified them. Anyone carrying forward a pre-2024 mental model, or a pre-2024 secondary source, will understate the native resolution by roughly a third.
@@ -44,8 +46,20 @@ A reduced subset of ECWAM output is published through ECMWF's open data service 
 - **Temporal output resolution (verified):**
   - 00 / 12 UTC: 3-hourly to +144 h, then 6-hourly +150 h to +360 h — **85 step files**
   - 06 / 18 UTC: 3-hourly to +144 h — **49 step files**
-- **Observed publication latency:** whole run published in one batch, simultaneously with the deterministic atmospheric files. Measured 2026-07-30: 00z at 07:34 UTC (**T+7h34m**), 06z at 12:27 UTC (**T+6h27m**), 12z at 19:34 UTC (**T+7h34m**) — timestamps identical to the `oper` atmospheric stream of the same cycle.
-- **Volume:** ~10.6 MB per step file; **~898 MB per 00/12 UTC cycle**, ~518 MB per 06/18 UTC cycle.
+- **Observed publication latency:**
+  - **0.25° tier:** whole run published in one batch, simultaneously with the deterministic atmospheric files. Measured 2026-07-30 and unchanged on 2026-10-20/21: 00z at 07:34 UTC (**T+7h34m**), 06z at 12:27 UTC (**T+6h27m**), 12z at 19:34 UTC (**T+7h34m**) — timestamps identical to the `oper` atmospheric stream of the same cycle.
+  - **0.1° tier:** **2 hours later** — 00z at 09:35 UTC (**T+9h35m**), 06z at 14:27–14:28 UTC (**T+8h27m**), 12z at 21:35 UTC. Measured on the 2026-10-20 12z, 2026-10-21 00z and 2026-10-21 06z runs; within a minute of the 0.1° `oper` files.
+- **Volume:**
+
+  | Tier | Per step file | Per 00/12 UTC cycle | Per 06/18 UTC cycle | Per day |
+  |---|---|---|---|---|
+  | 0.25° (before 2026-10-20 06z) | ~10.6 MB | ~898 MB | ~518 MB | ~3 GB |
+  | 0.25° (from 2026-10-20 06z) | ~5.3 MB | ~0.5 GB | ~0.3 GB | **~1.4 GB** |
+  | 0.1° | ~26.2 MB | ~2.2 GB | ~1.3 GB | **~7.1 GB** |
+
+  The 0.25° files halved in size on 2026-10-20 because of a packing change — see the note below.
+
+> ⚠️ **Wave packing precision dropped on 2026-10-20 06z.** The 0.25° wave fields were re-packed at **10 bits per value instead of 16** on the cycle the 0.1° tier launched. Verified on the +24 h step, 2026-10-20 00z vs 2026-10-21 00z: `swh` quantisation step went from ~0.0002 m to **~0.016 m (1.6 cm)**; `mwp` from ~0.0005 s to **~0.03 s**. The 0.1° tier uses the same 10 bits. For forecasting this is immaterial, but it matters for anything sensitive to small wave heights — including the near-zero, ice-suppressed cells discussed under *Notes* — and for archive users comparing data across that date. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#choosing-a-tier--025-or-01) for the atmospheric equivalent.
 
 > ⚠️ **Corrects the previous version of this entry**, which stated 240 h at 00/12 UTC and a separate 90 h `scwv` stream at 06/18 UTC. Both figures are pre-Cycle-50r1. `scwv` was deprecated on 12 May 2026 and folded into `wave`; the forecast horizon is 360 h and 144 h respectively. ECMWF's own open-data documentation still carries the old 240 h / 90 h figures — see *Open questions*.
 
@@ -69,7 +83,7 @@ A reduced subset of ECWAM output is published through ECMWF's open data service 
 
 ## What it provides
 
-The open-data subset contains **13 parameters**, verified by decoding `20260730000000-24h-wave-fc.grib2` (13 GRIB messages per step file). All use ECMWF wave parameter table 140.
+The open-data subset contains **13 parameters**, verified by decoding `20260730000000-24h-wave-fc.grib2` (13 GRIB messages per step file). All use ECMWF wave parameter table 140. **The 0.1° tier carries the same 13 parameters** (13 messages in `20261021000000-24h-wave-fc-sfc.index`), and the 2026-10-20 change did not add any wave parameters at 0.25° either.
 
 **Integral sea-state parameters**
 
@@ -112,40 +126,47 @@ The open-data subset contains **13 parameters**, verified by decoding `202607300
 - **Data formats:** GRIB2, `grid_ccsds` packing (CCSDS compression), `tablesVersion = 32`, bitmap present. Decoding requires ecCodes 2.42.0 or newer built with `libaec`.
 - **Official download location:**
   https://data.ecmwf.int/forecasts/
-  - Path pattern: `[ROOT]/<YYYYMMDD>/<HH>z/ifs/0p25/wave/<YYYYMMDD><HH>0000-<step>h-wave-fc.grib2`
+  - **0.25° path pattern:** `[ROOT]/<YYYYMMDD>/<HH>z/ifs/0p25/wave/<YYYYMMDD><HH>0000-<step>h-wave-fc.grib2`
   - Example: `20260730/00z/ifs/0p25/wave/20260730000000-24h-wave-fc.grib2`
+  - **0.1° path pattern:** `[ROOT]/<YYYYMMDD>/<HH>z/ifs/0p1/wave/<YYYYMMDD><HH>0000-<step>h-wave-fc-sfc.grib2`
+  - Example: `20261021/00z/ifs/0p1/wave/20261021000000-24h-wave-fc-sfc.grib2`
+  - Note the **`-sfc` suffix** on 0.1° wave files. The atmospheric 0.1° streams are split into `-sfc` and `-pl`; the wave stream has surface fields only, so it has a `-sfc` file and no `-pl` counterpart. Code that builds 0.1° wave filenames from the 0.25° pattern will find nothing.
+
+**Which tier:** for open-ocean forecasting, 0.25° is two hours earlier and a fifth of the volume. The 0.1° tier is worth the delay mainly near coasts, where its finer sea mask reaches closer to shore (see *Notes*), and for semi-enclosed seas poorly resolved at 0.25°.
 
 ### Access channels
-Identical files are served from four channels; verified 2026-07-30 for the wave stream specifically, with the `24h-wave-fc.index` object returning matching MD5 (`2863fe8bcaec...`) from the ECMWF portal, GCS and the AWS regional endpoint.
+Identical files are served from four channels; verified 2026-07-30 for the wave stream specifically, with the `24h-wave-fc.index` object returning matching MD5 (`2863fe8bcaec...`) from the ECMWF portal, GCS and the AWS regional endpoint. For the 0.1° tier, per-cycle `wave` file counts matched on all four channels for every run from 2026-10-20 06z to 2026-10-21 06z, and unlike the 0.1° ensembles, the deterministic wave stream was complete on every mirror at each check.
 
-| Channel | Endpoint | Anonymous? | Archive depth |
-|---|---|---|---|
-| **ECMWF portal** | `https://data.ecmwf.int/forecasts/` | Yes (500-connection cap) | Rolling ~12 runs |
-| **AWS S3** | `s3://ecmwf-forecasts` (`eu-central-1`) | Yes — unsigned | 2023-01-18 → present |
-| **Azure Blob** | `https://ai4edataeuwest.blob.core.windows.net/ecmwf` | **No — SAS token required** | 2022-01-21 → present |
-| **Google Cloud Storage** | `gs://ecmwf-open-data` | Yes — fully unauthenticated | 2023-07-12 → present |
+| Channel | Endpoint | Anonymous? | Archive depth, 0.25° | Archive depth, 0.1° |
+|---|---|---|---|---|
+| **ECMWF portal** | `https://data.ecmwf.int/forecasts/` | Yes (500-connection cap) | Rolling ~12 runs | Rolling ~12 runs |
+| **AWS S3** | `s3://ecmwf-forecasts` (`eu-central-1`) | Yes — unsigned | 2023-01-18 → present | 2026-10-20 06z → present |
+| **Azure Blob** | `https://ai4edataeuwest.blob.core.windows.net/ecmwf` | **No — SAS token required** | 2022-01-21 → present | 2026-10-20 06z → present |
+| **Google Cloud Storage** | `gs://ecmwf-open-data` | Yes — fully unauthenticated | 2023-07-12 → present | 2026-10-20 06z → present |
 
 The cloud mirrors retain full archives rather than the portal's rolling window. Full access mechanics — the Azure SAS-token exchange, the GCS bucket identity, historical path-schema changes, `.index` byte-range retrieval, and the AWS `SlowDown` throttling behaviour — are documented once in the [IFS entry](../../../nwp_models/global/eu/ifs.md#data-availability) rather than duplicated here.
 
-**Historical note for archive crawlers:** files from cycles before 12 May 2026 use `scwv` in both the directory path and the filename for the 06/18 UTC runs. Cross-cycle workflows reading the mirrors must branch on date.
+**Historical note for archive crawlers:** files from cycles before 12 May 2026 use `scwv` in both the directory path and the filename for the 06/18 UTC runs. 0.25° files from before the 2026-10-20 06z run are packed at 16 bits per value rather than 10. Cross-cycle workflows reading the mirrors must branch on date.
 
 ---
 
 ## Notes
 
-- **Verified 2026-07-30.** Directory structure, step lists, grid geometry, bitmap behaviour, parameter inventory and encoding, static-field duplication, publication latency and mirror parity all confirmed by direct inspection of live GRIB2 files from the 00z, 06z and 12z runs.
+- **Verified 2026-07-30, and for the 0.1° tier on 2026-10-20/21.** Directory structure, step lists, grid geometry, bitmap behaviour, parameter inventory and encoding, static-field duplication, publication latency and mirror parity all confirmed by direct inspection of live GRIB2 files.
 
-- **Sea ice is handled by energy suppression, not masking.** The bitmap is static, so seasonally ice-covered water stays inside the valid mask and simply returns near-zero wave height when ice is present. A meridional transect at 0° E on the 00z +24 h field gives 1.75 m at 70°N, 0.95 m at 78°N, 0.15 m at 80°N, then 0.01 m from 82°N to 86°N, with 88°N masked out entirely. The Southern Hemisphere behaves the same way: 1.50 m at 60°S falling to 0.03 m at 67°S, with 70°S masked. **10.55% of all valid sea points carry SWH below 0.05 m** in this field. Basin statistics, climatologies, and extreme-value fits computed over the raw mask will be biased low unless these ice-suppressed cells are screened out — they are not calm seas, they are absent seas.
+- **Sea ice is handled by energy suppression, not masking.** The bitmap is static, so seasonally ice-covered water stays inside the valid mask and simply returns near-zero wave height when ice is present. A meridional transect at 0° E on the 00z +24 h field gives 1.75 m at 70°N, 0.95 m at 78°N, 0.15 m at 80°N, then 0.01 m from 82°N to 86°N, with 88°N masked out entirely. The Southern Hemisphere behaves the same way: 1.50 m at 60°S falling to 0.03 m at 67°S, with 70°S masked. **10.55% of all valid sea points carry SWH below 0.05 m** in this field. Basin statistics, climatologies, and extreme-value fits computed over the raw mask will be biased low unless these ice-suppressed cells are screened out — they are not calm seas, they are absent seas. **The 0.1° tier behaves the same way:** on the 2026-10-21 00z +24 h field, 10.46% of valid 0.1° points were below 0.05 m, against 10.40% at 0.25° for the same field. With the 2026-10-20 move to 10-bit packing, these near-zero values are now quantised in ~1.6 cm steps, so a 0.05 m screening threshold remains usable but finer thresholds are not.
 
-- **Coastal cells are frequently masked.** At 0.25° the coastline is coarse and many nearshore points fall on the land side of the mask. Verified example: 43.0°N, 8.0°W off Galicia returns missing, while 43.5°N, 9.5°W returns 0.72 m. The open subset is unsuitable for nearshore work without a finer regional model; see the Copernicus Marine regional wave products catalogued in [`COPERNICUS.md`](../../../../COPERNICUS.md).
+- **Coastal cells are frequently masked, less so at 0.1°.** At 0.25° the coastline is coarse and many nearshore points fall on the land side of the mask. Verified example on the 2026-10-21 00z +24 h field, walking west along 43.5°N from the Galician coast near A Coruña: the first valid sea point is at **8.5°W at 0.25°** but **8.3°W at 0.1°** — about 16 km closer to shore. Where both tiers have a valid point, the values match exactly (3.36 m at 8.5°W, 3.55 m at 9.5°W). The 0.1° tier therefore extends coverage into nearshore water rather than changing offshore values. Even at 0.1° the open subset is not a nearshore wave model; for that, see the Copernicus Marine regional wave products catalogued in [`COPERNICUS.md`](../../../../COPERNICUS.md).
 
-- **`wmb` is a static field re-emitted at every step.** Bathymetry values are bit-identical between step 0 and step 360 — only the GRIB step key differs. It is duplicated across all 85 steps of a 00/12 UTC cycle, roughly **42.8 MB of redundancy per cycle**. Fetch it once from any step; skip it in the other 84.
+  > **Corrects a previous version of this entry**, which gave 43.0°N, 8.0°W "off Galicia" as an example of a masked coastal cell. That point is inland in central Galicia, near Melide, so being masked shows nothing about the coastline. The transect above replaces it.
 
-- **`generatingProcessIdentifier = 109` distinguishes the wave stream** from the atmospheric `oper` stream, which uses 161. Useful for sorting mixed archives where filenames have been lost — the same trick documented for DWD's [GWAM/EWAM](../../regional/germany/ewam-dwd.md). **Note the limit:** [ENS-WAM](./ecwam-ens.md) also uses 109, so this key separates the wave family from the atmosphere but not deterministic from ensemble. Use `mars.stream` or `mars.type` for that.
+- **`wmb` is a static field re-emitted at every step.** Bathymetry values are bit-identical between step 0 and step 360 — only the GRIB step key differs. It is duplicated across all 85 steps of a 00/12 UTC cycle, roughly **42.8 MB of redundancy per cycle** at 0.25°. At 0.1° each copy is ~2.49 MB, so the redundancy is **~209 MB per 00/12 UTC cycle**. Since the 2026-10-20 packing change shrank every other field but not `wmb` (still ~510 KB per copy at 0.25°), the duplicate bathymetry is now **~9.5% of every wave step file** in both tiers, up from ~4.8%. Fetch it once from any step; skip it in the other 84.
 
-- **The wave stream is already fully GRIB2-native.** All 13 parameters decode with `localTablesVersion = 0`, meaning WMO-standard discipline/category/number encoding throughout. Unlike the atmospheric `oper` stream — which still has six locally-encoded parameters including `tp` — **ECWAM's open-data subset should be unaffected by the Cycle 50r2 parameter-encoding migration.** See the [IFS entry](../../../nwp_models/global/eu/ifs.md#upcoming-changes) for the atmospheric picture.
+- **`generatingProcessIdentifier = 109` distinguishes the wave stream** from the atmospheric `oper` stream, which uses 161 (both values verified unchanged at 0.1°). Useful for sorting mixed archives where filenames have been lost — the same trick documented for DWD's [GWAM/EWAM](../../regional/germany/ewam-dwd.md). **Note the limit:** [ENS-WAM](./ecwam-ens.md) also uses 109, so this key separates the wave family from the atmosphere but not deterministic from ensemble. Use `mars.stream` or `mars.type` for that.
 
-- **Open subset vs. full operational model.** The free data is a reduced-parameter, 0.25° extract of ECWAM, analogous to the open IFS atmospheric subset. Full-resolution, full-parameter wave products (including spectra and partitions) require a Real-time Dissemination service agreement.
+- **The wave stream is already fully GRIB2-native.** All 13 parameters decode with `localTablesVersion = 0` (re-confirmed for `swh` at 0.1°), meaning WMO-standard discipline/category/number encoding throughout. Unlike the atmospheric `oper` stream — which still has six locally-encoded parameters including `tp` — **ECWAM's open-data subset should be unaffected by the Cycle 50r2 parameter-encoding migration.** See the [IFS entry](../../../nwp_models/global/eu/ifs.md#upcoming-changes) for the atmospheric picture.
+
+- **Open subset vs. full operational model.** The free data is a reduced-parameter extract of ECWAM at 0.25° or 0.1°, analogous to the open IFS atmospheric subset. Full-resolution, full-parameter wave products (including spectra and partitions) require a Real-time Dissemination service agreement.
 
 - **Relationship to MFWAM (shared codebase).** Météo-France's MFWAM runs on the ECWAM-IFS source code (documented as ECWAM-IFS-38R2 in the Copernicus Marine global product). The lineage is bidirectional: the Ardhuin/Météo-France wind-input and deep-water dissipation parametrizations were adopted *back into* ECWAM in IFS Cycle 46r1 (June 2019). ECWAM and MFWAM are cross-pollinated relatives rather than a simple fork — see [MFWAM Global (Copernicus)](../france/mfwam-copernicus.md) and [MFWAM GLOB01](../france/mfwam-global-france.md).
 
@@ -153,11 +174,18 @@ The cloud mirrors retain full archives rather than the portal's rolling window. 
 
 - **Atmospheric siblings.** Driven by and two-way coupled with [IFS](../../../nwp_models/global/eu/ifs.md); the wave ensemble's spread derives from [IFS ENS](../../../ensemble_models/global/eu/ifs-ens.md). Coupled ocean-surface fields (`zos`, `sithick`, `sve`, `svn`) are delivered in the *atmospheric* `oper` and `enfo` streams rather than in the wave stream.
 
-- **Upcoming resolution change.** ECMWF has announced plans to extend the open subset toward native 9 km resolution later in 2026 with a 2-hour latency; a longer-term move to 0.125° (~14 km) to match the ERA6 grid has also been signalled. Neither is live — as of 2026-07-30 the resolution directory contains only `0p25`.
+- **Resolution tiers.** The 9 km open-data extension ECMWF announced for 2026 went live on 2026-10-20 as the 0.1° tier described above, with the 0.25° tier retained. A separate move to 0.125° (~14 km) to match the ERA6 grid was signalled earlier in ECMWF's open-data plans; **TBD** whether that is still planned now that 0.1° exists — no `0p125` directory has been observed.
 
 ---
 
 ## Recent version history
+
+### Open Data 0.1° tier — live 20 October 2026, 06 UTC run
+- New 0.1° `wave` tier (`ifs/0p1/wave/`, files suffixed `-sfc`), 2 hours behind the 0.25° tier, with the same 13 parameters.
+- 0.25° wave packing reduced from 16 to 10 bits per value; files about half the size.
+- No change to the wave model itself.
+- **Corrects the previous version of this entry**, which described the 9 km extension as not yet live.
+- See the [IFS entry](../../../nwp_models/global/eu/ifs.md#recent-version-history) for the full Open Data changeset.
 
 ### IFS Cycle 50r1 — 12 May 2026 (current)
 - **New wave interaction with sea ice and ocean currents** — wave propagation now responds to surface currents from the coupled NEMO4-SI3 component, and wave–sea-ice coupling was refined.
@@ -193,6 +221,13 @@ Established on **2026-07-30** by direct inspection rather than from documentatio
 - `Last-Modified` header sampling across three cycles for publication latency
 - MD5 comparison of the same wave object across the ECMWF portal, GCS and the AWS regional endpoint
 
+The 0.1° tier and the 2026-10-20 changes were verified on **2026-10-20 and 2026-10-21**:
+- Per-channel `wave` file counts on the portal, AWS, Azure and GCS for every cycle from 2026-10-20 06z to 2026-10-21 06z
+- ecCodes 2.50.0 decode of 0.1° and 0.25° `swh` at +24 h (2026-10-21 00z) for grid geometry, bitmap and valid-point counts, ice-suppressed share, coastal transect and cross-tier value agreement
+- Bits-per-value decode of 0.25° `swh` and `mwp` before (2026-10-20 00z) and after (2026-10-21 00z) the packing change
+- `.index` parsing for parameter counts and `wmb` message sizes in both tiers
+- Summed AWS listing sizes over four consecutive cycles for volume; `LastModified` sampling on three runs for latency
+
 Where live observation and ECMWF documentation disagree, the live observation is recorded and the disagreement flagged rather than silently resolved.
 
 **Not live-verified:** native horizontal resolution, spectral discretisation, assimilation method, and coupling behaviour cannot be established from the open-data subset, which distributes only interpolated integral parameters. These are sourced from ECMWF's Forecast User Guide, the Cycle 49r1 and 50r1 newsletters, and IFS Documentation Part VII, and are labelled as such above.
@@ -201,6 +236,7 @@ Where live observation and ECMWF documentation disagree, the live observation is
 
 ## Official documentation
 - ECMWF open data (real-time forecasts from IFS and AIFS): https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS
+- ECMWF open data: what's new at 0.1°: https://confluence.ecmwf.int/spaces/DAC/pages/738041087/ECMWF+open+data+what+s+new+at+0.1%C2%B0
 - Open data licence and parameter subset: https://www.ecmwf.int/en/forecasts/datasets/open-data
 - Forecast User Guide §2.3 — Ocean Wave Model ECWAM (resolution and spectral discretisation): https://confluence.ecmwf.int/display/FUG/Section+2.3+Ocean+Wave+Model+-+ECWAM
 - ECMWF Newsletter 181 (Cycle 49r1 wave grid unification): https://www.ecmwf.int/en/newsletter/181/earth-system-science/ifs-upgrade-improves-near-surface-wind-and-temperature
