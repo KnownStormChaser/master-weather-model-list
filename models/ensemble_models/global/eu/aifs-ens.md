@@ -33,26 +33,29 @@ AIFS ENS runs operationally alongside the physics-based [IFS ENS](./ifs-ens.md) 
 - **Model parameters:** ~229 million
 - **Ensemble size:** **51 — 1 control + 50 perturbed, all distributed** (verified)
 - **Native grid:** N320 reduced Gaussian grid (~31 km, ~0.25°)
-- **Open Data resolution:** 0.25° regular latitude–longitude
+- **Open Data resolution:** 0.25° regular latitude–longitude only. The 0.1° tier ECMWF added on 2026-10-20 covers IFS only; `aifs-ens/` still contains `0p25` only (verified through the 2026-10-21 06z run).
 - **Pressure levels:** 14 — 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000 hPa. **Specific humidity (`q`) is the exception at 13 levels**, absent at 10 hPa — the same gap as AIFS Single.
 - **Soil levels:** 2 (`sol` 1–2)
 - **Forecast timestep:** 6 hours, uniform throughout — no 3-hourly section
 - **Forecast length (verified):** **360 h (15 days) at every cycle**, 61 steps
 - **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
-- **Observed publication latency (verified):** **T+6h40m at every cycle**, control and perturbed files published in the same batch. Measured 2026-07-30: 00z at 06:40 UTC, 06z at 12:40 UTC, 12z at 18:40 UTC.
+- **Observed publication latency (verified) — changed on 2026-10-20 06z:**
+  - **Until the 2026-10-20 00z run:** the July version of this entry recorded **T+6h40m** at every cycle from portal timestamps (00z 06:40, 06z 12:40, 12z 18:40 UTC), control and perturbed files together. On the AWS mirror the whole run — `-cf`, `-pf` and `-ep` — arrived over 12–16 minutes, starting *earlier* than that: 05:48–06:00 UTC on 2026-10-19 00z, 05:50–06:05 on 2026-10-20 00z.
+  - **From the 2026-10-20 06z run:** steps are released **one at a time, about one minute apart**. On the 2026-10-21 00z run: step 0 at 06:40 (**T+6h40m**), the +360 h `-pf` file at 07:40 (**T+7h40m**), and the second `-ep` file at 08:01 UTC (**T+8h01m**). Same offsets at every cycle from 2026-10-20 06z to 2026-10-21 12z, with portal and AWS timestamps identical to within seconds.
+  - **The complete run now finishes at the same minutes as IFS ENS 0.25°** — whose `enfo` files arrive 07:40–08:01 UTC for 00z.
 
-> **AIFS ENS is both longer and earlier than IFS ENS.** The physics-based [IFS ENS](./ifs-ens.md) runs to 360 h only at 00 and 12 UTC, dropping to 144 h at 06 and 18 UTC, and publishes at T+7h40m (00/12) or T+7h04m (06). AIFS ENS carries the full 61-step, 360 h run at **all four cycles** and lands **exactly one hour ahead** at 00/12 UTC and 24 minutes ahead at 06 UTC. For a fresh 15-day ensemble at 06 or 18 UTC, AIFS ENS is currently the only ECMWF option.
+> **AIFS ENS is longer than IFS ENS, and its first steps are earlier — but no longer the whole run.** The physics-based [IFS ENS](./ifs-ens.md) runs to 360 h only at 00 and 12 UTC, dropping to 144 h at 06 and 18 UTC. AIFS ENS carries the full 61-step, 360 h run at **all four cycles**, so for a fresh 15-day ensemble at 06 or 18 UTC it is still the only ECMWF option. Previous versions of this entry said AIFS ENS "lands exactly one hour ahead" of IFS ENS at 00/12 UTC. Since 2026-10-20 06z that holds for step 0 only: the final AIFS ENS files arrive at the same time as the IFS ENS ones. No ECMWF announcement of this change has been found. As with [AIFS Single](../../../nwp_models/global/eu/aifs-single.md#basic-details), the portal's own timestamps were already staggered per step before the change; what verifiably changed is when the files reach the cloud mirrors.
 
 ### Volume
 
-| File | Per step | Per cycle (61 steps) |
+| File | Per step (before → from 2026-10-20 06z) | Per cycle, current (61 steps) |
 |---|---|---|
-| `-cf.grib2` (control) | 89.0 MB | 5.43 GB |
-| `-pf.grib2` (50 members) | **4,481.9 MB** | **273.4 GB** |
-| **Combined, per cycle** | | **~279 GB** |
-| **Per day (4 cycles)** | | **~1.1 TB** |
+| `-cf.grib2` (control) | 89.0 MB → **~58 MB** | ~3.5 GB |
+| `-pf.grib2` (50 members) | 4,481.9 MB → **~2,930 MB** | ~179 GB |
+| **Combined, per cycle (incl. `-ep`)** | | **~184 GB** |
+| **Per day (4 cycles)** | | **~738 GB** (~1.1 TB before) |
 
-The second-largest product in the ECMWF Open Data tree, behind [IFS ENS](./ifs-ens.md) at ~1,778 GB/day. AIFS ENS carries fewer parameters per member (108 records against IFS ENS's 170) but runs the full 61-step, 360 h forecast at all four cycles where IFS ENS runs 49 steps at two of them, which closes most of the gap. Cross-stream comparison table in the [IFS entry](../../../nwp_models/global/eu/ifs.md#volume-across-the-025-tree).
+Current per-day figures are summed from AWS listings over four consecutive cycles (2026-10-20 12z to 2026-10-21 06z). The drop of about a third comes from lower packing precision on 2026-10-20 — see *GRIB2 encoding*. Still the second-largest product in the 0.25° tree, behind [IFS ENS](./ifs-ens.md) at ~1,178 GB/day (and far behind the 0.1° IFS ENS at ~5.3 TB/day). AIFS ENS carries fewer parameters per member (108 records against IFS ENS's 177) but runs the full 61-step, 360 h forecast at all four cycles where IFS ENS runs 49 steps at two of them, which closes most of the gap. Cross-stream comparison table in the [IFS entry](../../../nwp_models/global/eu/ifs.md#volume-across-the-open-data-tree).
 
 ---
 
@@ -184,6 +187,18 @@ Like AIFS Single, AIFS ENS uses **no ECMWF local tables** — it is already on t
 
 `tablesVersion = 36` means older ecCodes installations may lack the necessary definitions; 2.42.0 or newer is recommended, with `libaec` compiled in for CCSDS.
 
+### Packing precision reduced on 2026-10-20 06z
+Re-packed with fewer bits per value on the same cycle as the AIFS Single and IFS 0.25° changes. Parameter inventory unchanged: 112 / 5,600 messages at step 0 and 108 / 5,400 at +24 h in `-cf` / `-pf`, and 1,192 / 585 records in the 240h / 360h `-ep` files, before and after. Measured on `-pf` member 1 and the `-cf` control at +24 h, 2026-10-20 00z vs 2026-10-21 00z:
+
+| Field | Bits per value before → after | Approx. quantisation step before → after |
+|---|---|---|
+| `2t` (control and members) | 12 → **9** | 0.03 K → **0.25 K** |
+| `tp` (control and members) | 16 → **12** | 0.008 mm → **0.0625 mm** |
+| `msl` | 12 → 12 (unchanged) | 4 Pa |
+| `z` 500 hPa | 16 → 16 (unchanged) | 0.25 m²/s² |
+
+Steps depend on each message's value range. Ensemble statistics computed from archive data spanning 2026-10-20 mix two quantisation regimes. Fuller field-by-field figures for the deterministic stream are in the [AIFS Single entry](../../../nwp_models/global/eu/aifs-single.md#packing-precision-reduced-on-2026-10-20-06z).
+
 ---
 
 ## Data availability
@@ -223,16 +238,18 @@ Verified 2026-07-30: the `24h-enfo-cf.index` object returned matching MD5 (`a619
 
 Bisection of the AWS mirror places the first `aifs-ens/` directory between 2025-07-01 and 2025-08-01, consistent with the 1 July 2025 operational date. Full access mechanics are documented once in the [IFS entry](../../../nwp_models/global/eu/ifs.md#data-availability).
 
-> **Byte-range retrieval is effectively mandatory.** A single `-pf` step file is 4.48 GB holding 5,400 messages; one member-parameter field is under 1 MB. Pulling one parameter across all 50 members costs roughly 40 MB against 4.48 GB — a 100× saving. The `.index` sidecar gives `_offset` and `_length` per message; offsets change every run. Given the ~1.1 TB/day total, expect AWS `SlowDown` throttling on bulk work and prefer GCS, as documented in the [ENS-WAM entry](../../../wave_models/global/eu/ecwam-ens.md#access-channels).
+> **Byte-range retrieval is effectively mandatory.** A single `-pf` step file is ~2.9 GB (4.48 GB before the 2026-10-20 packing change) holding 5,400 messages; one member-parameter field is under 1 MB. Pulling one parameter across all 50 members costs a few tens of MB against the whole file — roughly a 100× saving. The `.index` sidecar gives `_offset` and `_length` per message; offsets change every run. At ~738 GB/day, expect AWS `SlowDown` throttling on bulk work and prefer GCS for archive pulls, as documented in the [ENS-WAM entry](../../../wave_models/global/eu/ecwam-ens.md#access-channels).
 
-AIFS ENS is distributed at its native 0.25° resolution. Like AIFS Single, it has been available at 0.25° from initial release; the entire ECMWF Real-time Catalogue (including AIFS) became CC-BY-4.0 licensed on 1 October 2025.
+> **Since 2026-10-20, don't treat the first file as a complete run.** With per-step release, a poller that sees step 0 at T+6h40m and immediately walks the step list will hit missing files for the next hour. Wait for the expected count — 61 `-cf`, 61 `-pf` and 2 `-ep` files — or poll each step individually.
+
+AIFS ENS is distributed at its native 0.25° resolution, with no 0.1° tier. Like AIFS Single, it has been available at 0.25° from initial release; the entire ECMWF Real-time Catalogue (including AIFS) became CC-BY-4.0 licensed on 1 October 2025.
 
 ---
 
 ## Notes
 - **Relationship to the deterministic counterpart.** AIFS ENS shares the encoder–processor–decoder architecture of [AIFS Single](../../../nwp_models/global/eu/aifs-single.md) but differs in training methodology, loss function, and the addition of stochastic noise injection at inference. The two are **not equivalent** — the AIFS ENS control is a separately trained probabilistic network, not AIFS Single re-run. Their parameter sets also differ: AIFS ENS omits `gh`.
 - **Relationship to the physics-based sibling.** Runs alongside [IFS ENS](./ifs-ens.md), considered complementary rather than a replacement. Depends on IFS for initial conditions — it inherits IFS ENS's perturbed analyses member by member and relies on the physics-based 4D-Var system to produce them, then propagates forward with the neural network.
-- **AIFS wave ensemble is catalogued separately.** From v2 the `aifs-ens` tree carries a `waef/` stream alongside `enfo/` — ECMWF's first probabilistic data-driven wave forecasts, verified present on 2026-07-30. Following the repository's convention of filing by phenomenon, it belongs in `models/wave_models/` next to [ENS-WAM](../../../wave_models/global/eu/ecwam-ens.md) rather than inside this entry. Not yet catalogued.
+- **AIFS wave ensemble is catalogued separately.** From v2 the `aifs-ens` tree carries a `waef/` stream alongside `enfo/` — ECMWF's first probabilistic data-driven wave forecasts, verified present on 2026-07-30. Following the repository's convention of filing by phenomenon, it is catalogued as [AIFS ENS Wave](../../../wave_models/global/eu/aifs-ens-wave.md) in `models/wave_models/`, next to [ENS-WAM](../../../wave_models/global/eu/ecwam-ens.md).
 - ECMWF stopped running its experimental machine learning model suite (Aurora, FourCastNet, GraphCast, Pangu-Weather) as of the joint AIFS/IFS upgrade on 12 May 2026.
 - **Two soil layers, not four**, as with AIFS Single. Land-surface workflows ported from IFS ENS will find the deeper layers absent.
 - Due to the non-determinism of GPU computation, users running AIFS ENS themselves cannot exactly reproduce ECMWF's official forecasts.
@@ -241,6 +258,13 @@ AIFS ENS is distributed at its native 0.25° resolution. Like AIFS Single, it ha
 ---
 
 ## Version history
+
+### Open Data distribution change — 20 October 2026, 06 UTC run
+Not a model change — AIFS ENS is still v2:
+- **Steps released one at a time**, about one minute apart, from T+6h40m (step 0) to T+7h40m (+360 h), with the second `-ep` file at T+8h01m. Before, the whole run reached the cloud mirrors in under 20 minutes.
+- **Lower packing precision** (e.g. `2t` 12 → 9 bits, `tp` 16 → 12 bits); files about a third smaller.
+- **No change** to members, parameters, levels, steps, grid or paths. No 0.1° tier.
+- Same cycle as the launch of the 0.1° IFS tier; see the [IFS entry](../../../nwp_models/global/eu/ifs.md#recent-version-history).
 
 ### AIFS ENS v2 — operational 12 May 2026 (current)
 Major upgrade deployed jointly with [IFS Cycle 50r1](../../../nwp_models/global/eu/ifs.md#recent-version-history) and [AIFS Single v2](../../../nwp_models/global/eu/aifs-single.md#version-history). Architectural and scientific changes:
@@ -272,6 +296,13 @@ Established on **2026-07-30** by direct inspection rather than from documentatio
 - `Content-Length` sampling for per-step and per-cycle volumes
 - MD5 comparison of the same object across the ECMWF portal, GCS and the AWS regional endpoint
 
+The 2026-10-20 distribution changes were verified on **2026-10-21**:
+- AWS `LastModified` windows for every cycle from 2026-10-19 00z to 2026-10-21 12z (the 12z run observed arriving step by step), plus portal and AWS `Last-Modified` for steps 0 and 360 and the 360h `-ep` file on four cycles either side of the change
+- Directory listing confirming `aifs-ens/` holds `0p25` only on the 2026-10-21 00z and 06z runs
+- `.index` comparison of `-cf`, `-pf` and both `-ep` files before (2026-10-20 00z) and after (2026-10-21 00z)
+- ecCodes 2.50.0 bits-per-value decode of `2t`, `tp`, `msl` and `z` 500 hPa before and after
+- `Content-Length` sampling across dates and cycles, and summed AWS listing sizes over four consecutive cycles for volume
+
 Architecture, training regime, loss functions, model parameter count and version history are **not live-verifiable** and are sourced from ECMWF implementation pages, the AIFS blog, and the Lang et al. papers.
 
 Where live observation and ECMWF documentation disagree, the live observation is recorded and the disagreement flagged rather than silently resolved.
@@ -282,6 +313,7 @@ Where live observation and ECMWF documentation disagree, the live observation is
 - AIFS ENS v2 implementation page: https://confluence.ecmwf.int/display/FCST/Implementation+of+AIFS+ENS+v2
 - AIFS ENS v1 implementation page: https://confluence.ecmwf.int/display/FCST/Implementation+of+AIFS+ENS+v1
 - ECMWF open data user documentation: https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS
+- ECMWF open data: what's new at 0.1° (IFS only; context for the 2026-10-20 changes): https://confluence.ecmwf.int/spaces/DAC/pages/738041087/ECMWF+open+data+what+s+new+at+0.1%C2%B0
 - ECMWF AIFS overview: https://www.ecmwf.int/en/forecasts/documentation-and-support/changes-ecmwf-model
 - AIFS Blog: https://www.ecmwf.int/en/about/media-centre/aifs-blog
 - Anemoi framework: https://anemoi.readthedocs.io/
