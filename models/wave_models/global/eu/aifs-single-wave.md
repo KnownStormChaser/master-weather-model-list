@@ -30,14 +30,16 @@ ECMWF reports that AIFS significant wave height forecasts improve by approximate
 - **Grid system:** single regular latitude–longitude grid; the underlying network operates on the N320 reduced Gaussian grid (~31 km) shared with AIFS Single's atmospheric output
 - **Core wave model:** None in the conventional sense. AIFS Wave is a set of output channels on the AIFS Single neural network — encoder–processor–decoder with attention-based graph neural networks and a sliding-window transformer processor. **No spectral discretisation exists**, so the frequency/direction bin counts that characterise ECWAM, WW3 and SWAN have no analogue here.
 - **Model version:** AIFS Single v2 (operational 12 May 2026)
-- **Horizontal resolution:** 0.25° (~28 km) as distributed; ~31 km native (N320)
+- **Horizontal resolution:** 0.25° (~28 km) as distributed; ~31 km native (N320). **No 0.1° tier** — the 0.1° Open Data tier added on 2026-10-20 covers the IFS streams, including [ECWAM](./ecwam.md), but not AIFS.
 - **Forecast length (verified):** **360 h (15 days) at every cycle**, 61 steps
 - **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution (verified):** 6-hourly throughout — no 3-hourly section
-- **Observed publication latency (verified):** **T+5h45m at every cycle**, published in the same batch as the AIFS Single atmospheric stream. Measured 2026-07-30: 00z at 05:45 UTC, 06z at 11:45 UTC, 12z at 17:45 UTC.
-- **Volume:** 8.1 MB per step file, **0.49 GB per cycle**, ~2 GB/day — the smallest product in the ECMWF Open Data tree. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#volume-across-the-025-tree) for the cross-stream comparison.
+- **Observed publication latency (verified) — changed on 2026-10-20 06z:** released alongside the AIFS Single atmospheric stream, step for step.
+  - **Until the 2026-10-20 00z run:** the whole run arrived as a batch; the July version of this entry recorded **T+5h45m** at every cycle (00z 05:45, 06z 11:45, 12z 17:45 UTC).
+  - **From the 2026-10-20 06z run:** steps are released **one at a time, about 1.8 minutes apart** — step 0 at T+5h45m, +360 h at **T+7h34m** (2026-10-21 00z: 05:45–07:34 UTC). See the [AIFS Single entry](../../../nwp_models/global/eu/aifs-single.md#basic-details) for the full timing evidence.
+- **Volume:** **~3.7 MB per step file, ~0.23 GB per cycle, ~0.9 GB/day** since 2026-10-20 06z (8.1 MB per step, 0.49 GB per cycle and ~2 GB/day before) — still the smallest product in the ECMWF Open Data tree. The halving comes from lower packing precision; see *Notes*. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#volume-across-the-open-data-tree) for the cross-stream comparison.
 
-> **Longer and earlier than the physics-based wave forecast.** [ECWAM](./ecwam.md) runs to 360 h only at 00 and 12 UTC, dropping to 144 h at 06 and 18 UTC, and publishes at T+7h34m (00/12) or T+6h27m (06). AIFS Wave carries the full 61-step, 360 h run at **all four cycles** and lands **1h49m earlier** at 00/12 UTC. For a fresh 15-day wave forecast at 06 or 18 UTC, it is currently the only ECMWF option.
+> **Longer than the physics-based wave forecast, and its first steps are earlier — but no longer the whole run.** [ECWAM](./ecwam.md) runs to 360 h only at 00 and 12 UTC, dropping to 144 h at 06 and 18 UTC, and publishes its 0.25° run in one batch at T+7h34m (00/12) or T+6h27m (06/18); its 0.1° tier follows two hours later. AIFS Wave carries the full 61-step, 360 h run at **all four cycles**, so for a fresh 15-day wave forecast at 06 or 18 UTC it is still the only ECMWF option. Previous versions of this entry said AIFS Wave "lands 1h49m earlier" than ECWAM at 00/12 UTC. Since 2026-10-20 06z that holds for step 0 only: the last AIFS Wave step arrives at the same minute as the ECWAM 0.25° batch.
 
 ---
 
@@ -124,7 +126,7 @@ Verified 2026-07-30: the `24h-wave-fc.index` object returned matching MD5 (`24fc
 
 The archive begins at the v2 go-live; there is no AIFS wave data before 12 May 2026. Full access mechanics — the Azure SAS-token exchange, the GCS bucket identity, and `.index` byte-range retrieval — are documented once in the [IFS entry](../../../nwp_models/global/eu/ifs.md#data-availability).
 
-At 8.1 MB per step file, whole-file retrieval is entirely practical here; the byte-range machinery that matters for the ensembles is optional for this stream.
+At ~3.7 MB per step file, whole-file retrieval is entirely practical here; the byte-range machinery that matters for the ensembles is optional for this stream. Since 2026-10-20, though, check that all 61 step files are present before treating a run as complete — the last one arrives about 1h49m after the first.
 
 ---
 
@@ -140,9 +142,11 @@ At 8.1 MB per step file, whole-file retrieval is entirely practical here; the by
   | AIFS Wave, drag and bathymetry | **665,872** | `cdww`, `wmb` |
   | [ECWAM](./ecwam.md) | **665,628** | all 13 parameters |
 
-  The 50-point split *within a single AIFS file* reproduces at steps 0, 24, 120 and 360 and in both the 00z and 12z cycles — systematic, not transient. Anyone stacking AIFS wave parameters into one array, or regridding onto an ECWAM mask for comparison, will hit shape mismatches at all three boundaries. Unmask to the full 1440 × 721 grid before combining. The same split appears in [AIFS ENS Wave](./aifs-ens-wave.md).
+  The 50-point split *within a single AIFS file* reproduces at steps 0, 24, 120 and 360 and in both the 00z and 12z cycles — systematic, not transient. **Re-verified unchanged on 2026-10-21 00z +24 h**, after the 2026-10-20 packing change: 665,822 valid points for the nine sea-state fields and 665,872 for `cdww`. The 0.1° ECWAM tier added the same day uses a different grid altogether (4,162,514 valid of 6,483,600), so direct AIFS-vs-ECWAM comparison should use the 0.25° ECWAM files. Anyone stacking AIFS wave parameters into one array, or regridding onto an ECWAM mask for comparison, will hit shape mismatches at all three boundaries. Unmask to the full 1440 × 721 grid before combining. The same split appears in [AIFS ENS Wave](./aifs-ens-wave.md).
 
-- **Static-field handling is better than ECWAM's.** `wmb` appears at step 0 only. ECWAM re-emits identical bathymetry at all 85 of its steps (~42.8 MB per cycle of pure redundancy), and [ENS-WAM](./ecwam-ens.md) at every step for every member (4,250 copies, ~2.17 GB per cycle). AIFS Wave costs one copy per cycle.
+- **Static-field handling is better than ECWAM's.** `wmb` appears at step 0 only. ECWAM re-emits identical bathymetry at all 85 of its steps (~42.8 MB per cycle of pure redundancy at 0.25°, ~209 MB at 0.1°), and [ENS-WAM](./ecwam-ens.md) at every step for every member (4,250 copies, ~2.17 GB per cycle at 0.25°, ~10.6 GB at 0.1°). AIFS Wave costs one copy per cycle.
+
+- ⚠️ **Packing precision reduced on 2026-10-20 06z.** The wave fields were re-packed at **10 bits per value instead of 16**, on the same cycle as the AIFS Single, IFS and ECWAM packing changes. Measured at +24 h, 2026-10-20 00z vs 2026-10-21 00z: `swh` quantisation step ~0.0002 m → **~0.016 m (1.6 cm)**; `mwp` ~0.0005 s → **~0.03 s**; `cdww` 16 → 10 bits. Parameter inventory unchanged (11 messages at step 0, 10 at +24 h). This is immaterial for forecasting, but matters for small wave heights and for archive comparisons across that date. ECWAM was re-packed to the same 10 bits, so the two products remain comparable after the change.
 
 - **No spectral discretisation exists.** Requests for "the model's frequency and direction bins" have no answer — the network predicts integral parameters directly. This also means the period-band fields `h1012`…`h2530` are *learned outputs* rather than integrals over a resolved spectrum, which is worth bearing in mind when using them as swell diagnostics.
 
@@ -159,11 +163,17 @@ At 8.1 MB per step file, whole-file retrieval is entirely practical here; the by
 
 - **Family relationships.** Parent model: [AIFS Single](../../../nwp_models/global/eu/aifs-single.md). Ensemble counterpart: [AIFS ENS Wave](./aifs-ens-wave.md). Physics-based counterparts: [ECWAM](./ecwam.md) and [ENS-WAM](./ecwam-ens.md). Indexed in [`AI_MODELS.md`](../../../../AI_MODELS.md).
 
-- **Upcoming resolution change.** ECMWF has announced extension of the open subset toward native 9 km later in 2026. AIFS runs natively at ~31 km, so unlike the IFS streams this would represent an upsampling of the distribution rather than release of finer model output — worth watching for how ECMWF handles the AI streams in that change.
+- **Resolution tiers.** ECMWF's 9 km Open Data extension went live on 2026-10-20 as a 0.1° tier for the IFS streams only. As this entry previously anticipated, AIFS — which runs natively at ~31 km — was left at 0.25° rather than upsampled. The physics-based [ECWAM](./ecwam.md) is now available at 0.1°, so for nearshore work the physics model offers a finer grid than the AI one, two hours later.
 
 ---
 
 ## Recent version history
+
+### Open Data distribution change — 20 October 2026, 06 UTC run
+- Steps released one at a time (T+5h45m to T+7h34m) instead of as a batch.
+- Packing reduced from 16 to 10 bits per value; files less than half the size.
+- No change to parameters, masks, steps or grid. No 0.1° tier for AIFS.
+- **Corrects the previous version of this entry**, which described the 9 km extension as upcoming.
 
 ### AIFS Single v2 — operational 12 May 2026 (current)
 - **Wave stream introduced.** ECMWF's first data-driven ocean wave forecasts, deployed jointly with [IFS Cycle 50r1](../../../nwp_models/global/eu/ifs.md#recent-version-history) and [AIFS ENS v2](../../../ensemble_models/global/eu/aifs-ens.md#version-history).
@@ -184,6 +194,12 @@ Established on **2026-07-30** by direct inspection rather than from documentatio
 - `Last-Modified` header sampling across three cycles for publication latency, compared against ECWAM measurements from the same session
 - `Content-Length` sampling for per-step and per-cycle volumes
 - MD5 comparison of the same object across the ECMWF portal, GCS and the AWS regional endpoint
+
+The 2026-10-20 distribution changes were verified on **2026-10-21**:
+- AWS `LastModified` windows for the wave stream on the 2026-10-20 12z, 2026-10-21 00z and 06z runs
+- `.index` comparison at steps 0 and 24 h before (2026-10-20 00z) and after (2026-10-21 00z)
+- ecCodes 2.50.0 decode of all ten +24 h fields on 2026-07-30 00z and 2026-10-21 00z for mask counts, and of `swh`, `mwp` and `cdww` before and after for bits per value
+- `Content-Length` sampling across dates and cycles, and summed AWS listing sizes over four consecutive cycles for volume
 
 Architecture, training regime and skill claims are **not live-verifiable** and are sourced from the AIFS Single v2 implementation page and the AIFS blog.
 
