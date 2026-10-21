@@ -5,7 +5,7 @@ IFS ENS is ECMWF's flagship global ensemble numerical weather prediction system,
 
 It is the ensemble counterpart of the deterministic [IFS](../../../nwp_models/global/eu/ifs.md), built on the same model core, the same 9 km native horizontal resolution (since Cycle 48r1 in June 2023), and the same atmospheric initial analysis. The ensemble comprises **50 perturbed members plus 1 control**, designed to sample uncertainty in both initial conditions (via singular vectors and an Ensemble of Data Assimilations) and in the model itself (via the Stochastically Perturbed Parametrization scheme).
 
-IFS ENS is widely regarded as one of the highest-skill global ensemble forecast systems in operational use. ECMWF distributes a curated subset of ENS output through the free Open Data programme at 0.25° resolution; the full native 9 km ensemble is also available under CC-BY-4.0 (since 1 October 2025) but typically requires service charges for high-volume delivery.
+IFS ENS is widely regarded as one of the highest-skill global ensemble forecast systems in operational use. ECMWF distributes a curated subset of ENS output through the free Open Data programme in two resolution tiers: **0.25°**, and since **20 October 2026 (06 UTC run)** also **0.1°**, which arrives **2 hours after** the 0.25° data. The full native 9 km ensemble is also available under CC-BY-4.0 (since 1 October 2025) but typically requires service charges for high-volume delivery.
 
 > **Critical change at Cycle 50r1 (12 May 2026).** The control member is **no longer distributed in the `enfo` stream**. Since the ex-HRES deterministic forecast and the ENS control became one and the same product, the control is now published under `stream=oper, type=fc` and documented in the [IFS entry](../../../nwp_models/global/eu/ifs.md). Open Data `enfo` files contain **50 members, not 51**. Anything written against the pre-50r1 layout will silently lose the control member. See [Recent version history](#recent-version-history).
 
@@ -21,8 +21,10 @@ This entry describes the **medium-range ensemble**. The separate 101-member sub-
 
 ## What area it covers
 - **Coverage:** Global
-- **Open Data grid:** 1440 × 721 regular latitude–longitude, 0.25° × 0.25°, 1,038,240 points per field — identical to the deterministic IFS distribution
-- **Grid origin (verified):** first grid point 90°N / 180°, scanning mode 0 (west→east, north→south). The longitude axis begins at the dateline in the raw GRIB header. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#what-area-it-covers) for the full explanation of this quirk.
+- **Open Data grids (verified)** — identical to the deterministic IFS distribution at each tier:
+  - **0.25° tier:** 1440 × 721 regular latitude–longitude, 1,038,240 points per field
+  - **0.1° tier:** 3600 × 1801 regular latitude–longitude, 6,483,600 points per field
+- **Grid origin (verified, both tiers):** first grid point 90°N / 180°, scanning mode 0 (west→east, north→south). The longitude axis begins at the dateline in the raw GRIB header. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#what-area-it-covers) for the full explanation of this quirk.
 
 ---
 
@@ -33,7 +35,7 @@ This entry describes the **medium-range ensemble**. The separate 101-member sub-
 - **Convection-allowing:** No (deep convection is parameterized at 9 km native resolution)
 - **Ensemble size:** 51 (1 control + 50 perturbed) — but **only the 50 perturbed members are distributed in the Open Data `enfo` stream**; the control is in `oper`
 - **Native horizontal resolution:** ~9 km (Tco1279 octahedral reduced Gaussian grid)
-- **Open Data resolution:** 0.25° (~28 km) regular latitude–longitude
+- **Open Data resolution:** two tiers — **0.25°** (~28 km) and **0.1°** (~11 km), both interpolated from the same native forecast. Members, parameters, levels and steps are identical between tiers.
 - **Vertical levels:** 137 (model); **14 pressure levels in Open Data** — 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000 hPa
 - **Soil levels in Open Data:** 4 (`sol` 1–4)
 - **Model top:** 0.01 hPa (~80 km)
@@ -44,7 +46,10 @@ This entry describes the **medium-range ensemble**. The separate 101-member sub-
 - **Temporal output resolution (Open Data, verified):**
   - 00 / 12 UTC: 3-hourly to +144 h, then 6-hourly +150 h to +360 h — **85 step files**
   - 06 / 18 UTC: 3-hourly to +144 h — **49 step files**
-- **Observed publication latency:** whole run published as a single batch. Measured 2026-07-30: 00z at 07:40 UTC (**T+7h40m**), 06z at 13:04 UTC (**T+7h04m**), 12z at 19:40 UTC (**T+7h40m**). The ensemble lands consistently ~6 minutes after the deterministic `oper` files of the same cycle, and ~37 minutes after at 06z.
+- **Observed publication latency:**
+  - **0.25° tier:** first files at 00z 07:40 UTC (**T+7h40m**), 06z 13:04 UTC (**T+7h04m**), 12z 19:40 UTC (**T+7h40m**) — measured 2026-07-30 and unchanged on 2026-10-20/21. The ensemble lands ~6 minutes after the deterministic `oper` files of the same cycle, and ~37 minutes after at 06z. Re-measurement in October found the run arriving over a window rather than in one batch: the last `enfo` files landed at 08:01 (00z), 13:07 (06z) and 20:01 UTC (12z), so a complete 00/12 UTC run is available at about **T+8h**.
+  - **0.1° tier:** **2 hours after the 0.25° tier.** First and last `enfo` files: 00z 09:40–10:02 UTC (**T+9h40m to T+10h02m**), 06z 15:04–15:17 UTC (**T+9h04m to T+9h17m**), 12z 21:40–22:02 UTC. Measured on the 2026-10-20 12z, 2026-10-21 00z and 2026-10-21 06z runs.
+  - Cloud mirrors can take hours longer to finish copying the 0.1° ensemble — see *Access channels*.
 
 ---
 
@@ -74,25 +79,26 @@ This entry describes the **medium-range ensemble**. The separate 101-member sub-
 - **Recentering:** Soft re-centring of EDA perturbations is applied alongside the SPP changes from Cycle 49r1 onward.
 
 ### Member packaging (verified)
-- **Packaging:** All members for a given step are concatenated into a **single GRIB2 file per step** (`...-{step}h-enfo-ef.grib2`), one GRIB message per member per field. There is no per-member file split.
-- **Member indexing:** `perturbationNumber` runs **1 to 50**, matching the `number` key in the `.index` sidecar. There is no member 0.
-- **GRIB2 encoding:** `productDefinitionTemplateNumber = 1` (individual ensemble forecast), `typeOfProcessedData = pf`, `mars.type = pf`, `tablesVersion = 32`, `grid_ccsds` packing.
-- **Records per member:** 170 at every step (9 pressure-level parameters × 14 levels, 36 surface parameters, 2 soil parameters × 4 layers). Total 8,500 GRIB messages per step file.
+- **Packaging, 0.25° tier:** All members for a given step are concatenated into a **single GRIB2 file per step** (`...-{step}h-enfo-ef.grib2`), one GRIB message per member per field. There is no per-member file split.
+- **Packaging, 0.1° tier:** All members are still in one place per step, but surface and pressure-level fields are split into **two files per step**: `...-{step}h-enfo-ef-sfc.grib2` (surface and soil fields) and `...-{step}h-enfo-ef-pl.grib2` (pressure-level fields). On the 2026-10-21 00z run the +24 h pair was 4.75 GB (`-sfc`) + 15.33 GB (`-pl`) ≈ **20.1 GB per step**, against 4.4 GB for the 0.25° file.
+- **Member indexing:** `perturbationNumber` runs **1 to 50**, matching the `number` key in the `.index` sidecar. There is no member 0. Same in both tiers.
+- **GRIB2 encoding:** `productDefinitionTemplateNumber = 1` (individual ensemble forecast), `typeOfProcessedData = pf`, `mars.type = pf`, `tablesVersion = 32`, `grid_ccsds` packing. Verified identical at 0.1° on 2026-10-21.
+- **Records per member:** **177 at every step since the 2026-10-20 06z run** (9 pressure-level parameters × 14 levels, 43 surface parameters, 2 soil parameters × 4 layers); 170 before, when there were 36 surface parameters. Total **8,850** GRIB messages per step (8,500 before). At 0.1° these split as 126 records per member in `-pl` and 51 in `-sfc` (6,300 + 2,550 messages).
 
-> ⚠️ **`numberOfForecastsInEnsemble` still reports 51.** Every message in the post-50r1 `enfo` files declares an ensemble size of 51 while the file contains 50 members. The GRIB header was not updated when the control moved to `oper`. Any tool that pre-allocates a member array from this key, or that infers "one member is missing" from it, will misbehave. Size the array from the distinct `perturbationNumber` values actually present, not from the declared count. Note also that `typeOfEnsembleForecast` is set to **255** (missing), so it cannot be used to discriminate control from perturbed either.
+> ⚠️ **`numberOfForecastsInEnsemble` still reports 51** — in both tiers. Every message in the post-50r1 `enfo` files declares an ensemble size of 51 while the file contains 50 members. The GRIB header was not updated when the control moved to `oper`. Any tool that pre-allocates a member array from this key, or that infers "one member is missing" from it, will misbehave. Size the array from the distinct `perturbationNumber` values actually present, not from the declared count. Note also that `typeOfEnsembleForecast` is set to **255** (missing), so it cannot be used to discriminate control from perturbed either.
 
 ---
 
 ## What it provides
 
 ### Direct model output — `type=ef` files
-Per-member forecasts of 47 parameters:
+Per-member forecasts of 54 parameters (47 before the 2026-10-20 06z run). Identical in both tiers — verified by full `.index` set comparison at step 24 h on the 2026-10-20 12z run (8,850 messages each, no field present in one tier and not the other).
 
 **Pressure levels** (9 parameters × 14 levels): `t`, `u`, `v`, `w`, `q`, `r`, `gh`, `d`, `vo`
 
-**Surface** (36): `2t`, `2d`, `10u`, `10v`, `100u`, `100v`, `10fg` / `10fg3`, `mn2t3` / `mn2t6`, `mx2t3` / `mx2t6`, `msl`, `sp`, `skt`, `lsm`, `tp`, `tprate`, `sf`, `ptype`, `ro`, `sd`, `rsn`, `asn`, `ssr`, `ssrd`, `str`, `strd`, `ttr`, `ewss`, `nsss`, `tcc`, `tcw`, `tcwv`, `mucape`, `sithick`, `zos`, `sve`, `svn`
+**Surface** (43): `2t`, `2d`, `10u`, `10v`, `100u`, `100v`, `10fg` / `10fg3`, `mn2t3` / `mn2t6`, `mx2t3` / `mx2t6`, `msl`, `sp`, `skt`, `lsm`, `tp`, `tprate`, `sf`, `ptype`, `ro`, `sd`, `rsn`, `asn`, `ssr`, `ssrd`, `str`, `strd`, `ttr`, `ewss`, `nsss`, `tcc`, `tcw`, `tcwv`, `mucape`, `sithick`, `zos`, `sve`, `svn`, plus — **added 2026-10-20** — `cp` (convective precipitation), `lcc`, `mcc`, `hcc` (low, medium and high cloud cover), `tclw`, `tciw`, `tcrw` (total column cloud liquid water, ice water and rain water)
 
-**Soil** (2 × 4 layers): `sot`, `vsw`
+**Soil** (2 × 4 layers): `sot`, `vsw` — in the `-sfc` file at 0.1°
 
 > **The ENS parameter set is a strict subset of the deterministic set.** Diffed against the `oper` step-0 file, ENS is missing exactly four entries: **`z` on pressure levels** (geopotential — only geopotential height `gh` is provided), and the three static surface fields **`z`, `sdor`, `slor`**. IFS ENS therefore carries **no model orography at all**. Workflows needing orography or pressure-level geopotential must take them from the deterministic `oper` step-0 file — a cross-stream dependency that is easy to miss when building an ensemble-only pipeline.
 
@@ -105,7 +111,7 @@ Identical switchover behaviour to the deterministic stream:
 | Min 2 m temperature | `mn2t3` | `mn2t3` | `mn2t6` |
 | Max 2 m temperature | `mx2t3` | `mx2t3` | `mx2t6` |
 
-Parameter count stays at 47 throughout — unlike `oper`, ENS has no step-0-only static fields.
+Parameter count stays at 54 throughout — unlike `oper`, ENS has no step-0-only static fields.
 
 ### Derived products — `type=ep` files
 Despite the `ep` filename token, these files are **mixed containers holding three distinct MARS types**. This trips people up: requesting "the probability file" gets ensemble mean and spread as well.
@@ -122,12 +128,14 @@ Note that **`ws` (wind speed) appears only in the mean/spread products** — the
 
 > **Mean and spread cover four parameters, not the full set.** For any other field, users must compute their own statistics across the 50 members. Since the control is no longer in `enfo`, a statistically correct 51-member mean also requires fetching `oper` separately and combining.
 
-**File-to-step mapping:** two `-ep` files per cycle. `...-240h-enfo-ep.grib2` covers steps 0–240 h (1,480 records); `...-360h-enfo-ep.grib2` covers steps 246–360 h (520 records). The step in the filename is a range label, not the step of the contained fields.
+**File-to-step mapping:** two `-ep` files per cycle at 0.25°. `...-240h-enfo-ep.grib2` covers steps 0–240 h (1,480 records); `...-360h-enfo-ep.grib2` covers steps 246–360 h (520 records). The step in the filename is a range label, not the step of the contained fields.
+
+**At 0.1° the same products are split by level type into four files per cycle:** `...-{240h,360h}-enfo-ep-pl.grib2` holds the mean and spread of `gh`, `t` and `ws` plus the `ptsa_*` temperature-anomaly probabilities (850 hPa); `...-{240h,360h}-enfo-ep-sfc.grib2` holds the mean and spread of `msl` plus the `tpg*` precipitation and `10fgg*` gust probabilities. Verified on the 2026-10-21 00z run: the 240h pair holds 1,160 (`-pl`: 520 `em`, 520 `es`, 120 `ep`) + 320 (`-sfc`: 65 `em`, 65 `es`, 190 `ep`) = **1,480 records — exactly the 0.25° content**, just on the finer grid. Same 00/12 UTC-only availability as 0.25°.
 
 > ⚠️ **Documentation discrepancy — probability product cycles.** ECMWF's Open Data documentation states that ENS probability products are available "at all times 00, 06, 12 and 18 UTC." Deduplicated directory listings on 2026-07-30 found **`-ep` files only at 00 and 12 UTC**; the 06z and 18z `enfo` directories contain `-ef` and `-tf` files exclusively, with zero `-ep` objects. The documentation correctly restricts the *wave* ensemble's probability products to 00/12 but appears to state the atmospheric case incorrectly. Live observation recorded as authoritative.
 
 ### Tropical cyclone tracks — `type=tf` files
-BUFR edition 4 trajectory products, published only when tropical cyclones are observed or forecast. One file per cycle: step `360h` at 00/12 UTC, step `144h` at 06/18 UTC.
+BUFR edition 4 trajectory products, published only when tropical cyclones are observed or forecast. One file per cycle: step `360h` at 00/12 UTC, step `144h` at 06/18 UTC. **0.25° tier only** — the 0.1° `enfo` directory contains no BUFR files (verified 2026-10-20 12z, 2026-10-21 00z and 06z). Tracks are point data, so 0.1° users lose nothing by taking them from the 0.25° tree.
 
 Verified decode of the 2026-07-30 00z file: 54 BUFR messages, one per tracked feature, master tables version 35, originating centre 98. `numberOfSubsets` **varies per message from 1 to 51** — it is the count of ensemble members carrying that feature, not a fixed ensemble size. Only features tracked by every member reach 51 subsets, consistent with the post-50r1 reduction from 52 to 51 TC ensemble members. Storm identifiers include both real designations (`15W`, `06E`, `07E`) and ensemble-only candidate systems, which use identifiers numbered from 70 upward within each basin (`70W`–`83W`, `70L`–`77L`, and so on).
 
@@ -144,41 +152,52 @@ Verified decode of the 2026-07-30 00z file: 54 BUFR messages, one per tracked fe
 - **Decoder requirement:** ecCodes 2.42.0 or newer; CCSDS packing additionally requires `libaec` support compiled in
 
 ### Free Open Data subset
-- **Resolution:** 0.25° only. As of 2026-07-30 no 9 km path exists; the announced 9 km extension has not been delivered.
+- **Resolution:** two tiers, `0p25` and `0p1`. The 0.1° tier went live with the **2026-10-20 06z** run and has been present for every cycle since on all four channels; the 0.25° tier continues with unchanged timing. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#choosing-a-tier--025-or-01) for a side-by-side comparison of the tiers.
+- **Which tier for the ensemble:** the choice is sharper here than for the deterministic stream. The 0.1° ensemble is ~5.3 TB/day against ~1.2 TB/day at 0.25°, and lands two hours later. For most probabilistic uses — exceedance probabilities, spread, plumes at a point — the 0.25° tier, or byte-range extraction of selected fields from the 0.1° tier, is the practical route. Bulk 0.1° ensemble download is a multi-terabyte-per-day commitment.
 - **Streams and file types actually present** (verified by enumeration):
 
-| Stream | File type | Cycles | Contents |
-|---|---|---|---|
-| `enfo` | `-ef.grib2` | 00, 06, 12, 18 | 50 perturbed members, direct model output |
-| `enfo` | `-ep.grib2` | **00, 12 only** | Ensemble mean (`em`), spread (`es`), event probabilities (`ep`) |
-| `enfo` | `-tf.bufr` | 00, 06, 12, 18 | Tropical cyclone tracks (when active) |
+| Stream | File type | Tier | Cycles | Contents |
+|---|---|---|---|---|
+| `enfo` | `-ef.grib2` | 0.25° | 00, 06, 12, 18 | 50 perturbed members, direct model output |
+| `enfo` | `-ef-sfc.grib2`, `-ef-pl.grib2` | 0.1° | 00, 06, 12, 18 | Same, split into surface/soil and pressure-level files |
+| `enfo` | `-ep.grib2` | 0.25° | **00, 12 only** | Ensemble mean (`em`), spread (`es`), event probabilities (`ep`) |
+| `enfo` | `-ep-sfc.grib2`, `-ep-pl.grib2` | 0.1° | **00, 12 only** | Same, split by level type |
+| `enfo` | `-tf.bufr` | **0.25° only** | 00, 06, 12, 18 | Tropical cyclone tracks (when active) |
 
 > **Corrects a previous version of this entry**, which listed the Open Data streams as `type=ef / cf / pf / es / ep / tf`. Only three file types exist. `cf` was discontinued at Cycle 50r1; `pf` is the MARS type *inside* the `-ef` files rather than a separate file; `es` and `em` are types *inside* the `-ep` files. The MARS type vocabulary and the Open Data filename vocabulary are different namespaces and do not map one-to-one.
 
 - **Retention on the ECMWF portal:** rolling archive of the most recent 12 forecast runs (~2–3 days).
 - **Connection limit:** the portal is capped at 500 simultaneous connections.
 
+> ⚠️ **Packing precision changed on 2026-10-20 06z.** The 0.25° `enfo` files were re-packed at lower bits per value on the same cycle the 0.1° tier launched (e.g. `2t` 12 → 9 bits, `tp` 16 → 12 bits, verified on member 1 at +24 h before and after). The +24 h step file shrank from ~6.7 GB to ~4.4 GB. Both tiers now use the same per-parameter packing. Ensemble statistics computed from 0.25° archive data spanning that date mix two quantisation regimes. Details and a field-by-field table are in the [IFS entry](../../../nwp_models/global/eu/ifs.md#choosing-a-tier--025-or-01).
+
 ### File naming convention
 ```
-[ROOT]/[yyyymmdd]/[HH]z/ifs/0p25/enfo/[yyyymmdd][HH]0000-[step]h-enfo-[type].[format]
+0.25°: [ROOT]/[yyyymmdd]/[HH]z/ifs/0p25/enfo/[yyyymmdd][HH]0000-[step]h-enfo-[type].[format]
+0.1°:  [ROOT]/[yyyymmdd]/[HH]z/ifs/0p1/enfo/[yyyymmdd][HH]0000-[step]h-enfo-[type]-[sfc|pl].grib2
 ```
-Example: `20260730/00z/ifs/0p25/enfo/20260730000000-24h-enfo-ef.grib2`
+Examples:
+- `20260730/00z/ifs/0p25/enfo/20260730000000-24h-enfo-ef.grib2`
+- `20261021/00z/ifs/0p1/enfo/20261021000000-24h-enfo-ef-pl.grib2`
+- `20261021/00z/ifs/0p1/enfo/20261021000000-240h-enfo-ep-sfc.grib2`
 
 ### Access channels
 All four channels serve identical files. Verified 2026-07-30 for the ensemble products specifically: the `240h-enfo-ep.index` object retrieved from the ECMWF portal, GCS and the AWS regional endpoint produced matching MD5 checksums (`8fe6f60a5e42...`, 327,471 bytes).
 
-| Channel | Endpoint | Anonymous? | Archive depth |
-|---|---|---|---|
-| **ECMWF portal** | `https://data.ecmwf.int/forecasts/` | Yes (500-connection cap) | Rolling ~12 runs |
-| **AWS S3** | `s3://ecmwf-forecasts` (`eu-central-1`) | Yes — unsigned | 2023-01-18 → present |
-| **Azure Blob** | `https://ai4edataeuwest.blob.core.windows.net/ecmwf` | **No — SAS token required** | 2022-01-21 → present |
-| **Google Cloud Storage** | `gs://ecmwf-open-data` | Yes — fully unauthenticated | 2023-07-12 → present |
+| Channel | Endpoint | Anonymous? | Archive depth, 0.25° | Archive depth, 0.1° |
+|---|---|---|---|---|
+| **ECMWF portal** | `https://data.ecmwf.int/forecasts/` | Yes (500-connection cap) | Rolling ~12 runs | Rolling ~12 runs |
+| **AWS S3** | `s3://ecmwf-forecasts` (`eu-central-1`) | Yes — unsigned | 2023-01-18 → present | 2026-10-20 06z → present |
+| **Azure Blob** | `https://ai4edataeuwest.blob.core.windows.net/ecmwf` | **No — SAS token required** | 2022-01-21 → present | 2026-10-20 06z → present |
+| **Google Cloud Storage** | `gs://ecmwf-open-data` | Yes — fully unauthenticated | 2023-07-12 → present | 2026-10-20 06z → present |
+
+> ⚠️ **The 0.1° ensemble reaches the mirrors late.** Once copying finishes, all four channels hold the same 0.1° `enfo` files, but a run can take hours to complete on GCS and Azure. At 03:30 UTC on 2026-10-21 the 2026-10-20 18z 0.1° `enfo` run was complete on the portal and AWS (98 files) but GCS held 23 and Azure 66. At 16:45 UTC the same day, the 06z run was complete everywhere except GCS (92 of 98). **GCS was the slowest mirror in both checks.** The earlier advice to prefer GCS for bulk 0.25° ensemble work still stands for the archive; for the latest 0.1° run, check file counts (98 at 06/18 UTC, 174 at 00/12 UTC including the four `-ep` files) before reading.
 
 Full access mechanics — the Azure SAS-token exchange, the GCS bucket identity, the archive path-schema changes over time, and the `.index` byte-range retrieval pattern — are documented once in the [IFS entry](../../../nwp_models/global/eu/ifs.md#data-availability) rather than duplicated here.
 
-> ⚠️ **AWS rate-limits the ensemble workload.** Sustained requests to the global endpoint `ecmwf-forecasts.s3.amazonaws.com` returned HTTP 503 `SlowDown` ("Please reduce your request rate") repeatedly during verification, with successes interleaved. The regional endpoint `ecmwf-forecasts.s3.eu-central-1.amazonaws.com` served the same objects without throttling in the same session. This matters far more for ENS than for the deterministic stream: a full 00z ensemble pull is 85 step files against 49 for a 06z deterministic run, and per-member byte-range extraction multiplies request counts by up to 50. Prefer the regional endpoint and implement exponential backoff.
+> ⚠️ **AWS rate-limits the ensemble workload.** Sustained requests to the global endpoint `ecmwf-forecasts.s3.amazonaws.com` returned HTTP 503 `SlowDown` ("Please reduce your request rate") repeatedly during verification, with successes interleaved. The regional endpoint `ecmwf-forecasts.s3.eu-central-1.amazonaws.com` served the same objects without throttling in the same session. This matters far more for ENS than for the deterministic stream: a full 00z ensemble pull is 85 step files against 49 for a 06z deterministic run, and per-member byte-range extraction multiplies request counts by up to 50. Prefer the regional endpoint and implement exponential backoff. **The regional endpoint is not immune:** on 2026-10-20 and 2026-10-21 it also returned intermittent HTTP 503 responses on 0.1° `.index` requests, with retries succeeding.
 
-**Byte-range retrieval is especially valuable here.** A single 00z `enfo` step-0 file holds 8,500 messages; individual member fields are ~650 KB. Pulling one parameter for one member via the `.index` offsets avoids downloading the entire multi-gigabyte step file.
+**Byte-range retrieval is especially valuable here.** A single 0.25° `enfo` step file holds 8,850 messages; at 0.1° the same messages are spread over a `-sfc` and a `-pl` file totalling ~20 GB per step. Pulling one parameter for one member via the `.index` offsets avoids downloading the entire multi-gigabyte step file — at 0.1° the saving is the difference between a ~1.4 MB field and a 20 GB step.
 
 ### Full ECMWF Real-time Catalogue
 Since 1 October 2025 the entire ECMWF Real-time Catalogue is licensed under CC-BY-4.0 — full-resolution 9 km IFS ENS output can be redistributed and used commercially with attribution. *Delivery* of high-volume data may incur service charges to cover infrastructure costs, and full-catalogue access typically requires a Real-time Dissemination Service Agreement.
@@ -192,7 +211,8 @@ The `ecmwf-opendata` Python client supports individual member selection and hand
 ## Notes
 - **Relationship to the deterministic counterpart.** IFS ENS is the ensemble companion to the deterministic [IFS](../../../nwp_models/global/eu/ifs.md). The two share the same model core, the same 9 km native resolution (since Cycle 48r1, June 2023), and the same atmospheric analysis. Since Cycle 49r1 (12 November 2024) the deterministic forecast and the ENS control have been scientifically and computationally bit-identical; since Cycle 50r1 they are formally the same product, distributed once under `oper`.
 - **Coupled components.** IFS ENS runs as a coupled system with ocean, sea ice, and wave components. The ENS-WAM wave ensemble has run on the same Tco1279 grid as the atmosphere since Cycle 49r1 and is distributed as the separate `waef` stream — see [ECWAM](../../../wave_models/global/eu/ecwam.md). Coupled ocean surface fields (`zos`, `sithick`, `sve`, `svn`) are delivered within the atmospheric `enfo` stream rather than separately.
-- **Public data is a curated subset.** The freely-distributed Open Data is a reduced-resolution subset of the operational ENS. The full native 9 km ensemble and the complete parameter list require ECMWF's dissemination services, or the 9 km Open Data subset still planned for later in 2026.
+- **Public data is a curated subset.** The freely-distributed Open Data is an interpolated subset of the operational ENS, at 0.25° or 0.1°. Native-grid output and the complete parameter list require ECMWF's dissemination services. The 0.1° tier narrows the resolution gap but does not widen the parameter set — see the documentation discrepancy recorded in the [IFS entry](../../../nwp_models/global/eu/ifs.md#choosing-a-tier--025-or-01).
+- **Volume.** Re-measured 2026-10-21 over a full day of cycles: 0.25° `enfo` ~1,178 GB/day (down from ~1,778 GB/day in July, because of the packing change); 0.1° `enfo` **~5,348 GB/day** — about 1,700 GB per 00/12 UTC run and 970 GB per 06/18 UTC run.
 - **Cycle transitions matter for backtesting.** Each major cycle can shift skill characteristics, spread–skill relationships, and variable distributions. Evaluation windows should be split around cycle transition dates — and for anything spanning 12 May 2026, the member count change must be handled explicitly.
 - The current IFS cycle is **50r1** (operational since 12 May 2026).
 
@@ -202,6 +222,14 @@ ECMWF also runs a separate **101-member sub-seasonal ensemble** at 36 km (TCo319
 ---
 
 ## Recent version history
+
+### Open Data 0.1° tier — live 20 October 2026, 06 UTC run
+Not a model change. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#recent-version-history) for the full list. Changes specific to `enfo`:
+- New 0.1° `enfo` tier, 2 hours behind the 0.25° tier, with `-ef` and `-ep` files split into `-sfc` and `-pl`.
+- Seven surface parameters added to both tiers (`cp`, `lcc`, `mcc`, `hcc`, `tclw`, `tciw`, `tcrw`): 177 records per member, 8,850 messages per step.
+- 0.25° packing precision reduced; step files about a third smaller.
+- No tropical cyclone BUFR in the 0.1° tier.
+- **Corrects the previous version of this entry**, which described the 9 km Open Data extension as not yet delivered.
 
 ### Cycle 50r1 — operational 12 May 2026 (current)
 Part of the joint IFS Cycle 50r1 / AIFS v2 deployment. See the [IFS entry](../../../nwp_models/global/eu/ifs.md#recent-version-history) for the full atmospheric model and data-assimilation upgrade list. Changes specific to ENS:
@@ -244,6 +272,14 @@ All claims marked "verified" were established on **2026-07-30** by direct inspec
 - `Last-Modified` header sampling across the 00z, 06z and 12z cycles for publication latency
 - Repeated AWS requests establishing the `SlowDown` throttling behaviour and the regional-endpoint workaround
 
+The 0.1° tier and the 2026-10-20 changes were verified on **2026-10-20 and 2026-10-21**:
+- Per-channel `enfo` file counts for every cycle from 2026-10-20 06z to 2026-10-21 06z on the portal, AWS, Azure and GCS, including the mirror-lag observations
+- Full `.index` set comparison of 0.25° and 0.1° `enfo` at step 24 h (2026-10-20 12z), and of 0.25° `enfo` before and after the 06z switchover
+- `.index` breakdown of the 0.1° `-ep-sfc` and `-ep-pl` files for `em` / `es` / `ep` counts
+- ecCodes 2.50.0 decode of 0.1° member 1 `2t` for grid and ensemble encoding keys; bits-per-value decode of 0.25° `2t` and `tp` before and after the switchover
+- Summed AWS listing sizes over four consecutive cycles for volume; `LastModified` windows on three runs for latency
+- BUFR file enumeration in both tiers
+
 Where live observation and ECMWF documentation disagree, the live observation is recorded and the disagreement flagged rather than silently resolved.
 
 ---
@@ -251,6 +287,7 @@ Where live observation and ECMWF documentation disagree, the live observation is
 ## Official documentation
 - Open Data dataset page: https://www.ecmwf.int/en/forecasts/datasets/open-data
 - Open Data user documentation (access, naming, index files): https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS
+- ECMWF open data: what's new at 0.1°: https://confluence.ecmwf.int/spaces/DAC/pages/738041087/ECMWF+open+data+what+s+new+at+0.1%C2%B0
 - Dissemination schedule: https://confluence.ecmwf.int/display/DAC/Dissemination+schedule
 - Changes to the forecasting system: https://confluence.ecmwf.int/display/FCST/Changes+to+the+forecasting+system
 - IFS Cycle 50r1 implementation page: https://confluence.ecmwf.int/display/FCST/Implementation+of+IFS+Cycle+50r1
