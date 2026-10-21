@@ -32,7 +32,7 @@ AIFS Single runs operationally alongside the physics-based IFS and is designed t
 - **Training data:** ERA5 reanalysis (1979–2022) plus ECMWF operational analyses (fine-tuning)
 - **Native grid:** N320 reduced Gaussian grid (~31 km, ~0.25°)
 - **Initialization grid:** IFS analyses are interpolated from their native O1280 grid (~0.1°) down to N320 (~0.25°) for input to the AIFS model
-- **Open Data resolution:** 0.25° regular latitude–longitude
+- **Open Data resolution:** 0.25° regular latitude–longitude only. When ECMWF added a 0.1° tier for IFS on 2026-10-20, AIFS was not included — `aifs-single/` still contains `0p25` only (verified through the 2026-10-21 06z run). Since the network runs natively on N320 (~31 km), a 0.1° AIFS product would be an upsampling rather than finer model output.
 - **Pressure levels:** 14 — 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000 hPa. **Specific humidity (`q`) is the exception at 13 levels**, absent at 10 hPa — see *What it provides*.
 - **Soil levels:** 2 (`sol` 1–2) — half the IFS distribution's four layers
 - **Forecast timestep:** 6 hours, uniform throughout the run — no 3-hourly section
@@ -42,13 +42,21 @@ AIFS Single runs operationally alongside the physics-based IFS and is designed t
 
 > **AIFS Single reaches 15 days four times a day; IFS does not.** The physics-based [IFS](./ifs.md) runs to 360 h only at 00 and 12 UTC, dropping to 144 h at 06 and 18 UTC. Directory enumeration on 2026-07-30 confirms AIFS Single carries the full 61-step, 360 h run at **all four cycles**. For any workflow needing a fresh 15-day deterministic forecast at 06 or 18 UTC, AIFS is currently the only ECMWF option.
 
-- **Observed publication latency (verified):** **T+5h45m at every cycle**, with the whole run published as a single batch. Measured 2026-07-30: 00z at 05:45 UTC, 06z at 11:45 UTC, 12z at 17:45 UTC — exactly 5h45m each time. Compare the same cycles of IFS `oper`: 07:34, 12:27 and 19:34 UTC. **AIFS Single lands roughly 1h49m ahead of IFS at 00/12 UTC and 42 minutes ahead at 06 UTC.** This confirms the removal of the AIFS dissemination delay at operational status — AIFS is released when produced rather than at the end of the IFS dissemination schedule.
+- **Observed publication latency (verified) — changed on 2026-10-20 06z:**
+  - **Until the 2026-10-20 00z run:** the whole run arrived as a batch. The July version of this entry recorded **T+5h45m** at every cycle from portal timestamps (00z 05:45, 06z 11:45, 12z 17:45 UTC). On the AWS mirror the complete 61-step run arrived within 2–4 minutes, and slightly *earlier* than that: 05:20–05:23 UTC on 2026-07-30 00z, 05:23–05:25 on 2026-10-19 00z, 05:36–05:39 on 2026-10-20 00z.
+  - **From the 2026-10-20 06z run:** steps are released **one at a time on a fixed schedule, about 1.8 minutes apart**. On the 2026-10-21 00z run: step 0 at 05:45 (**T+5h45m**), +180 h at 06:39, +360 h at 07:34 UTC (**T+7h34m**). The 06z, 12z and 18z runs follow the same offsets, and the timestamps are identical on the ECMWF portal and AWS to within seconds. Checked on every cycle from 2026-10-20 06z to 2026-10-21 12z.
+  - **The complete run now finishes at T+7h34m at every cycle.** At 00/12 UTC that is the same minute as the IFS `oper` 0.25° batch (07:34 and 19:34 UTC). At 06/18 UTC, where IFS publishes at T+6h27m (12:27 UTC for 06z), the last AIFS step now arrives **1h07m after** IFS — though AIFS still runs to 360 h at those cycles where IFS stops at 144 h.
+
+> ⚠️ **AIFS Single no longer delivers its full run ahead of IFS.** Previous versions of this entry stated that AIFS Single "lands roughly 1h49m ahead of IFS at 00/12 UTC." That is still true for the **first** step — step 0 appears at T+5h45m — but since 2026-10-20 06z the 15-day run trickles out over 1h49m and the last step arrives together with the IFS batch. Users who pulled the whole AIFS run as soon as step 0 appeared, or who polled for a complete run around T+5h45m, will now find it incomplete for nearly two hours. Early lead times remain the earliest ECMWF deterministic guidance available. No ECMWF announcement of this change has been found. One caveat on the before/after comparison: on the 2026-10-20 00z run the portal's `Last-Modified` stamps were already staggered (05:45 / 06:39 / 07:34 for steps 0 / 180 / 360) while AWS held every file by 05:39, so the portal timestamps may have reflected a per-step release schedule before the change too. **TBD** whether the portal served files earlier than its stamped times; what verifiably changed is when the files reach the cloud mirrors.
 
 ### Volume
 
-| Stream | Per step file | Per cycle (61 steps) |
-|---|---|---|
-| `oper` | 84.9 MB | 5.18 GB |
+| Stream | Per step file | Per cycle (61 steps) | Per day |
+|---|---|---|---|
+| `oper` (before 2026-10-20 06z) | 84.9 MB | 5.18 GB | ~21 GB |
+| `oper` (from 2026-10-20 06z) | ~56 MB | ~3.4–3.5 GB | **~13.8 GB** |
+
+Current per-day figures are summed from AWS listings over four consecutive cycles (2026-10-20 12z to 2026-10-21 06z). The drop of about a third comes from lower packing precision on 2026-10-20 — see *GRIB2 encoding*.
 
 The `aifs-single/0p25/` directory also contains a `wave/` stream, documented separately.
 
@@ -108,6 +116,22 @@ Three consequences worth planning around:
 
 `tablesVersion = 36` also means older ecCodes installations may not carry the definitions AIFS needs; ecCodes 2.42.0 or newer is recommended for the ECMWF Open Data tree generally, and CCSDS packing requires `libaec` support compiled in.
 
+### Packing precision reduced on 2026-10-20 06z
+On the same cycle that ECMWF launched the 0.1° IFS tier, the AIFS streams were re-packed with fewer bits per value, matching the change made to the IFS 0.25° tier. The parameter inventory did not change (126 messages at step 0 and 122 at +24 h, before and after). Measured on the `oper` +24 h file, 2026-10-20 00z (before) vs 2026-10-21 00z (after):
+
+| Field | Bits per value before → after | Approx. quantisation step before → after |
+|---|---|---|
+| `2t` | 12 → **9** | 0.03 K → **0.25 K** |
+| `t` 500 hPa | 12 → **9** | 0.016 K → **0.125 K** |
+| `q` 500 hPa | 12 → **9** | — |
+| `tp` | 16 → **12** | 0.004 mm → **0.0625 mm** |
+| `cp` | 16 → **12** | 0.002 mm → **0.031 mm** |
+| `10u` | 12 → 11 | 0.016 → 0.031 m/s |
+| `msl` | 12 → 12 (unchanged) | 4 Pa |
+| `z` 500 hPa | 16 → 16 (unchanged) | 0.25 m²/s² |
+
+AIFS `tp` is encoded in kg m⁻² (mm), unlike IFS `tp` in metres, so its quantisation step is quoted directly in mm. The step depends on each message's value range, so these are the steps of this sample rather than fixed constants. The change matters for small-amount precipitation thresholds and sub-kelvin temperature work, and **archive data before and after 2026-10-20 06z is packed differently**. The [IFS entry](./ifs.md#choosing-a-tier--025-or-01) records the equivalent IFS change.
+
 ---
 
 ## Relationship to other models
@@ -117,7 +141,7 @@ AIFS Single shares the same **initial conditions** as IFS (both start from ECMWF
 
 [AIFS ENS](../../../ensemble_models/global/eu/aifs-ens.md) is the ensemble counterpart trained with probabilistic methods.
 
-**AIFS wave is catalogued separately.** From v2 the `aifs-single` tree carries a `wave/` stream alongside `oper/` — ECMWF's first data-driven wave forecasts. Following the repository's convention of filing by phenomenon, it belongs in `models/wave_models/` next to the physics-based [ECWAM](../../../wave_models/global/eu/ecwam.md) and [ENS-WAM](../../../wave_models/global/eu/ecwam-ens.md) rather than inside this entry. Not yet catalogued.
+**AIFS wave is catalogued separately.** From v2 the `aifs-single` tree carries a `wave/` stream alongside `oper/` — ECMWF's first data-driven wave forecasts. Following the repository's convention of filing by phenomenon, it is catalogued as [AIFS Wave](../../../wave_models/global/eu/aifs-single-wave.md) in `models/wave_models/`, next to the physics-based [ECWAM](../../../wave_models/global/eu/ecwam.md) and [ENS-WAM](../../../wave_models/global/eu/ecwam-ens.md).
 
 ECMWF stopped running its experimental machine learning model suite (Aurora, FourCastNet, GraphCast, Pangu-Weather) as of the joint AIFS/IFS upgrade on 12 May 2026.
 
@@ -150,11 +174,18 @@ Full access mechanics — the Azure SAS-token exchange, the GCS bucket identity,
 
 > **Archive path history for AIFS specifically.** Bisection of the AWS mirror places the `aifs/` directory's first appearance at **2024-02-29**, the same day the `[model]` path component was introduced. It was renamed **`aifs-single/`** between 2025-02-01 and 2025-04-01, tracking v1.0's operational status. `aifs-ens/` appeared separately between 2025-07-01 and 2025-08-01. Crawlers walking the AIFS archive must handle the `aifs/` → `aifs-single/` rename. Full schema table in the [IFS entry](./ifs.md#archive-path-schema-changes-verified-against-the-aws-mirror).
 
-Unlike IFS, AIFS Single is distributed at its native resolution (0.25°) — there is no higher-resolution version behind a paywall. Like IFS, the entire ECMWF Real-time Catalogue (including AIFS) became CC-BY-4.0 licensed on 1 October 2025.
+Unlike IFS, AIFS Single is distributed at its native resolution (0.25°) — there is no higher-resolution version behind a paywall, and no 0.1° Open Data tier. Like IFS, the entire ECMWF Real-time Catalogue (including AIFS) became CC-BY-4.0 licensed on 1 October 2025.
 
 ---
 
 ## Version history
+
+### Open Data distribution change — 20 October 2026, 06 UTC run
+Not a model change — AIFS Single is still v2 — but it changes what users receive:
+- **Steps released one at a time**, about 1.8 minutes apart, from T+5h45m (step 0) to T+7h34m (+360 h). Before, the whole run reached the cloud mirrors in a few minutes. See *Basic details*.
+- **Lower packing precision** on most fields (e.g. `2t` 12 → 9 bits, `tp` 16 → 12 bits); files about a third smaller. See *GRIB2 encoding*.
+- **No change** to parameters, levels, steps, grid or paths. No 0.1° tier for AIFS.
+- Same cycle as the launch of the 0.1° IFS tier; see the [IFS entry](./ifs.md#recent-version-history).
 
 ### AIFS Single v2 — operational 12 May 2026 (current)
 Major upgrade deployed jointly with [IFS Cycle 50r1](./ifs.md#recent-version-history) and [AIFS ENS v2](../../../ensemble_models/global/eu/aifs-ens.md). Key changes:
@@ -187,7 +218,7 @@ First publicly available AIFS, distributed via ECMWF Open Data as an experimenta
 ---
 
 ## Notes
-- AIFS Single runs more than 10× faster than the physics-based IFS at comparable or better skill for many variables, with roughly 1,000× lower energy consumption per forecast. The measured 1h49m publication advantage over IFS at 00/12 UTC is the operational expression of that.
+- AIFS Single runs more than 10× faster than the physics-based IFS at comparable or better skill for many variables, with roughly 1,000× lower energy consumption per forecast. Until 2026-10-20 that showed up as a 1h49m publication advantage over IFS at 00/12 UTC; since the switch to per-step release it shows up only in the early lead times, which still appear well before IFS.
 - A known limitation of MSE-trained AI models is under-prediction of distribution tails — for example, AIFS Single produces a flatter distribution for total cloud cover than observations, under-representing the frequencies of completely clear and fully overcast conditions. AIFS v2 addresses this somewhat by being less smooth than v1.1, though this also produces small "skill" degradations at longer lead times for some variables.
 - Forecasts blur at longer lead times (a known issue with weighted-MSE-trained AI models). The blurring is reduced but not eliminated in v2.
 - Stratospheric skill has historically been a weakness due to the model's coarse vertical structure (13 pressure levels in v1.1, with the highest at 50 hPa). v2's addition of the 10 hPa level significantly improves skill at 50 and 100 hPa in the extratropics, though the tropical stratosphere remains a known weakness.
@@ -208,6 +239,13 @@ Established on **2026-07-30** by direct inspection rather than from documentatio
 - `Content-Length` sampling for per-step and per-cycle volumes
 - MD5 comparison of the same object across the ECMWF portal, GCS and the AWS regional endpoint
 
+The 2026-10-20 distribution changes were verified on **2026-10-21**:
+- AWS `LastModified` windows for every cycle from 2026-10-19 00z to 2026-10-21 12z, plus portal and AWS `Last-Modified` for steps 0, 180 and 360 on four cycles either side of the change
+- Directory listing confirming `aifs-single/` holds `0p25` only on the 2026-10-21 00z and 06z runs
+- `.index` comparison at steps 0 and 24 h before (2026-10-20 00z) and after (2026-10-21 00z) the change
+- ecCodes 2.50.0 bits-per-value and quantisation-step decode of eight `oper` fields before and after
+- `Content-Length` sampling of the +24 h file across dates and cycles, and summed AWS listing sizes over four consecutive cycles for volume
+
 Architecture, training regime, skill claims and version history are **not live-verifiable** and are sourced from ECMWF implementation pages, the AIFS blog, and the Moldovan et al. and Lang et al. papers.
 
 Where live observation and ECMWF documentation disagree, the live observation is recorded and the disagreement flagged rather than silently resolved.
@@ -218,6 +256,7 @@ Where live observation and ECMWF documentation disagree, the live observation is
 - AIFS Single v2 implementation page: https://confluence.ecmwf.int/display/FCST/Implementation+of+AIFS+Single+v2
 - AIFS Single v1 implementation page: https://confluence.ecmwf.int/display/FCST/Implementation+of+AIFS+Single+v1
 - ECMWF open data user documentation: https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS
+- ECMWF open data: what's new at 0.1° (IFS only; context for the 2026-10-20 changes): https://confluence.ecmwf.int/spaces/DAC/pages/738041087/ECMWF+open+data+what+s+new+at+0.1%C2%B0
 - ECMWF AIFS overview: https://www.ecmwf.int/en/forecasts/documentation-and-support/changes-ecmwf-model
 - AIFS Blog: https://www.ecmwf.int/en/about/media-centre/aifs-blog
 - Anemoi framework: https://anemoi.readthedocs.io/
