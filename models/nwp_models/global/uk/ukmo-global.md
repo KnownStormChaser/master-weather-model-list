@@ -35,14 +35,17 @@ The current operational version is part of **Operational Suite 47 (OS47)**, impl
 - **Model top:** ~80 km
 - **Forecast length:**
   - 168 hours (7 days) for 00 and 12 UTC cycles
-  - **69 hours** for 06 and 18 UTC cycles (extended from 66 h at the OS47 upgrade; `radiation_flux_in_longwave_downward_at_surface` is the one exception, still ending at T+66)
-  - **Documentation caveat:** the AWS Open Data Registry entry and all four Planetary Computer collection descriptions state 67 hours for the 06/18 UTC cycles. This is incorrect and appears to predate OS47 — live S3 listings for the 06Z cycle terminate at `PT0069H00M`, and the Met Office's own parameter-table documentation gives 66 h pre-January-2026 and 69 h after. Verified 22 July 2026.
+  - **69 hours** for 06 and 18 UTC cycles (extended from 66 h at the OS47 upgrade)
+  - **Radiation exceptions:** `radiation_flux_in_longwave_downward_at_surface` and `radiation_flux_in_uv_downward_at_surface` both stop **one output step short**: T+66 on the 06/18 runs and **T+162** (not T+168) on the 00/12 runs. Verified 25–30 October 2026.
+  - **Short runs carry 62 parameters, not 70:** the eight `*-PT06H` parameters (6-hourly accumulations, means and max/min) are absent from the 06/18 UTC cycles.
+  - **Documentation caveat:** the AWS Open Data Registry entry and all four Planetary Computer collection descriptions state 67 hours for the 06/18 UTC cycles. This is incorrect and appears to predate OS47 — live S3 listings for the 06Z cycle terminate at `PT0069H00M`, and the Met Office's own parameter-table documentation gives 66 h pre-January-2026 and 69 h after. Verified 22 July 2026; the Planetary Computer description still read 67 hours on 31 October 2026.
 - **Update frequency:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution (Open Data):**
   - Hourly to +54 h
   - 3-hourly from +57 to +144 h
   - 6-hourly from +150 to +168 h
-- **Data latency:** Documented as 3–6 hours after model run time. Observed upload times on 22 July 2026 sat at the top of or slightly beyond that range: the 00Z cycle uploaded between T+5h30m and T+6h31m, the 06Z cycle between T+5h30m and T+6h01m. Plan for ~6 h rather than 3 h.
+- **Data latency:** Documented as 3–6 hours after model run time. Observed uploads sit at the top of or slightly beyond that range. The first object lands at T+5h30m on every cycle. The 00/12Z runs complete at about T+6h31m and the 06/18Z runs at about T+6h01m (22 July 2026, and all 20 cycles checked 25–30 October 2026). Plan for ~6 h rather than 3 h.
+  - Unlike MOGREPS-G, open-data delivery times did **not** move after the 27 October 2026 Weather DataHub change.
 
 ---
 
@@ -77,12 +80,12 @@ UKMO Global output also serves as boundary forcing for the Met Office's regional
 - **License:** Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0). British Crown copyright, the Met Office. Attribution and ShareAlike both required — note this differs from ECMWF's CC-BY-4.0 by adding the ShareAlike obligation.
 - **Resolution:** Native N1280 grid, no downsampling or reprojection
 - **Format:** NetCDF4/HDF5, CF-1.7 + UKMO-1.0 conventions
-- **Retention:** **2-year rolling archive** — significantly longer than typical operational open-data services, which usually retain only the most recent few days. This is a true rolling window with no fixed start: the earliest cycle present on 22 July 2026 was `20240721T1800Z`, exactly two years back. Older data is deleted as it ages out.
+- **Retention:** **2-year rolling archive** — significantly longer than typical operational open-data services, which usually retain only the most recent few days. This is a true rolling window with no fixed start: the earliest cycle present on 22 July 2026 was `20240721T1800Z`, exactly two years back; on 31 October 2026 it was `20241029T0000Z`. Older data is deleted as it ages out.
 - **Bucket:** `s3://met-office-atmospheric-model-data` (region `eu-west-2`)
   - Anonymous access, no AWS account or credentials required: `aws s3 ls --no-sign-request s3://met-office-atmospheric-model-data/`
   - **Path template:** `global-deterministic-10km/{YYYYMMDD}T{HH}00Z/`
   - **Filename convention:** `{validity YYYYMMDD}T{HHMM}Z-PT{HHHH}H{MM}M-{parameter}.nc` — e.g. `20260722T0000Z-PT0000H00M-temperature_at_screen_level.nc`. Note the leading timestamp is the **validity time**, not the run time; the run time appears only in the directory prefix.
-  - **One file per parameter per timestep.** A 00/12 UTC cycle is ~4,530 files and ~116 GB; a 06/18 UTC cycle is ~3,035 files and ~78 GB (measured 22 July 2026).
+  - **One file per parameter per timestep.** A 00/12 UTC cycle is 4,527 files and ~116 GB; a 06/18 UTC cycle is 3,035 files and ~78 GB (measured 22 July 2026; identical file counts on every cycle 25–30 October 2026).
   - The parallel UKV dataset shares the same bucket under the `uk-deterministic-2km/` prefix.
 - **New-object notifications:** SNS topic `arn:aws:sns:eu-west-2:633885181284:met-office-atmospheric-model-data-object_created` — useful for event-driven pipelines rather than polling.
 - **Official location:**
@@ -102,16 +105,14 @@ A second, parallel distribution of the same data, hosted on Azure and indexed as
 - **Dataset group landing page:** https://planetarycomputer.microsoft.com/dataset/group/met-office-global-deterministic
 - **STAC API:** `https://planetarycomputer.microsoft.com/api/stac/v1/collections/met-office-global-deterministic-{theme}`. Items carry the `forecast` STAC extension — `forecast:reference_datetime` is the run time and `forecast:horizon` the lead time, while `datetime` is the validity time.
 - **Access:** item assets point at `https://ukmoeuwest.blob.core.windows.net/deterministic/...`. Anonymous requests return HTTP 409; a **SAS token is required**, obtained without sign-in or registration from `https://planetarycomputer.microsoft.com/api/sas/v1/token/ukmoeuwest/deterministic` (~45 min validity). Since the token is issued anonymously and free, this is a technical step rather than an approval gate, but it does mean PC access cannot be a plain unauthenticated `curl` the way S3 can.
-- **Archive depth:** deeper than AWS. The oldest indexed item is `20231204T0600Z` (4 December 2023) — roughly 2.6 years of history versus AWS's strict 2-year window. The collection metadata states forecasts remain available for at least two years from their data date, so this surplus may not be permanent.
+- **Archive depth:** deeper than AWS. The oldest indexed item is `20231204T0000Z` (4 December 2023; verified 31 October 2026), so the archive is now roughly 2.9 years deep and is **not** rolling off at AWS's 2-year boundary. The collection metadata states forecasts remain available for at least two years from their data date, so this surplus may not be permanent.
 
-#### ⚠️ Currency warning (verified 22 July 2026)
-The Planetary Computer copy is **not currently keeping pace with AWS**:
-- Latest STAC-indexed `forecast:reference_datetime` across all four global collections: **2026-06-26T06:00Z** (~26 days stale)
-- Latest cycle with objects present in the Azure blob container: **20260716T0000Z** (~6 days stale) — nothing for 17–22 July
+#### Currency (re-verified 31 October 2026)
+The Planetary Computer copy **is current again**. All four global collections index `forecast:reference_datetime` 2026-10-30T18:00Z, the same latest cycle as AWS, and the newest assets download normally with a SAS token.
 
-AWS was fully current over the same period (`20260722T1200Z` available). Whether this is a transient outage or the start of a wind-down is **TBD**. Until resolved, **treat AWS S3 as the authoritative channel** and PC as useful mainly for the pre-July-2024 archive that AWS has already rolled off.
+In July 2026 it had fallen well behind: on 22 July the latest STAC-indexed cycle was 2026-06-26T06:00Z (~26 days stale), and blob objects stopped at `20260716T0000Z`. It has since caught up. AWS S3 is still the simpler channel because it needs no token, and PC remains the only source for the pre-October-2024 archive that AWS has already rolled off.
 
-Note also that the PC collection descriptions are stale in content, not just currency: they still describe the pre-OS47 67-hour short cycles and state "as of December 2025" for archive extent.
+Note also that the PC collection descriptions are stale in content: they still describe the pre-OS47 67-hour short cycles (re-checked 31 October 2026).
 
 ### Caveats for both channels
 The data is offered on a free, **unsupported** basis — the Met Office does not recommend either distribution for critical business purposes. Service-desk support is available Mon-Fri 09:00-17:00 UTC with a 3-5 business day target response time, and only for non-operational queries.
@@ -137,18 +138,35 @@ Global attributes on every file identify the source configuration and are the qu
 - **Status flags:** pressure-level files carry a `flag` ancillary variable (`standard_name = status_flag`, `flag_values = [0, 1]`, `flag_meanings = above_surface_pressure below_surface_pressure`) on the same 3-D grid as the data. Post-OS47 this is a compressed ancillary variable named simply `flag`, replacing the earlier per-parameter auxiliary coordinates such as `air_temperature_status_flag`. **Points below the model surface are not masked** — they contain extrapolated values and must be screened using this flag.
 - **CF variable names differ from filenames:** e.g. `temperature_at_screen_level.nc` contains `air_temperature`; `cloud_amount_on_height_levels.nc` contains `cloud_volume_fraction_in_atmosphere_layer`. Do not assume the filename token is the variable name.
 
+### Weather DataHub "Additional Timesteps" change (27 October 2026) — no effect on open data
+The Met Office announced extra timesteps for a few Atmospheric parameters on Weather DataHub (its order-based commercial service) as part of OS47, from the Global Deterministic 06Z run on 27 October 2026. The notice also says 99 global parameters gain a new timestep (a "69th") on the 06 and 18 UTC runs. **Verified live: the AWS open-data set did not change.** All 20 cycles from 25 to 30 October 2026 carry identical files and per-parameter timesteps for their cycle type (4,527 files / 70 parameters at 00/12Z; 3,035 / 62 at 06/18Z).
+
+Most of what the notice describes was **already in the open data before the change**:
+- The 06/18 UTC runs already end at T+69 (60 output steps: hourly T+0→54, then 3-hourly to T+69).
+- `wind_gust_at_10m_max-PT03H` already runs 3-hourly from T+3 to T+144, and `wind_gust_at_10m_max-PT06H` 6-hourly from T+54 to T+168. These are the "new" DataHub ranges for 3 h and 6 h max gusts.
+
+- `radiation_flux_in_shortwave_total_downward_at_surface` (and its `_direct_` counterpart) already runs the full 89-step schedule to T+168. This is the "new" DataHub range for downward shortwave.
+
+The DataHub change brings DataHub's order catalogue in line with what the open data already offered. The notice's convective cloud cover fields are on isobaric (isbl) and height (agl) levels, which the global open data doesn't carry. Its only convective cloud field is the single-level `cloud_amount_of_total_convective_cloud`, which already runs the full 89-step schedule.
+
 ---
 
 ## Notes
 - The Unified Model is grid-point (rather than spectral) and is unusual in spanning weather and climate timescales with a single codebase. The same model is used by the Met Office for centennial climate predictions in the IPCC assessment reports as for tomorrow's short-range forecast.
 - UKMO Global runs on the Met Office's **new Microsoft Azure-based supercomputer**, which became operational in 2024 and on which OS47 was the first major modelling suite to run.
 - The Met Office uses a science configuration scheme for the UM: the global model uses **Global Coupled 5 (GC5)** as of OS47 — earlier configurations included GC2, GC3, and GC4 (operational from May 2022 to January 2026). GC5 is documented in Willett et al. (2025).
-- The asymmetric forecast length (168 h at 00/12 UTC vs 67 h at 06/18 UTC) is structurally similar to the equivalent IFS, ICON, and GFS schedules — the longer runs at 00/12 anchor medium-range guidance, while the 06/18 runs target short-range applications.
+- The asymmetric forecast length (168 h at 00/12 UTC vs 69 h at 06/18 UTC) is structurally similar to the equivalent IFS, ICON, and GFS schedules — the longer runs at 00/12 anchor medium-range guidance, while the 06/18 runs target short-range applications.
 - The Unified Model is also operated by partner agencies including the **Australian Bureau of Meteorology** (ACCESS-G global at 12.5 km) and the **Korea Meteorological Administration** (KMA Unified Model global at ~10 km).
 
 ---
 
 ## Recent version history
+
+### Upcoming: OS48 — expected late February / early March 2027
+The Met Office expects to implement Operational Suite 48 in late February or early March 2027, with the exact date to be confirmed nearer the time. OS48 will bring science updates that have not yet been detailed. An initial overview is scheduled for the Met Office Data User Forum on 11 November 2026, with more information to follow on the Weather DataHub changes page as testing progresses. **TBD** what changes for the global deterministic model and its open-data products.
+
+### 27 October 2026 — Weather DataHub additional timesteps (OS47 follow-on)
+Delivery-side change, not a science upgrade. Weather DataHub added timesteps for a small number of Atmospheric parameters, plus an extra timestep on the 06/18 UTC runs, starting with the Global Deterministic 06Z run. **The AWS open data is unchanged** in files, timesteps and delivery times (verified 25–30 October 2026); see the Data availability section.
 
 ### OS47 / PS47 / GC5 — operational 21 January 2026 (current)
 First major science upgrade in over three years, and the first running on the Met Office's new Microsoft Azure supercomputer. Per ECMWF's TIGGE model-change log, the global model switched to OS47 **from the 12 UTC cycle on 21 January 2026**. Highlights for the global deterministic model:
