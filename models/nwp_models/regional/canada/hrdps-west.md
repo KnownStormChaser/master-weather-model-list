@@ -7,7 +7,7 @@ HRDPS-West is an experimental kilometric-scale numerical weather prediction syst
 
 It is built on the Global Environmental Multiscale (GEM) atmospheric model and is piloted by the operational HRDPS national system, which provides initial and boundary conditions for the atmospheric fields including hydrometeors. Surface initial conditions come from the 2.5 km Canadian Land Data Assimilation System (CaLDAS), which is coupled to the National HRDPS. HRDPS-West provides numerical weather forecasting guidance to the Pacific Storm Prediction Centre (PSPC), the Prairie and Arctic Storm Prediction Centre (PASPC), and the Canadian Meteorological Aviation Centre West (CMAC-West).
 
-The current experimental version is HRDPS-West 1.5.0.
+The current experimental version is HRDPS-West 1.6.0, implemented April 14, 2026. It is a port of HRDPS-West 1.5.0 (June 11, 2024) to ECCC's new high-performance computing infrastructure.
 
 ---
 
@@ -103,6 +103,7 @@ HRDPS-West provides forecasting guidance to:
 - HRDPS-West is convection-permitting at 1 km resolution and does not use a deep convection parameterization.
 - The Southern BC domain reflects the operational priorities of the region: complex terrain, atmospheric river events, mountain meteorology, and dense population in the Lower Mainland and southern Vancouver Island.
 - HRDPS-West is a pure dynamical downscaling system — it does not perform its own data assimilation. All atmospheric initial fields come from the National HRDPS, which means HRDPS-West's analysis quality is bounded by the National HRDPS's analysis quality. The value-add is purely from higher resolution, the SLEVE coordinate over complex terrain, and the 30-second time step.
+- **Version-history notes (ECCC sources):** (1) The changelog's v1.5.0 body text gives the date as "June 11st", a typo; the heading says June 11, 2024. (2) The changelog lists GEM 5.2.0 for v1.5.0, while the national HRDPS changelog lists GEM 5.2.1 for HRDPS 7.0.0, released the same day. (3) No versions before 1.3.0 are publicly documented.
 - As an experimental system, configuration, domain, resolution, and product availability may change without the formal change-management process used for operational ECCC systems.
 - The "alpha" designation in the datamart URL indicates the distribution channel itself is experimental, not just the model — users building automated pipelines should be aware that alpha endpoints may change without notice.
 - HRDPS-West is the convection-permitting western counterpart to the pan-Canadian operational [HRDPS](./hrdps.md). Whether HRDPS-West eventually becomes operational, expands to additional regional domains (e.g., a hypothetical HRDPS-East), or is folded into a future revision of HRDPS itself is not publicly documented.
@@ -119,19 +120,31 @@ HRDPS-West provides forecasting guidance to:
 
 ## Version history
 
-### HRDPS-West 1.5.0 — implemented June 11, 2024 (current)
-The HRDPS-West 1.5.0 technical specification document names June 11, 2024 as the implementation date at CMC operations — coincident with the IC-4 release of GDPS 9.0.0, RDPS 9.0.0, and HRDPS national 7.0.0. The MSC alpha datamart distribution was announced separately on November 6, 2024.
+ECCC's HRDPS-West changelog starts at v1.3.0 (December 2021). No public changelog covers versions before that. Before 1.3.0, the only "West" HRDPS in ECCC's changelogs is the separate 2.5 km West sub-domain of the national HRDPS (see [HRDPS](./hrdps.md), v3.0.0).
 
-Headline changes from earlier versions:
+### HRDPS-West 1.6.0 — implemented April 14, 2026 (current)
+- Port of v1.5.0 to ECCC's new high-performance computing infrastructure, alongside HRDPS 7.1.0, GDPS 9.1.0 and CAPS 3.1.0. No science or configuration changes listed. The configuration described in this entry is assumed unchanged from 1.5.0.
+
+### HRDPS-West 1.5.0 — implemented June 11, 2024 (12 UTC run)
+Implemented with the IC-4 release of GDPS 9.0.0, RDPS 9.0.0, and HRDPS national 7.0.0. The MSC alpha datamart distribution was announced separately on November 6, 2024.
+
+Headline changes:
 - **GEM upgraded to version 5.2.0**
 - **SLEVE vertical coordinate** introduced (Husain et al., 2020) — particularly relevant for HRDPS-West given the mountainous terrain across Southern BC
 - **Bourgouin (2000) approach** adopted for surface precipitation phase partitioning, with diagnostic precipitation types
-- **Pilot system** aligned with the IC-4 HRDPS national release
+- **Pilot system** aligned with the IC-4 HRDPS national release (see the pilot-version note under Initial and boundary conditions)
 - **Updated geophysical fields** for better representation of surface features and properties
 - **Sea/lake ice** initialization and processing changes (now sourced from the 0-h prog of National HRDPS for thickness/temperature, and from the GDPS G6 analysis via National HRDPS for cover/SST)
 
-### Earlier versions
-- HRDPS-West has been running 2× daily at 00 and 12 UTC, integrated for 48 hours, since the original implementation of HRDPS-West v1.3.0.
+### HRDPS-West 1.4.0 — implemented June 28, 2022
+- Port of v1.3.0 to ECCC's then-new HPC infrastructure (shown as "HRDPS-W" in ECCC's changelog), alongside HRDPS 6.1.0. No science changes listed.
+
+### HRDPS-West 1.3.0 — implemented December 1, 2021 (12 UTC run)
+- **Migration to GEM 5.1 with "retro-physics"**, with a model configuration similar to the national HRDPS
+- **Piloted by the new national HRDPS v6.0.0**, which gained its own continuous 4DEnVar assimilation the same day
+- **Forecast extended to 48 hours**, run twice daily (00 and 12 UTC)
+- New geophysical fields
+- Implemented in ECCC's December 2021 suite upgrade (Innovation Cycle 3), together with GDPS 8.0.0, RDPS 8.0.0 and HRDPS 6.0.0. The same release decoupled CAPS into HRDPS-North 1.0.0, which used the same "GEM 5.1 with retro-physics" wording (see [CAPS](./caps.md))
 
 ---
 
