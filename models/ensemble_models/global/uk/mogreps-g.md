@@ -48,7 +48,9 @@ The current operational version is part of **Operational Suite 47 (OS47)**, impl
 | As row 1 but terminating at **T+243** | 4 | longwave downward at surface, longwave outgoing at TOA, UV downward, UV upward |
 | 3-hourly T+0→246 | 1 | `landsea_mask` |
 
-- **Data latency:** Documented as 10–11 hours after run time; **observed at 6 h 30 m to 8 h 04 m** across four consecutive cycles (21–22 July 2026), with first objects landing at T+6h30m every time. Substantially faster than advertised.
+  - **Gap:** the two longwave fields (`radiation_flux_in_longwave_downward_at_surface`, `radiation_flux_in_longwave_outgoing_at_top_of_atmosphere`) are **missing T+138** on every cycle checked (25–30 October 2026), giving 169 timesteps against the UV pair's 170. Code that assumes a regular 3-hourly step after T+132 will hit a missing file.
+  - Re-verified unchanged across all cycles 25–30 October 2026, i.e. after the 27 October 2026 Weather DataHub "Additional Timesteps" change (see Data availability).
+- **Data latency:** Documented as 10–11 hours after run time; **observed at 6 h 30 m to ~8 h 18 m**. First objects land at T+6h30m on every cycle checked (July and October 2026). Completion time is bimodal: either ~T+8h03m or ~T+8h17m. Before 27 October 2026, 1 of 6 cycles checked finished late; from the 27 October 06Z run onward, 8 of 13 did. This is consistent with the Met Office's notice that MOGREPS-G availability would shift "by approximately 15 minutes" within its window, but the pattern is not tied to a fixed cycle. Substantially faster than advertised either way.
 - **Underlying DA ensemble:** 44 perturbed members (En-4DEnVar)
 - **Native horizontal grid:** N640 (1280 × 960 grid points; ~0.28° E–W × ~0.19° N–S; ~20 km in mid-latitudes)
 - **Vertical levels:** 70
@@ -125,6 +127,7 @@ The Unified Model is also operated by partner agencies for ensemble forecasting:
   - https://registry.opendata.aws/met-office-global-ensemble/
   - Browsable index: https://met-office-global-ensemble-model-data.s3.eu-west-2.amazonaws.com/index.html
 - **Data catalog change (late January 2026):** From the OS47 upgrade onward the dataset gained 19 new parameters, extended forecast range from T+198 to T+246, vertical level additions, precision reduction, and **two** parameter renames — `height_ASL_on_pressure_levels` → `geopotential_height_on_pressure_levels` and `height_ASL_at_freezing_level` → `geopotential_height_at_freezing_level`. Both old names are absent and both new names present in live listings.
+- **Weather DataHub "Additional Timesteps" change (27 October 2026) — no effect on open data.** The Met Office announced extra timesteps for a few Atmospheric parameters on Weather DataHub (its order-based commercial service) as part of OS47, effective from the 27 October 06Z MOGREPS-G run. **Verified live: the AWS open-data set did not change.** Every cycle from 25 to 30 October 2026 carries the same 14,020 files and 102 parameters, with identical timesteps per parameter. The parameter tables in the notice run to T+168 and refer to DataHub product names (convective cloud cover, 3 h/6 h max gusts, downward shortwave), so they describe the DataHub catalogue, not this bucket. The only visible effect here is the delivery-time shift noted under Data latency.
 
 ### Ensemble file structure (verified 21 July 2026)
 **All 18 members are contained within each file.** Every parameter/timestep file carries a `realization` dimension of size 18 (values 0–17) as the **leading** dimension:
@@ -172,6 +175,12 @@ Conversely, `wet_bulb_potential_temperature_on_pressure_levels` carries only **3
 ---
 
 ## Recent version history
+
+### 27 October 2026 — Weather DataHub additional timesteps (OS47 follow-on)
+Delivery-side change, not a science upgrade. Weather DataHub added timesteps for a small number of Atmospheric parameters, starting with the MOGREPS-G 06Z run. The Met Office said MOGREPS-G availability would move by about 15 minutes within its existing window. **The AWS open-data parameter and timestep set is unchanged** (verified 25–30 October 2026). Only the completion time has moved: about 15 minutes later on most cycles.
+
+### Upcoming: OS48 — expected late February / early March 2027
+The Met Office expects to implement Operational Suite 48 in late February or early March 2027, with science changes not yet detailed. An initial overview is scheduled for the Data User Forum on 11 November 2026. **TBD** what changes for MOGREPS-G.
 
 ### OS47 / PS47 / GC5 — operational 21 January 2026 (current)
 First major science upgrade in over three years, deployed on the Met Office's new Microsoft Azure supercomputer. Highlights for MOGREPS-G:
