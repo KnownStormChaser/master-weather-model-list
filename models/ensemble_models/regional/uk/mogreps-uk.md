@@ -51,7 +51,10 @@ The current operational version is part of **Operational Suite 47 (OS47)**, impl
   - **15-minutely to T+125 h** — the precipitation family: `precipitation_rate`, `rainfall_rate`, `snowfall_rate`, `hail_fall_rate`, and the four matching `*_accumulation-PT15M` parameters (504 steps each)
   - **15-minutely to T+11h45m, hourly thereafter** — screen-level and 10 m diagnostics: `CAPE_surface`, `CIN_surface`, `pressure_at_mean_sea_level`, `temperature_at_screen_level`, `temperature_of_dew_point_at_screen_level`, `visibility_at_screen_level`, `wind_direction_at_10m`, `wind_speed_at_10m`, `wind_gust_at_10m`
   - **Hourly to T+126** for the remaining parameters
-- **Data latency:** Documented as 10–11 hours after run time; **observed at T+3h46m to T+4h47m** across six cycles spanning 21–22 July 2026. The official figure is wrong by more than a factor of two — MOGREPS-UK is the fastest-landing of the four Met Office open datasets.
+- **Data latency:** Documented as 10–11 hours after run time; **observed at T+1h44m to ~T+2h47m** (re-verified 31 October 2026, more than two hours faster than in July). Most cycles complete by about T+2h38m, and the 05Z cycles land about 6 minutes later than the rest.
+  - **History:** on 21–22 July 2026 six cycles landed between T+3h46m and T+4h47m. Every cycle sampled from 30 September to 30 October 2026 lands between T+1h44m and T+2h47m. The file's `forecast_reference_time` matches the folder's run time, so this is a genuine speed-up rather than a relabelled directory. The switch happened at some point between late July and 29 September 2026 (the oldest data still in the 30-day archive); the exact date is **TBD** and no announcement was found.
+  - The official figure is now wrong by roughly a factor of four. MOGREPS-UK is by a wide margin the fastest-landing of the four Met Office open datasets.
+  - Delivery times did not move after the 27 October 2026 Weather DataHub change.
 
 ---
 
@@ -91,6 +94,8 @@ MOGREPS-UK inherits the Met Office's hybrid 4D-Var framework via the UKV analysi
 
 **A single cycle is not a complete ensemble.** Treating one cycle's three members as the ensemble will severely under-sample the forecast distribution.
 
+Re-checked 30 October 2026 by reading the `realization` coordinate from the 05Z, 07Z, 11Z and 12Z cycles (0/1/2, 6/7/8, 0/18/19 and 20/21/22 respectively): rotation unchanged.
+
 **Control identification:** realization `0` is the conventional control designation and is consistent with its 6-hourly rerun cadence, but the files carry no attribute confirming this — treat as **TBD** if the distinction is load-bearing.
 
 - **Initial condition perturbations:** TBD
@@ -128,16 +133,17 @@ Convection-permitting and probabilistic-relevant highlights:
 - **License:** Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0). British Crown copyright, the Met Office. Attribution and ShareAlike both required — note this differs from ECMWF's CC-BY-4.0 by adding the ShareAlike obligation.
 - **Is the data downloadable?** Yes
 - **Data formats:** NetCDF4/HDF5, CF-1.7 + UKMO-1.0 conventions
-- **Retention:** **~30-day rolling archive.** Measured 22 July 2026: 33 date directories spanning 2026-06-20 to 2026-07-22, with the oldest surviving cycle being `2026/06/20/T2200Z`. Deletion is at **cycle granularity**, giving roughly 32 days of data at any moment.
+- **Retention:** **~30-day rolling archive.** Measured 22 July 2026: 33 date directories spanning 2026-06-20 to 2026-07-22, with the oldest surviving cycle being `2026/06/20/T2200Z`. Re-measured 31 October 2026: oldest cycle `2026/09/29/T0100Z`. Deletion is at **cycle granularity**, giving roughly 32 days of data at any moment.
 - **Bucket:** `s3://met-office-uk-ensemble-model-data` (region `eu-west-2`) — a **fourth distinct bucket**, separate from the deterministic pair (`met-office-atmospheric-model-data`) and from MOGREPS-G (`met-office-global-ensemble-model-data`)
   - Anonymous access, no AWS account or credentials required: `aws s3 ls --no-sign-request s3://met-office-uk-ensemble-model-data/`
   - **Path template:** `uk-ensemble/{YYYY}/{MM}/{DD}/T{HHMM}Z/` — date-hierarchical, matching MOGREPS-G but differing from the flat prefix used by the deterministic datasets
   - **Filename convention:** `{validity YYYYMMDD}T{HHMM}Z-PT{HHHH}H{MM}M-{parameter}.nc`. The leading timestamp is the **validity time**; the run time appears only in the path. The `MM` field is non-zero for 15-minutely parameters.
   - **No member index in the filename** — all 3 members of that cycle are inside each file
-- **Volume:** each cycle is **14,330 files totalling ~247 GB**; at 24 cycles per day this is roughly **5.9 TB/day**. Uniform across all cycles.
+- **Volume:** each cycle is **14,330 files** (constant on every cycle checked) totalling **~240–270 GB** (the size varies with the weather; ~247 GB in July 2026, 240–271 GB from 30 September to 30 October 2026). At 24 cycles per day this is roughly **6 TB/day**.
 - **New-object notifications:** SNS topic `arn:aws:sns:eu-west-2:633885181284:met-office-uk-ensemble-model-data-object_created`
 - **Not on the Planetary Computer.** Like MOGREPS-G, the UK ensemble is distributed only through AWS; there are no `met-office-uk-ensemble-*` collections in the Planetary Computer STAC catalog.
 - **Caveat:** offered on a free, **unsupported**, non-operational basis. The Met Office does not recommend it for critical business purposes.
+- **Weather DataHub "Additional Timesteps" change (27 October 2026) — no effect on open data.** The Met Office announced extra timesteps for a few Atmospheric parameters on Weather DataHub (its order-based commercial service) as part of OS47, from the MOGREPS-UK 07Z run on 27 October 2026. **Verified live: the AWS open-data set did not change.** Twenty-four cycles from 26 to 30 October 2026 (00, 05, 06, 07, 12 and 18Z each day) all carry the same 14,330 files and 89 parameters, with identical per-parameter timesteps.
 - **Official location:**
   - https://registry.opendata.aws/met-office-uk-ensemble/
   - Browsable index: https://met-office-uk-ensemble-model-data.s3.eu-west-2.amazonaws.com/index.html
@@ -178,6 +184,15 @@ Convection-permitting and probabilistic-relevant highlights:
 ---
 
 ## Recent version history
+
+### Upcoming: OS48 — expected late February / early March 2027
+The Met Office expects to implement Operational Suite 48 in late February or early March 2027, with the exact date to be confirmed nearer the time. OS48 will bring science updates that have not yet been detailed. An initial overview is scheduled for the Met Office Data User Forum on 11 November 2026, with more information to follow on the Weather DataHub changes page as testing progresses. **TBD** what changes for MOGREPS-UK and its open-data products.
+
+### 27 October 2026 — Weather DataHub additional timesteps (OS47 follow-on)
+Delivery-side change, not a science upgrade. Weather DataHub added timesteps for a small number of Atmospheric parameters, starting with the MOGREPS-UK 07Z run. **The AWS open data is unchanged** in files, timesteps and delivery times (verified 26–30 October 2026); see Data availability.
+
+### Unannounced: open-data delivery about two hours faster (between late July and late September 2026)
+Cycles now land at T+1h44m to ~T+2h47m, against T+3h46m to T+4h47m in July 2026. Exact date and cause **TBD**; see Data latency.
 
 ### OS47 / PS47 / RAL3 — operational 21 January 2026 (current)
 Deployed alongside the UKV and global upgrades.
