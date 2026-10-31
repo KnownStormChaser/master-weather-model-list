@@ -98,22 +98,35 @@ RDPS provides the primary deterministic NWP guidance for forecast days 1 and 2 i
 - The shift from a limited-area continuous-cycle configuration to a global 10 km configuration simplifies system maintenance and improves consistency with global guidance, while the rotated LAM output grid preserves the regional product distribution users rely on.
 - Although the model is run on the global Yin–Yang grid, RDPS remains the *regional* deterministic guidance product because forecasts are distributed on the rotated North America LAM grid and tuned for short-range (1–2 day) regional skill.
 - RDPS plays a role similar to the U.S. **NAM**, but with tighter integration into a global modeling framework.
+- **Version-history gaps and discrepancies (ECCC sources):**
+  - (1) The current version, **RDPS 10.0.0**, has no changelog entry of its own, and there is no 9.1.0 entry either. 10.0.0 is confirmed only by the July 22, 2026 PROGNOS entry. ECCC's "current" technical specifications link still serves the 9.0.0 document.
+  - (2) RDPS 4.2.0 (March 2016) and 5.1.0 (2018) appear only in ECCC's multi-system changelog. 5.1.0 has no documented implementation date.
+  - (3) The RDPS changelog dates the run-start change to "Wednesday October 19 2012". October 19, 2012 was a Friday.
+  - (4) The v7.0.0 entry's "uniform 7h cut-off for all daily runs" matches the GDPS v7.0.0 wording word for word. It may have been copied from GDPS, since RDPS early runs use a ~2-hour cut-off.
 - Open data licensing is genuinely open — no registration required, direct file access via the Datamart. Same as GDPS, GIOPS, RIOPS, and CIOPS.
 
 ---
 
-## Recent version history
+## Version history
+
+The list runs from the oldest entry in ECCC's RDPS changelog (v2.0.0 improvements, November 2011) to the present, newest first. Small data-assimilation-only updates are grouped under the version that was running. Before v9.0.0, RDPS was a standalone limited-area model. Since v9.0.0 it has been a 10 km component of the GDPS, and its version history is closely tied to GDPS's (see [GDPS](../../global/canada/gem-global.md)).
 
 ### Distribution change — 2026
 The legacy polar-stereographic distribution (`model_gem_regional`, `CMC_reg_*_ps10km_*` filenames, 935 × 824) has been retired from the MSC Datamart, along with its documentation. RDPS GRIB2 is now published only on the rotated lat-lon grid (`model_rdps`), which carries all four daily runs (00/06/12/18) out to +84 h.
 
-### RDPS v9.0.0 — operational June 11, 2024 (current)
-Implemented as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0. The biggest change is structural: the RDPS no longer runs a standalone regional LAM with its own continuous assimilation cycle.
+### RDPS v10.0.0 — current (implementation date TBD)
+- ECCC's RDPS changelog has no entry for this upgrade. The version is confirmed only by the July 22, 2026 PROGNOS entry, which refers to "RDPS 10.0.0", and by ECCC's NWP-wide changelog. The RDPS changelog also has no 9.1.0 entry.
+- *(TBD — implementation date and changes.)* Because RDPS is a GDPS component, it most likely moved to 10.0.0 with the GDPS v10.0.0 hybrid physics–AI upgrade on May 26, 2026, and through a 9.1.0 HPC port with GDPS on April 14, 2026. Neither is documented for RDPS. It is also unconfirmed whether the 10 km RDPS run uses the same GEML spectral nudging as GDPS.
+- ECCC's "current version" technical specifications link (`tech_specifications_RDPS_e.pdf`) still serves the **RDPS 9.0.0** document (© 2024), checked October 31, 2026. No 10.0.0 specifications have been published, so the Basic details and Data assimilation sections above reflect 9.0.0.
+- Jul 22, 2026 (12 UTC run) — PROGNOS wind-speed post-processing switched from a LASSO model to a LightGBM machine-learning model, improving moderate-to-strong wind forecasts. A downstream product change, not a model change
+
+### RDPS v9.0.0 — operational June 11, 2024
+Implemented as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0. The biggest change is structural: the RDPS no longer runs a standalone regional LAM with its own continuous assimilation cycle. ECCC's NWP-wide changelog lists it as an "RDPS replacement" rather than a normal upgrade.
 
 Headline changes:
 - **Removal of the regional LAM continuous assimilation cycle.** Replaced by a single 4DEnVar analysis every 6 hours on the **global Yin–Yang domain at 10 km**, using GDPS-9.0.0 background fields as the first guess. The (R2) final analysis and background step is also removed
 - **Forecast still distributed on the rotated North America LAM grid** (1140 × 1045 at 0.09°), so end-user products are unchanged in geometry
-- **GEM upgraded to version 5.2**
+- **GEM upgraded to version 5.2** (5.2.1 per the GDPS 9.0.0 changelog)
 - **4DEnVar with a fully ensemble-derived B** built from 256-member LETKF backgrounds from **GEPS 8.0.0**; Hessian matrix cycling removed; small reduction of horizontal localization at the largest scales
 - **Radiative transfer model upgraded to RTTOV v13**
 - **All-sky assimilation extended to ATMS temperature and AMSU-B/MHS humidity channels** (cloud-affected radiances), in addition to all-sky AMSU-A
@@ -125,12 +138,118 @@ Headline changes:
 - **Iterative solver of the Euler equations** (Pacull and Aubert, 2014) and improved trapeze-cubic semi-Lagrangian trajectory calculations
 - Sea ice concentration, snow depth over sea ice, and sea ice thickness now sourced from GIOPS
 - Cutoff time for the early analysis: 2 hours
+- The specifications above were checked against the RDPS 9.0.0 technical specifications document: grids, levels, 300 s time step, 2-hour cut-off and GDPS-9.0.0 backgrounds all match. That document describes its changes relative to RDPS-8.1.0, not 8.1.1. The 8.1.1 update was only a snow-analysis QC fix.
+- Jul 23, 2025 — PROGNOS v1.0.0 statistical post-processing (successor to UMOS) introduced on RDPS output. A downstream product change, not a model change
+
+### RDPS v8.1.1 — operational March 8, 2023 (12 UTC run)
+- Corrected quality control of snow-depth observations from Canadian automatic stations used in the snow analysis
+
+Data-assimilation-only updates while at v8.1.1:
+- Jul 5, 2023 — Commercial GNSS-RO from Spire (LEMUR constellation)
+- Sep 14, 2023 — Commercial GNSS-RO from PlanetIQ (GNOMES constellation)
+- Nov 2, 2023 — GOES-18 clear-sky radiances (CSR)
+
+### RDPS v8.1.0 — operational June 28, 2022
+- Port of v8.0.0 to ECCC's then-new HPC infrastructure. No science changes listed.
+
+Data-assimilation-only updates while at v8.1.0:
+- Nov 3, 2022 — Ship surface observations in BUFR format (TAC ship reports were already assimilated)
+- Jan 4, 2023 — GOES-17 AMVs replaced by GOES-18
+- Feb 15, 2023 — GPS-RO from Sentinel-6A
+
+### RDPS v8.0.0 — operational December 1, 2021 (12 UTC run)
+- **GEM upgraded to v5.1.0** (regional configuration). Implemented together with GDPS 8.0.0, HRDPS 6.0.0 and RAQDPS023 in ECCC's December 2021 suite upgrade. RDPS 8.0.0 was the pilot model for the uncoupled HRDPS-North 1.0.0 introduced the same day (see [CAPS](./caps.md)).
+- ECCC's changelog gives no summary of changes for this version, only links to the factsheet, technical note and specifications (not retrievable for this entry). *(TBD — detailed v8.0.0 changes)*
+
+Data-assimilation-only updates while at v8.0.0:
+- Feb 16, 2022 — GPS-RO from GRACE-C and GRACE-D
+
+### RDPS v7.1.0 — operational January 21, 2020
+- Port of v7.0.0 to ECCC's then-new HPC infrastructure. No science changes listed.
+
+Data-assimilation-only updates while at v7.1.0:
+- Apr 28, 2020 — AMVs from MetOp-3/C
+- Apr 29, 2020 — GPS-RO from PAZ and KOMPSAT-5
+- Jun 26, 2020 — GPS-RO from COSMIC-2
+- Dec 8, 2020 — AMSU-A and MHS (MetOp-3/C); CrIS full spectral resolution (Suomi NPP); GOES-17 CSR
+- Jan 26, 2021 — MWHS-2 (FY-3C); IASI moved from MetOp-2/A to MetOp-3/C
+
+### RDPS v7.0.0 — operational July 3, 2019 (12 UTC run)
+- **Pilot model changed from GDPS v6.1.0 to GDPS v7.0.0**
+- **GEM upgraded from v4.8-LTS.16 to v5.0.0**
+- **Vertical levels increased from 80 to 84**
+- ISBA land-surface improvements
+- Uniform 7-hour observation cut-off for all daily runs (as worded in ECCC's changelog)
+- SST and sea-ice analyses refined from 0.2° to 0.1°
+- Jul 23, 2019 (06 UTC run) — More observations added within seven families already in use, mainly for robustness. ECCC's changelog gives no version number for this update.
+
+### RDPS v6.0.0 — operational September 18, 2018 (12 UTC run)
+- No forecast-model changes
+- **Continuous assimilation cycling replaced intermittent cycling**
+- Analysis increment resolution increased from 50 km to 39 km, now applied through an Incremental Analysis Update (IAU)
+- **RTTOV upgraded from v10.2 to v12**
+- More weight given to GEPS trial fields in the background-error covariances
+- Improved processing of radiosonde, AMV, ground-GPS and aircraft observations
+- Near-surface observations from METARs and partner networks added; extra water-vapour CSR channels
+
+### RDPS v5.1.0 — date not documented
+- ECCC's RDPS changelog has no v5.1.0 entry. The version shows up only in the multi-system changelog's data-assimilation updates of March 1 and June 7, 2018. *(TBD — implementation date; possibly November 1, 2017 alongside GDPS v6.0.0)*
+
+Data-assimilation-only updates while at v5.1.0 (listed in ECCC's multi-system changelog):
+- Mar 1, 2018 — Meteosat-10 AMVs replaced by Meteosat-11
+- Jun 7, 2018 — GOES-13 AMVs replaced by GOES-16; Meteosat-10 CSR replaced by Meteosat-11
+
+### RDPS v5.0.0 — operational September 7, 2016 (12 UTC run)
+- **GEM upgraded from v3.3.8.2-isba (unstaggered levels) to v4.8.2 (staggered levels)**
+- **GDPS became the driving model** through a new 120-minute-cut-off GDPS run (G0)
+- **New grid based on the GDPS Yin grid**, expanding the domain to cover all of North America
+- Changed representation of surface outputs; Maestro replaced OCM as the job sequencer
+- No assimilation or observation changes
+
+### RDPS v4.2.0 — operational March 16, 2016 (12 UTC run)
+- Data assimilation only (listed in ECCC's multi-system changelog, not the RDPS changelog): MTSAT-2 AMV and CSR replaced by Himawari-8; VIIRS AMVs (Suomi NPP) and RapidScat winds (ISS) added; geostationary CSR thinning modified
+
+### RDPS v4.1.0 — operational December 15, 2015 (12 UTC run)
+- Driving-model grid refined from 33 km to 25 km (following GDPS v5.0.0); lateral boundary conditions every 30 minutes instead of 60
+- New observations: 17 ATMS channels, 103 more CrIS channels, 600+ more ground-GPS sites (mostly Europe); inter-channel error correlations for infrared and microwave radiances
+
+### RDPS v4.0.0 — operational November 18, 2014 (12 UTC run)
+- **4D-EnVar replaces 4D-Var**, using background-error covariances from an EnKF ensemble
+- Improved radiosonde and aircraft processing; ground-GPS assimilation; improved satellite-radiance bias correction; more AIRS and IASI channels
+- New sea-ice concentration analysis
+
+### RDPS v3.2.1 — operational May 6, 2014 (12 UTC run)
+- IASI radiances from METOP-B added
+
+### RDPS v3.2.0 — operational November 7, 2013
+- CSR from Meteosat-10, ATOVS radiances and AVHRR polar winds from Metop-B added
+- Updated RTTOV coefficients (neutral impact)
+- AIRS/IASI background check switched from snow cover to snow depth, and albedo interpolation corrected. Together these raised AIRS and IASI observation counts by up to 50% and 30%.
+
+### RDPS v3.1.0 — operational February 13, 2013 (12 UTC run)
+- Adjustments to harmonize RDPS with GDPS v3.0.0, implemented the same day
+- Jul 3, 2013 — RDPS binary updated to support production of variable PX. ECCC's changelog gives no version number for this update.
+
+### RDPS v3.0.0 — operational October 3, 2012 (12 UTC run)
+- **Horizontal resolution increased from 15 km to 10 km**
+- **4D-Var replaces 3D-Var**
+- Important changes to the GEM physics
+- Observation cut-off reduced by 10 minutes, to T+1:55
+- Oct 19, 2012 (18 UTC run) — All four daily runs now start at T+2:00, giving 5 more minutes to collect observations
+
+### RDPS v2.0.0 improvements — November 16, 2011 (06 UTC run)
+- 62 more IASI channels, 7 SSMIS channels (DMSP F16), and a water-vapour channel from several geostationary satellites added
+- Polar restriction on AIRS channels removed; satellite thinning reduced from 250 km to 150 km
+- AMDAR aircraft moisture observations added
+- Radiance bias correction moved to a 7-day period (from 15); RTTOV modified
+- New 0.20° SST analysis
 
 ---
 
 ## Official documentation
 - RDPS open data page: https://eccc-msc.github.io/open-data/msc-data/nwp_rdps/readme_rdps-datamart_en/
-- Technical specifications (current): https://collaboration.cmc.ec.gc.ca/cmc/CMOI/product_guide/docs/tech_specifications/tech_specifications_RDPS_e.pdf
+- RDPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_rdps/changelog_rdps_en/
+- Technical specifications (current): https://collaboration.cmc.ec.gc.ca/cmc/CMOI/product_guide/docs/tech_specifications/tech_specifications_RDPS_e.pdf (still the 9.0.0 document as of October 31, 2026)
 - ECCC operational systems changelog: https://eccc-msc.github.io/open-data/msc-data/changelog_multisystems_en/
 - Licence: https://eccc-msc.github.io/open-data/licence/readme_en/
 
