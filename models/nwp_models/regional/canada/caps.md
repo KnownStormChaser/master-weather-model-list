@@ -7,7 +7,7 @@ The Canadian Arctic Prediction System (CAPS) is an experimental coupled atmosphe
 
 CAPS is structurally distinct from ECCC's other regional NWP systems in that it is a **fully coupled atmosphere-ocean-sea ice forecast** rather than an atmosphere-only model with prescribed surface conditions. The atmospheric component is based on the Global Environmental Multiscale (GEM) model (configuration inherited from the decommissioned HRDPS-North) and is two-way coupled to NEMO v3.6 ocean and CICE v6.2.0 sea ice components shared with [RIOPS](../../../ocean_models/regional/canada/riops.md). The system was developed to provide numerical weather and environmental forecasting guidance for several Storm Prediction Centres (SPCs) across Canada, as well as for the Department of National Defence (DND), Canadian Coast Guard (CCG), and Department of Fisheries and Oceans (DFO).
 
-The current experimental version is CAPS 3.0.0, implemented June 18, 2025.
+The current experimental version is CAPS 3.1.0, implemented April 14, 2026 (a port of CAPS 3.0.0, implemented June 18, 2025, to ECCC's new high-performance computing infrastructure). The Arctic system has alternated between the CAPS and HRDPS-North names since 2018. The coupled CAPS name is used for the periods when the system is two-way coupled to an ice-ocean model; see [Version history](#version-history).
 
 ---
 
@@ -164,11 +164,68 @@ CAPS is intended for high-latitude marine and atmospheric forecasting where atmo
 
 ## Version history
 
-### CAPS 3.0.0 — implemented June 18, 2025 (current)
-- Atmospheric component: GEM v5.2.0, configuration inherited from the (now decommissioned) HRDPS-North v2.1.0
-- Ice-ocean components: NEMO v3.6 with CICE v6.2.0, coupled to RIOPS v2.4.0 forecast component for initial and boundary conditions
+ECCC's Arctic km-scale system has changed name with its coupling status: **CAPS** for the coupled periods and **HRDPS-North** for the uncoupled ones. The two names share one lineage and are listed together here, newest first. ECCC keeps separate changelogs for each name (see Official documentation).
+
+| Period | Name | Coupled to ice-ocean? | Versions |
+|---|---|---|---|
+| Before Jan 2018 | HRDPS-North (experimental northern window of HRDPS) | No | — |
+| Jan 24, 2018 – Dec 1, 2021 | CAPS | No until June 28, 2018; yes after | 1.0.0, 1.1.0, 2.1.0 |
+| Dec 1, 2021 – Jun 18, 2025 | HRDPS-North (HRDPS-N) | No | 1.0.0, 1.2.0, 2.0.0, 2.1.0 |
+| Jun 18, 2025 – present | CAPS | Yes | 3.0.0, 3.1.0 |
+
+### CAPS 3.1.0 — implemented April 14, 2026 (current)
+- Port to ECCC's new high-performance computing (HPC) infrastructure
+- ECCC's multi-system changelog describes this migration but lists no science or configuration changes. Specs are assumed unchanged from 3.0.0. *(TBD — no 3.1.0 technical specifications document found)*
+
+### CAPS 3.0.0 — implemented June 18, 2025
+- **Re-coupled system:** HRDPS-North decommissioned and replaced by coupled CAPS after ~3.5 years of uncoupled running. The CAPS name returns.
+- Atmospheric component: GEM v5.2.0, configuration inherited from HRDPS-North v2.1.0
+- Ice-ocean components: NEMO v3.6 with CICE v6.2.0, with initial conditions from RIOPS v2.4.0 and sea ice concentration updated from a RIPS_early analysis that assimilates RCM-SAR data
 - Atmospheric forcing from GDPS-9.0.0 G0 (10 km)
 - Two-way GEM-NEMO-CICE coupling at 5-minute exchange frequency via GOSSIP
+- Weather Elements on Grid (WEonG) products based on CAPS published from June 19, 2025
+- Some legacy HRDPS-North products continued, now fed by CAPS. The uncoupled HRDPS-North data was removed from the MSC Datamart on **October 21, 2025**.
+
+### HRDPS-North 2.1.0 — implemented June 11, 2024 (12 UTC run)
+- Upgrade to GEM v5.2.1 *(the CAPS 3.0.0 specifications list GEM v5.2.0 for the inherited configuration. TBD which is correct)*
+- Bourgouin (2000) method introduced for surface precipitation-type partitioning
+- SLEVE vertical coordinate implemented
+- Initial and boundary conditions from the upgraded GDPS 10 km component (G0)
+- Updated ice-ocean initial conditions from RIOPS for sea-ice surface fields (still uncoupled)
+
+### HRDPS-North 2.0.0 — implemented August 30, 2023 (12 UTC run)
+- **Domain expansion:** Fields computed on a much larger domain. ECCC described it as identical in domain and grid to the former CAPS: the entire Arctic basin and Hudson Bay on a 3 km extended rotated lat-lon grid.
+- Atmospheric initial and lateral boundary conditions from the latest operational GDPS (replacing the RDPS pilot)
+- Oceanic initial conditions from RIOPS
+- Data published on the DD-Alpha test server (`model_hrdps/north/3km/`), including WEonG, announced December 20, 2023
+
+### HRDPS-North 1.2.0 — implemented June 28, 2022
+- Port to ECCC's then-new HPC infrastructure. No science changes listed.
+
+### HRDPS-North 1.0.0 — implemented December 1, 2021 (12 UTC run)
+- **Decoupling:** CAPS retired and replaced by the smaller, uncoupled HRDPS-North (HRDPS-N). Some CAPS products were then generated by HRDPS-North.
+- Ice-ocean coupling removed
+- Migrated to GEM v5.1 with "retro-physics", using a configuration similar to the HRDPS-National
+- Driven by RDPS v8.0.0 as pilot model
+- New geophysical fields
+
+### CAPS 2.1.0 — implemented January 21, 2020
+- Port to ECCC's then-new HPC infrastructure. No science changes listed.
+- ECCC's changelog has no CAPS 2.0.0 entry.
+
+### CAPS 1.1.0 — implemented June 28, 2018 (12 UTC run)
+- **First coupling:** Two-way coupling introduced between the GEM atmosphere and the NEMO-CICE ice-ocean model of RIOPS. Air-ocean/ice fluxes are exchanged during integration.
+- RIOPS 2-day forecasts were then produced directly from within CAPS
+- GEM v4.9.4 (per the YOPP/SAON dataset metadata)
+- Other initial surface fields from the CaLDAS surface assimilation system
+- External YOPP archives list coupled output from June 29, 2018 onward, consistent with a start at the 12 UTC run on June 28
+
+### CAPS 1.0.0 — implemented January 24, 2018
+- **Initial implementation:** Experimental, uncoupled GEM-based ~3 km system over the entire Arctic basin. It was ECCC's modelling contribution to the WMO Year of Polar Prediction (YOPP).
+- Replaced the experimental HRDPS-North window. HRDPS-North products became CAPS products, with no change to variables or grid for users of the `model_hrdps/north/` Datamart folder.
+- Main change from HRDPS: introduction of the Predicted Particle Properties (P3) microphysics scheme
+- Driven by the GDPS for atmospheric initial and lateral boundary conditions. Hydrometeors recycled from the previous run.
+- Full-domain YOPP data published on the DD-Alpha test server. CAPS had been running in a research account since November 2017.
 
 ---
 
@@ -185,7 +242,7 @@ CAPS is intended for high-latitude marine and atmospheric forecasting where atmo
 CAPS occupies a distinctive position in ECCC's operational and experimental forecast suite:
 
 - **[HRDPS](./hrdps.md):** Pan-Canadian operational atmosphere-only convection-permitting model at 2.5 km. CAPS is structurally different — coupled atmosphere-ocean-ice — and covers a different domain (Arctic-focused vs pan-Canadian).
-- **HRDPS-North (decommissioned):** The atmospheric configuration of CAPS is inherited directly from this retired system.
+- **HRDPS-North (decommissioned):** The uncoupled predecessor (Dec 2021 – Jun 2025) and the original predecessor before 2018. The atmospheric configuration of CAPS is inherited directly from HRDPS-North 2.1.0. See [Version history](#version-history) for the alternation between the two names.
 - **[HRDPS-West](./hrdps-west.md):** Experimental kilometric-scale system over Southern BC; atmosphere-only.
 - **[RIOPS](../../../ocean_models/regional/canada/riops.md):** Provides initial and boundary conditions for the CAPS ice-ocean components. CAPS shares NEMO and CICE versions with RIOPS.
 - **[GDPS](../../global/canada/gem-global.md):** Provides atmospheric initial and boundary conditions (G0 component) and ice-ocean lateral boundary conditions (G1 component).
@@ -200,6 +257,8 @@ CAPS is the only ECCC system in this repository that provides **coupled atmosphe
 - The 5-minute coupling frequency between GEM and NEMO-CICE is unusually frequent for a regional forecast system — most coupled operational systems use hourly or longer coupling intervals. The tight coupling reflects the importance of high-frequency atmosphere-ice flux exchanges in polar boundary layer dynamics.
 - The ice-ocean domain extends well south of the atmospheric domain (down to 25.6°N in the Atlantic and 43.8°N in the Pacific) to maintain consistency with RIOPS. Outside the coupled region, the ice-ocean model is forced by GDPS-G0 atmospheric fields rather than by CAPS's own atmospheric component.
 - The technical specifications document for v3.0.0 contains a minor internal inconsistency, labelling some sections as "version 3.3.0." The implementation date (June 18, 2025), the official MSC documentation, and the version-3.0.0 references in the title and changelog all indicate that 3.0.0 is the correct designation.
+- **Changelog discrepancies (ECCC sources):** (1) The CAPS changelog dates v1.1.0 to "Tuesday June 28, 2018". June 28, 2018 was a Thursday. The date matches external YOPP archive metadata (coupled from June 29 inclusive), so only the weekday is wrong. (2) The HRDPS-North changelog's June 18, 2025 decommission entry says it provided "nearly four years of high-resolution coupled forecasts". HRDPS-North was the *uncoupled* system and ran ~3.5 years (Dec 2021 – Jun 2025), which matches the CAPS changelog. The wording appears to be an error.
+- **Name history:** Datasets and literature from 2018–2021 and from 2025 onward say "CAPS". Datasets from Dec 2021 – Jun 2025 say "HRDPS-North" or "HRDPS-N". Datasets before 2018 refer to the older experimental HRDPS northern window. Don't confuse ECCC's CAPS with the unrelated *Coupled Arctic Prediction System* (CAPS, WRF-ROMS-CICE, Yang et al.), a seasonal research system that shares the acronym.
 - Open data licensing is genuinely open — no registration required, direct file access via the Datamart. Same as GDPS, RDPS, HRDPS, GIOPS, RIOPS, and CIOPS.
 - As an experimental system, configuration, domain, resolution, coupling specifications, and product availability may change without the formal change-management process used for operational ECCC systems.
 
@@ -208,6 +267,7 @@ CAPS is the only ECCC system in this repository that provides **coupled atmosphe
 ## Official documentation
 - CAPS open data page (English): https://eccc-msc.github.io/open-data/msc-data/nwp_caps/readme_caps_en/
 - CAPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_caps/changelog_caps_en/
+- HRDPS-North changelog (covers Dec 2021 – Jun 2025): https://eccc-msc.github.io/open-data/msc-data/nwp_hrdps-north/changelog_hrdps-north_en/
 - Technical specifications (CAPS 3.0.0): https://collaboration.cmc.ec.gc.ca/cmc/CMOI/product_guide/docs/tech_specifications/tech_specifications_CAPS_e.pdf
 - ECCC operational systems changelog: https://eccc-msc.github.io/open-data/msc-data/changelog_multisystems_en/
 - Licence: https://eccc-msc.github.io/open-data/licence/readme_en/
