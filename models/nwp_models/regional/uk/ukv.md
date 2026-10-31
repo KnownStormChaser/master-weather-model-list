@@ -58,7 +58,7 @@ The current operational version is part of **Operational Suite 47 (OS47)**, impl
   - **15-minutely from T+0 to T+11, hourly thereafter:** `CAPE_surface`, `pressure_at_mean_sea_level`, `temperature_at_screen_level`, `temperature_of_dew_point_at_screen_level`, `visibility_at_screen_level`, `wind_direction_at_10m`, `wind_gust_at_10m`, `wind_speed_at_10m` — this set gained 15-minute output in the January 2026 upgrade
   - **Hourly** to T+54 for all remaining parameters
   - **3-hourly** from T+57 to T+120 (medium runs only)
-- **Data latency:** Documented as 3–6 hours after model run time; observed performance on 21 July 2026 was consistently at the fast end, with first objects appearing at **T+3h15m** for all three tiers and last objects at T+3h15m (nowcast), T+3h46m (short) and T+4h16m (medium). UKV is materially quicker to land than the global model, which ran T+5h30m to T+6h31m the same week.
+- **Data latency:** Documented as 3–6 hours after model run time; observed performance on 21 July 2026 was consistently at the fast end, with first objects appearing at **T+3h15m** for all three tiers and last objects at T+3h15m (nowcast), T+3h46m (short) and T+4h16m (medium). UKV is materially quicker to land than the global model, which ran T+5h30m to T+6h31m the same week. Re-verified unchanged on 20 cycles across all three tiers, 26–30 October 2026, including after the 27 October 2026 Weather DataHub change.
 
 ---
 
@@ -92,12 +92,12 @@ UKV is particularly relied upon for short-range forecasts of small-scale and rap
 - **License:** Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0). British Crown copyright, the Met Office. Attribution and ShareAlike both required — note this differs from ECMWF's CC-BY-4.0 by adding the ShareAlike obligation.
 - **Resolution:** 2 km on a Lambert Azimuthal Equal Area grid (see Basic details — this is **not** a 0.018° latitude–longitude grid despite the official description)
 - **Format:** NetCDF4/HDF5, CF-1.7 + UKMO-1.0 conventions
-- **Retention:** **2-year rolling archive** — significantly longer than typical operational open-data services, which usually retain only the most recent few days. This is a true rolling window with no fixed start: the earliest cycle present on 22 July 2026 was `20240721T1800Z`, exactly two years back. Older data is deleted as it ages out.
+- **Retention:** **2-year rolling archive** — significantly longer than typical operational open-data services, which usually retain only the most recent few days. This is a true rolling window with no fixed start: the earliest cycle present on 22 July 2026 was `20240721T1800Z`, exactly two years back; on 31 October 2026 it was `20241029T1800Z`. Older data is deleted as it ages out.
 - **Bucket:** `s3://met-office-atmospheric-model-data` (region `eu-west-2`) — the **same bucket** as the global deterministic dataset, which lives under the `global-deterministic-10km/` prefix
   - Anonymous access, no AWS account or credentials required: `aws s3 ls --no-sign-request s3://met-office-atmospheric-model-data/`
   - **Path template:** `uk-deterministic-2km/{YYYYMMDD}T{HH}00Z/`
   - **Filename convention:** `{validity YYYYMMDD}T{HHMM}Z-PT{HHHH}H{MM}M-{parameter}.nc` — e.g. `20260721T1600Z-PT0001H00M-lightning_flash_accumulation-PT01H.nc`. The leading timestamp is the **validity time**, not the run time; the run time appears only in the directory prefix. The `MM` field is non-zero for the 15-minutely parameters (`00`, `15`, `30`, `45`).
-  - **One file per parameter per timestep.** Approximate per-cycle volumes measured 21 July 2026: nowcast ~1,100 files / 4.2 GB; short ~3,790 files / 17.2 GB; medium ~5,020 files / 24.5 GB. At 24 cycles per day this is roughly 200 GB/day.
+  - **One file per parameter per timestep.** File counts are fixed per tier: nowcast 1,100 files, short 3,788, medium 5,020 (identical on every cycle checked, July and October 2026). Volume varies with the weather: 21 July 2026 measured nowcast 4.2 GB, short 17.2 GB and medium 24.5 GB, while 26–30 October 2026 ran 4.4–5.0 GB, 18.1–19.0 GB and 25.0–26.3 GB. Across a day's mix of 16 nowcast, 6 short and 2 medium runs this is roughly 220–240 GB/day.
 - **New-object notifications:** SNS topic `arn:aws:sns:eu-west-2:633885181284:met-office-atmospheric-model-data-object_created` — shared with the global dataset; subscribers must filter by prefix.
 - **Official location:**
   - https://registry.opendata.aws/met-office-uk-deterministic/
@@ -113,19 +113,20 @@ A second, parallel distribution of the same data was launched on the Microsoft P
 - The Planetary Computer release includes a 2-year historical archive (>600 TB combined with the UKMO Global dataset), pitched at researchers training and evaluating AI weather models against authoritative high-resolution forecasts.
 - **STAC API:** `https://planetarycomputer.microsoft.com/api/stac/v1/collections/met-office-uk-deterministic-{theme}`. Items use the `forecast` STAC extension — `forecast:reference_datetime` is the run time, `forecast:horizon` the lead time, `datetime` the validity time.
 - **Access:** assets resolve to `https://ukmoeuwest.blob.core.windows.net/deterministic/uk/...`. Anonymous requests are rejected; a **SAS token is required**, obtained without sign-in or registration from `https://planetarycomputer.microsoft.com/api/sas/v1/token/ukmoeuwest/deterministic` (~45 min validity). Free and unauthenticated to obtain, so not an approval gate, but it is an extra step relative to plain S3 access.
-- **Archive depth:** oldest indexed run is `2023-12-01T00:00Z` — deeper than the AWS rolling window, which had rolled off everything before 21 July 2024 as of this check.
+- **Archive depth:** oldest indexed run is `2023-12-01T00:00Z` (re-verified 31 October 2026) — deeper than the AWS rolling window, which had rolled off everything before 29 October 2024 as of that check. The PC archive is therefore not rolling off at AWS's 2-year boundary.
 - **Variables per collection:** near-surface 28, whole-atmosphere 11, pressure 6, height 4.
-- **⚠️ Note:** the STAC collection bounding box is given as approximately 13.7°W–4.3°E, 48.9°N–61.6°N. This is narrower than the actual grid extent (see "What area it covers") and appears to describe the UK region of interest rather than the delivered `uk_extended` domain.
+- **⚠️ Note:** the STAC collection bounding box is given as approximately 13.7°W–4.3°E, 48.9°N–61.6°N (unchanged as of 31 October 2026). This is narrower than the actual grid extent (see "What area it covers") and appears to describe the UK region of interest rather than the delivered `uk_extended` domain.
 
-#### ⚠️ Currency warning (verified 22 July 2026)
-The Planetary Computer copy is **not currently keeping pace with AWS**:
-- Latest STAC-indexed `forecast:reference_datetime` across all four UKV collections: **2026-06-26T08:00Z** (~26 days stale)
-- Latest cycle with objects present in the Azure blob container: **20260716T0000Z** (~6 days stale)
+#### Currency (re-verified 31 October 2026)
+The Planetary Computer copy **is current again**. The pressure, height and whole-atmosphere collections all index `forecast:reference_datetime` 2026-10-30T22:00Z, matching AWS, and the newest assets download normally with a SAS token. The near-surface collection's latest-item query timed out repeatedly, so its currency is **TBD**, though it shares the same ingest pipeline.
 
-The [UKMO Global](../../global/uk/ukmo-global.md) collections stall at almost exactly the same two points (2026-06-26T06:00Z indexed, 20260716T0000Z in blob storage), which suggests a platform-level ingest failure rather than a Met Office or dataset-specific problem. No Planetary Computer outage or retirement announcement covering this period was found; the 2024 announcement retired only the compute Hub and explicitly committed to keeping data and APIs available. Cause is **TBD**. Until resolved, **treat AWS S3 as the authoritative channel** and the Planetary Computer as useful mainly for the pre-July-2024 archive that AWS has already rolled off.
+In July 2026 it had fallen well behind. On 22 July the latest indexed cycle was 2026-06-26T08:00Z (~26 days stale), and blob objects stopped at `20260716T0000Z`. The [UKMO Global](../../global/uk/ukmo-global.md) collections stalled at almost exactly the same points and have also recovered, which points to a platform-level ingest outage rather than a dataset-specific problem. No cause was announced. AWS S3 is still the simpler channel because it needs no token, and the Planetary Computer remains the only source for the pre-October-2024 archive that AWS has already rolled off.
 
 ### Caveats for both channels
 The data is offered on a free, **unsupported** basis — the Met Office does not recommend either distribution for critical business purposes. Service-desk support is available Mon-Fri 09:00-17:00 UTC with a 3-5 business day target response time, and only for non-operational queries.
+
+### Weather DataHub "Additional Timesteps" change (27 October 2026) — no effect on open data
+The Met Office announced extra timesteps for a few Atmospheric parameters on Weather DataHub (its order-based commercial service) as part of OS47, from the UK Deterministic 09Z run on 27 October 2026. **Verified live: the AWS open-data set did not change.** Twenty cycles covering all three tiers (01Z nowcast, 06Z/09Z short, 03Z/15Z medium) were compared from 26 to 30 October 2026. Each tier kept identical file counts, parameter counts (52 / 52 / 56) and per-parameter timesteps, and delivery times did not move.
 
 ---
 
@@ -174,6 +175,12 @@ Conversely, UKV has no CAPE/CIN mixed-layer variants, no tropopause fields and n
 ---
 
 ## Recent version history
+
+### Upcoming: OS48 — expected late February / early March 2027
+The Met Office expects to implement Operational Suite 48 in late February or early March 2027, with the exact date to be confirmed nearer the time. OS48 will bring science updates that have not yet been detailed. An initial overview is scheduled for the Met Office Data User Forum on 11 November 2026, with more information to follow on the Weather DataHub changes page as testing progresses. **TBD** what changes for UKV and its open-data products, including whether JOPA observation processing reaches UKV in this suite.
+
+### 27 October 2026 — Weather DataHub additional timesteps (OS47 follow-on)
+Delivery-side change, not a science upgrade. Weather DataHub added timesteps for a small number of Atmospheric parameters, starting with the UK Deterministic 09Z run. **The AWS open data is unchanged** in files, timesteps and delivery times (verified 26–30 October 2026); see the Data availability section.
 
 ### OS47 / PS47 / RAL3 — operational 21 January 2026 (current)
 First major science upgrade in over three years, and the first running on the Met Office's new Microsoft Azure supercomputer. Highlights for UKV:
