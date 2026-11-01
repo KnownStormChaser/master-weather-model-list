@@ -288,22 +288,26 @@ Threshold sets are **not consistent across window lengths for the same parameter
   - Precipitation thresholds are documented in kg/(m²·s). They are accumulations in kg m⁻² (mm).
   - Minimum and maximum are documented as "0 percentile" and "100th percentile" but are encoded as `derivedForecast` 8 and 9, **not** as `percentileValue` 0 and 100.
   - The linked variable XML is described as covering "the 15km grid variables" — a leftover from before the July 2019 move to 10 km.
+- **Version-history gaps (ECCC sources):**
+  - (1) The REPS changelog's v4.0.0 (Dec 2021) entry has no change summary.
+  - (2) There are no v2.1.0 or v2.3.0 entries. The pilot change from GEPS 4.1.1 to GEPS 4.3.0, implied by the v2.4.0 entry, is undocumented.
+  - (3) The v3.0.0 entry's model top (raised to 0.1 hPa) conflicts with the v5.0 specifications (~17 hPa lid); see *Basic details*.
 - As with all ensemble systems, REPS output should be interpreted probabilistically rather than as a single forecast. The system's value is in calibrated probabilities and ensemble spread, not in any single-member view.
 
 ---
 
-## Recent version history
+## Version history
 
-Versions are implemented at the stated date's 12 UTC run unless noted.
+The list runs from the oldest entry in ECCC's REPS changelog (v1.0.0, September 2011) to the present, newest first. Unless noted, upgrades start at the 12 UTC run. REPS has no data assimilation of its own, so it has no observation-only updates. Most REPS upgrades follow a change in its GEPS pilot (see [GEPS](../../global/canada/geps.md)).
 
 ### REPS v5.1.0 — operational April 14, 2026 (current)
-Port to ECCC's new high-performance computing infrastructure, applied across the operational suite. No scientific or configuration change is documented; the technical specifications remain those of v5.0.0.
+- Port of v5.0.0 to ECCC's new high-performance computing infrastructure, applied across the operational suite. No scientific or configuration change is documented; the technical specifications remain those of v5.0.0.
 
 ### REPS v5.0.0 — operational June 11, 2024
 Implemented as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0, RDPS 9.0.0, and GEPS 8.0.0.
 
-Headline changes from v4.1:
-- **Initial-condition source change:** Upper-air initial conditions now drawn from the **GDPS G0** (15 km) deterministic analysis and the new 25 km **GEPS 8.0.0** ensemble analyses, replacing the previous RDPS-plus-GEPS combination. Forced by the IC-4 removal of the standalone RDPS continuous regional LAM assimilation cycle.
+Headline changes from v4.1.0:
+- **Initial-condition source change:** Upper-air initial conditions now drawn from the **GDPS G0** deterministic analysis and the new 25 km **GEPS 8.0.0** ensemble analyses, replacing the previous RDPS-plus-GEPS combination. Forced by the IC-4 removal of the standalone RDPS continuous regional LAM assimilation cycle. (The G0 resolution is given as 15 km in the specifications and 10 km in the changelog — see *Initial and boundary conditions*.)
 - **Piloting moved to GEPS 8.0.0 at 25 km** (previously GEPS 7.x at 39 km).
 - **GIOPS analyses adopted** for sea ice and ocean surface initialization, with associated physics changes.
 - **SLEVE vertical coordinate introduced** with `Hyb_rcoef = 1., 15., 3., 100.`. A new low-resolution filtered topography field (**MELS**, 10-dx cutoff) was generated specifically to support it.
@@ -312,15 +316,42 @@ Headline changes from v4.1:
 - **Grid-scale precipitation retuned:** `Cond_iceacc` 2.5 → 5.0, `Cond_hu0min` 0.8 → 0.85.
 - **GEM upgraded to version 5.2**; geophysical fields regenerated on the U2 infrastructure (assessed as neutral).
 
-### Earlier versions
-- **v4.1.0 — 28 June 2022:** HPC infrastructure port
-- **v4.0.0 — 1 December 2021:** major upgrade
-- **v3.1.0 — 21 January 2020:** HPC infrastructure port
-- **v3.0.0 — 3 July 2019:** GEPS 6.0.0 becomes the pilot; GEM 4.8-LTS.16 → 5.0.0; **horizontal resolution 15 km → 10 km**; vertical levels 48 → 84; **runs increased from 2× to 4× daily**; members recentered on the RDPS analysis and configured identically to RDPS. (This entry also records the model top rising from 16 hPa to 0.1 hPa, which the v5.0 technical specifications contradict — see *Basic details*.)
-- **v2.4.0 — 18 September 2018:** piloted by GEPS 5.0.0; GEM 4.6 → 4.8; trapezoidal-cubic semi-Lagrangian trajectory interpolation activated
-- **v2.2.0 — 15 December 2015:** piloted by GEPS 4.1.1 (pilot change only)
-- **v2.0.1 — 4 December 2013:** GEM 4.2.1 → 4.5.1; horizontal grid 33 km → 15 km; time step 15 min → 7.5 min; vertical levels 28 → 48; PTP perturbations suppressed in convectively unstable and strong-updraft regions
-- **v1.0.0 — 22 September 2011:** declared operational at CMC; products initially **internal to Environment Canada only**, with external distribution added later
+### REPS v4.1.0 — operational June 28, 2022
+- Port of v4.0.0 to ECCC's then-new HPC infrastructure. No science changes listed.
+
+### REPS v4.0.0 — operational December 1, 2021
+- Implemented together with GEPS 7.0.0, RDPS 8.0.0 and GDPS 8.0.0 in ECCC's December 2021 suite upgrade (Innovation Cycle 3).
+- ECCC's changelog gives no summary of changes, only links to the innovations summary, technical note and specifications (not retrievable for this entry). *(TBD — details. It probably includes the move to GEM 5.1, the GEPS 7.0.0 pilot and the switch from PTP to SPP perturbations, as in GEPS 7.0.0 and RDPS 8.0.0, but none of this is confirmed for REPS.)*
+
+### REPS v3.1.0 — operational January 21, 2020
+- Port of v3.0.0 to ECCC's then-new HPC infrastructure. No science changes listed.
+
+### REPS v3.0.0 — operational July 3, 2019
+- **Pilot changed from GEPS v5.0.0 to GEPS v6.0.0**
+- **GEM upgraded from v4.8-LTS.16 to v5.0.0**
+- **Horizontal resolution increased from 15 km to 10 km**
+- **Vertical levels increased from 48 to 84**; the changelog also says the model top was raised from 16 hPa to 0.1 hPa (contradicted by the v5.0 specifications — see *Basic details*)
+- **Runs increased from 2 (00, 12 UTC) to 4 per day (00, 06, 12, 18 UTC)**
+- **Members recentered around the RDPS analysis**, and all 20 members configured the same as RDPS
+
+### REPS v2.4.0 — operational September 18, 2018
+- Pilot changed from GEPS 4.3.0 to GEPS 5.0.0
+- GEM upgraded from v4.6 to v4.8
+- "Trapezoidal-cubic" interpolation activated for semi-Lagrangian trajectory calculations
+
+### REPS v2.2.0 — operational December 15, 2015
+- Pilot changed from GEPS 4.0.0 to GEPS 4.1.1 (the only listed change)
+- *(No v2.1.0 or v2.3.0 entries exist. The REPS v2.4.0 entry says the pilot was GEPS 4.3.0 by 2018, so at least one undocumented pilot change happened between December 2015 and September 2018.)*
+
+### REPS v2.0.1 — operational December 4, 2013
+- GEM upgraded from 4.2.1 to 4.5.1
+- **Horizontal grid spacing reduced from 0.3° (33 km) to 0.1375° (15 km)**; time step reduced from 15 to 7.5 minutes
+- **Vertical levels increased from 28 to 48**
+- Physically based hysteresis added to the turbulent-mixing scheme, improving precipitation-type forecasts
+- Physics-tendency perturbations switched off where the atmosphere is convectively unstable and vertical velocities exceed 0.5 m/s, preventing unrealistically high precipitation amounts
+
+### REPS v1.0.0 — operational September 22, 2011
+- REPS became fully operational, starting with the 12 UTC run. Products were at first available only within Environment Canada, with external distribution planned for later.
 
 ---
 
