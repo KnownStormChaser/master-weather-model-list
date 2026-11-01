@@ -7,7 +7,7 @@ GEPS is the ensemble counterpart to the deterministic [GDPS](../../../nwp_models
 
 GEPS plays a central operational role within ECCC's prediction suite: it provides the perturbed background fields used to construct the flow-dependent background-error covariances for the deterministic [GDPS](../../../nwp_models/global/canada/gem-global.md), [RDPS](../../../nwp_models/regional/canada/rdps.md), and [HRDPS](../../../nwp_models/regional/canada/hrdps.md) 4DEnVar analyses, supplies initial and lateral boundary conditions for the regional [REPS](../../regional/canada/reps.md) ensemble, and contributes 21 members (1 control + 20 perturbed) to the multi-center [NAEFS](../usa/naefs.md) and [557th WW GEPS](../usa/557wg-geps.md) products.
 
-The current operational version is **GEPS 8.1.0**, implemented **14 April 2026** as an infrastructure port to ECCC's new supercomputing platform. The last scientific upgrade was **GEPS 8.0.0** (11 June 2024, 12 UTC run), part of Innovation Cycle 4 (IC-4) alongside GDPS 9.0.0 and RDPS 9.0.0, which raised horizontal resolution from ~39 km to ~25 km, moved the assimilation cycle to a Local Ensemble Transform Kalman Filter (LETKF) recentered on a 4DEnVar analysis, upgraded the sea ice component to CICE 6.2.0 with Delta-Eddington radiation, and extended the reforecast system from 32 to 39 days with twice-weekly cycles.
+The current operational version is **GEPS 8.1.0**, implemented **14 April 2026** as an infrastructure port to ECCC's new supercomputing platform. The last scientific upgrade was **GEPS 8.0.0** (11 June 2024, 12 UTC run), part of Innovation Cycle 4 (IC-4) alongside GDPS 9.0.0 and RDPS 9.0.0, which raised horizontal resolution from ~39 km to ~25 km, recentered its Local Ensemble Transform Kalman Filter (LETKF) assimilation cycle (introduced in v7.0.0) on a 4DEnVar analysis with a height-dependent coefficient, upgraded the sea ice component to CICE 6.2.0 with Delta-Eddington radiation, and extended the reforecast system from 32 to 39 days with twice-weekly cycles.
 
 ---
 
@@ -317,7 +317,7 @@ A reforecast procedure similar to Hagedorn (2008) has run since 2015 (Gagnon et 
 
 - **Coverage:** 20 years
 - **Cadence:** Twice weekly (Monday and Thursday 00 UTC), extended in v8.0.0 from the previous Thursday-only schedule
-- **Forecast length:** 39 days (extended from 32 days in v7.0)
+- **Forecast length:** 39 days (extended from 32 days in v8.0.0)
 - **Members per reforecast date:** 4 (reduced from the 21 used operationally to control computational cost)
 - **Effective historical database:** ~80 reforecasts per calendar date (4 members × 20 years)
 - **Atmospheric initial conditions:** ERA5 reanalyses with random homogeneous isotropic perturbations applied to the 4 members (same amplitude as in earlier GEPS versions; Houtekamer et al. 2009)
@@ -384,24 +384,27 @@ The fifth forecast week added in v8.0.0 and the new Monday cycle together expand
   - The readme describes the 0.5° grid as "about 39km" — a leftover from the pre-8.0.0 39 km era, doubly wrong now that the model is 25 km and the grid is ~55 km at the equator.
   - The changelog nests the 26 May 2025 entry inside the 14 April 2026 section and omits it from the page's table of contents.
 - As with all ensemble systems, GEPS output should be interpreted probabilistically rather than as a single forecast. The system's value is in calibrated probabilities and ensemble spread, not in any single-member view.
+- **Version-history gaps and discrepancies (ECCC sources):**
+  - (1) The GEPS changelog's v7.0.0 (Dec 2021) entry has no change summary. The details in Version history come from ECMWF's S2S model description, which also confirms that **LETKF replaced the EnKF in v7.0.0**, not in v8.0.0.
+  - (2) GEPS 4.2.0 (March 2016) and 4.3.0 appear only in ECCC's multi-system changelog and the REPS changelog. 4.3.0 has no documented implementation date.
+  - (3) There is no v4.1.0 entry; the changelog jumps from 4.0.0 to 4.1.1.
+  - (4) The model-top history is inconsistent. v3.0.0 says the EnKF top was "kept at 2 hPa". v4.0.0 says the top was "raised from 1.78 hPa to 1.45 hPa". v5.0.0 then says the assimilation top was raised "from 2 hPa" to 0.1 hPa.
+  - (5) The reforecast period wording varies: 18 years (v3.1.0), 20 years (v4.1.1), 1995–2014 → 1998–2017 (v5.0.0), and 2001–2020 from December 2021 (per S2S).
 - The acronym "GEPS" is used for two unrelated systems in operational forecasting. The Canadian GEPS described here (Global Ensemble Prediction **System**) is Environment Canada's single-center coupled global ensemble. A separate product called [557th WW GEPS](../usa/557wg-geps.md) (Global Ensemble Prediction **Suite**) is a U.S. Air Force multi-model statistical ensemble that uses the Canadian GEPS as one of its inputs.
 
 ---
 
-## Recent version history
+## Version history
+
+The list runs from the oldest entry in ECCC's GEPS changelog (v3.0.0, February 2013) to the present, newest first. Small data-assimilation-only updates are grouped under the version that was running. Unless noted, upgrades start at the 12 UTC run.
 
 ### GEPS v8.1.0 — operational April 14, 2026 (current)
 Port to ECCC's new high-performance computing infrastructure, completed 14 April 2026 and applied across the operational suite. No scientific or configuration change is documented; the technical specifications remain those of v8.0.0. The same migration produced [GEWPS](../../../wave_models/global/canada/gewps-canada.md) 1.4.0 and [RESPS](../../../storm_surge_models/regional/canada/resps.md) 1.8.0.
 
-### Data assimilation updates within v8.0.0
-- **26 May 2025** (06 UTC run) — ATMS and CrIS observations from NOAA-21 added
-- **2 April 2025** (06 UTC run) — revised SSMIS thinning scheme admitting more data; correction to the azimuth angle used in slant-path computation for AMSU-A and MHS radiances
-- **23 October 2024** (06 UTC run) — sea surface wind observations from the HSCAT scatterometer on HY-2B and HY-2C added
-
 ### GEPS v8.0.0 — operational June 11, 2024
 Implemented at the 12 UTC run on June 11, 2024 as part of Innovation Cycle 4 (IC-4), alongside GDPS 9.0.0 and RDPS 9.0.0.
 
-Headline changes from v7.0:
+Headline changes from v7.1.1:
 - **Horizontal resolution increased from ~39 km to ~25 km** (Yin–Yang grid at 0.23° uniform resolution)
 - **GEM upgraded to version 5.2.3** for the forecast component (5.2.1 for the assimilation component)
 - **LETKF analysis recentered on a 4DEnVar analysis** with a height-dependent (rather than uniform) recentering coefficient — the "hybrid gain" approach revisited and aligned with the GDPS configuration
@@ -412,23 +415,111 @@ Headline changes from v7.0:
 - **SPP and SKEB schemes improved** through better-represented Markovian perturbation fields. SPP element distributions are recentered around the new control; the range for `adv_rhsint` is reduced to address tropical over-dispersion; the stretching parameter γ is increased by 2·ln 2 across all SPP elements; the SKEB backscattering fraction `ens_skeb_alph` is reduced from 1.0 to a more physical 0.7
 - **Background check and bias correction now performed within GEPS** itself
 - **Geophysical fields regenerated** for the 25 km grid using the unified `prep_geophy` package, with scale-selective filtered topography (McTaggart-Cowan et al. 2019)
+- **Monthly forecasts extended from 32 to 39 days**, and run twice weekly (Monday and Thursday 00 UTC) instead of Thursday only
 - **Reforecast system extended:**
   - Forecast length extended from 32 to 39 days (adding a fifth forecast week)
   - Cadence doubled from weekly (Thursday 00 UTC) to twice-weekly (Monday and Thursday 00 UTC)
   - Reforecast members reduced to 4 to control computational cost while maintaining ~80 reforecasts per calendar date across the 20-year period
   - Sea ice initial conditions from CMC GIOPS analysis from January 2016 onward (replacing Had2CIS), with no significant climatological discontinuity
 
-### Earlier versions
-- **v7.1.1 → v8.0.0:** several DA-only updates 2022–2023 (ship BUFR surface observations, GOES-18 AMVs, Sentinel-6A GPS-RO, Spire and PlanetIQ commercial GNSS-RO, snow depth QC correction)
-- **v7.1.0 — 28 June 2022:** HPC infrastructure port
-- **v7.0.0 — 1 December 2021:** major upgrade
-- **v6.1.0 — 21 January 2020:** HPC infrastructure port
-- **v6.0.0 — 3 July 2019:** GEM 4.8-LTS.16; first coupling to NEMO and CICE; ocean and sea-ice initial conditions from GIOPS 3.0.0; ECMWF-style hybrid gain recentering introduced
-- **v5.0.0 — 18 September 2018:** 50 km Gaussian grid replaced by 39 km Yin–Yang; model top raised from 2 hPa to 0.1 hPa; IAU replaced digital filter initialization; products moved to a 25 km user grid
-- **v4.1.1 — 15 December 2015:** reforecast period extended from 18 to 20 years
-- **v4.0.0 — 18 November 2014:** EnKF ensemble size raised from 192 to 256; coupling with 4D-EnVar for background-error covariances
-- **v3.1.0 — 4 December 2013:** 32-day monthly forecasts introduced (Thursday 00 UTC); reforecast database introduced
-- **v3.0.0 — 13 February 2013:** GEM 4.4.1; ISBA-only surface scheme
+Data-assimilation-only updates while at v8.0.0 (06 UTC run):
+- Oct 23, 2024 — HSCAT sea-surface winds (HY-2B, HY-2C)
+- Apr 2, 2025 — New SSMIS thinning scheme (more data kept); azimuth-angle fix in slant-path computation for AMSU-A and MHS
+- May 26, 2025 — ATMS and CrIS (NOAA-21)
+
+### GEPS v7.1.1 — operational March 8, 2023
+- Corrected quality control of snow-depth observations from Canadian automatic stations used in the snow analysis
+
+Data-assimilation-only updates while at v7.1.1 (00 UTC run):
+- Jul 5, 2023 — Commercial GNSS-RO from Spire (LEMUR constellation)
+- Sep 14, 2023 — Commercial GNSS-RO from PlanetIQ (GNOMES constellation)
+
+### GEPS v7.1.0 — operational June 28, 2022
+- Port of v7.0.0 to ECCC's then-new HPC infrastructure. No science changes listed.
+
+Data-assimilation-only updates while at v7.1.0:
+- Nov 3, 2022 — Ship surface observations in BUFR format (TAC ship reports were already assimilated)
+- Jan 4, 2023 — GOES-17 AMVs replaced by GOES-18
+- Feb 15, 2023 — GPS-RO from Sentinel-6A
+
+### GEPS v7.0.0 — operational December 1, 2021
+ECCC's GEPS changelog gives no summary of changes, only links. The changes below come from ECMWF's S2S model description for ECCC (GEPS 7.0, first S2S forecast December 2, 2021).
+- **LETKF replaces the sequential EnKF** for the ensemble data assimilation
+- **GEM upgraded to v5.1**, with more advanced physics
+- **Vertical levels increased** from 81 to 85 for data assimilation, and from 45 to 85 for the forecast
+- **Stochastic Parameter Perturbation (SPP) replaces Physics Tendency Perturbation (PTP)** to represent model uncertainty
+- Still ~39 km (0.35°); monthly forecasts still 32 days, Thursdays only
+- Reforecast period moved from 1997–2017 to 2001–2020 (from December 9, 2021, per S2S)
+- Implemented together with GDPS 8.0.0, RDPS 8.0.0 and REPS 4.0.0 in ECCC's December 2021 suite upgrade (Innovation Cycle 3)
+
+Data-assimilation-only updates while at v7.0.0:
+- Feb 16, 2022 — GPS-RO from GRACE-C and GRACE-D
+
+### GEPS v6.1.0 — operational January 21, 2020
+- Port of v6.0.0 to ECCC's then-new HPC infrastructure. No science changes listed.
+
+Data-assimilation-only updates while at v6.1.0:
+- Apr 28, 2020 — AMVs from MetOp-3/C
+- Apr 29, 2020 — GPS-RO from PAZ and KOMPSAT-5
+- Jun 26, 2020 — GPS-RO from COSMIC-2
+- Dec 8, 2020 — AMSU-A and MHS (MetOp-3/C), CrIS full spectral resolution (Suomi NPP) and GOES-17 CSR. These were added to the 4DEnVar analysis only; the EnKF was unchanged.
+- Jan 26, 2021 — IASI moved from MetOp-2/A to MetOp-3/C
+
+### GEPS v6.0.0 — operational July 3, 2019
+- **First coupling to an ocean and sea-ice model:** NEMO (v3.6, 0.25°, 50 levels) and CICE, with ocean and sea-ice initial conditions from GIOPS v3.0.0
+- GEM upgraded from v4.8-LTS.13 to v4.8-LTS.16
+- Land-surface initial conditions from a pseudo-analysis on the 25 km GDPS 6.0.0 grid
+- **ECMWF-style "hybrid gain" recentering:** members recentered around the mean of the EnKF and 4D-EnVar analyses
+- EnKF assimilates radiosonde dew-point depression up to 100 hPa (was 200 hPa)
+- SST and sea-ice analyses refined from 0.2° to 0.1°
+- Jul 23, 2019 (06 UTC run) — More observations added within seven families already in use, mainly for robustness. ECCC's changelog gives no version number for this update.
+
+### GEPS v5.0.0 — operational September 18, 2018
+- **50 km global Gaussian grid replaced by a 39 km Yin–Yang grid**
+- GEM upgraded from 4.6.10 to 4.8-LTS.13; geophysical fields generated with GenPhysX instead of GENESIS
+- Assimilation:
+  - Incremental Analysis Update replaces digital-filter initialization
+  - Model top raised from 2 hPa to 0.1 hPa, with 81 levels (was 74)
+  - AIRS, IASI and CrIS infrared radiances added
+  - More thinning of satellite winds, radiances, aircraft and scatterometer data
+  - RTTOV 10 → 12
+- Forecast: model top raised to 0.1 hPa with 45 levels (was 41); new method for generating Markov chains
+- Reforecast period moved from 1995–2014 to 1998–2017
+- Products moved to a new 25 km user grid
+
+### GEPS v4.3.0 — date not documented
+- ECCC's GEPS changelog has no v4.3.0 entry. The version appears only in the multi-system changelog's data-assimilation updates of 2018, and in the REPS changelog, which names GEPS 4.3.0 as the pilot before REPS v2.4.0. *(TBD — implementation date and changes)*
+
+Data-assimilation-only updates while at v4.3.0 (listed in ECCC's multi-system changelog):
+- Mar 1, 2018 — Meteosat-10 AMVs replaced by Meteosat-11
+- Jun 7, 2018 — GOES-13 AMVs replaced by GOES-16
+
+### GEPS v4.2.0 — operational March 16, 2016
+- Data assimilation only (listed in ECCC's multi-system changelog, not the GEPS changelog): MTSAT-2 AMVs replaced by Himawari-8; VIIRS AMVs (Suomi NPP) and RapidScat winds (ISS) added
+
+### GEPS v4.1.1 — operational December 15, 2015
+- Potential-temperature diffusion applied to all members (previously half); damping gradient near the poles
+- New observation errors for radiance and GPS-RO data; ATMS radiances and GPS-RO from TanDEM-X and GRACE-B added
+- Reforecast period extended from 18 to 20 years
+
+### GEPS v4.0.0 — operational November 18, 2014
+- **EnKF coupled with 4D-EnVar**, supplying its background-error covariances to the deterministic system
+- **EnKF ensemble increased from 192 to 256 members**
+- GEM time step reduced from 20 to 15 minutes; model top raised from 1.78 hPa to 1.45 hPa
+- Changes to observation bias correction and the RTTOV operator
+
+### GEPS v3.1.0 — operational December 4, 2013
+- Technical GEM update from 4.4.1 to 4.4.5 (no forecast differences)
+- ATOVS radiances and AVHRR polar winds from METOP-B added; updated RTTOV coefficients for AMSU-B and MHS
+- SST now evolves during the forecast, by persistence of the initial anomaly
+- **Monthly (32-day) forecasts introduced**, weekly on Thursdays at 00 UTC
+- **Reforecasts introduced:** 18 years, 4 members weekly instead of 20
+
+### GEPS v3.0.0 — operational February 13, 2013
+- GEM upgraded to 4.4.1 with improved physics; time step reduced from 30 to 20 minutes; filtered topography; ISBA is the only surface scheme
+- EnKF: horizontal localization length increases with height; ~66 km resolution; vertical levels increased from 58 to 74 (top kept at 2 hPa); more AMSU radiances; bias correction from GDPS 3.0.0
+- Forecast: changes to the convective physics-tendency perturbations, diffusion in advection, orographic-drag perturbation and the SKEB adjustment factor
+- Reported impacts: better wind and temperature analyses through most of the column, lower geopotential and temperature biases, better extratropical 16-day forecasts, benefits for REPS and NAEFS, and some products ready 10–120 minutes sooner
 
 ---
 
@@ -440,6 +531,7 @@ Headline changes from v7.0:
 - Fact sheet (v8.0.0): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/fact_sheets/factsheet_geps_e.pdf
 - GEPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_geps/changelog_geps_en/
 - CMC operational suite changelog (v8.1.0 HPC migration): https://eccc-msc.github.io/open-data/msc-data/changelog_multisystems_en/
+- ECMWF S2S ECCC model description (GEPS 7.0 / 8.0 details): https://confluence.ecmwf.int/spaces/S2S/pages/222480532/ECCC+model+description
 - System dependency diagram: https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwep-dependency-diagrams/system_GEPS_en.svg
 - Variable element list (XML, EN/FR): https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwp_geps/geps_element.xml
 - Discovery metadata: https://open.canada.ca/data/en/dataset/6d9dd2f8-202e-58cb-a110-e2168832aacb
