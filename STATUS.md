@@ -345,7 +345,7 @@ Rico, 2.5 km). RRFS goes out on the North America grid only, under `KWDA` — `Y
 3 km and `Y*H*##` at 13 km. These replace the discontinued NAM (`KWBE`), HREF (`KWBH`) and
 HiresW (`KWBS`) headers listed in SCN 26-47. Per SCN 26-47, REFS SBN products are 3-hourly
 f03–f48 and then 6-hourly to f60.
-- **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md#noaaport-parallel-stream) · [REFS](./models/ensemble_models/regional/usa/refs.md#data-availability)
+- **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md#noaaport-sbn-subset) · [REFS](./models/ensemble_models/regional/usa/refs.md#data-availability)
 - **Authority:** NWS SCN 26-48 AAE (October 2, 2026); full header list at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/
 - **Verification note:** The SCN does not say which 3 km North America geometry the RRFS SBN
   product uses, so whether it is the 4680 × 2830 AWIPS subset grid is open. The NOMADS
