@@ -18,9 +18,15 @@ Major upgrade to the National Blend of Models with longer hourly guidance (36 h 
 - **Authority:** NWS SCN 26-24 (AAC revision, April 28, 2026)
 - **Verification note:** Originally targeted April 15, 2026; rescheduled to April 23, then April 30. The April 30 attempt fell within a Critical Weather Day / Enhanced Caution Event window, triggering the SCN's contingency provision and pushing actual cutover to May 5, 2026.
 
-### NBM v5.1 — planned, no formal schedule
-The next National Blend of Models upgrade after v5.0. Planned scope: 12-hour winter products, fixes for "blocky" percentile and precipitation-type (ptype) fields, remaining post-v5.0 winter-weather guidance work, and a new Southwest Pacific domain (a coverage expansion rather than a methodology change). No NWS Service Change Notice or PNS has been issued and it does not appear on the NBM versions page — this is a planning signal only, and no implementation date is recorded here pending a formal notice.
-- **Entry:** [NBM](./models/nwp_models/regional/usa/nbm.md)
+### NBM winter-guidance and Southwest Pacific package — planned, unnumbered, no formal schedule
+The next planned NBM methodology release. Its planned scope:
+- 12-hour winter products
+- fixes for "blocky" percentile and precipitation-type (ptype) fields
+- remaining post-v5.0 winter-weather guidance work
+- a new Southwest Pacific domain, a coverage expansion rather than a methodology change
+
+**The early-2026 decks called this package "v5.1", but that number has since gone to the RRFS/REFS input release of November 3, 2026** (see the NBM v5.1 item below), so the package currently has no version label. No NWS Service Change Notice or PNS has been issued and it does not appear on the NBM versions page. This is a planning signal only, and no implementation date is recorded here until a formal notice is issued.
+- **Entry:** [NBM](./models/nwp_models/regional/usa/nbm.md#planned-future-versions)
 - **Source:** NBM user webinar (April 15, 2026) and WPC/HMT "NBMv5 Winter Overview" (February 10, 2026) — presentation decks, not authoritative notices
 
 ### IFS Cycle 50r1, AIFS Single v2, AIFS ENS v2 — operational May 12, 2026
@@ -99,20 +105,30 @@ It removes the full `hysplit.tCCz.nam*` set and the regional-ensemble inputs `hy
     So Alaska is carried only through `rrfsfHH` and the archive file, as the filename lines said.
   - The SCN's closing line, that Alaska and Hawaii "will continue using CMAQ v4", still reads as carried-over boilerplate. CMAQ belongs to the [AQM](./models/air_quality_models/regional/usa/aqm.md) component, and HYSPLIT-Dust is CONUS-only regardless.
 
-### RRFS downstream changes (NBM, ObsProc, MAG) — in effect November 3, 2026 (12 UTC)
-SCN 26-89 (October 2, 2026) covers the knock-on changes from the RRFS implementation and the NAM/SREF/HiresW/HREF retirements, on the same cycle:
-- **NBM:** The NAM (12 km and 3 km), HiResW ARW, HiResW ARW2 and HRW FV3 inputs are replaced with RRFS and all RRFS-based REFS configurations. This applies in both the Core and QMD systems, with the expert weights reassigned, on the CONUS, Alaska, Hawaii and Puerto Rico domains. The CONUS core `DRYTPROB` (dry thunderstorm probability) record and the `YYA*** KWEI` SBN header are discontinued.
+### NBM v5.1 — operational November 3, 2026 (12 UTC)
+The National Blend of Models moved to v5.1 on the RRFS/REFS cutover cycle. The release brings [RRFS](./models/nwp_models/regional/usa/rrfs.md) and the five RRFS ensemble members (labelled REFS) in as inputs, and drops the retired NAM (parent and nest) and the three HiResW members on the CONUS, Alaska, Hawaii and Puerto Rico domains. The formal notice, SCN 26-89, gives the change no version number; **the v5.1 label comes from MDL's NBM Versions page.** The planning decks had expected it as an interim "v5.0.1". Per MDL's v5.1 briefing:
+- **No REFS time-lagged members are used.** "REFS" here means the five RRFS members, and HRRR usage is unchanged.
+- **Guam keeps its two HiResW members** (ARW and FV3), since RRFS/REFS do not cover it. See [HiresW Guam](./models/nwp_models/regional/usa/hiresw-guam.md).
+- **The weights from the removed systems were spread evenly across RRFS and REFS.** They are expert-weighted heavily for short-range precipitation, ptype and winter elements, resolution-weighted for 6–72 h precipitation, weighted equally for temperature, wind and humidity, and weighted dynamically for sky cover and precipitable water.
+- **The domain seams at the edges of the old CAM domains are largely gone,** because RRFS runs on a single North American domain. Faint seams remain before about f036, where HRRR still contributes.
+- **Two products are discontinued:** the CONUS core `DRYTPROB` (dry thunderstorm probability) record, and the `YYA*** KWEI` SBN header.
+- **Entry:** [NBM](./models/nwp_models/regional/usa/nbm.md#nbm-v51-operational-november-3-2026)
+- **Authority:** [NWS SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026); MDL [NBM Versions](https://vlab.noaa.gov/web/mdl/nbm-versions) page and its linked briefing *NBM v5.1 — Changes related to RRFS/REFS usage*; MDL [NBM Model Inputs](https://vlab.noaa.gov/web/mdl/nbm-model-inputs) page (both read 2026-11-03)
+- **Verification note:** Confirmed from the live data on 2026-11-03.
+  - **`DRYTPROB` is gone from the NBM core CONUS files.** It is present at the 12 and 18 UTC cycles of November 2 and the 00 and 09 UTC cycles of November 3, and absent from the 12 and 18 UTC cycles of November 3.
+  - **The input switch itself cannot be seen in the distributed files.**
+  - **The NBM Model Inputs table now reflects v5.1.** RRFS and REFS are present, and NAM, HiResW, HREF and NAM MOS are absent. That answers the two points SCN 26-89 left open: HREF and NAM MOS are no longer inputs.
+  - **The table has three oddities.** It omits the HiResW Guam members that the briefing says are kept. Its footer still says "v5.0". And it now lists HAFS-A/B as the tropical-cyclone inputs in place of HWRF/HMON, on a date not recorded (TBD).
+  - **Separately, the NBM COG stream on AWS stopped at the cutover;** see *Format and distribution changes*.
+
+### Other SCN 26-89 changes (ObsProc, MAG) — in effect November 3, 2026 (12 UTC)
+SCN 26-89 also covers two non-NBM knock-on changes from the RRFS implementation and the NAM/SREF/HiresW/HREF retirements, on the same cycle:
 - **ObsProc:** The NAM observation dumps under `obsproc/prod/nam.YYYYmmDD` are discontinued.
 - **MAG website:**
   - NAM-HIRES, NAM-FireWx, NAM storm tracks and HREF switch to RRFS, RRFS-FireWx, RRFS storm tracks and REFS.
   - NAM, SREF (with storm tracks), HRW-ARW, HRW-ARW2, HRW-FV3 and NAM-SND are removed.
-- **Entry:** [NBM](./models/nwp_models/regional/usa/nbm.md)
 - **Authority:** [NWS SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026)
-- **Verification note:** Partly confirmed from the live data on 2026-11-03.
-  - **`DRYTPROB` is gone from the NBM core CONUS files.** It is present at the 12 and 18 UTC cycles of November 2 and the 00 and 09 UTC cycles of November 3, and absent from the 12 and 18 UTC cycles of November 3.
-  - **The NAM ObsProc dumps end with the 12 UTC dump of November 3.** That dump is a reduced set (90 files, against 105 at 00 and 06 UTC), and there is none at 18 UTC.
-  - The NBM input switch itself and the MAG changes cannot be checked from the distributed files.
-  - The notice does not say what happens to HREF or NAM MOS as NBM inputs, and gives the NBM change no version number.
+- **Verification note:** **The NAM ObsProc dumps end with the 12 UTC dump of November 3.** That dump is a reduced set (90 files, against 105 at 00 and 06 UTC), and there is none at 18 UTC. The MAG changes are website graphics and cannot be checked from distributed files.
 
 ### GFSv17 — moved to late 2027
 NOAA's coupled GFS/GDAS v17 upgrade is no longer planned for October 2026. The updated PNS 26-29 (AAA, October 28, 2026) ties the implementation to the move of NWS high-performance computing operations to the commercial cloud, **now anticipated in late 2027**. The science package is unchanged in outline:
@@ -200,7 +216,7 @@ Last cycles on NOMADS, verified 2026-11-03. None of these systems produced a 12 
 - **NARRE is not part of this wave.** NARRE-TL was decommissioned on or about January 7, 2026 under [NWS SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf). That is why it is absent from SCN 26-47.
 - **Same-day changes under other notices:**
   - The NAM and HREF couplings into HYSPLIT were retired under SCN 26-78 (see the HYSPLIT 9.1 item).
-  - The NBM, ObsProc and MAG consequences fall under SCN 26-89 (see the RRFS downstream item).
+  - The NBM input change became NBM v5.1 (see the NBM v5.1 item), and the ObsProc and MAG consequences fall under SCN 26-89 (see the item after it).
 - **Authority:** [NWS SCN 26-47 AAC](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf) (October 2, 2026); [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025)
 
 ---
@@ -266,6 +282,17 @@ One channel difference **predates the cutover but was not recorded until now**. 
   - the GRIB2 identification keys of deterministic, member and REFS files.
 
   The S3 pause was established from object `LastModified` times. The rewritten cycles carry the backfill timestamps, so `LastModified` on that bucket cannot be used to date when those cycles actually ran.
+
+### NBM COG stream stopped at the v5.1 cutover, November 3, 2026
+The Cloud-Optimized GeoTIFF NBM feed on AWS, `s3://noaa-nbm-pds/`, has written nothing since the implementation of NBM v5.1:
+- **Where it stops:** every domain under `blendv5.0/` (CONUS, Alaska, Hawaii, Puerto Rico, Guam, Oceanic) ends with the **11 UTC cycle of November 3**, the last v5.0 cycle. The global domain ends with its 00 UTC cycle that day.
+- **No v5.1 data:** a `blendv5.1/` prefix has no content.
+- **Not affected:** the GRIB2 bucket `s3://noaa-nbm-grib2-pds/` and NOMADS are current and unaffected.
+
+Earlier version changes each opened a new `blendvX.Y/` tree in this bucket (`blendv3.2/` through `blendv5.0/`), so a `blendv5.1/` tree is the likely successor. No notice mentions the COG stream. Whether it resumes, and whether the gap is backfilled, is unknown (TBD). Users of the COG products should switch to GRIB2 for now.
+- **Entry:** [NBM](./models/nwp_models/regional/usa/nbm.md#data-availability)
+- **Authority:** Direct listing of `s3://noaa-nbm-pds/`
+- **Verification note:** Checked twice on 2026-11-03, at about 22:00 and 22:18 UTC, with the same result. Re-check before treating the gap as permanent.
 
 ### RRFS and REFS — distribution moved twice, then converged, August 2026
 *Historical: the `para/` paths described here closed on November 3, 2026; see the item above.*
