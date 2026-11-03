@@ -6,7 +6,7 @@ The goal is to give users a single place to check "what is changing" without hav
 
 For UFS-related transitions specifically, see [UFS.md](./UFS.md), which provides the full programme context. UFS items are listed here briefly; UFS.md has the detailed narrative.
 
-Last updated: October 2026.
+Last updated: November 2026.
 
 ---
 
@@ -61,27 +61,68 @@ ECMWF delivered the free 9 km Open Data subset it announced on 1 October 2025. F
 - **Authority:** ECMWF Confluence, [ECMWF open data: what's new at 0.1°](https://confluence.ecmwf.int/spaces/DAC/pages/738041087/ECMWF+open+data+what+s+new+at+0.1%C2%B0) (dated "from 20 October 2026"); ECMWF news, [entire Real-time Catalogue open to all](https://www.ecmwf.int/node/29497) (1 October 2025), which first promised the 9 km subset "later in 2026" with a 2-hour latency. No ECMWF news release for the go-live has been found. Launch-day third-party coverage: [GribStream](https://gribstream.com/blog/ecmwf-ifs-0p1-forecasts).
 - **Verification note:** The start cycle was confirmed on the AWS mirror. No `0p1` directory exists on any cycle from 2026-10-15 to 2026-10-20 00z. From 06z every cycle is present, and the per-stream file counts match across the portal, AWS, Azure and GCS through 2026-10-21 06z. **"2-hour latency" is relative to the 0.25° data, not to the model run.** ECMWF's own page says so, but the 2025 announcement is easy to misread. **ECMWF's page says the 0.1° tier carries extra fields for Forecast in a Box and limited-area model initialisation. The live data does not.** Full index comparisons find identical inventories in both tiers, with no model-level fields.
 
-### RRFSv1 and REFS — scheduled November 3, 2026 (12 UTC)
-NOAA's next-generation convection-allowing system for North America. RRFS and REFS implement together, with legacy NAM, HREF, SREF, and HiresW (all domains except Guam) retiring on the same day. **The date moved from October 14 to November 3, 2026** in the October 2, 2026 update to SCN 26-48 (AAE) and the matching update to SCN 26-47 (AAC). This is the fourth slip, and again no reason is given. Beyond the date, AAE adds a section on SBN/NOAAPORT dissemination with WMO headers (see *Format and distribution changes*), corrects the parallel-feed start to August 12, and removes the `(??)` ensemble BUFR lines that AAD had printed. AAC changes only the date and adds a pointer to the new downstream notice, SCN 26-89 (see below). The previous update, AAD on September 9, 2026, was the first to document **dissemination of the five RRFS ensemble members**, which began at the 12 UTC cycle that day. **See [UFS.md](./UFS.md) for the full UFS context including the wave of retirements that occurs on the same day.**
+### RRFSv1 and REFS — operational November 3, 2026 (12 UTC)
+NOAA's next-generation convection-allowing system for North America went operational on schedule with the 12 UTC cycle. The legacy NAM, NAM Nest, HREF, SREF and HiresW (all domains except Guam) were retired on the same cycle; see *Recent retirements* below. November 3 was the fifth target date, and the first one held. The notices last changed on October 15, when SCN 26-48 was updated to AAF. That was a content-only update that left the date alone: it replaced the precipitation-type diagnosis, removed the `FRZR`/`FROZR` accumulations, changed three REFS products and added the fire-weather nest location file. SCN 26-47 stayed at AAC. No postponement notice was issued, and SCN 26-100 (issued 15:05 UTC on November 3, about the EMC verification graphics) describes the implementation as taking effect that day. **The model output is unchanged across the cutover, but the distribution paths are not**; see the November 3 item under *Format and distribution changes*. **See [UFS.md](./UFS.md) for the full UFS context.**
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
-- **Authority:** [NWS SCN 26-48 AAE](https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aae.pdf) (RRFS/REFS implementation; October 2, 2026) + companion [SCN 26-47 AAC](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf) (terminations; October 2, 2026); SCN 26-48 originally issued May 12, 2026 and updated July 6, August 24, September 9 and October 2, 2026
-- **Verification note:** Originally targeted early 2026, then August 31, 2026; then October 6, 2026 in the July 6, 2026 update (AAB), which also decoupled the real-time parallel feed to on or about August 11, 2026; then October 14, 2026 in the September 9, 2026 update (AAD); then November 3, 2026 in the October 2, 2026 update (AAE). **The August 24, 2026 update (AAC) did not change the implementation date** — its scope was limited to documenting the `.idx` and BUFR files added to NOMADS. Neither AAD nor AAE gives a reason for its move, and neither changes the pre-implementation feed, which remains live. The November 3 date is subject to the standard CWD/ECE contingency — if the implementation date is declared a Critical Weather Day, an Enhanced Caution Event, or other significant weather is occurring or anticipated, implementation moves to 12 UTC on the next eligible weekday. NBM v5.0 was deferred under exactly this provision earlier in 2026, so the contingency is not theoretical.
+- **Authority:** [NWS SCN 26-48 AAF](https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation.aaf.pdf) (RRFS/REFS implementation; October 15, 2026) + companion [SCN 26-47 AAC](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf) (terminations; October 2, 2026). SCN 26-48 was originally issued May 12, 2026 and updated July 6, August 24, September 9, October 2 and October 15, 2026.
+- **Verification note:** Implementation confirmed from the live data on 2026-11-03:
+  - Every RRFS hourly cycle on November 3 is present under `/rrfs/prod/`.
+  - The 12 UTC synoptic cycle carries the full set of 947 GRIB2 files, 947 sidecars and 2 BUFR files, the same file names as the 12 UTC cycle of November 2.
+  - The five members (488 GRIB2 files each) and the 1,740-file REFS `ensprod` set are complete.
+  - The `.idx` record inventories of every RRFS, member and REFS file family checked are identical before and after the cutover.
+  - So are the GRIB2 identification keys: `productionStatusOfProcessedData` 0, and `generatingProcessIdentifier` 134 for deterministic RRFS and 136 for members and REFS.
 
-### HYSPLIT 9.1 — scheduled November 3, 2026
-NOAA's operational HYSPLIT transport and dispersion system is recoupled to RRFS on the same day RRFS goes operational. HYSPLIT 9.0 → 9.1 adds RRFS-derived ARL-packed meteorological input files and **retires the NAM and HREF couplings** — the dispersion-side consequence of the NAM/HREF retirement under SCN 26-47. New input files are `hysplit.tCCz.rrfs.${domain}`, `hysplit.tCCz.rrfsfHH.${domain}` (HH = 00–42 in 6 h steps) and archived `hysplit.tCCz.rrfsa.${domain}`, for the 00/06/12/18 UTC cycles. Removed: the full `hysplit.tCCz.nam*` set and the regional-ensemble inputs `hysplit.tCCz.rens.{hiresw,hrrr,nam}.m0M`.
+  Date history: early 2026 (PNS 25-41), then August 31, October 6 (AAB, July 6), October 14 (AAD, September 9) and November 3 (AAE, October 2). The August 24 update (AAC) did not change the date. No update gave a reason for a move.
+
+### HYSPLIT 9.1 — RRFS coupling live (RRFS inputs present from November 2, 12 UTC)
+NOAA's operational HYSPLIT transport and dispersion system is now coupled to RRFS, and the **NAM and HREF couplings are retired**. HYSPLIT 9.0 → 9.1 adds RRFS-derived ARL-packed meteorological input files for the 00/06/12/18 UTC cycles:
+- `hysplit.tCCz.rrfs.${domain}`
+- `hysplit.tCCz.rrfsfHH.${domain}`, where HH runs 00–42 in 6 h steps
+- `hysplit.tCCz.rrfsa.${domain}`, archived
+
+It removes the full `hysplit.tCCz.nam*` set and the regional-ensemble inputs `hysplit.tCCz.rens.{hiresw,hrrr,nam}.m0M`. SCN 26-78 sets November 3 as the effective date, but **the RRFS input files are already present from the 12 UTC cycle on November 2**, a day early.
 - **Entry:** [HYSPLIT-Dust](./models/air_quality_models/regional/usa/hysplit-dust.md)
 - **Authority:** [NWS SCN 26-78 AAA](https://www.weather.gov/media/notification/pdf_2026/scn26_78_Updated_HYSPLIT_%20v9.1_aaa.pdf) (October 2, 2026; moved the date from October 14). Original notice September 9, 2026: https://www.weather.gov/media/notification/pdf_2026/scn26-78_HYSPLIT_v9.1.pdf
-- **Product timing change (affects catalogued output):** The higher-resolution RRFS input delays downstream products. The NAQFC dust files under `dustcs.YYYYMMDD/` become **~11–15 minutes late at the 06 UTC cycle and ~45–50 minutes late at 12 UTC**; `canned_wfo` products become ~45–50 minutes late. Anyone polling `dustcs.tCCz.{sfc,pbl}.1hr{,_227}.grib2` on a fixed schedule needs to widen their window.
-- **Verification note:** The SCN's file listing is internally inconsistent with its own prose. The intro says RRFS forecasts are added "over multiple domains including North American (na), Hawaii (hi), Alaska (ak), Puerto Rico (pr) and fire weather (firewx)", but the `hysplit.tCCz.rrfs.${domain}` line that follows enumerates only `na, hi, pr, firewx` — Alaska appears instead on the `rrfsfHH` line alongside `conus`, which is itself not in the prose list. Treat the enumerations, not the prose, as the file-naming authority and re-verify against `/hysplit/prod/` after cutover. The SCN also carries a closing note that the changes apply to CONUS results only and that "Alaska and Hawaii will continue using CMAQ v4" — CMAQ is the [AQM](./models/air_quality_models/regional/usa/aqm.md) component, not HYSPLIT, and no CMAQ v4 is documented anywhere in the operational NAQFC chain; this looks like boilerplate carried over from an air-quality SCN and should not be read as a statement about HYSPLIT-Dust domains. Note also that HYSPLIT-Dust is CONUS-only in any case. The AAA update changed only the date: the file lists, product delays, the domain inconsistency and the CMAQ v4 line are all unchanged. It moved on the same day and to the same date as SCN 26-47 AAC and SCN 26-48 AAE, consistent with HYSPLIT 9.1 depending on RRFS.
+- **Product timing change (affects catalogued output):** Per the SCN, the higher-resolution RRFS input delays the NAQFC dust files under `dustcs.YYYYMMDD/`:
+  - **~11–15 minutes late at 06 UTC**
+  - **~45–50 minutes late at 12 UTC**
+  - `canned_wfo` products ~45–50 minutes late
 
-### RRFS downstream changes (NBM, ObsProc, MAG) — scheduled November 3, 2026 (12 UTC)
-A new notice, SCN 26-89 (October 2, 2026), covers the knock-on changes from the RRFS implementation and the NAM/SREF/HiresW/HREF retirements, on the same cycle:
-- **NBM:** the NAM (12 km and 3 km), HiResW ARW, HiResW ARW2 and HRW FV3 inputs are replaced with RRFS and all RRFS-based REFS configurations, in both the Core and QMD systems, with the expert weights reassigned. This applies to the CONUS, Alaska, Hawaii and Puerto Rico domains. The CONUS core `DRYTPROB` (dry thunderstorm probability) record is discontinued, and so is the `YYA*** KWEI` SBN header.
-- **ObsProc:** the NAM observation dumps under `obsproc/prod/nam.YYYYmmDD` are discontinued.
-- **MAG website:** NAM-HIRES, NAM-FireWx, NAM storm tracks and HREF switch to RRFS, RRFS-FireWx, RRFS storm tracks and REFS. NAM, SREF (with storm tracks), HRW-ARW, HRW-ARW2, HRW-FV3 and NAM-SND are removed.
-- **Entries:** [NBM](./models/nwp_models/regional/usa/nbm.md) · [NAM](./models/nwp_models/regional/usa/nam.md) · [HiresW](./models/nwp_models/regional/usa/hiresw.md) · [HREF](./models/ensemble_models/regional/usa/href.md)
+  On November 3 the `dustcs.t06z.sfc.1hr.grib2` file landed at 09:09 UTC and the 12 UTC file at 15:45 UTC. No pre-upgrade cycle is still on NOMADS to measure the delay against, so the SCN's figures stand unverified. Anyone polling `dustcs.tCCz.{sfc,pbl}.1hr{,_227}.grib2` on a fixed schedule needs to widen their window.
+- **Verification note:** Checked against `/pub/data/nccf/com/hysplit/prod/` on 2026-11-03.
+  - The `hysplit.20261102/` directory has no regional-model inputs at 00 or 06 UTC and RRFS inputs from 12 UTC. **No `nam*` or `rens.*` file exists in either retained day.** Because NOMADS keeps only two days, whether the NAM inputs stopped at 06 UTC on November 2 or earlier cannot be established.
+  - **The SCN's filename lines are correct, and its prose is not.** The prose lists `na, hi, ak, pr, firewx`. The files live are:
+    - `rrfs.{firewx,hi,na,pr}`
+    - `rrfsa.{ak,hi,na,pr}`
+    - `rrfsfHH.{ak,conus}`
+
+    So Alaska is carried only through `rrfsfHH` and the archive file, as the filename lines said.
+  - The SCN's closing line, that Alaska and Hawaii "will continue using CMAQ v4", still reads as carried-over boilerplate. CMAQ belongs to the [AQM](./models/air_quality_models/regional/usa/aqm.md) component, and HYSPLIT-Dust is CONUS-only regardless.
+
+### RRFS downstream changes (NBM, ObsProc, MAG) — in effect November 3, 2026 (12 UTC)
+SCN 26-89 (October 2, 2026) covers the knock-on changes from the RRFS implementation and the NAM/SREF/HiresW/HREF retirements, on the same cycle:
+- **NBM:** The NAM (12 km and 3 km), HiResW ARW, HiResW ARW2 and HRW FV3 inputs are replaced with RRFS and all RRFS-based REFS configurations. This applies in both the Core and QMD systems, with the expert weights reassigned, on the CONUS, Alaska, Hawaii and Puerto Rico domains. The CONUS core `DRYTPROB` (dry thunderstorm probability) record and the `YYA*** KWEI` SBN header are discontinued.
+- **ObsProc:** The NAM observation dumps under `obsproc/prod/nam.YYYYmmDD` are discontinued.
+- **MAG website:**
+  - NAM-HIRES, NAM-FireWx, NAM storm tracks and HREF switch to RRFS, RRFS-FireWx, RRFS storm tracks and REFS.
+  - NAM, SREF (with storm tracks), HRW-ARW, HRW-ARW2, HRW-FV3 and NAM-SND are removed.
+- **Entry:** [NBM](./models/nwp_models/regional/usa/nbm.md)
 - **Authority:** [NWS SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026)
-- **Verification note:** The notice does not say what happens to HREF or NAM MOS as NBM inputs, though both retire the same day under SCN 26-47. It also gives the NBM change no version number. The planning decks had called it an interim "v5.0.1", but NBM version numbers have since reached v5.0.15 through unrelated patch releases (SCN 26-70, SCN 26-74).
+- **Verification note:** Partly confirmed from the live data on 2026-11-03.
+  - **`DRYTPROB` is gone from the NBM core CONUS files.** It is present at the 12 and 18 UTC cycles of November 2 and the 00 and 09 UTC cycles of November 3, and absent from the 12 and 18 UTC cycles of November 3.
+  - **The NAM ObsProc dumps end with the 12 UTC dump of November 3.** That dump is a reduced set (90 files, against 105 at 00 and 06 UTC), and there is none at 18 UTC.
+  - The NBM input switch itself and the MAG changes cannot be checked from the distributed files.
+  - The notice does not say what happens to HREF or NAM MOS as NBM inputs, and gives the NBM change no version number.
+
+### GFSv17 — moved to late 2027
+NOAA's coupled GFS/GDAS v17 upgrade is no longer planned for October 2026. The updated PNS 26-29 (AAA, October 28, 2026) ties the implementation to the move of NWS high-performance computing operations to the commercial cloud, **now anticipated in late 2027**. The science package is unchanged in outline:
+- C1152 (~9 km) FV3 atmosphere, up from C768
+- MOM6 ocean, CICE6 sea ice and WAVEWATCH III waves, coupled through CMEPS
+- JEDI-based assimilation for ocean, sea ice and snow
+
+There is no SCN yet. **See [UFS.md](./UFS.md).**
+- **Entries:** [GFS](./models/nwp_models/global/usa/gfs.md) · [GEFS](./models/ensemble_models/global/usa/gefs.md)
+- **Authority:** [NWS PNS 26-29 AAA](https://www.weather.gov/media/notification/pdf_2026/pns26-29_Updated_Science_for_GFSv17_aaa.pdf) (October 28, 2026); original [PNS 26-29](https://www.weather.gov/media/notification/pdf_2026/pns26-29_Science_for_GFSv17.pdf) (April 15, 2026)
 
 ### HARMONIE-AROME Cy43 → Cy46 (KNMI / UWC-West) — planned November 2026
 UWC-West's shared HARMONIE-AROME configuration moves from Cycle 43 to Cycle 46, and
@@ -138,25 +179,41 @@ NOAA upgraded the deterministic AIGFS to v1.1 at the 12 UTC cycle. Three trainin
 
 ---
 
-## Scheduled retirements (NWS SCN 26-47 + 26-48 / PNS 25-41)
+## Recent retirements
 
-These systems are scheduled for retirement on **November 3, 2026 at 12 UTC**, the same cycle that brings RRFSv1 and REFS into operations. The retirement set was originally proposed in NWS Public Information Statement 25-41 (June 26, 2025); the retirements are scheduled by NWS Service Change Notice 26-47 (termination) and RRFS/REFS implementation by companion SCN 26-48. Both were updated on **October 2, 2026** — SCN 26-47 to AAC and SCN 26-48 to AAE — moving the date from October 14 to November 3. That is the fourth slip; earlier updates moved it from early 2026 to August 31, then to October 6, then to October 14. Subject to the standard CWD/ECE contingency. **See [UFS.md](./UFS.md) for the consolidation context.**
+### NAM, NAM Nest, HREF, SREF, HiresW (except Guam), NAM MOS — retired November 3, 2026 (12 UTC)
+Retired on the cycle that brought RRFSv1 and REFS into operations, under NWS SCN 26-47 (termination; AAC update of October 2, 2026). The set was first proposed in NWS PNS 25-41 (June 26, 2025). Their catalogue entries have been removed, in line with the catalogue's practice of not keeping discontinued datasets. **See [UFS.md](./UFS.md) for the consolidation context.**
 
-- [NAM](./models/nwp_models/regional/usa/nam.md) — full retirement (12 km parent and all 3 km nests)
-- [NAM Nest](./models/nwp_models/regional/usa/nam-nest.md) — all convection-allowing nests
-- [HREF](./models/ensemble_models/regional/usa/href.md) — replaced by REFS (extends 48 h → 60 h)
-- [HiresW](./models/nwp_models/regional/usa/hiresw.md) — CONUS, Alaska, Hawaii, and Puerto Rico domains; see [Status and retirement](./models/nwp_models/regional/usa/hiresw.md#status-and-retirement) for the surviving Guam exception
-- SREF (not in repo) — replaced by REFS; the SCN-confirmed retirement supersedes the earlier expectation that SREF would persist into the second wave under RRFSv2
-- NARRE (not in repo) — **already retired; not part of this wave.** NARRE-TL was decommissioned on or about January 7, 2026 under [NWS SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf), which terminated the system and removed its data from NOMADS and FTPPRD. It is absent from SCN 26-47 for that reason, not by omission. PNS 25-41 had grouped it with the RRFSv1 retirements; SCN 25-87 overtook that.
-- NAM MOS (not in repo) — retired alongside NAM
+Last cycles on NOMADS, verified 2026-11-03. None of these systems produced a 12 UTC cycle that day.
 
-Two dispersion couplings retire on the same day but under a separate notice: the **NAM and HREF couplings into HYSPLIT**, retired by SCN 26-78 as part of the HYSPLIT 9.1 upgrade that couples RRFS in their place. See the HYSPLIT 9.1 item above. The NBM, ObsProc and MAG consequences of the retirements are covered by SCN 26-89; see the RRFS downstream item above.
+| System | Last cycle | Replacement |
+|---|---|---|
+| NAM (12 km parent and all 3 km nests, including fire weather) | 06 UTC, November 3 | [RRFS](./models/nwp_models/regional/usa/rrfs.md) |
+| HREF | 06 UTC, November 3 | [REFS](./models/ensemble_models/regional/usa/refs.md) (60 h, 4× daily on all domains) |
+| SREF | 09 UTC, November 3 | [REFS](./models/ensemble_models/regional/usa/refs.md) |
+| HiresW CONUS and Hawaii | 00 UTC, November 3 | [RRFS](./models/nwp_models/regional/usa/rrfs.md) / [REFS](./models/ensemble_models/regional/usa/refs.md) |
+| HiresW Alaska and Puerto Rico | 06 UTC, November 3 | [RRFS](./models/nwp_models/regional/usa/rrfs.md) / [REFS](./models/ensemble_models/regional/usa/refs.md) |
+| NAM MOS | retired alongside NAM | — |
+
+- **HiresW Guam continues.** RRFS does not reach Guam, so that domain was explicitly preserved, and its 12 UTC cycle ran normally on both cores. See [HiresW Guam](./models/nwp_models/regional/usa/hiresw-guam.md).
+- **Old output is still listed for now.** The `nam/`, `href/`, `sref/` and `hiresw/` NOMADS trees still list the final days of output until they age out. Do not mistake a populated directory for a running system.
+- **NARRE is not part of this wave.** NARRE-TL was decommissioned on or about January 7, 2026 under [NWS SCN 25-87](https://www.weather.gov/media/notification/pdf_2025/scn25-87_EMC_services_termination.pdf). That is why it is absent from SCN 26-47.
+- **Same-day changes under other notices:**
+  - The NAM and HREF couplings into HYSPLIT were retired under SCN 26-78 (see the HYSPLIT 9.1 item).
+  - The NBM, ObsProc and MAG consequences fall under SCN 26-89 (see the RRFS downstream item).
+- **Authority:** [NWS SCN 26-47 AAC](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf) (October 2, 2026); [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025)
+
+---
+
+## Scheduled retirements
+
+No model retirement affecting this catalogue currently has a formal notification (NWS notification index re-checked 2026-11-03).
 
 ---
 
 ## Expected future retirements
 
-These systems are publicly signaled but have **no formal retirement notification** as of early October 2026 (NWS notification index re-checked 2026-10-03). They are expected to be retired with RRFSv2 (MPAS-based). **See [UFS.md](./UFS.md) for the second-wave retirement context.**
+These systems are publicly signaled but have **no formal retirement notification** as of early November 2026 (NWS notification index re-checked 2026-11-03). They are expected to be retired with RRFSv2 (MPAS-based). **See [UFS.md](./UFS.md) for the second-wave retirement context.**
 
 - [HRRR](./models/nwp_models/regional/usa/hrrr.md) — expected with RRFSv2
 - [RAP](./models/nwp_models/regional/usa/rap.md) — expected with RRFSv2
@@ -184,7 +241,34 @@ Experimental productionization of NVIDIA's FourCastNet architecture using Spheri
 
 ## Format and distribution changes
 
+### RRFS and REFS — parallel feed becomes production, November 3, 2026
+The model output did not change at implementation. File names, the per-cycle file sets, record inventories and GRIB2 encoding are identical before and after. **The distribution changed in four ways**, all verified on 2026-11-03:
+
+- **NOMADS `para/` is gone, about ten hours before the cutover.**
+  - `/pub/data/nccf/com/rrfs/para/` and `/refs/para/` no longer exist.
+  - `/rrfs/prod/` was created at 01:49 UTC and `/refs/prod/` at 02:05 UTC on November 3. Both already held the November 2 dates, so the parallel tree was moved rather than restarted.
+  - Code still polling `para/` lost the 00 and 06 UTC cycles of November 3, not just the post-implementation ones.
+  - Retention is unchanged at two days.
+- **The versioned paths are public.** `/rrfs/v1.0/` and `/refs/v1.0/` mirror `prod/` exactly, with identical listings and timestamps. Either works; `prod/` is the stable name across future version changes.
+- **The NODD bucket paused during the switch and has backfilled.** `s3://noaa-rrfs-ops-pds` stopped ingesting RRFS deterministic, member and fire-weather output partway through the 19 UTC cycle of November 2 (about 20:20 UTC). It resumed at 15:28 UTC on November 3, when it backfilled every missing cycle. The object counts are now complete.
+  - REFS kept flowing through the 00 and 06 UTC cycles.
+  - The REFS 12 UTC cycle arrived about three hours later than the day before (first object 17:07 UTC, against 14:04 UTC). On NOMADS the same cycle was only about 16 minutes later.
+  - For anything time-critical on cutover day, NOMADS was the reliable channel.
+- **The NOAAPORT parallel directories have stopped.** `/pub/data/nccf/com/para/noaaport/{rrfs,refs}/` carry nothing after the 06 UTC cycle of November 3, and no public production equivalent has been found: `/rrfs/prod/noaaport/` returns 403. Separately, PNS 26-63 is soliciting comments on retiring SBN/NOAAPort itself as early as August 31, 2027.
+
+One channel difference **predates the cutover but was not recorded until now**. Every NOMADS synoptic cycle carries a `bufrsnd.tCCz/` directory with **1,875 per-station BUFR files**. That is the exploded sounding layout the AWS prototype had and that the RRFS entry described as on neither channel. It is present on November 2, so it is not a cutover change; with two-day retention its start date cannot be recovered. The NODD bucket still carries only the tarball and `class1.bufr`.
+
+- **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md#data-availability) · [REFS](./models/ensemble_models/regional/usa/refs.md#data-availability)
+- **Authority:** Direct verification of NOMADS and `s3://noaa-rrfs-ops-pds` on 2026-11-03; [NWS PNS 26-63 AAA](https://www.weather.gov/media/notification/pdf_2026/pns26-63_Updated_NOAAPort_retire_feedback_aaa.pdf) (September 18, 2026)
+- **Verification note:** Unchanged across the cutover, comparing the 12 UTC cycles of November 2 and November 3:
+  - the deterministic file list (identical);
+  - the `.idx` inventories of `prslev`, `2dfld`, `2dfld … subh`, `2dfld_awipsubset`, fire-weather `2dfld`, both member families and eight REFS `ensprod` products;
+  - the GRIB2 identification keys of deterministic, member and REFS files.
+
+  The S3 pause was established from object `LastModified` times. The rewritten cycles carry the backfill timestamps, so `LastModified` on that bucket cannot be used to date when those cycles actually ran.
+
 ### RRFS and REFS — distribution moved twice, then converged, August 2026
+*Historical: the `para/` paths described here closed on November 3, 2026; see the item above.*
 The pre-implementation parallel feed began at the 12 UTC cycle on **August 12, 2026** on
 NOMADS at `/pub/data/nccf/com/rrfs/para/` and `/pub/data/nccf/com/refs/para/`, one day
 later than the "on or about August 11" date in SCN 26-48 — a date NOAA subsequently
@@ -211,9 +295,9 @@ undistributed. Ensemble member output, absent through August, **began on Septemb
   confirmed by MD5. Sidecar coverage set-symmetric on 2026-08-22 and 2026-08-24. BUFR
   first cycle 2026-08-23 18 UTC, synoptic cycles only. The `.idx` addition cannot be dated
   more precisely than August 15–21 because NOMADS retains only two days.
-  Post-implementation paths from November 3, 2026 are `/rrfs/prod/` and `/refs/prod/`; the
-  SCN also references versioned `rrfs/v1.0` and `refs/v1.0` COM paths whose public
-  browsability is unconfirmed.
+  The post-implementation paths `/rrfs/prod/` and `/refs/prod/` went live on November 3,
+  2026, and the versioned `rrfs/v1.0` and `refs/v1.0` paths are publicly browsable mirrors of
+  them (confirmed 2026-11-03).
 
 ### RRFS ensemble members — dissemination began September 9, 2026
 The five RRFS ensemble members, previously produced but not distributed, are now public.
@@ -247,12 +331,10 @@ types, each with `.idx`) on every date checked from August 13 onward.
 
 - **Entries:** [RRFS](./models/nwp_models/regional/usa/rrfs.md) · [REFS](./models/ensemble_models/regional/usa/refs.md)
 - **Authority:** [NWS SCN 26-48 AAD](https://www.weather.gov/media/notification/pdf_2026/scn26-048_Updated_RRFS_and_REFS_Implementation_aad.pdf) (September 9, 2026); direct object listing of `s3://noaa-rrfs-ops-pds`
-- **Verification note:** Verified on the NODD bucket only. NOMADS was unreachable at the
-  time of checking, so whether `rrfsens.*` is also present under
-  `/pub/data/nccf/com/rrfs/para/` — and whether the two channels are byte-identical for
-  member output as they are for deterministic output — is **unconfirmed**. The AAD frames
-  the addition as being made "on NOMADS", so the expectation is that it is there. Re-check
-  before revising the RRFS and REFS entries.
+- **Verification note:** Originally verified on the NODD bucket only. NOMADS presence was
+  **confirmed on 2026-10-19**: `rrfsens.YYYYMMDD/` was present under `/rrfs/para/` with all
+  five members and 488 GRIB2 files per member at 12 UTC, matching the bucket. It moved to
+  `/rrfs/prod/rrfsens.YYYYMMDD/` with the rest of the feed on November 3, 2026, unchanged.
 
 ### RRFS and REFS — SBN/NOAAPORT WMO headers published, October 2, 2026
 SCN 26-48 AAE adds a section on Satellite Broadcast Network dissemination for the first
@@ -267,7 +349,10 @@ f03–f48 and then 6-hourly to f60.
 - **Authority:** NWS SCN 26-48 AAE (October 2, 2026); full header list at https://www.nco.ncep.noaa.gov/pmb/products/noaaport/
 - **Verification note:** The SCN does not say which 3 km North America geometry the RRFS SBN
   product uses, so whether it is the 4680 × 2830 AWIPS subset grid is open. The NOMADS
-  `para/noaaport/` directories have not been decoded against the header list.
+  `para/noaaport/` directories were never decoded against the header list, and they stopped
+  at the 06 UTC cycle of November 3, 2026, with no public production equivalent found. The
+  question may not stay relevant for long: PNS 26-63 proposes retiring SBN/NOAAPort as early
+  as August 31, 2027.
 
 ### DWD ICON family — move to the `/weather/nwp/v1/` URL scheme (legacy trees end after November 30, 2026)
 DWD is moving its ICON Open Data onto the URL scheme it introduced in April 2025 for ICON-ART, ICON-D2-RUC and AICON. The v1 trees for ICON, ICON-EU, ICON-D2 and the three ensembles were running in parallel with the old ones by late August 2026 (ICON-EU's v1 directory was created August 21, ICON-D2-EPS's August 24). They are now the trees to build against, because the old ones stop after November 30, 2026.
@@ -387,6 +472,8 @@ Verified against the live `harmonie_arome_cy46_p1` test stream on 2026-08-15:
 **Imminent or recent changes** are events that have happened in the last few months or will happen in the next few months. These need the most active attention from catalog users.
 
 **Recently operational (AI weather systems)** highlights AI-based forecast systems that have transitioned from experimental to operational status. Listed separately because the AI lifecycle is moving fast and is worth tracking distinctly.
+
+**Recent retirements** are systems that have been retired in the last few months. Their catalogue entries are removed at retirement, so these items are the record of what went, when, and what replaced it.
 
 **Scheduled retirements** are events with authoritative NWS/ECMWF/ECCC notifications confirming the change. These are locked in pending operational implementation.
 
