@@ -1,7 +1,7 @@
 # CanSIPS (Canadian Seasonal to Inter-annual Prediction System)
 
 ## What this model is
-CanSIPS is Environment and Climate Change Canada's operational global long-range forecasting system, producing probabilistic seasonal-to-interannual predictions out to 12 months. It is a multi-model ensemble (MME) built from two fully coupled atmosphere–ocean–sea-ice–land models developed in-house — CanESM5 and GEM5.2-NEMO — whose members are pooled into a single 40-member ensemble. Output is both deterministic (ensemble mean) and probabilistic (tercile and threshold-exceedance categories). The current operational version is **CanSIPS v3.0.0**, in operations since 11 June 2024.
+CanSIPS is Environment and Climate Change Canada's operational global long-range forecasting system, producing probabilistic seasonal-to-interannual predictions out to 12 months. It is a multi-model ensemble (MME) built from two fully coupled atmosphere–ocean–sea-ice–land models developed in-house — CanESM5 and GEM5.2-NEMO — whose members are pooled into a single 40-member ensemble. Output is both deterministic (ensemble mean) and probabilistic (tercile and threshold-exceedance categories). The current operational version is **CanSIPS v3.1.0** (14 April 2026), a port of **v3.0.0** (in operations since 11 June 2024) to ECCC's new high-performance computing infrastructure.
 
 Note that CanSIPS is an *operational seasonal prediction* system, not a climate-projection model: it issues initialized, calendar-dated forecasts on a monthly cycle.
 
@@ -111,17 +111,59 @@ Skill derives chiefly from the coupled ocean–atmosphere state (ENSO is the dom
 - **Forecast vs hindcast initialization asymmetry.** Real-time runs initialize from operational analyses (GDPS / GIOPS / GEPS), while hindcasts initialize from reanalyses (ERA5 / ORAS5). Worth bearing in mind when comparing real-time anomalies against the hindcast climatology.
 - **Use anomalies, not raw fields.** ECCC explicitly recommends subtracting the hindcast climatology to form anomaly forecasts rather than using raw model output.
 - **Lagged-start offset — open item.** The datamart documentation describes the lagged ensemble members as initialized **4 days** prior to month-end (forecast mode), whereas the technical note describes the hindcast lagged members as **5 days** beforehand. Confirm whether this is a genuine forecast/hindcast difference or a documentation inconsistency.
+- **Version-history gaps (ECCC sources):** The changelog gives no version number for the January 2020 HPC port or the June 2016 ocean-analysis change, and its 2011 entry doesn't name the two v1 models. Those come from Merryfield et al. (2013) and the CanSIPSv2 technical note. Version numbering also varies: "Version 2", "Version 2.1", 2.2.0, 3.0.0, 3.1.0.
 - **Out of scope:** the rendered seasonal outlook maps at weather.gc.ca/saisons are viewer-only products built on top of this data; the in-scope artifact is the raw GRIB2.
 - **Related ECCC systems** (wire relative links if these entries exist): GEPS (atmospheric ICs for GEM5.2-NEMO), GDPS (land/atmosphere analyses), GIOPS (ocean/sea-ice ICs).
 
 ---
 
-## Recent version history
-- **v3.0.0 — 11 June 2024:** CanESM5 (5.1-p1) replaced CanCM4i; GEM5.1-NEMO upgraded to GEM5.2-NEMO (new land ICs and physics); ensemble size increased from 20 to 40; run-time bias correction added in CanESM5; enhanced land initialization. Full chronology: https://eccc-msc.github.io/open-data/msc-data/nwp_cansips/changelog_cansips_en/
+## Version history
+
+The list runs from the start of operations (December 2011) to the present, newest first. CanSIPS has had three generations, each pairing two coupled models. v1 used CanCM3 + CanCM4. v2 used GEM-NEMO + CanCM4i. v3 uses GEM5.2-NEMO + CanESM5. Forecasts are issued monthly, so an upgrade first appears in the next month's forecast.
+
+### CanSIPS v3.1.0 — operational April 14, 2026 (current)
+- Port of v3.0.0 to ECCC's new high-performance computing infrastructure. No science or configuration changes listed.
+
+### CanSIPS v3.0.0 — operational June 11, 2024 (12 UTC run)
+- **CanCM4i replaced by the CanESM5.1 Earth system model** (CanESM5.1-p1), with a run-time atmosphere/ocean bias correction using tendency adjustment terms
+- **GEM-NEMO upgraded from GEM 5.1 to GEM 5.2**
+- **Official ensemble doubled from 20 to 40 members**, by combining forecasts started on the last day of the month with forecasts started four days earlier (10 + 10 per model)
+- Land initial conditions for real-time GEM5.2-NEMO forecasts now come from the GDPS analysis adjusted to the hindcast climatology (previously from offline runs)
+- More variables made available to external users through Copernicus C3S
+
+### CanSIPS v2.2.0 — operational June 28, 2022
+- Port of v2.1 to ECCC's then-new HPC infrastructure. No science changes listed.
+
+### CanSIPS v2.1 — operational November 30, 2021
+- **GEM-NEMO upgraded to GEM 5.1**
+- Inputs now come from the upgraded GDPS 8.0.0, GEPS 7.0.0 and GIOPS 3.3.0
+- ECMWF announced the matching change to the C3S contribution (CanSIPSv2.1: CanCM4i + GEM5-NEMO) from the December 2021 forecast, with new GEM5-NEMO hindcasts for December start dates
+
+### HPC port — January 21, 2020
+- CanSIPS v2 adapted to ECCC's then-new HPC infrastructure. ECCC's changelog gives no version number. No science changes listed.
+
+### CanSIPS v2 — operational July 3, 2019
+- **CanCM3 replaced by the GEM-NEMO coupled model** (ECCC's GEM atmosphere coupled to NEMO ocean and CICE sea ice), initialized from GEPS-based atmospheric analyses
+- **CanCM4 upgraded to CanCM4i**, with improved sea-ice initialization
+- Still 20 members (10 per model), 12-month forecasts. Described in the CanSIPSv2 technical note (Lin et al., 2019)
+
+### Ocean analysis change — June 21, 2016
+- 3D ocean analyses now from ECCC's GIOPS 2.1, replacing NCEP's GODAS. ECCC's changelog gives no version number.
+
+### GODAS feed interruption — July 16–23, 2013
+- The GODAS ocean temperature analysis feed was interrupted from July 16 to July 23, 2013. It was restored on July 23 with analyses dated July 17–21, and normal import was expected from July 24.
+
+### CanSIPS v1 — operational December 1, 2011
+- **First coupled (one-tier) seasonal system at ECCC.** It combines two CCCma coupled climate models, CanCM3 and CanCM4, which share the same ocean, sea-ice and land components but use versions 3 and 4 of CCCma's atmospheric model (Merryfield et al., 2013)
+- 20 members (10 per model), 12-month forecasts, released on the first day of each month
+- Replaced the previous two-tier, four-model seasonal system (months 1–4) and the statistical CCA system (months 4–12)
+- Developed with the Canadian Centre for Climate Modelling and Analysis (CCCma). Contributed from the start to multi-model ensembles: WMO, the APEC Climate Center and NMME
 
 ---
 
 ## Official documentation
+- CanSIPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_cansips/changelog_cansips_en/
+- CanSIPSv2 technical note (Lin et al., 2019): https://iridl.ldeo.columbia.edu/documentation/Models/NMME/CanSIPSv2/technote_cansips-v2_20190703_e.pdf
 - Overview: https://eccc-msc.github.io/open-data/msc-data/nwp_cansips/readme_cansips_en/
 - Datamart (GRIB2) readme: https://eccc-msc.github.io/open-data/msc-data/nwp_cansips/readme_cansips-datamart_en/
 - Technical specifications (PDF): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/tech_specifications/tech_specifications_CANSIPS_e.pdf
@@ -129,3 +171,6 @@ Skill derives chiefly from the coupled ocean–atmosphere state (ENSO is the dom
 - Fact sheet (PDF): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/fact_sheets/factsheet_cansips_e.pdf
 - Discovery metadata (forecast): https://open.canada.ca/data/en/dataset/922781a9-bfef-56b9-a438-493ada629d47
 - Discovery metadata (hindcast): https://open.canada.ca/data/en/dataset/0f4c5558-b51e-46e8-9e0c-b75545f217aa
+
+### Key references
+- Merryfield, W. J., et al. (2013). The Canadian Seasonal to Interannual Prediction System. Part I: Models and Initialization. *Mon. Wea. Rev.*, 141, 2910–2945.
