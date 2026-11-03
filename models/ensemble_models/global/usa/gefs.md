@@ -7,7 +7,7 @@ GEFS is the ensemble counterpart to the deterministic [GFS](../../../nwp_models/
 
 GEFS is also a contributing member to the [North American Ensemble Forecast System (NAEFS)](./naefs.md), the [557th WW GEPS](./557wg-geps.md) multi-model ensemble, and the [HGEFS](./hgefs.md) hybrid physics-AI grand ensemble — making it one of the most heavily-used ensemble forecast products in operational meteorology.
 
-The current operational version is **GEFSv12** (operational since 23 September 2020), with **GEFSv13** under development for joint deployment alongside [GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes) (proposed for October 2026).
+The current operational version is **GEFSv12** (operational since 23 September 2020). **GEFSv13** is under development as the ensemble counterpart to the coupled [GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes). GFSv17 is now planned for **late 2027**, moved from October 2026 by the October 28, 2026 update to PNS 26-29. No notice gives a date for GEFSv13.
 
 ---
 
@@ -91,7 +91,7 @@ Live-verified against `gefs.20260731/` on 2026-07-31. "Extended" = 00 UTC (840 h
 
 `atmos/init/{c00,p01…p30}/` holds the **initial conditions for every member** as NetCDF: `gfs_ctrl.nc` (7.5 KB) plus `gfs_data.tile1–6.nc` and `sfc_data.tile1–6.nc` (580 MB each) on the native cubed-sphere tiles. 403 objects, **121.8 GB per cycle**, at every one of the four cycles.
 
-This makes the full 31-member cubed-sphere initial state publicly available — unusual, and comparable to the [HRRRDAS ensemble backgrounds](../../../nwp_models/regional/usa/hrrr.md#5-the-nwges-guess-streams--hrrrdas-ensemble-backgrounds) in the HRRR buckets. It is DA/model-input machinery rather than forecast output, but it is gridded and openly distributed. Present on all three clouds.
+This makes the full 31-member cubed-sphere initial state publicly available — unusual, and comparable to the [HRRRDAS ensemble backgrounds](../../../nwp_models/regional/usa/hrrr.md#distribution-channels) in the HRRR buckets. It is DA/model-input machinery rather than forecast output, but it is gridded and openly distributed. Present on all three clouds.
 
 ---
 
@@ -102,7 +102,7 @@ This makes the full 31-member cubed-sphere initial state publicly available — 
 - **[HGEFS](./hgefs.md):** Hybrid grand ensemble combining the 31 GEFS members with 31 [AIGEFS](./aigefs.md) AI-based members, providing a 62-member physics-plus-AI ensemble
 - **[AIGEFS](./aigefs.md):** AI-based ensemble counterpart trained to emulate GEFS behavior
 - **[GEFS-Wave](../../../wave_models/global/usa/gefs-wave.md):** The one-way-coupled WAVEWATCH III ensemble in the `wave/` subtree
-- **[GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes) and GEFSv13:** Co-developed; GEFSv13 will be the ensemble counterpart to the proposed coupled Earth-system GFSv17
+- **[GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes) and GEFSv13:** Co-developed; GEFSv13 is planned as the ensemble counterpart to the proposed coupled Earth-system GFSv17 (now late 2027)
 
 ---
 
@@ -144,11 +144,11 @@ https://nomads.ncep.noaa.gov/pub/data/nccf/com/gens/prod/
     atmos/{bufr,init,pgrb2ap5,pgrb2bp5,pgrb2sp25}/
 ```
 
-Retention observed on 2026-08-01: **4 days** (`gefs.20260729` through `gefs.20260801`).
+Retention: **4 days**, observed on 2026-08-01 (`gefs.20260729`–`gefs.20260801`) and re-confirmed on 2026-11-03 (`gefs.20261031`–`gefs.20261103`). Directory listings need `curl --http1.1`: over HTTP/2, curl rejects the server's space-padded `Content-Length` header and returns an empty listing.
 
 > **NOMADS carries a `bufr/` subtree that no cloud mirror has.** Under `atmos/bufr/` sit per-member `gec00/`, `p01/`–`p30/`, and `avg/` directories of exploded station soundings, alongside 32 bundled `ge{c00,p01…p30,avg}.tCCz.bufrsnd.tar.gz` files (~76 MB each) and an `ls-l` manifest. **None of it exists on AWS, Azure, or GCS** — all three show only `init/`, `pgrb2ap5/`, `pgrb2bp5/`, and `pgrb2sp25/` under `atmos/`, and `ls-l` returns HTTP 404 on each.
 >
-> With a 4-day NOMADS window and no cloud copy, **GEFS station soundings are effectively unarchived** — the same pattern documented for [RAP](../../../nwp_models/regional/usa/rap.md#distribution-channels), and the inverse of [HRRR](../../../nwp_models/regional/usa/hrrr.md#3-google-cloud-storage-nodd--real-time--identical-deep-archive), where GCS is the only archival route to them.
+> With a 4-day NOMADS window and no cloud copy, **GEFS station soundings are effectively unarchived** — the same pattern documented for [RAP](../../../nwp_models/regional/usa/rap.md#distribution-channels), and the inverse of [HRRR](../../../nwp_models/regional/usa/hrrr.md#distribution-channels), where GCS is the only archival route to them.
 
 > Both the OPeNDAP (`/dods/`) and FTPPRD (`ftpprd.ncep.noaa.gov`, `ftp.ncep.noaa.gov`) routes were retired on **23 February 2026** under SCN 25-81 and SCN 25-82 respectively. This matters for [NAEFS](./naefs.md), whose entry still lists the `nomads.ncep.noaa.gov/dods/gens_bc` OPeNDAP endpoint for bias-corrected GEFS.
 
@@ -170,7 +170,7 @@ Archive: `gefs.YYYYMMDD/` from **2017-01-01** to present — **3,500 directories
 
 Archive: **2,137 directories from 2020-09-25** — i.e. starting two days after the GEFSv12 implementation, so the GCS archive is **GEFSv12-only by construction**. That is arguably cleaner than AWS's mixed-version archive for anyone who wants a single-version dataset, but it means the 2017–2020 GEFSv11 period is AWS-only.
 
-> ⚠️ **GCS is missing 315 `.idx` sidecars per cycle**, all in the `wave/gridded/` subtree — specifically the `mean`, `spread`, and `prob` derived products (105 each). Every GRIB2 data file is present, and the `atmos/` and `chem/` trees are complete. The same systematic-missing-`.idx` pattern documented for [RAP](../../../nwp_models/regional/usa/rap.md#4-google-cloud-storage-nodd--real-time--near-complete-archive) on GCS. Byte-range subsetting of the wave derived products will not work there.
+> ⚠️ **GCS is missing 315 `.idx` sidecars per cycle**, all in the `wave/gridded/` subtree — specifically the `mean`, `spread`, and `prob` derived products (105 each). Every GRIB2 data file is present, and the `atmos/` and `chem/` trees are complete. The same systematic-missing-`.idx` pattern documented for [RAP](../../../nwp_models/regional/usa/rap.md#distribution-channels) on GCS. Byte-range subsetting of the wave derived products will not work there.
 
 **4. Microsoft Azure (NODD) — real-time, 90-day rolling window**
 
@@ -179,7 +179,7 @@ Archive: **2,137 directories from 2020-09-25** — i.e. starting two days after 
 - **Documentation:** https://microsoft.github.io/AIforEarthDataSets/data/noaa-gefs.html
 - **Planetary Computer dataset page:** https://planetarycomputer.microsoft.com/dataset/storage/noaa-gefs
 
-Live window on 2026-08-01: **92 days** (`gefs.20260502/` → `gefs.20260801/`) — the same ~90-day pattern as the Azure [GFS](../../../nwp_models/global/usa/gfs.md#data-availability), [RAP](../../../nwp_models/regional/usa/rap.md#3-microsoft-azure-nodd--real-time-90-day-rolling-window), and [CFSv2](../../../climate_models/global/usa/cfsv2.md#data-availability) containers.
+Live window on 2026-08-01: **92 days** (`gefs.20260502/` → `gefs.20260801/`) — the same ~90-day pattern as the Azure [GFS](../../../nwp_models/global/usa/gfs.md#data-availability), [RAP](../../../nwp_models/regional/usa/rap.md#distribution-channels), and [CFSv2](../../../climate_models/global/usa/cfsv2.md#data-availability) containers.
 
 > **Within its window, Azure is the most complete of the three mirrors** — object counts match AWS exactly (36,223 for the 00 UTC cycle), including all the `.idx` sidecars GCS lacks.
 
@@ -228,8 +228,12 @@ All three serve **anonymous HTTP 206 byte-range requests** with `GRIB` magic at 
 - GEFS-Aerosols introduced as a separate GOCART-coupled run
 - Accompanied by the 30-year GEFSv12 reforecast dataset
 
+The current operational code tag is **`gefs.v12.3.23`** (NCO operational code listing, checked 2026-11-03).
+
 ### Upcoming — GEFSv13
-Under development for joint deployment with [GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes) (proposed for October 2026). As with GFSv17, no formal Service Change Notice has been issued; product paths and the product set may change, and this entry's inventory should be re-verified if that upgrade goes operational.
+Under development as the ensemble counterpart to [GFSv17](../../../nwp_models/global/usa/gfs.md#upcoming-changes). GFSv17 itself moved from October 2026 to **late 2027** in the PNS 26-29 update of October 28, 2026, which ties it to the move of NWS supercomputing to the commercial cloud.
+- **No public notice for GEFSv13 itself.** No PNS or SCN has been issued, and the PNS 26-29 update does not mention GEFSv13. Whether it ships with GFSv17 or separately is not stated (TBD).
+- **The data layout may change too.** The GFSv17 notice says the shared Global Workflow is being built for ensemble as well as deterministic applications, and that significant directory and file-name changes are planned. Expect GEFS product paths to change, and re-verify this entry's inventory when GEFSv13 goes operational.
 
 ---
 
