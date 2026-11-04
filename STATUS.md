@@ -140,31 +140,36 @@ There is no SCN yet. **See [UFS.md](./UFS.md).**
 - **Entries:** [GFS](./models/nwp_models/global/usa/gfs.md) · [GEFS](./models/ensemble_models/global/usa/gefs.md)
 - **Authority:** [NWS PNS 26-29 AAA](https://www.weather.gov/media/notification/pdf_2026/pns26-29_Updated_Science_for_GFSv17_aaa.pdf) (October 28, 2026); original [PNS 26-29](https://www.weather.gov/media/notification/pdf_2026/pns26-29_Science_for_GFSv17.pdf) (April 15, 2026)
 
-### HARMONIE-AROME Cy43 → Cy46 (KNMI / UWC-West) — planned November 2026
-UWC-West's shared HARMONIE-AROME configuration moves from Cycle 43 to Cycle 46, and
-**Cy43 is discontinued at the same time** — this is a cutover, not a parallel run. The
-headline change for data users is the encoding: Cy46 writes WMO-compliant **GRIB2**
-directly, replacing Cy43's GRIB1 with KNMI local table 253 (see *Format and distribution
-changes*). Scientifically the cycle itself brought little new; the improvements come from
+### HARMONIE-AROME Cy43 → Cy46 (KNMI / UWC-West) — postponed to mid-January 2027
+UWC-West's shared HARMONIE-AROME configuration moves from Cycle 43 to Cycle 46. **KNMI
+postponed the transition from November 2026 to "a date from mid-January 2027"**, citing
+technical challenges and requests from several major users. **Cy43 is phased out one
+month after the transition**, so the two streams overlap for about a month. KNMI had not
+previously said whether they would overlap. The headline change for data users is the
+encoding: Cy46 writes WMO-compliant **GRIB2** directly, replacing Cy43's GRIB1 with KNMI
+local table 253. The test streams also show **undocumented content changes**, most
+importantly relative humidity and cloud cover moving from fractions to percent (see
+*Format and distribution changes*). Scientifically the cycle itself brought little new; the improvements come from
 UWC-West's own additions on top of it — shallow convection scheme changes, new
 physiography (GLO-90 DEM at 150 m, updated ECOCLIMAP-SG maps), reduced evaporation and
 roughness for low vegetation, ECUME6 air-sea fluxes, forecast SST as surface boundary
 condition, and assimilation of T2m/RH2m plus low-peaking microwave channels.
 
-A test-phase data stream for the **Dutch P1 package only** has been live on the KNMI Data
-Platform since 6 August 2026 (`harmonie_arome_cy46_p1`, CC BY 4.0, same Open Data API and
-MQTT access as the operational datasets). KNMI states the remaining packages will follow
-during the testing phase. No separate entry is catalogued for the test stream; the
-existing entries will be revised at cutover.
+Test-phase data streams are live on the KNMI Data Platform for **P1** (Netherlands, since
+6 August 2026, `harmonie_arome_cy46_p1`) and for **P3 and P5** (Europe/DINI, published
+11 September 2026, `harmonie_arome_cy46_p3` and `harmonie_arome_cy46_p5`). All three use
+CC BY 4.0 and the same Open Data API and MQTT access as the operational datasets. **The
+ensemble packages P2 and P4 are not yet available.** No separate entry is catalogued for
+the test streams; the existing entries will be revised at cutover.
 
 - **Entries:** [HARMONIE-AROME Netherlands (P1)](./models/nwp_models/regional/netherlands/harmonie-arome-netherlands.md) · [HARMONIE-AROME Europe/DINI (P3/P5)](./models/nwp_models/regional/netherlands/harmonie-knmi.md) · [HARMONIE-AROME North Sea Forcing (L20)](./models/nwp_models/regional/netherlands/harmonie-knmi-l20.md) · [HARMONIE-AROME EPS Netherlands (P2a)](./models/ensemble_models/regional/netherlands/harmonie-eps-knmi-nl.md) · [HARMONIE-AROME EPS Europe (P4a)](./models/ensemble_models/regional/netherlands/harmonie-eps-knmi-eu.md)
-- **Authority:** KNMI Data Platform news, [Test data available for Harmonie 46](https://english.knmidata.nl/latest/news/2026/04/15/test-data-available-for-harmonie-46) (15 April 2026, revised transition schedule) and [Test data stream available for Harmonie 46](https://english.knmidata.nl/latest/news/2026/08/11/test-data-stream-available-for-harmonie-46) (11 August 2026); UWC-West "HARMONIE CY46 Evaluation" verification report and P1/P3 content manifests, https://surfdrive.surf.nl/s/4XGmiN9i68PPjZy; HIRLAM [Harmonie 46h1.1 release notes](https://github.com/Hirlam/Harmonie/wiki/Harmonie-46h1.1-release-notes)
-- **Verification note:** KNMI's published schedule gives testing April–October 2026,
-  transition November 2026, aftercare December 2026 – January 2027. **No more specific
-  date than "November" has been published**, and the schedule has already slipped twice
-  (operational implementation was originally autumn 2025, then April 2026). Treat November
-  as directional. Whether the KNMI-operated Caribbean (BES) domains move on the same date
-  is not stated in any published source. The verification report also lists DINI-EPS with
+- **Authority:** KNMI Data Platform news, [Transition to Harmonie 46 in early 2027](https://english.knmidata.nl/latest/news/2026/10/14/transition-to-harmonie-46-in-early-2027) (15 October 2026, current schedule), [Test data available for Harmonie 46](https://english.knmidata.nl/latest/news/2026/04/15/test-data-available-for-harmonie-46) (15 April 2026, superseded schedule) and [Test data stream available for Harmonie 46](https://english.knmidata.nl/latest/news/2026/08/11/test-data-stream-available-for-harmonie-46) (11 August 2026); UWC-West "HARMONIE CY46 Evaluation" verification report and P1/P3 content manifests, https://surfdrive.surf.nl/s/4XGmiN9i68PPjZy; HIRLAM [Harmonie 46h1.1 release notes](https://github.com/Hirlam/Harmonie/wiki/Harmonie-46h1.1-release-notes)
+- **Verification note:** KNMI's revised schedule (15 October 2026) gives testing
+  April–December 2026, transition mid-January 2027, and follow-up January–March 2027.
+  **No exact date has been published.** "From mid-January" sets the earliest date, not a
+  firm one. The schedule has now slipped three times: autumn 2025, then April 2026, then
+  November 2026. Treat mid-January as directional. Whether the KNMI-operated Caribbean
+  (BES) domains move on the same date is not stated in any published source. The verification report also lists DINI-EPS with
   updated SPP settings and a new, larger IG domain as outstanding tasks, so the EPS entries
   may need geometry changes beyond the encoding switch.
 
@@ -459,27 +464,58 @@ Completes ECMWF's migration to GRIB2-native **parameter encoding**. All Open Dat
 - **Entries:** [IFS](./models/nwp_models/global/eu/ifs.md#upcoming-changes) · [IFS ENS](./models/ensemble_models/global/eu/ifs-ens.md)
 - **Authority:** ECMWF [Migration to GRIB edition 2](https://confluence.ecmwf.int/display/MTG2US/Migration+to+GRIB+edition+2+Information+page) page
 
-### KNMI HARMONIE-AROME — GRIB1 to GRIB2 at the Cy46 cutover (planned November 2026)
+### KNMI HARMONIE-AROME — GRIB1 to GRIB2 at the Cy46 cutover (postponed to mid-January 2027)
 Every KNMI HARMONIE dataset currently ships GRIB **edition 1** with KNMI local
 `table2Version` 253, meaning parameters resolve as `unknown` under stock ecCodes and
 require KNMI's published code table. Cy46 output is GRIB **edition 2** (master tables v35)
 and decodes with stock ecCodes tables, removing the local-table dependency entirely.
-Verified against the live `harmonie_arome_cy46_p1` test stream on 2026-08-15:
+First verified against the `harmonie_arome_cy46_p1` test stream on 2026-08-15. **Re-verified
+on 2026-11-04 for P1, P3 and P5**, comparing the 16 UTC run of 4 November from both cycles:
 
-- **Grid, horizon and cadence are unchanged** — 390 × 390 `regular_ll`, 49.0–56.002°N /
-  0.0–11.281°E, 0.029° × 0.018° increments, 0–60 h hourly (61 steps per run), hourly
-  cycling. No regridding work needed downstream.
-- **Parameter set loses exactly three fields**: the ISBA nature-tile soil temperatures
-  (GRIB1 `indicatorOfParameter` 11 at levels 800/801/802, i.e. 0 cm / −7 cm / −50 cm).
-  49 messages per step becomes 46. Every other field maps 1:1.
+- **Packaging is unchanged.** Each package is one uncompressed tar per hourly run, holding
+  61 files from +00 h to +60 h. Tars are named `HARM46_V1_P{1,3,5}_YYYYMMDDHH.tar`. The
+  files inside are `HA46_N20_…` (P1), `HA46_N55_…` (P3) and `HA46_N55ML_…` (P5), replacing
+  the `HA43_` prefix. Tar sizes are about the same for P3 and P5. P1 is about 11% smaller.
+- **Grids, horizon and cadence are unchanged in all three packages.** No regridding work
+  is needed downstream.
+  - P1: 390 × 390 `regular_ll`, 49.0–56.002°N / 0.0–11.281°E, 0.029° × 0.018°.
+  - P3 and P5: 676 × 564 `rotated_ll` at 0.05°, with the same rotated pole (35°S, 8°W).
+    Cy46 writes the longitudes as 0–360 (first point 346.5°, pole 352°) where Cy43 used
+    −180–180. They describe the same grid.
+  - The Cy46 P1 *dataset metadata* on the Data Platform has the south and east bounds
+    swapped (south 11.281, east 49). The files themselves are correct.
+- **P1 loses exactly three fields**: the ISBA nature-tile soil temperatures (GRIB1
+  `indicatorOfParameter` 11 at levels 800/801/802, i.e. 0 cm / −7 cm / −50 cm). 49
+  messages per step becomes 46. P3 keeps 71 messages per step and P5 keeps 363.
+- **P5 is unchanged in structure.** It still carries `t`, `u`, `v` and `q` on hybrid levels
+  1–90, plus surface pressure, geopotential and temperature. The 182 hybrid-level
+  coefficients are identical to Cy43's.
+- **Relative humidity and cloud cover change from fractions to percent.** Cy43 stores 2 m
+  RH, pressure-level RH and total, low, medium and high cloud cover as fractions (0–1),
+  even though KNMI's Cy43 code table lists them as %. Cy46 stores them as 0–100 %. **This
+  is a 100× change that KNMI has not documented**, and it applies to P1 and P3.
+- **Column-integrated graupel changes meaning.** In Cy43 it is an instantaneous value
+  (`timeRangeIndicator` 0). In Cy46 it is the maximum over the past hour (PDT 8,
+  `typeOfStatisticalProcessing` 2, `max_tcolg`).
+- **Snow depth drops its fill value.** Cy43 writes 9999 over large parts of the domain.
+  Cy46 writes real values, with 0 where there is no snow.
+- **Cloud base handling differs.** Cy43 values top out around 13 km. Cy46 runs from 0 to
+  exactly 20,000 m, which looks like a new "no cloud" value. Unconfirmed; check before
+  relying on it.
 - **Forecast time is encoded in minutes**, not hours (`indicatorOfUnitOfTimeRange` 0), and
-  filenames carry a five-digit `HHHMM` step field. Sub-hourly output is an outstanding task
-  in the UWC-West report, not yet present in the stream — all 61 members are hourly.
-- **Accumulation semantics are preserved** but now explicit: PDT 8 with
-  `typeOfStatisticalProcessing` 1 for from-run-start accumulations (precipitation,
-  radiation, fluxes) and 2 for past-hour maxima (10 m gusts, column-integrated graupel).
-- **`generatingProcessIdentifier` remains 43** in Cy46 files, so the identification section
-  cannot be used to distinguish the cycles — branch on GRIB edition or filename prefix.
+  filenames carry a five-digit `HHHMM` step field. KNMI's documentation mentions 15-minute
+  output for a few parameters, but **no package has sub-hourly steps yet**: all 61 files
+  per run are hourly.
+- **The other accumulations and maxima keep their meaning** but are now explicit: PDT 8
+  with `typeOfStatisticalProcessing` 1 for from-run-start accumulations (precipitation,
+  radiation, fluxes) and 2 for past-hour maxima (10 m gusts). Gusts were already
+  past-hour maxima in Cy43 (`timeRangeIndicator` 2).
+- **Standard short names now resolve**, such as `2t`, `10u`, `tp` and `tcc`. The one
+  exception is instantaneous surface graupel (0/1/75, PDT 0), which still decodes as
+  `unknown`.
+- **`generatingProcessIdentifier` is now 46** in Cy46 files, against 43 in Cy43. On
+  2026-08-15 the P1 test stream still carried 43, so KNMI has changed it since. Branching
+  on GRIB edition or filename prefix also works.
 - **The April 2026 static test samples do not match the live stream.** The samples added
   `min_visp` and downward long-wave `strd` and omitted the 10 m gust components; the live
   stream drops the two additions, restores the gusts, and swaps ceiling → cloud base and
