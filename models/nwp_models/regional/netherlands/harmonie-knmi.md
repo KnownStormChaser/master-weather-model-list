@@ -39,7 +39,7 @@ Both are packaged from the same UWC-West Cy43 run on an identical rotated lat-lo
 - **Model system / core:** HARMONIE-AROME
 - **Dynamical formulation:** Non-hydrostatic
 - **Convection-allowing:** Yes (at the native 2 km scale; note the public grid is regridded coarser — see resolution)
-- **Model version:** Cycle 43 (Cy43); operational at UWC-West since 20 June 2024 after a one-year test period, replacing the deprecated KNMI-only Cy40 datasets
+- **Model version:** Cycle 43 (Cy43); operational at UWC-West since 20 June 2024 after a one-year test period, replacing the deprecated KNMI-only Cy40 datasets. **Cy46 is due to replace it from mid-January 2027**; see [Upcoming changes](#upcoming-changes-cy46-from-mid-january-2027)
 - **Native horizontal resolution:** ~2 km (Lambert conformal)
 - **Public distribution grid (P3 & P5):** ~0.05° on a **rotated** lat-lon grid — bi-linear interpolation from the native Lambert conformal grid (lineage: "Bi-linear interpolation from lambert to rotated lat-lon")
 - **Grid dimensions (verified from GRIB):** 676 × 564 points (Ni × Nj), 0.05° × 0.05° increments
@@ -129,6 +129,23 @@ dataplatform/file/v1/harmonie_arome_cy43_p5/1.0/#
 
 ---
 
+## Upcoming changes: Cy46 from mid-January 2027
+UWC-West is moving HARMONIE-AROME from Cycle 43 to Cycle 46. KNMI postponed the switch from November 2026 to **"a date from mid-January 2027"**, and no exact date has been published. **The Cy43 datasets are phased out one month after the switch**, so both run in parallel for about a month. This entry will be revised at cutover. See the [status tracker](../../../../STATUS.md) for the full item.
+
+Test streams are already live as [`harmonie_arome_cy46_p3`](https://dataplatform.knmi.nl/dataset/harmonie-arome-cy46-p3-1-0) and [`harmonie_arome_cy46_p5`](https://dataplatform.knmi.nl/dataset/harmonie-arome-cy46-p5-1-0) (published 11 September 2026), with the same licence, API, MQTT access and 72-hour retention. Compared with these datasets (checked 2026-11-04):
+
+- **GRIB2 instead of GRIB1.** Fields decode with standard ecCodes names (`2t`, `10u`, `t`, `q` and so on), so KNMI's local code table is no longer needed. Forecast time is encoded in minutes.
+- **New names.** The datasets are `harmonie_arome_cy46_p3` and `_p5`, the tars are `HARM46_V1_P{3,5}_YYYYMMDDHH.tar`, and the files inside are `HA46_N55_…` (P3) and `HA46_N55ML_…` (P5).
+- **Unchanged:** the 676 × 564 rotated grid at 0.05° with the same pole, the 0–60 h hourly horizon, hourly runs, one tar per run, and about the same tar sizes. Cy46 writes the rotated longitudes as 0–360 (first point 346.5°, pole 352°) rather than −180–180. They describe the same grid.
+- **P3 keeps the same 71 messages per step**, including the five pressure levels.
+- **P5 keeps the same 363 messages per step**: `t`, `u`, `v` and `q` on hybrid levels 1–90, with identical vertical coefficients.
+- **Relative humidity (2 m and pressure levels) and cloud cover change from fractions (0–1) to percent (0–100)** in P3. KNMI has not documented this.
+- **Column-integrated graupel changes** from an instantaneous value to the maximum over the past hour.
+- **Snow depth drops its 9999 fill value**, and cloud base appears to use 20,000 m for "no cloud". The cloud base change is not yet confirmed.
+- **No sub-hourly output yet**, even though KNMI's Cy46 documentation mentions 15-minute output for a few parameters.
+
+---
+
 ## Notes
 - All KNMI HARMONIE Cy43 products (Netherlands P1, Europe P3/P5, Caribbean BES, ensemble P2/P4, etc.) come from the same UWC-West model run and differ only by domain, distributed grid, retained variable/level set, and (for P2/P4) deterministic vs ensemble output. **P3 and P5 are the same run on the same rotated 676 × 564 / 0.05° grid** — P3 retains near-surface/boundary-layer/pressure-level fields, P5 retains T/u/v/q on all 90 model levels.
 - The grid is **rotated** lat-lon (rotated south pole at −35.0° lat, −8.0° lon) — wind components are defined relative to the rotated grid axes, not true north. Software ingesting these files must account for this when computing geographic wind direction. (Contrast with the P1 Dutch dataset, which is on a regular lat-lon grid.)
@@ -149,5 +166,10 @@ dataplatform/file/v1/harmonie_arome_cy43_p5/1.0/#
   https://developer.dataplatform.knmi.nl/
 - KNMI HARMONIE overview and parameter tables:
   https://english.knmidata.nl/open-data/harmonie
+- KNMI news, Transition to Harmonie 46 in early 2027 (15 October 2026):
+  https://english.knmidata.nl/latest/news/2026/10/14/transition-to-harmonie-46-in-early-2027
+- Cy46 test datasets and their technical documentation:
+  - P3: https://dataplatform.knmi.nl/dataset/harmonie-arome-cy46-p3-1-0 · https://dataplatform.knmi.nl/dataset/docs/harmonie-arome-cy46-p3-1-0
+  - P5: https://dataplatform.knmi.nl/dataset/harmonie-arome-cy46-p5-1-0 · https://dataplatform.knmi.nl/dataset/docs/harmonie-arome-cy46-p5-1-0
 - UWC-West collaboration background (Icelandic Met Office):
   https://en.vedur.is/about-imo/news/new-icelandic-met-office-weather-and-climate-supercomputer-becomes-operational
