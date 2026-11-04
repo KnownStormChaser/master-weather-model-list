@@ -98,8 +98,8 @@ The file listing keeps only the most recent runs (three at the time of checking)
 
 ## Notes
 - **Member 00 is the deterministic control.** `ensemble_mem00_<run>.nc` is identical to the `nwp-v2-1h-1km` deterministic file for the same run: same byte size, identical field values, and both carry `ensemble_member = 00`. See [C-LAEF AlpeAdria deterministic](../../../nwp_models/regional/austria/c-laef-alpeadria-deterministic.md).
-- **Legacy 2.5 km endpoint (until 4 November 2026).** Since about mid-June 2026, the old `ensemble-v1-1h-2500m` endpoint has carried C-LAEF AlpeAdria percentiles **interpolated to the previous 2.5 km grid**, using the old parameter set and a twice-daily update. GeoSphere documents this as the `ensemble-v2-1h-2500m` dataset (DOI [10.60669/c1by-wh34](https://doi.org/10.60669/c1by-wh34)), served through the v1 endpoint. The legacy landing page still describes the 2.5 km C-LAEF. GeoSphere has announced that the v1 endpoint shuts down on **4 November 2026**.
-- **Breaking changes for users migrating from v1:**
+- **Legacy 2.5 km endpoint retired (4 November 2026).** From about mid-June 2026 until its retirement, the old `ensemble-v1-1h-2500m` endpoint carried C-LAEF AlpeAdria percentiles **interpolated to the previous 2.5 km grid**, using the old parameter set and a twice-daily update. GeoSphere documents this as the `ensemble-v2-1h-2500m` dataset (DOI [10.60669/c1by-wh34](https://doi.org/10.60669/c1by-wh34)), served through the v1 endpoint. The last legacy run was **00 UTC on 4 November 2026**; the 12 UTC run that would have followed was never published. Both legacy landing pages (`ensemble-v1-1h-2500m` and `ensemble-v2-1h-2500m`) are now marked deprecated ("Dieser Datensatz ist veraltet") with the update frequency set to "never". `ensemble-v2-1h-1km` is now the only ensemble open-data feed. *(At the time of checking, 4 November, the final legacy run was still downloadable and the API still listed the v1 dataset, but no new runs were being added.)*
+- **Breaking changes for users migrating from the retired v1 endpoint:**
   - Short names have changed, for example `2t_p50` instead of `t2m_p50`.
   - Some units have changed.
   - Precipitation and radiation are de-accumulated only.
@@ -115,8 +115,8 @@ The file listing keeps only the most recent runs (three at the time of checking)
 
 ## Recent version history
 
-### 4 November 2026 (scheduled) — Legacy 2.5 km endpoint shutdown
-GeoSphere has announced that the `ensemble-v1-1h-2500m` endpoint, which currently carries interpolated C-LAEF AlpeAdria percentiles, shuts down on this date.
+### 4 November 2026 — Legacy 2.5 km endpoint shut down
+The `ensemble-v1-1h-2500m` endpoint, which had carried interpolated C-LAEF AlpeAdria percentiles since June, was shut down on schedule. The last legacy run was 00 UTC, and no 12 UTC legacy run followed. New ensemble runs now appear only in `ensemble-v2-1h-1km`. GeoSphere marked the legacy datasets as deprecated the same day.
 
 ### 22 September 2026 — Public announcement
 GeoSphere Austria formally announced C-LAEF AlpeAdria as operational and available as open data, after a summer of use by duty forecasters and warning services.
@@ -148,7 +148,7 @@ The `ensemble-v2-1h-2500m` compatibility dataset was created on 15 June 2026 and
 - Migration help document (German): https://public.hub.geosphere.at/public/resources/misc/Hilfestellung_DE.pdf
 - Model orography: https://public.hub.geosphere.at/public/resources/misc/nwp_oro-v2-1km.nc
 - Announcement (22 September 2026): https://www.geosphere.at/en/news-and-events/news/geosphere-austria-a-more-powerful-forecasting-system-for-the-alps-adriatic-region
-- Legacy endpoint (until 4 November 2026): https://data.hub.geosphere.at/dataset/ensemble-v1-1h-2500m (DOI https://doi.org/10.60669/1a8r-ve42); interpolated AlpeAdria compatibility dataset: https://data.hub.geosphere.at/dataset/ensemble-v2-1h-2500m
+- Retired legacy endpoint (deprecated 4 November 2026): https://data.hub.geosphere.at/dataset/ensemble-v1-1h-2500m (DOI https://doi.org/10.60669/1a8r-ve42); interpolated AlpeAdria compatibility dataset: https://data.hub.geosphere.at/dataset/ensemble-v2-1h-2500m
 - GeoSphere Austria homepage: https://www.geosphere.at
 
 ### Key references
