@@ -130,6 +130,16 @@ SCN 26-89 also covers two non-NBM knock-on changes from the RRFS implementation 
 - **Authority:** [NWS SCN 26-89](https://www.weather.gov/media/notification/pdf_2026/scn26-89_RRFS_Downstream.pdf) (October 2, 2026)
 - **Verification note:** **The NAM ObsProc dumps end with the 12 UTC dump of November 3.** That dump is a reduced set (90 files, against 105 at 00 and 06 UTC), and there is none at 18 UTC. The MAG changes are website graphics and cannot be checked from distributed files.
 
+### C-LAEF AlpeAdria (GeoSphere Austria) — sole open-data feed from November 4, 2026; legacy 2.5 km endpoints shut down
+GeoSphere Austria's 1 km **C-LAEF AlpeAdria** system replaces the 2.5 km **AROME-Aut** deterministic model and the 2.5 km **C-LAEF** ensemble. It is a 16+1-member convection-permitting ensemble, jointly developed and operated with ARSO (Slovenia) and DHMZ (Croatia), and its control member is published separately as the deterministic feed. The switch happened in two steps:
+- **June 2026:** the model was swapped behind the old endpoints. From about mid-June, `nwp-v1-1h-2500m` and `ensemble-v1-1h-2500m` carried C-LAEF AlpeAdria output *interpolated to the old 2.5 km grid*, with the old parameter set, so existing users got the new model without changing anything. The native 1 km datasets `nwp-v2-1h-1km` and `ensemble-v2-1h-1km` followed on August 24, and GeoSphere announced the system as operational on September 22.
+- **November 4, 2026:** the legacy endpoints were shut down on schedule. The last legacy deterministic run was **03 UTC** and the last legacy ensemble run was **00 UTC**. All four legacy datasets (`nwp-v1-1h-2500m`, `ensemble-v1-1h-2500m` and the interpolated `nwp-v2-1h-2500m` / `ensemble-v2-1h-2500m`) are now marked deprecated, with their update frequency set to "never".
+
+What users gain on the 1 km feeds: a grid 2.5× finer (1300 × 945 points, against 594 × 492), **eight full ensemble runs a day instead of two**, all 17 raw ensemble members (previously only P10/P50/P90 were published), and new fields including MSLP, precipitation type and lightning density. The published area is nearly unchanged at about 43.0–51.5 °N, 5.0–22.6 °E. See *Format and distribution changes* for what breaks in migration.
+- **Entries:** [C-LAEF AlpeAdria deterministic](./models/nwp_models/regional/austria/c-laef-alpeadria-deterministic.md) · [C-LAEF AlpeAdria](./models/ensemble_models/regional/austria/c-laef-alpeadria.md)
+- **Authority:** GeoSphere Austria news, [A more powerful forecasting system for the Alps-Adriatic region](https://www.geosphere.at/en/news-and-events/news/geosphere-austria-a-more-powerful-forecasting-system-for-the-alps-adriatic-region) (September 22, 2026); shutdown notices on the Data Hub landing pages for [nwp-v2-1h-1km](https://data.hub.geosphere.at/dataset/nwp-v2-1h-1km) and [ensemble-v2-1h-1km](https://data.hub.geosphere.at/dataset/ensemble-v2-1h-1km) ("older versions of this dataset will be shut down on 4 November 2026")
+- **Verification note:** Shutdown confirmed on 2026-11-04 from the live data. Legacy files exist up to the runs above and none after them, and the 1 km feeds carried every run from 06 UTC onward. At the time of checking, the final legacy runs were still downloadable and the Dataset API still listed both v1 datasets, but frozen. The two interpolated 2.5 km datasets already return 404 from the API. **The June swap was never announced on the legacy pages**, which kept describing the old AROME and C-LAEF models until they were deprecated. It was found from the successor-DOI chain between datasets and confirmed by comparing v1 and v2 forecasts for the same run, which agreed to within 1 °C out to +53 h. The 1 km grid, variable sets and ensemble member files were re-verified from the 2026-11-04 runs.
+
 ### GFSv17 — moved to late 2027
 NOAA's coupled GFS/GDAS v17 upgrade is no longer planned for October 2026. The updated PNS 26-29 (AAA, October 28, 2026) ties the implementation to the move of NWS high-performance computing operations to the commercial cloud, **now anticipated in late 2027**. The science package is unchanged in outline:
 - C1152 (~9 km) FV3 atmosphere, up from C768
@@ -224,6 +234,18 @@ Last cycles on NOMADS, verified 2026-11-03. None of these systems produced a 12 
   - The NBM input change became NBM v5.1 (see the NBM v5.1 item), and the ObsProc and MAG consequences fall under SCN 26-89 (see the item after it).
 - **Authority:** [NWS SCN 26-47 AAC](https://www.weather.gov/media/notification/pdf_2026/scn26-47_Updated_Retirement_of_NAM_SREF_HREF_HiresW_NAM_MOS_aac.pdf) (October 2, 2026); [NWS PNS 25-41](https://www.weather.gov/media/notification/pdf_2025/pns25-41_RRFS_legacy_model_cessation.pdf) (June 26, 2025)
 
+### AROME-Aut and C-LAEF 2.5 km (GeoSphere Austria) — retired from open data; endpoints shut down November 4, 2026
+The models themselves left the public feed in June 2026, when C-LAEF AlpeAdria output started flowing through their endpoints. The endpoints were shut down on November 4. The former `arome-austria.md` and `c-laef.md` entries were renamed and rewritten as the C-LAEF AlpeAdria entries, which carry the predecessors' version history (C-LAEF operational from November 2019, cy43t2 from December 2021).
+
+| System | Last legacy run | Replacement |
+|---|---|---|
+| AROME-Aut, 2.5 km deterministic (`nwp-v1-1h-2500m`) | 03 UTC, November 4 | [C-LAEF AlpeAdria deterministic](./models/nwp_models/regional/austria/c-laef-alpeadria-deterministic.md) (`nwp-v2-1h-1km`) |
+| C-LAEF, 2.5 km ensemble percentiles (`ensemble-v1-1h-2500m`) | 00 UTC, November 4 | [C-LAEF AlpeAdria](./models/ensemble_models/regional/austria/c-laef-alpeadria.md) (`ensemble-v2-1h-1km`) |
+
+- **The "last legacy runs" are AlpeAdria output, not AROME-Aut or C-LAEF.** The 2.5 km endpoints had carried interpolated AlpeAdria data since about mid-June. The last genuine AROME-Aut and C-LAEF forecasts were distributed around then, and the exact date has not been published.
+- **Old output is still listed for now.** The final legacy files and the v1 API datasets remained reachable on November 4 but receive no new runs.
+- **Authority:** see the C-LAEF AlpeAdria item under *Imminent or recent changes*.
+
 ---
 
 ## Scheduled retirements
@@ -261,6 +283,19 @@ Experimental productionization of NVIDIA's FourCastNet architecture using Spheri
 ---
 
 ## Format and distribution changes
+
+### GeoSphere Austria — v1 (2.5 km) to v2 (1 km) endpoint migration, November 4, 2026
+Anyone still pulling `nwp-v1-1h-2500m` or `ensemble-v1-1h-2500m` must move to `nwp-v2-1h-1km` and `ensemble-v2-1h-1km`. This is not a drop-in path change. Per GeoSphere's migration help document and the files themselves:
+- **Short names changed** to GRIB/ECMWF style, for example `2t`, `10u`, `tp`, `msl` (deterministic) and `2t_p50` (ensemble), instead of `t2m`, `u10m`, `rr_acc` and `t2m_p50`. Some **units** changed too, so read them from the metadata.
+- **Precipitation, sunshine and radiation are de-accumulated only.** The accumulated fields are gone.
+- **Raw files are ordered north-to-south** instead of south-to-north.
+- **Fields are float32 with gzip compression** instead of scaled 16-bit integers. A deterministic or member file is now about 9.2 GB per run, and a statistics file about 7.2 GB.
+- **New grid and pressure levels:** the grid is 1300 × 945 at 0.0135° × 0.009° (it was 594 × 492 at 0.028° × 0.018°). Pressure-level output covers **11 levels, 1000–300 hPa**, against 23 levels to 100 hPa before.
+- **Ensemble files:** each run now has `ensemble_stats_<run>.nc` (P10/P50/P90) plus `ensemble_mem00`–`ensemble_mem16`. `mem00` is byte-identical to the deterministic file for the same run. The Dataset API serves only the statistics.
+- **Code lists** for `pt` (precipitation type) and `sy` (weather symbol) are documented only in the help PDF and the NetCDF attributes.
+- **Quirk:** the `spatial_resolution` global attribute still reads `0.028` in the 1 km files. Use the coordinate arrays instead.
+- **Entries:** [C-LAEF AlpeAdria deterministic](./models/nwp_models/regional/austria/c-laef-alpeadria-deterministic.md) · [C-LAEF AlpeAdria](./models/ensemble_models/regional/austria/c-laef-alpeadria.md)
+- **Authority:** GeoSphere Austria, [migration help document (German)](https://public.hub.geosphere.at/public/resources/misc/Hilfestellung_DE.pdf); file contents verified on 2026-10-03 and re-checked on 2026-11-04
 
 ### RRFS and REFS — parallel feed becomes production, November 3, 2026
 The model output did not change at implementation. File names, the per-cycle file sets, record inventories and GRIB2 encoding are identical before and after. **The distribution changed in four ways**, all verified on 2026-11-03:
