@@ -94,8 +94,8 @@ The file listing keeps only the most recent runs (three at the time of checking)
 
 ## Notes
 - **Same file as ensemble member 00.** The deterministic file for a given run is identical to `ensemble_mem00_<run>.nc` in the [C-LAEF AlpeAdria ensemble](../../../ensemble_models/regional/austria/c-laef-alpeadria.md) file listing. The two have the same byte size and identical field values, and both carry `ensemble_member = 00` in their global attributes. Users downloading the full ensemble do not need this file separately.
-- **Legacy 2.5 km endpoint (until 4 November 2026).** Since about mid-June 2026, the old `nwp-v1-1h-2500m` endpoint has carried C-LAEF AlpeAdria output **interpolated to the previous 2.5 km grid**, using the old parameter set and variable names. GeoSphere documents this as the `nwp-v2-1h-2500m` dataset (DOI [10.60669/jft1-g709](https://doi.org/10.60669/jft1-g709)), served through the v1 endpoint. The legacy landing page still describes the AROME 2.5 km model. GeoSphere has announced that the v1 endpoint shuts down on **4 November 2026**, after which only `nwp-v2-1h-1km` remains.
-- **Breaking changes for users migrating from v1** (per GeoSphere's help document and the files themselves):
+- **Legacy 2.5 km endpoint retired (4 November 2026).** From about mid-June 2026 until its retirement, the old `nwp-v1-1h-2500m` endpoint carried C-LAEF AlpeAdria output **interpolated to the previous 2.5 km grid**, using the old parameter set and variable names. GeoSphere documents this as the `nwp-v2-1h-2500m` dataset (DOI [10.60669/jft1-g709](https://doi.org/10.60669/jft1-g709)), served through the v1 endpoint. The last legacy run was **03 UTC on 4 November 2026**. Both legacy landing pages (`nwp-v1-1h-2500m` and `nwp-v2-1h-2500m`) are now marked deprecated ("Dieser Datensatz ist veraltet") with the update frequency set to "never". `nwp-v2-1h-1km` is now the only deterministic open-data feed. *(At the time of checking, 4 November, the final legacy runs were still downloadable and the API still listed the v1 dataset, but no new runs were being added.)*
+- **Breaking changes for users migrating from the retired v1 endpoint** (per GeoSphere's help document and the files themselves):
   - Short names now follow GRIB/ECMWF conventions, for example `2t`, `10u`, `tp` and `msl` instead of `t2m`, `u10m`, `rr_acc`.
   - Some units have changed.
   - Precipitation and radiation are de-accumulated only.
@@ -111,8 +111,8 @@ The file listing keeps only the most recent runs (three at the time of checking)
 
 ## Recent version history
 
-### 4 November 2026 (scheduled) — Legacy 2.5 km endpoint shutdown
-GeoSphere has announced that the `nwp-v1-1h-2500m` endpoint, which currently carries interpolated C-LAEF AlpeAdria data, shuts down on this date.
+### 4 November 2026 — Legacy 2.5 km endpoint shut down
+The `nwp-v1-1h-2500m` endpoint, which had carried interpolated C-LAEF AlpeAdria data since June, was shut down on schedule. The last legacy run was 03 UTC; from 06 UTC onward, new runs appeared only in `nwp-v2-1h-1km`. GeoSphere marked the legacy datasets as deprecated the same day.
 
 ### 22 September 2026 — Public announcement
 GeoSphere Austria formally announced C-LAEF AlpeAdria as operational and available as open data. According to the announcement, the system was first used over summer 2026 to support duty forecasters and warning services while the open-data products were prepared.
@@ -143,7 +143,7 @@ The `nwp-v2-1h-2500m` compatibility dataset was created on 15 June 2026 and publ
 - Migration help document (German), including `pt` / `sy` code lists: https://public.hub.geosphere.at/public/resources/misc/Hilfestellung_DE.pdf
 - Model orography: https://public.hub.geosphere.at/public/resources/misc/nwp_oro-v2-1km.nc
 - Announcement (22 September 2026): https://www.geosphere.at/en/news-and-events/news/geosphere-austria-a-more-powerful-forecasting-system-for-the-alps-adriatic-region
-- Legacy endpoint (until 4 November 2026): https://data.hub.geosphere.at/dataset/nwp-v1-1h-2500m (DOI https://doi.org/10.60669/9zm8-s664); interpolated AlpeAdria compatibility dataset: https://data.hub.geosphere.at/dataset/nwp-v2-1h-2500m
+- Retired legacy endpoint (deprecated 4 November 2026): https://data.hub.geosphere.at/dataset/nwp-v1-1h-2500m (DOI https://doi.org/10.60669/9zm8-s664); interpolated AlpeAdria compatibility dataset: https://data.hub.geosphere.at/dataset/nwp-v2-1h-2500m
 - GeoSphere Austria homepage: https://www.geosphere.at
 
 ### Key references
