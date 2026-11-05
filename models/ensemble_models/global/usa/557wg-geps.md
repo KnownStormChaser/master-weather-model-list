@@ -9,7 +9,7 @@ This system is the operational distribution form of the multi-center ensemble kn
 
 > **What is distributed is a single self-contained GRIB2 file per step** — no member data, no per-center breakdown, and no supplementary directories. Everything below describes the contents of that one file family.
 
-**Verification basis:** all structural, grid, step, and encoding claims below were verified live on **2026-08-01** against `557ww.20260731` (00Z and 12Z cycles), with GRIB2 headers decoded using ecCodes 2.48.0 and inventories cross-read from the distributed `.idx` sidecars. Claims about member composition come from NOAA's product description and are **not independently verifiable from the data** — see *Member composition is unverifiable*.
+**Verification basis:** all structural, grid, step, and encoding claims below were verified live on **2026-08-01** against `557ww.20260731` (00Z and 12Z cycles), with GRIB2 headers decoded using ecCodes 2.48.0 and inventories cross-read from the distributed `.idx` sidecars. They were re-checked on **2026-11-05** against `557ww.20261104` (12Z cycle, f000/f006/f012/f024) with ecCodes 2.50.0; everything matched except the f000 inventory (see *Inventory ramps with lead time*). Claims about member composition come from NOAA's product description and are **not independently verifiable from the data** — see *Member composition is unverifiable*.
 
 ---
 
@@ -46,7 +46,7 @@ Three static geolocation fields are carried as data in every file: `GEOLAT`, `GE
 - **Forecast length (verified):** **384 hours (16 days)**
 - **Update frequency / cycles (verified):** 2× daily — 00 and 12 UTC
 - **Temporal output resolution (verified):** **6-hourly throughout, 65 steps, f000–f384**, with no cadence change at any lead time
-- **Publication latency (observed, 2026-07-31):** both cycles complete at **T+7h27m** — the 00Z run finished writing at 07:27 UTC, the 12Z run at 19:27 UTC
+- **Publication latency (observed, 2026-07-31):** both cycles complete at **T+7h27m** — the 00Z run finished writing at 07:27 UTC, the 12Z run at 19:27 UTC. The 2026-11-04 12Z run, the first after an outage (see *Data availability*), began writing at 19:16 UTC and finished at **19:46 UTC (T+7h46m)**; most steps were written by 19:34 UTC, and f078 and f240 arrived last
 - **File sizes:** 50 MB at f000, 55–58 MB thereafter; `.idx` sidecars 14–20 KB
 - **Retention on NOMADS (observed):** 2 days
 
@@ -120,7 +120,11 @@ The standard deviation fields use `derivedForecast = 2` — GRIB2 Code Table 4.7
 
 ### Inventory ramps with lead time
 
-Message counts are **not constant across steps**: 223 at f000, 256 at f006, 260 at f012, and 264 from f024 onward. The growth is accumulation-driven — the 12–24 h and 0–24 h precipitation and snowfall probability windows cannot exist until enough lead time has elapsed. At f000 all steps are `anl` and the PDT mix is 4.2 (99), 4.5 (70), 4.0 (54), with no interval products at all. Any code assuming a fixed message count or a fixed message ordering across steps will break at short leads.
+Message counts are **not constant across steps**: 231 at f000, 256 at f006, 260 at f012, and 264 from f024 onward. The growth is accumulation-driven — the 12–24 h and 0–24 h precipitation and snowfall probability windows cannot exist until enough lead time has elapsed. At f000 all steps are `anl` and the PDT mix is 4.2 (101), 4.5 (76), 4.0 (54), with no interval products at all. Any code assuming a fixed message count or a fixed message ordering across steps will break at short leads.
+
+f000 now carries every field in f006 except the accumulation and interval products and a short list of point-in-time probabilities: CEIL below 500/1000/3000 ft, TCDC below 20% and above 80%, VIS below 1/3/5, and three local-table parameters (`0/17/192`, `0/19/241`, `0/19/242`). Mean and spread are present at f000 for all 101 fields that f006 carries.
+
+> ⚠️ **The f000 inventory changed without notice.** On 2026-08-01, f000 held **223** messages (4.2: 99, 4.5: 70, 4.0: 54). By 2026-11-04 12Z it held **231** (4.2: 101, 4.5: 76, 4.0: 54): one more mean/spread pair and six more probabilities. f006 through f384 are unchanged. No Service Change Notice covers this. Because files are kept for only two days, it can't be determined when between those dates the change happened, or exactly which eight fields were added (**TBD**; diffing an archived August f000 `.idx` against a current one would settle it).
 
 ---
 
@@ -196,6 +200,10 @@ https://nomads.ncep.noaa.gov/pub/data/nccf/com/557ww/prod/
 
 Both cycles of a day live in the same dated directory, distinguished only by the `CC` field embedded in the filename — not by a cycle subdirectory, unlike every other NOMADS ensemble tree in this catalog. Retention observed 2026-08-01: two days (`557ww.20260730`, `557ww.20260731`).
 
+The cleanup works by date directory, not by elapsed time. On 2026-11-05 the tree held only `557ww.20261030/` (emptied at 19:23 UTC on 2026-11-04, when the new day's first files arrived) and `557ww.20261104/`. An empty directory can remain listed, so the presence of a directory does not mean data is available.
+
+> ⚠️ **Unannounced outage, 2026-10-30 to 2026-11-04.** No cycles were published after 2026-10-30 until the **2026-11-04 12Z** run; 2026-11-04 00Z is also missing. No Service Change Notice, NCO status message, or 557th WW statement explaining the outage could be found. The resumed output was structurally identical to the pre-outage product apart from the f000 change noted above, which may predate the outage. NOMADS does not backfill and no mirror is known, so these cycles are missing from the public record. Users should expect that this product can stop for days without warning.
+
 No cloud mirror is documented for this product; if none exists, the two-day NOMADS window is the entire public archive. **Not independently verified** — worth checking the NODD buckets before relying on it.
 
 ### Access notes
@@ -216,7 +224,7 @@ No cloud mirror is documented for this product; if none exists, the two-day NOMA
 
 - **The threshold set is built for military mission planning**, not general forecasting — ceiling below 500/1000/3000 ft, icing intensity at flight levels, gust and hail thresholds. This is a materially different product from the NAEFS percentile suite despite the two systems' shared lineage, and the two are complements rather than substitutes.
 
-- **Although operated by the U.S. military**, the product is publicly distributed through NOMADS with no access controls.
+- **Although operated by the U.S. military**, the product is publicly distributed through NOMADS with no access controls. That does not bring NCEP's usual change notifications with it: both the f000 inventory change and the October–November 2026 outage went unannounced (see *Inventory ramps with lead time* and *Data availability*).
 
 - **The multi-center NUOPC framework** has been operational since the mid-2010s and is documented as showing consistent skill improvement over any single contributing ensemble, particularly for surface variables. This claim is carried over from the previous version of this entry and has **not been independently verified**.
 
