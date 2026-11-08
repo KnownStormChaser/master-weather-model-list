@@ -38,6 +38,7 @@ No meteorology background is required to use this repository.
 - Models provided by government, publicly funded, or military institutions that distribute output openly
 - **Global**, **regional**, **coastal**, and **storm-centered** forecast systems
 - **Experimental and pre-operational systems** that are publicly distributed by their operating agency. These are clearly labelled as experimental in their entries (see [`STATUS.md`](./STATUS.md) for the current list)
+- A separate companion list of **model software you can run yourself**, kept apart from the catalog of model output (see [`RUN_YOUR_OWN_MODEL.md`](./RUN_YOUR_OWN_MODEL.md))
 
 ---
 
@@ -99,10 +100,11 @@ In addition to the directory structure, several index files make specific slices
 - [`STATUS.md`](./STATUS.md) — tracker for upcoming implementations, scheduled retirements, experimental systems, version upgrades, and format changes
 - [`COPERNICUS.md`](./COPERNICUS.md) — index of all products distributed through the Copernicus programme, spanning the Marine Service, Atmosphere Monitoring Service, Climate Change Service, and Emergency Management Service, organized by operator and coverage
 - [`UFS.md`](./UFS.md) — index of all NOAA models that are part of, being consolidated into, or being retired by the Unified Forecast System, with the full programme context and rollout sequencing
+- [`RUN_YOUR_OWN_MODEL.md`](./RUN_YOUR_OWN_MODEL.md) — companion list of actively maintained, freely downloadable weather, ocean, wave, climate and AI model code you can run yourself, from a single PC to a supercomputer, with licence, hardware and starting-data notes for each
 - [`observations/satellites/README.md`](./observations/satellites/README.md) — index of operational weather satellites with openly downloadable raw data, with quick-reference tables for access tiers
 - [`observations/radar/README.md`](./observations/radar/README.md) — index of operational weather-radar networks and composites with openly downloadable gridded data, with quick-reference tables for access tiers and endpoints
 
-These exist because the country-and-type directory structure doesn't surface every useful view on its own. Users arriving with "show me all the AI models" or "what's being retired this year" or "which satellites have no-account-needed S3 access" can go straight to the relevant index.
+These exist because the country-and-type directory structure doesn't surface every useful view on its own. Users arriving with "show me all the AI models" or "what's being retired this year" or "which satellites have no-account-needed S3 access" or "what can I run on my own computer" can go straight to the relevant index.
 
 ---
 
