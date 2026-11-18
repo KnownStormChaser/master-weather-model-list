@@ -18,7 +18,7 @@ GloFAS is managed, technically implemented and developed by the European Commiss
 ## What area it covers
 - **Coverage:** Global except Antarctica
 - **Domain details:** 90°N–60°S, 180°W–180°E, regular latitude–longitude grid on EPSG:4326
-- **Grid dimensions (computed, not file-verified):** 7200 × 3000 at 0.05° — derived from the documented bounds and resolution rather than read from a file header. See the verification note at the end of *Data availability*.
+- **Grid dimensions:** 7200 × 3000 at 0.05°. This was first derived from the documented bounds, and has since been confirmed from a converted copy of a real retrieval (cell centres 89.975°N to 59.975°S, 179.975°W to 179.975°E). See the verification note at the end of *Data availability*.
 
 ---
 
@@ -86,7 +86,7 @@ Auxiliary data is version-specific. Match the auxiliary file version to the vers
   - **Note — restricted-data clause.** The licence reserves that some CEMS EFAS and GloFAS data is restricted under Article 12 of Commission Delegated Regulation (EU) No 1159/2013, with access granted only to specific registered users. This clause is what underpins the EFAS partner restriction; it does **not** bite on this dataset, which is open and current.
 - **Is the data downloadable?** Yes
 - **Output geometry:** Gridded fields only
-- **Real-time availability:** **Current, no embargo.** The catalogue's temporal extent ran to the present day when checked on 2026-08-11, and `cads:update_frequency` is `Daily`. This is the point of difference from [EFAS Forecast](#), whose public feed runs 30 days behind — see *Notes*.
+- **Real-time availability:** **Current, no embargo.** The catalogue's temporal extent ran to the present day when checked on 2026-08-11, and `cads:update_frequency` is `Daily`. NOAA's daily retrievals (see the verification note below) show the 2026-11-17 00 UTC run had been retrieved and converted by 00:01 UTC on 18 November, so it was available within about 24 hours. That is an upper bound only; the actual EWDS publication time is earlier and still unmeasured. This is the point of difference from [EFAS Forecast](#), whose public feed runs 30 days behind — see *Notes*.
 - **Data formats:** GRIB2, and NetCDF-4 flagged **experimental** in the request form
 - **Official download location:**
   https://ewds.climate.copernicus.eu/datasets/cems-glofas-forecast
@@ -95,7 +95,14 @@ Auxiliary data is version-specific. Match the auxiliary file version to the vers
 - **Legacy system versions retrievable:** `version_2_1` and `version_3_1` alongside `operational`. Legacy versions use the `htessel_lisflood` model chain; the operational chain is `lisflood`.
 - **Access route notes:** retrieval is by API request against the EWDS processes endpoint with an account key, or through the web form. There is no anonymous directory tree.
 
-> **Verification status.** Everything above marked as verified comes from live queries against the EWDS catalogue, request form and constraints endpoints, and from ECMWF's CEMS documentation. **No GRIB or NetCDF file was decoded**, because EWDS retrieval requires an authenticated account key. Grid dimensions, GRIB parameter numbers, packing, bitmap coverage, and actual publication latency are therefore documentation-derived and unconfirmed. Worth a decode pass once an account is available.
+> **Verification status.** Everything above marked as verified comes from live queries against the EWDS catalogue, request form and constraints endpoints, and from ECMWF's CEMS documentation. No file has been retrieved from EWDS directly, because retrieval requires an authenticated account key.
+>
+> **Partial file verification from a third-party copy (2026-11-18).** NOAA's STOFS-3D-Pacific stages daily GloFAS retrievals in a public bucket, `s3://noaa-nos-stofs3d-pds/STOFS-3D-Pac/_data/GloFAS/GLOFAS-global-30day_YYYYMMDD.nc` (about 200 MB per day, from 2026-06-22; 123 days present to 2026-11-17, with gaps). These are NetCDF-4 files converted from EWDS GRIB2 with cfgrib 0.9.15.1 / ecCodes 2.48.2, and the source GRIB keys are preserved as attributes. Decoding the 2026-11-17 file confirms:
+> - **Grid:** `regular_ll`, **7200 × 3000** (21,600,000 points) at **0.05°**, cell centres from 89.975°N to 59.975°S and 179.975°W to 179.975°E. The preserved GRIB key `longitudeOfFirstGridPointInDegrees` is **180.025**, i.e. the grid is encoded as starting just past the dateline; readers that take that key literally will shift the field by 360°.
+> - **Discharge parameter:** GRIB2 edition 2, centre `ecmf`, `paramId` **240024**, `shortName` **`dis24`**, "Mean discharge in the last 24 hours", m³ s⁻¹, `stepType = avg` — matching the daily-mean semantics described in *Notes*. Missing values are 3.4028 × 10³⁸ (float max); 28.8% of cells carry data on day 1, i.e. the river pixels.
+> - **Lead times and members:** 30 steps at 24 h to 720 h from the 00 UTC run; `totalNumber = 51`.
+>
+> **What the copy cannot show.** NOAA retrieves only the **control member** (`dataType = cf`, `number = 0`) and only discharge, so the perturbed-member packaging, the other three variables, bitmap handling in the raw GRIB2 and packing settings remain unverified. The conversion log also filters the GRIB on `iDirectionIncrement = 50000`, which hints that the retrieved GRIB held messages on more than one grid (TBD). The NetCDF copies carry no CEMS attribution statement. Worth a direct decode pass once an EWDS account is available.
 
 ---
 
@@ -114,6 +121,8 @@ Auxiliary data is version-specific. Match the auxiliary file version to the vers
 - **Relationship to other CEMS-Flood datasets.** Companion products on EWDS: `cems-glofas-historical` (ERA5-forced reanalysis, used to derive the climatology), `cems-glofas-reforecast` (medium-range hindcasts), and `cems-glofas-seasonal-reforecast`. All three are historical-only and out of scope as standalone entries. The seasonal sibling is [GloFAS Seasonal](./cems-glofas-seasonal.md). The European counterpart at higher resolution is [EFAS Seasonal](../../regional/eu/efas-seasonal.md); the EFAS medium-range forecast is **not** catalogued, because its public feed is embargoed by 30 days with real-time access restricted to EFAS partners.
 
 - **AI relationship.** From v4.4, AIFS Single meteorology forces GloFAS out to 15 days, making this a downstream AI-influenced hydrological product in the same way GIOPS is a downstream AI-influenced ocean product via the GEML-nudged GDPS atmosphere. [`AI_MODELS.md`](../../../../AI_MODELS.md) should index this once the supplement-versus-replace question above is resolved. **Flagged for decision rather than resolved here.**
+
+- **Downstream use in an operational forecast system.** NOAA's [STOFS-3D-Pacific](../../../storm_surge_models/regional/usa/stofs-3d-pacific.md) (operational since 17 August 2026) uses GloFAS discharge as river forcing alongside the U.S. National Water Model and stream gauges. Its daily GloFAS retrievals are mirrored publicly in NOAA's bucket (see the verification note under *Data availability*). That mirror is an internal staging copy of the control member's discharge only, not a distribution channel for this dataset; the EWDS remains the source of record, and the CEMS-FLOODS licence and attribution terms apply to any use of those files.
 
 - **Not a flood warning.** The licence states plainly that GloFAS data does not constitute a flood warning, which only national and regional institutions are authorised to issue within their areas of responsibility.
 
