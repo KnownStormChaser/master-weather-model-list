@@ -10,9 +10,9 @@ Three water level products are distributed, and this three-way split is the defi
 - **`htp`** — harmonic tidal prediction (astronomical tide only)
 - **`swl`** — sub-tidal water level (the isolated storm surge)
 
-The system was renamed from **ESTOFS** (Extratropical Surge and Tide Operational Forecast System) in the STOFS v1.0.1 upgrade of December 2022, when a separate 3-D Atlantic component was added — see [STOFS-3D-Atlantic](../../regional/usa/stofs-3d-atlantic.md). Despite the "surge and tide" naming and the ETSRG parameter label inherited from ESTOFS, STOFS-2D-Global is a general water level model, not an extratropical-only one.
+The system was renamed from **ESTOFS** (Extratropical Surge and Tide Operational Forecast System) in the STOFS v1.0.1 upgrade of December 2022, when a separate 3-D Atlantic component was added — see [STOFS-3D-Atlantic](../../regional/usa/stofs-3d-atlantic.md). A 3-D Pacific component, [STOFS-3D-Pacific](../../regional/usa/stofs-3d-pacific.md), followed with STOFS v3.1. Despite the "surge and tide" naming and the ETSRG parameter label inherited from ESTOFS, STOFS-2D-Global is a general water level model, not an extratropical-only one.
 
-The current operational release is **STOFS v2.1** (SCN 23-124 references v2.1.4). **STOFS v3.1 is scheduled for 11 August 2026** per SCN 26-51 (Updated) — see [Upcoming changes](#upcoming-changes).
+The current operational release is **STOFS v3.1**, operational since the **12Z cycle of 17 August 2026** (SCN 26-51 Updated). Its main change to this component is a **gridded bias correction**: since v3.1 the primary gridded `cwl` product, including the GRIB2, is corrected towards tide-gauge observations, and the uncorrected field is published separately as `noanomaly` NetCDF. See *Data assimilation*.
 
 ---
 
@@ -25,7 +25,7 @@ The current operational release is **STOFS v2.1** (SCN 23-124 references v2.1.4)
 
 ## What area it covers
 - **Coverage:** Global ocean and coastal floodplain
-- **Domain details:** Single global unstructured mesh, no open boundaries. Live-verified station coverage on the 2026-07-23 00Z run spans 69.0°S to 82.5°N and the full longitude range.
+- **Domain details:** Single global unstructured mesh, no open boundaries. Station coverage spans 69.0°S to 82.5°N and the full longitude range (live-verified on the 2026-07-23 00Z run).
 - **Mesh resolution:** At least **1.5 km globally**, refining to:
   - up to **80 m** — U.S. West Coast and Alaska
   - up to **90–120 m** — Pacific Islands (Hawaii, Guam, American Samoa, Marianas, Wake, Marshall Islands, Palau)
@@ -38,26 +38,28 @@ The current operational release is **STOFS v2.1** (SCN 23-124 references v2.1.4)
 - **Model type:** Deterministic storm surge / total water level model
 - **Core hydrodynamic model:** ADCIRC (ADvanced CIRCulation), finite element, GWCE formulation
 - **Dimensionality:** **2D depth-averaged (barotropic)**
-- **Forecast length:** 180 hours, preceded by a **6-hour nowcast** (186-hour total span per cycle). Live-verified on the 2026-07-23 00Z run: station time series run 2026-07-22 18:06 UTC through 2026-07-30 12:00 UTC.
+- **Forecast length:** 180 hours, preceded by a **6-hour nowcast** (186-hour total span per cycle). Live-verified on the 2026-11-17 12Z run: station time series run from 2026-11-17 06:06 UTC to 2026-11-25 00:00 UTC (1,860 six-minute records).
 - **Update frequency / cycles:** 4× daily (00, 06, 12, 18 UTC)
 - **Temporal output resolution:** varies by product —
   - GRIB2 regional grids: **hourly** (f000–f180, 181 records)
   - Native-mesh field NetCDF: **hourly**
-  - Station NetCDF: **6-minute** (1,860 records, live-verified)
+  - Station NetCDF: **6-minute** (1,860 records)
   - SHEF station bulletins: **30-minute**
 - **Computational timestep:** 6 s (implicit)
-- **Operational footprint:** ~3,968 cores on WCOSS2 (`source` attribute live-verified as `Dogwood/Cactus`)
+- **Operational footprint:** 4,064 cores on WCOSS2, per the bucket README updated in August 2026 (the pre-v3.1 figure was about 3,968). The `source` attribute reads `Dogwood/Cactus`.
 
 ---
 
 ## Grid and bathymetry
 - **Grid type:** Unstructured triangular mesh (`grid_type = Triangular`, `Conventions = UGRID-0.9.0`)
 - **Horizontal resolution:** see *What area it covers* above
-- **Mesh size:** 12,785,004 nodes / 24,875,336 triangular elements (live-verified from `stofs_2d_glo.t00z.fields.cwl.maxele.nc`, matching the official README exactly)
+- **Mesh size:** 12,785,004 nodes / 24,875,336 triangular elements, unchanged by v3.1 (live-verified from the 2026-11-17 12Z `fields.cwl.maxele.nc`)
 - **Mesh generator:** **OceanMesh2D** (live-verified `agrid` global attribute)
+- **Internal barriers (new in v3.1 output):** the native-mesh files now carry ADCIRC boundary and barrier arrays — `nvell`, `ibtype`, `nbvv`, `barsp`, `barht`, `ibconn`, `barsb` (262 boundary segments, 12,421 boundary nodes) — which were absent from v2.1 output. This suggests levee and weir structures were added along existing mesh edges, since node and element counts are unchanged (TBD — mechanism unconfirmed).
 - **Bathymetry source:** Not documented. The `depth` variable is present on the native mesh with `long_name = "distance below geoid"`, but no source dataset is named. (TBD)
 - **Wetting and drying:** **Yes.** Live-verified from the embedded ADCIRC `fort.15` attributes: `nolifa = 2` (wetting/drying with finite amplitude terms) and `h0 = 0.1` m minimum water depth.
 - **Other configuration** (live-verified from `fort.15` attributes carried in every output file): `nolibf = 1` (quadratic bottom friction), `cf = 0.0005` (bottom friction coefficient), `ncor = 1` (spatially variable Coriolis), `nolica = nolicat = 1` (advective terms active), `eslm = -0.2` (Smagorinsky-type horizontal eddy viscosity), `nwp = 7` (seven nodal attributes).
+- **Static files:** grid, nodal attributes, station lists and control files for each version are published under `s3://noaa-gestofs-pds/staticfiles/{v1.1,v2.1,v3.1}/`.
 
 ---
 
@@ -65,15 +67,15 @@ The current operational release is **STOFS v2.1** (SCN 23-124 references v2.1.4)
 - **Vertical datum:** Differs by product —
   - **Gridded output (GRIB2 and native NetCDF):** global mean sea level (**GMSL**)
   - **Station NetCDF:** local mean sea level (**LMSL**)
-  - **SHEF station bulletins:** **MLLW**, and in **feet**, not metres
+  - **SHEF station bulletins:** **MLLW**, and in **feet**, not metres. The bucket README describes the SHEF files as "(m, MLLW)"; the bulletin header says `REFERENCED TO MLLW IN FEET`, and the values agree with feet.
 - **What the water level field is measured relative to:**
   - `cwl` = total water level (tide + surge) above the stated datum
   - `htp` = astronomical tidal prediction above the stated datum
   - `swl` = the isolated surge residual
-- **Datum conversion offsets provided?** No. No GMSL↔LMSL↔MLLW conversion field or per-station table is distributed. Users needing a hydrographic datum must supply their own.
+- **Datum conversion offsets provided?** **For stations only.** `staticfiles/v3.1/stofs_2d_glo_msl2mllw` (also in `v2.1/`) is a plain-text table of 1,687 NOS station IDs with an MSL-to-MLLW offset in metres (e.g. `8410140 2.958` for Eastport, ME). This appears to be the table used to produce the SHEF bulletins. No gridded conversion field is published.
 - **Mean sea level trend / SLR handling:** Not documented. (TBD)
 
-> **Live-verified caution — misleading geoid metadata, again.** The official documentation states unambiguously that output is referenced to **MSL** (the bucket README labels every gridded product "(m, MSL)"). But the file metadata says geoid throughout: the station NetCDF `zeta` variable carries `standard_name = sea_surface_height_above_geoid` and `long_name = "water surface elevation above geoid"`, the native-mesh `zeta_max` carries `standard_name = maximum_sea_surface_height_above_geoid`, and the GRIB2 tidal field is literally named *"Ocean Surface Elevation Relative to Geoid"*. This is the same defect documented for [GDSPS](../canada/gdsps.md) and [RESPS](../../regional/canada/resps.md) — and here, unlike GDSPS, **no attribute anywhere in the file corrects the record.** Trust the documentation, not the CF `standard_name`.
+> **Live-verified caution — misleading geoid metadata, again.** The official documentation states unambiguously that output is referenced to **MSL** (the bucket README labels every gridded product "(m, MSL)"). But the file metadata says geoid throughout: the station NetCDF `zeta` variable carries `standard_name = sea_surface_height_above_geoid` and `long_name = "water surface elevation above geoid"`, the native-mesh `zeta_max` carries `standard_name = maximum_sea_surface_height_above_geoid`, and the GRIB2 tidal field is literally named *"Ocean Surface Elevation Relative to Geoid"*. This is the same defect documented for [GDSPS](../canada/gdsps.md) and [RESPS](../../regional/canada/resps.md) — and here, unlike GDSPS, **no attribute anywhere in the file corrects the record.** Still true under v3.1. Trust the documentation, not the CF `standard_name`.
 
 ---
 
@@ -83,37 +85,46 @@ The current operational release is **STOFS v2.1** (SCN 23-124 references v2.1.4)
 - **Separation of components:** All three components are distributed directly as separate products (`cwl`, `htp`, `swl`) — a more complete separation than most operational surge systems, which typically publish only two of the three.
 - **Tide–surge interaction:** Modelled nonlinearly within the run.
 
-> **Live-verified — the three products are exactly additive, so only two are independent.** On the 2026-07-23 00Z f012 GRIB2 files, `cwl − (htp + swl)` has a maximum absolute residual of **2 × 10⁻⁵ m** across the CONUS East, Hawaii and Puerto Rico grids — i.e. zero to the GRIB2 packing precision. Downloading all three triples your transfer volume for no additional information. Fetch `cwl` and `htp` and subtract, or `swl` and `htp` and add.
+> **Live-verified — the three products are exactly additive, so only two are independent.** On the 2026-11-17 12Z f012 CONUS East GRIB2, `cwl − (htp + swl)` has a maximum absolute residual of **2 × 10⁻⁵ m** over 628,542 valid points — i.e. zero to the GRIB2 packing precision, as it was under v2.1. Because `cwl` is now bias-corrected (see *Data assimilation*), exact additivity means the correction is carried in `swl` as well. Downloading all three triples your transfer volume for no additional information. Fetch `cwl` and `htp` and subtract, or `swl` and `htp` and add.
 
 ---
 
 ## Forcing and coupling
 - **Meteorological forcing — wind:** 10 m winds from [GFS](../../../nwp_models/global/usa/gfs.md) (`nws = 10`, gridded meteorological file forcing)
-- **Meteorological forcing — pressure:** GFS mean sea level pressure
-- **Forcing frequency:** Hourly GFS forcing through +120 h, then 3-hourly from +120 h to +180 h (introduced in STOFS v2.0.0; TBD whether unchanged at v2.1)
+- **Meteorological forcing — pressure:** GFS surface pressure
+- **Forcing frequency:** Hourly GFS forcing through +120 h, then 3-hourly from +120 h to +180 h (introduced in STOFS v2.0.0; TBD whether unchanged at v3.1)
 - **Ice forcing:** GFS **sea ice**, used to modify wind drag transfer. This is unusual for a surge model and matters at high latitudes.
+- **Forcing files published (new with v3.1, S3 only):** each cycle now includes the GFS forcing as used, on the native mesh: `icec.nc` (sea ice concentration, 11.4 GB), `pressfc.nc` (surface pressure, 12.6 GB) and `uvgrd10m.nc` (10 m wind, 15.5 GB).
 - **Wave contribution:** None documented. STOFS-2D-Global is not coupled to a wave model and no wave setup term is published. (TBD)
-- **River discharge / freshwater forcing:** None. Inland hydrology coupling to the National Water Model is a feature of [STOFS-3D-Atlantic](../../regional/usa/stofs-3d-atlantic.md), not of the global 2-D component.
+- **River discharge / freshwater forcing:** None. Inland hydrology coupling to the National Water Model is a feature of [STOFS-3D-Atlantic](../../regional/usa/stofs-3d-atlantic.md) and [STOFS-3D-Pacific](../../regional/usa/stofs-3d-pacific.md), not of the global 2-D component.
 - **Ocean forcing / boundary conditions:** None — the domain is global and has no open ocean boundaries.
-- **Run continuity:** Hot-started continuously (`ihot = 568`); the live-verified `rnday = 839.5` days is the cumulative run length, not a per-cycle value.
+- **Run continuity:** Hot-started continuously. Under v3.1 the run was cold-started afresh: the time epoch moved to **2026-05-26 12:00 UTC**, and the 2026-11-17 12Z files carry `rnday = 175.0` and `ihot = 368` (v2.1 had a 2024-04-04 epoch and `rnday = 839.5`). `rnday` is the cumulative run length, not a per-cycle value.
 
 ---
 
 ## Data assimilation
-- **Assimilates water level observations:** **No.** There is no data assimilation cycle.
-- **Station bias correction:** Yes, applied in post-processing since STOFS v2.0.0. At stations where NOS/CO-OPS observations exist, the forecast is corrected by the bias between observed water levels and the most recent five days of nowcast water levels. This affects **station output only** — the gridded fields are uncorrected.
+- **Assimilates water level observations:** **No** interior data assimilation. Observations enter only through post-processing bias corrections.
+- **Station bias correction (since v2.0.0):** at stations where NOS/CO-OPS observations exist, the forecast is corrected by the bias between observed water levels and the most recent five days of nowcast water levels.
+- **Gridded bias correction (new in v3.1):** the station biases are spread across the global mesh by graph diffusion, so the gridded output is corrected too. **This changes the meaning of the primary gridded product.** `fields.cwl.nc`, `fields.cwl.maxele.nc`, `fields.swl.nc` and all GRIB2 output are now bias-corrected. The uncorrected model output is published only as NetCDF: `fields.cwl.noanomaly.nc`, `fields.cwl.maxele.noanomaly.nc` and `points.cwl.noanomaly.nc`. **There is no uncorrected GRIB2.**
 
-> **Live-verified — the correction is small, sparse, and time-varying.** Comparing `points.cwl.nc` against the (undocumented) `points.cwl.noanomaly.nc` on the 2026-07-23 00Z run: **236 of 1,688 stations (14.0%)** carry a non-zero correction. Among those, the median mean offset is **+0.165 m**, spanning **−1.147 m to +0.543 m**. The offset is **not** a fixed datum shift at any of the 236 stations — median temporal standard deviation is 0.015 m, reaching 1.85 m at one site. Use `points.cwl.nc` for guidance and `points.cwl.noanomaly.nc` for raw model verification.
+> **Live-verified — the GRIB2 carries the corrected field.** On the 2026-11-17 12Z run, the maximum of the CONUS East `cwl` GRIB2 over f001–f180 was compared with the nearest native-mesh node in both maxele files at 48,248 grid points. The median difference from the corrected `fields.cwl.maxele.nc` is **0.0002 m**; from `fields.cwl.maxele.noanomaly.nc` it is **0.172 m**. 99.6% of points are closer to the corrected field.
+
+> **Live-verified — the gridded correction is broad and regionally biased.** Comparing the two maxele files on the same run, **96.3% of the 9,221,579 valid nodes** are changed by the correction, by −1.54 m to +0.55 m (5th–95th percentile −0.04 to +0.25 m). The median correction is **+0.147 m** on the U.S. East and Gulf coasts and **+0.107 m** on the U.S. West Coast, but close to zero in Alaska (−0.002 m), Hawaii (−0.023 m) and Europe (−0.001 m). Corrected and uncorrected fields are therefore not interchangeable for U.S. coastal work. The corrected file also masks 3,103 nodes that are valid in the uncorrected one.
+
+> **Live-verified — station correction.** Comparing `points.cwl.nc` with `points.cwl.noanomaly.nc` on the 2026-11-17 12Z run, **208 of 1,687 stations (12.3%)** carry a non-zero correction. Among those, the median mean offset is **+0.260 m**, spanning −1.169 m to +0.563 m. The offset is close to constant through a cycle: median temporal standard deviation 0.011 m, maximum 0.064 m. That is much steadier than under v2.1, when one site varied by 1.85 m. Use `points.cwl.nc` for guidance and `points.cwl.noanomaly.nc` for raw model verification.
 
 ---
 
 ## What it provides
-- **Combined water level** (`cwl`) — total, tide + surge
+- **Combined water level** (`cwl`) — total, tide + surge; bias-corrected since v3.1
 - **Harmonic tidal prediction** (`htp`) — astronomical tide only
-- **Sub-tidal water level** (`swl`) — isolated storm surge
-- **Maximum water level envelope** over the cycle (`fields.cwl.maxele.nc`)
+- **Sub-tidal water level** (`swl`) — isolated storm surge; carries the bias correction
+- **Uncorrected combined water level** (`fields.cwl.noanomaly.nc`, `fields.cwl.maxele.noanomaly.nc`, `points.cwl.noanomaly.nc`)
+- **Maximum water level envelope** over the cycle (`fields.cwl.maxele.nc`, with `time_of_zeta_max`)
 - **Depth-averaged current velocity** — hourly fields (`fields.cwl.vel.nc`) and 6-minute station series (`points.cwl.vel.nc`)
 - **Maximum current speed** and **maximum wind speed** envelopes (`fields.cwl.maxvel.nc`, `fields.cwl.maxwvel.nc`)
+- **GFS forcing fields** on the native mesh (`icec.nc`, `pressfc.nc`, `uvgrd10m.nc`; S3 only)
+- **Autovalidation subset** (`points.autoval.cwl.nc`; S3 only) — the 833 tide-gauge stations, i.e. `points.cwl.nc` without the 854 `UJ### SOUS00 SA###` points. These carry no site names here; STOFS-3D-Pacific uses the same ID pattern for points it labels "Satellite Altimetry Station", so they are most likely virtual altimetry points (TBD). Unlike the [STOFS-3D-Pacific](../../regional/usa/stofs-3d-pacific.md) subset, this one is complete: its `ncks -d station,1,833` slice ends exactly at the last gauge.
 
 No inundation depth product is published separately; overland water level is carried on the floodplain nodes of the native mesh.
 
@@ -123,26 +134,26 @@ No inundation depth product is published separately; overland water level is car
 - **Is the data free?** Yes (no registration, no API key, direct HTTPS and anonymous S3)
 - **License:** **U.S. Government work — public domain.** Distributed through NOAA Open Data Dissemination (NODD): open to the public and usable as desired. NOAA requests attribution for use or dissemination of unaltered data; it is not permissible to state or imply NOAA endorsement or affiliation, and modified data may not be presented as original unaltered NOAA data.
 - **Is the data downloadable?** Yes
-- **Output geometry:** **Both.** Gridded (native unstructured mesh plus seven regridded regional GRIB2 domains) and station point time series at 1,688 verification sites.
-- **Data formats:**
-  - **NetCDF-4 / HDF5** — native-mesh field files (live-verified HDF5 magic bytes)
-  - **NetCDF-3 classic** — station point files (live-verified `CDF\001` magic bytes; note this means no internal compression or chunking)
+- **Output geometry:** **Both.** Gridded (native unstructured mesh plus seven regridded regional GRIB2 domains) and station point time series at 1,687 sites (833 tide gauges plus 854 `UJ`/`SA###` points, most likely virtual altimetry points).
+- **Data formats** (live-verified from file magic bytes, 2026-11-17 12Z):
+  - **NetCDF-4 / HDF5** — the bias-corrected native-mesh files (`fields.cwl.nc`, `fields.cwl.maxele.nc`, `fields.swl.nc`) and the forcing files
+  - **NetCDF-3 classic** — the uncorrected and other native-mesh files (`fields.cwl.noanomaly.nc`, `fields.cwl.maxele.noanomaly.nc`, `fields.htp.nc`, `fields.cwl.vel.nc`, `fields.cwl.maxvel.nc`) and all station point files. Classic format means no internal compression or chunking, which is why the uncorrected `fields.cwl.noanomaly.nc` (19.6 GB) is nearly twice the size of the corrected `fields.cwl.nc` (10.1 GB).
   - **GRIB2** — regional structured grids
   - **SHEF** — station bulletins (MLLW, feet)
-- **Station list:** Embedded in the `station_name` variable of the point NetCDF files as fixed-width records combining NWS Handbook-5 ID, WMO header, NOS station ID, state, and site name — e.g. `PSBM1 SOUS41 8410140 ME Eastport`. No separate station metadata file is published.
+- **Station list:** Embedded in the `station_name` variable of the point NetCDF files as fixed-width records combining NWS Handbook-5 ID, WMO header, NOS station ID, state, and site name — e.g. `PSBM1 SOUS41 8410140 ME Eastport`. Station coordinates and IDs are also in `staticfiles/v3.1/`.
 - **DOI:** https://doi.org/10.25923/ng4h-4b85
 
-### GRIB2 regional grids (all live-verified from the 2026-07-23 00Z f012 files)
+### GRIB2 regional grids (live-verified from the 2026-11-17 12Z f012 files; unchanged by v3.1)
 
-| Region | Projection | Grid (Ni × Nj) | Spacing |
-|---|---|---|---|
-| `conus.east` | Lambert conformal | 2145 × 1377 | 2539.703 m |
-| `conus.west` | Lambert conformal | 2145 × 1377 | 2539.703 m |
-| `alaska` | Polar stereographic | 825 × 553 | 5953.125 m |
-| `hawaii` | Mercator | 321 × 225 | 2500 m |
-| `guam` | Mercator | 193 × 193 | 2500 m |
-| `puertori` | Mercator | 339 × 225 | 1250 m |
-| `northpacific` | Mercator | 1473 × 1073 | 10000 m |
+| Region | Projection | Grid (Ni × Nj) | Spacing | `generatingProcessIdentifier` |
+|---|---|---|---|---|
+| `conus.east` | Lambert conformal | 2145 × 1377 | 2539.703 m | 14 |
+| `conus.west` | Lambert conformal | 2145 × 1377 | 2539.703 m | 17 |
+| `alaska` | Polar stereographic | 825 × 553 | 5953.125 m | 17 |
+| `hawaii` | Mercator | 321 × 225 | 2500 m | 17 |
+| `guam` | Mercator | 193 × 193 | 2500 m | 20 |
+| `puertori` | Mercator | 339 × 225 | 1250 m | 14 |
+| `northpacific` | Mercator | 1473 × 1073 | 10000 m | 20 |
 
 Lambert parameters: LaD 25.0°N, LoV 265.0°E, Latin1 = Latin2 = 25.0°. Alaska polar stereographic: LaD 60.0°N, orientation 210.0°. North Pacific spans 25°S–60.6°N, 110°E–250.9°E.
 
@@ -153,7 +164,7 @@ Lambert parameters: LaD 25.0°N, LoV 265.0°E, Latin1 = Latin2 = 25.0°. Alaska 
 https://nomads.ncep.noaa.gov/pub/data/nccf/com/stofs/prod/
 ftp://ftp.ncep.noaa.gov/data/nccf/com/stofs/prod/
 ```
-Note the path is `stofs/prod`, **not** `estofs/prod` — the directory was renamed with the ESTOFS→STOFS transition. Both components share this directory (`stofs_2d_glo.YYYYMMDD/` and `stofs_3d_atl.YYYYMMDD/`), and retention is approximately **two days**.
+Note the path is `stofs/prod`, **not** `estofs/prod` — the directory was renamed with the ESTOFS→STOFS transition. All three components share this directory (`stofs_2d_glo.YYYYMMDD/`, `stofs_3d_atl.YYYYMMDD/` and `stofs_3d_pac.YYYYMMDD/`), and retention is approximately **two days**. NOMADS carries the GRIB2, the SHEF bulletins, the `cwl`/`htp`/`swl` field and point files, both maxele files, `fields.cwl.maxvel.nc` and the two `noanomaly` field/point files. It does **not** carry the velocity files (`fields.cwl.vel.nc`, `points.cwl.vel.nc`), `fields.cwl.maxwvel.nc`, `points.autoval.cwl.nc` or the forcing files; those are S3 only.
 
 **AWS Open Data (NODD) — the long-term archive:**
 ```
@@ -163,83 +174,48 @@ aws s3 ls --no-sign-request s3://noaa-gestofs-pds/
 ```
 - AWS region: `us-east-1`
 - SNS new-object notifications: `arn:aws:sns:us-east-1:123901341784:NewGESTOFSObject`
-- **Archive depth (live-verified 2026-07-23):** 1,293 daily directories under `stofs_2d_glo.` from **2023-01-08** to present, plus 744 legacy `estofs.YYYYMMDD/` directories covering **2020-12-30 to 2023-01-12**.
+- **Archive depth (live-verified 2026-11-18):** 1,411 daily directories under `stofs_2d_glo.` from **2023-01-08** to present, with no gaps, plus 744 legacy `estofs.YYYYMMDD/` directories covering **2020-12-30 to 2023-01-12**.
+- Each cycle also has a `CC/rerun/` folder of initial-condition and forcing files, which the README describes as stored for NOAA internal reference. These bring a day directory to about 1 TB.
 
-**Parallel (pre-implementation) feed — not for operational use:**
-```
-https://nomads.ncep.noaa.gov/pub/data/nccf/com/stofs/para/
-s3://noaa-gestofs-pds/_para4/stofs_2d_glo.YYYYMMDD/
-```
-NCEP runs every model upgrade in a public parallel stream for at least 30 days before implementation, mirroring the production directory structure so users can test their ingest against the new output. The `para` feed currently carries **STOFS v3.1**, scheduled to replace production on 11 August 2026 — see [Upcoming changes](#upcoming-changes) for the live-verified differences.
+> **Live-verified — the v2.1 → v3.1 boundary in the archive is not where the README puts it.** The bucket README says v2.1 ran through the 06Z cycle of 17 August 2026 and v3.1 from 12Z. But the archived files for **every cycle from 16 August 00Z to 17 August 06Z are v3.1 output** (`title = STOFS_2D_GLOBAL.V3.1.0`, `noanomaly` files present). All were written in one batch between 19:19 and 21:40 UTC on 17 August, and each has a `rerun/` folder. The last v2.1 cycle in the archive is **15 August 18Z**, and normal write times resume with 17 August 18Z. Whatever ran live on 16 August, the archive now holds v3.1 reruns for those six cycles. Split time series at **16 August 00Z**, not at the documented 17 August 12Z.
 
-Three points matter for anyone tempted to use it:
-
-- **It is unsupported and will disappear.** Parallel feeds are not 24/7-supported, carry no service guarantee, and are removed once the upgrade goes operational. They are for testing ingest code, not for producing guidance.
-- **The NOMADS parallel directory holds `stofs_3d_pac.YYYYMMDD/` alongside the 2-D and 3-D Atlantic components.** This is the public pre-implementation feed for **STOFS-3D-Pacific**, the third STOFS component arriving with v3.1.
-- **The S3 `_para` prefixes are not all equivalent.** As of 2026-07-23 the bucket carries `_para/`, `_para2/`, `_para3/`, `_para4/` and `_polar_para/`. Only **`_para4/`** mirrors the full public product suite (GRIB2 for all seven regions, field and station NetCDF, SHEF) and matches what NOMADS serves under `stofs/para`. `_para/` and `_para2/` are partial development streams carrying no GRIB2 at all, plus raw ADCIRC intermediates (`fort.11.nc`, `stofs_2d_glo_fcst1.221.nc`) and forcing fields. The bucket README describes all of these as stored for NOAA internal reference. Treat anything other than `_para4/` as internal.
+### Parallel (pre-implementation) feeds — closed
+The NOMADS parallel directory `stofs/para/` that carried v3.1 before implementation now returns **HTTP 403**. On S3, the development prefixes have stopped: `_para/` (2024-01-01 to 2026-07-31), `_para2/` (2024-01-01 to 2026-07-30) and `_para4/` (2026-01-01 to 2026-08-28, the one that mirrored the full public product suite). `_para3/` and `_polar_para/` hold no daily directories. The README describes all of them as stored for NOAA internal reference. Expect the next upgrade's parallel run to appear under one of these prefixes.
 
 ---
 
 ## Notes
 
-> **Live-verified caution — the GRIB2 parameter names are actively wrong, and filtering by `shortName` will give you the wrong field.** Each hourly GRIB2 file contains exactly three messages. Decoded with eccodes 2.48.0 they appear as:
+> **Live-verified caution — the GRIB2 parameter names are actively wrong, and filtering by `shortName` will give you the wrong field.** Each hourly GRIB2 file contains exactly three messages. Decoded with ecCodes 2.50.0 (unchanged from 2.48.0 and from v2.1) they appear as:
 >
-> | Message | Discipline/Category/Number | eccodes `shortName` | eccodes `name` | **What it actually is** |
+> | Message | Discipline/Category/Number | ecCodes `shortName` | ecCodes `name` | **What it actually is** |
 > |---|---|---|---|---|
-> | 1 | 10 / 3 / **250** | `unknown` | `unknown` | **Combined water level (`cwl`)** — the total |
+> | 1 | 10 / 3 / **250** | `unknown` | `unknown` | **Combined water level (`cwl`)** — the total, bias-corrected |
 > | 2 | 10 / 3 / **194** | `elevhtml` | Ocean Surface Elevation Relative to Geoid | **Harmonic tidal prediction (`htp`)** — tide only |
 > | 3 | 10 / 3 / **193** | `etsrg` | Extra Tropical Storm Surge | **Sub-tidal water level (`swl`)** — the surge |
 >
 > The mapping was established by decoding the single-product whole-cycle files, each of which contains 181 messages of exactly one parameter: `guam.cwl.grib2` → 250, `guam.htp.grib2` → 194, `guam.swl.grib2` → 193. It is independently confirmed by the arithmetic: parameter 250 equals 194 + 193 to within 2 × 10⁻⁵ m.
 >
-> The practical trap: a user filtering for total water level would reasonably reach for `elevhtml` ("Ocean Surface Elevation Relative to Geoid") and receive **the astronomical tide with no surge in it at all**. The field they want is the one eccodes cannot name. Parameter 10/3/250 falls in the NCEP local-use range (192–254) and is absent from the eccodes tables at this version — apply the standard fallback of reading `discipline`, `parameterCategory` and `parameterNumber` directly and selecting on `parameterNumber == 250`, or simply use the per-product `cwl`/`htp`/`swl` files whose filenames are unambiguous.
+> The practical trap: a user filtering for total water level would reasonably reach for `elevhtml` ("Ocean Surface Elevation Relative to Geoid") and receive **the astronomical tide with no surge in it at all**. The field they want is the one ecCodes cannot name. Parameter 10/3/250 falls in the NCEP local-use range (192–254) and is absent from the ecCodes tables — apply the standard fallback of reading `discipline`, `parameterCategory` and `parameterNumber` directly and selecting on `parameterNumber == 250`, or simply use the per-product `cwl`/`htp`/`swl` files whose filenames are unambiguous.
+>
+> **Parameter 250 is also used by both 3-D components, on identical grid definitions.** [STOFS-3D-Atlantic](../../regional/usa/stofs-3d-atlantic.md) publishes it on `conus.east` and `puertori`, and [STOFS-3D-Pacific](../../regional/usa/stofs-3d-pacific.md) on `conus.west`, `alaska`, `hawaii`, `guam` and `northpacific`. The only key that differs is `generatingProcessIdentifier`: 14/17/20 here (by grid), 21 for STOFS-3D-Atlantic, 22/23 for STOFS-3D-Pacific. Track provenance by filename. The three systems are also on different vertical references (GMSL here, xGEOID20B for 3-D Atlantic gridded output, LMSL for 3-D Pacific).
 
-- **No bitmap; land is the literal value 9999.0.** GRIB2 messages carry `bitmapPresent = 0` and `missingValue = 9999`. Land and dry points are encoded as an in-band 9999.0, not as a masked or NaN value. Readers that do not explicitly filter will silently average 9999 into their statistics. Live-verified valid fractions on the 00Z f012 files: 21.3% of the CONUS East grid, 96.2% of Hawaii, 92.2% of Puerto Rico.
-- **`conus.east` and `conus.west` are the same grid.** Both are the 2145 × 1377 / 2.5 km CONUS Lambert grid with identical projection parameters and identical first-grid-point coordinates. They differ only in which portion of the domain carries valid data (file sizes 2.7 MB vs 1.3 MB for the same forecast hour). They are not two separate regional domains.
-- **Station NetCDF fill values are inconsistent and automatic masking fails.** `zeta` declares `_FillValue = -99999.0` and the global attribute `dry_Value = -99999.0`, but the file actually contains **four distinct sentinel values**: −99999.0, −99998.9, −99998.8 and −99998.7. On the 2026-07-23 00Z run, 498 of 3,626 sentinel elements do not equal the declared `_FillValue`, so `netCDF4`'s automatic masking leaves them in the array as ordinary numbers near −99999. Mask on `zeta < -1000`, not on equality with `_FillValue`. This is the same class of defect documented for [RESPS](../../regional/canada/resps.md).
-- **Time units carry a trailing Fortran comment.** The `time` variable's units string is `"seconds since 2024-04-04 12:00:00        ! NCDASE - BASE_DAT"` — a truncated Fortran namelist comment appended to an otherwise valid udunits string. `cftime` tolerates it and parses correctly; stricter udunits parsers may not. Note also that the epoch is a **fixed cold-start date, not the run start** — it does not change from cycle to cycle.
+- **No bitmap; land is the literal value 9999.0.** GRIB2 messages carry `bitmapPresent = 0` and `missingValue = 9999`. Land and dry points are encoded as an in-band 9999.0, not as a masked or NaN value. Readers that do not explicitly filter will silently average 9999 into their statistics. Live-verified valid fractions on the 2026-07-23 00Z f012 files: 21.3% of the CONUS East grid, 96.2% of Hawaii, 92.2% of Puerto Rico.
+- **`conus.east` and `conus.west` are the same grid.** Both are the 2145 × 1377 / 2.5 km CONUS Lambert grid with identical projection parameters and identical first-grid-point coordinates. They differ only in which portion of the domain carries valid data. They are not two separate regional domains.
+- **Station NetCDF fill values are inconsistent and automatic masking fails.** `zeta` declares `_FillValue = -99999.0`, but the file contains more than one sentinel. Under v2.1 there were four (−99999.0, −99998.9, −99998.8, −99998.7). On the 2026-11-17 12Z v3.1 run there are two: 4,173 elements at −99999.0 and **231 at −99998.7**, which `netCDF4`'s automatic masking leaves in the array as ordinary numbers near −99999. Mask on `zeta < -1000`, not on equality with `_FillValue`. This is the same class of defect documented for [RESPS](../../regional/canada/resps.md).
+- **Time units carry a trailing Fortran comment.** The `time` variable's units string is `"seconds since 2026-05-26 12:00:00        ! NCDASE - BASE_DAT"` — a truncated Fortran namelist comment appended to an otherwise valid udunits string. `cftime` tolerates it and parses correctly; stricter udunits parsers may not. The epoch is a **fixed cold-start date, not the run start**. It does not change between cycles, but it **did change at v3.1** (from 2024-04-04 12:00 to 2026-05-26 12:00), so code that hard-codes the epoch will mis-date every post-upgrade file.
 - **Conflicting convention attributes.** Files carry both `Conventions = UGRID-0.9.0` and a lowercase `convention = "CF-1.0                     ! NCCONV - CONVENTIONS"`. Most of the global attribute block is raw ADCIRC `fort.15` text with embedded Fortran comments and fixed-width padding; parse it defensively.
-- **Three different version strings in one file.** `version = noaa.stofs.2d.glo.v2.1.0r1.v55.12`, `title = STOFS_2D_GLOBAL.V2.1.0`, `runid = STOFS 2D GLOBAL v5.6.5`, while the governing Service Change Notice is for STOFS **v2.1.4**. The umbrella STOFS release number, the 2-D component number, and the internal run identifier are all distinct. Record the SCN version externally rather than relying on the in-file stamp.
-- **`generatingProcessIdentifier` is inconsistent across grids of the same run.** Live-verified on the 00Z cycle: `conus.east` and `puertori` report 14, `conus.west`, `alaska` and `hawaii` report 17, and `guam` and `northpacific` report 20 — three different values from one model in one cycle. Do not use this key to identify the model.
-- **`points.cwl.noanomaly.nc` is undocumented.** It is present in every cycle but absent from the official bucket README file table. See *Data assimilation* above for what it contains.
-- **Volume warning.** A single cycle is approximately **63 GB**, of which 59 GB is native-mesh NetCDF (`fields.cwl.vel.nc` alone is 24.5 GB, and each of `fields.{cwl,htp,swl}.nc` is ~11 GB) and 4 GB is GRIB2. The station files total ~142 MB. Most users should stay on the regional GRIB2 or the point files.
-- **One station is a persistent outlier.** On the 2026-07-23 00Z run, station `UJ816 SOUS00 SA816` (35.44°E, 46.22°N, inland near the Sea of Azov) peaks at 137.9 m, against a median peak across all stations of 0.60 m and only that one station exceeding 10 m. Station `FRDP4 SOUS41 9753216 PR Fajardo` returns sentinel values for the entire forecast. Apply sanity bounds before using the station set wholesale.
+- **Version strings are unhelpful.** v3.1 files carry `title = STOFS_2D_GLOBAL.V3.1.0`, `version = unknown`, `git_hash = unknown` and an unchanged `runid = STOFS 2D GLOBAL v5.6.5`. Under v2.1 `version` read `noaa.stofs.2d.glo.v2.1.0r1.v55.12`. Use `title` to tell the releases apart, and record the SCN version externally.
+- **`generatingProcessIdentifier` is inconsistent across grids of the same run.** Live-verified again on the 2026-11-17 12Z cycle: `conus.east` and `puertori` report 14, `conus.west`, `alaska` and `hawaii` report 17, and `guam` and `northpacific` report 20 — three different values from one model in one cycle. Do not use this key to identify the model on its own.
+- **The v3.1 station list does not fully match the SCN.** The SCN's additions are all present: Bogue Sound at Emerald Isle NC (`EMDN7`), White Oak River at Swansboro NC (`SWBN7`), Kings Bay MSF Pier GA (`KBMG1`) and TEMCO Kalama Terminal WA (`KLMW1`). Naples FL is now NOS ID 8725114 and New London CT is `NLHC3`. South Amboy NJ is gone. But **Duck NC (`DUKN7`), Fort Point NH (`FTPN3`), Money Point VA (`MNPV2`) and Springmaid Pier SC (`MROS1`) are still present**, although the SCN lists them as removed and the pre-implementation parallel feed had dropped them. The University of Hawai'i Sea Level Center sites (`UH***`) keep the trailing short code first seen in the parallel feed (e.g. `UH002 SOUS00 GL113 Tarawa, Bairiki Kiribati tara`), so name matching across the upgrade fails. Match on NOS station ID where possible.
+- **Volume warning.** A single cycle's products total about **155 GB** under v3.1, against about 63 GB under v2.1. The largest files are `fields.cwl.vel.nc` (38.7 GB), the forcing files (39.4 GB together), `fields.cwl.noanomaly.nc` and `fields.htp.nc` (19.6 GB each), `fields.swl.nc` (19.2 GB) and `fields.cwl.nc` (10.1 GB). GRIB2 is 4.4 GB per cycle and the station files about 170 MB. Most users should stay on the regional GRIB2 or the point files.
+- **One station is a persistent outlier.** On the 2026-11-17 12Z run, station `UJ816 SOUS00 SA816` (35.44°E, 46.22°N, inland near the Sea of Azov) peaks at 126.5 m, against a median peak across all stations of 0.68 m. It is the only station over 10 m, as it was under v2.1 (137.9 m on 2026-07-23). Station `FRDP4 SOUS41 9753216 PR Fajardo` still returns sentinel values for the entire forecast. Apply sanity bounds before using the station set wholesale.
 - **Relationship to other systems:**
-  - Driving NWP: [GFS](../../../nwp_models/global/usa/gfs.md) supplies 10 m wind, MSLP and sea ice.
-  - Sibling component: [STOFS-3D-Atlantic](../../regional/usa/stofs-3d-atlantic.md) — same STOFS umbrella and version numbering, but a different model core (SCHISM), a regional domain, 3-D baroclinic physics, and NWM inland hydrology coupling. The two share the NOMADS `stofs/prod` directory but use separate S3 buckets.
+  - Driving NWP: [GFS](../../../nwp_models/global/usa/gfs.md) supplies 10 m wind, surface pressure and sea ice.
+  - Sibling component: [STOFS-3D-Atlantic](../../regional/usa/stofs-3d-atlantic.md) — same STOFS umbrella and version numbering, but a different model core (SCHISM), a regional domain, 3-D baroclinic physics, and NWM inland hydrology coupling. It shares this system's `conus.east` and `puertori` GRIB2 grids.
+  - Sibling component: [STOFS-3D-Pacific](../../regional/usa/stofs-3d-pacific.md) — SCHISM-based 3-D Pacific basin component, operational since 17 August 2026, run once daily to +48 h. It publishes on this system's five Pacific GRIB2 grids under the same region names and covers the same U.S. Pacific coasts, so the two are alternative guidance for the same locations. The 3-D components share an S3 bucket (`noaa-nos-stofs3d-pds`) separate from this one.
   - Comparable global deterministic surge system: [GDSPS](../canada/gdsps.md) (ECCC). GDSPS is a light-baroclinic NEMO configuration on a structured 1/12° grid with no overland domain; STOFS-2D-Global is a true 2D barotropic ADCIRC model on an unstructured mesh with an active floodplain. They are not equivalent products despite both being global.
   - Predecessor: ESTOFS, whose three regional domains (Atlantic, Pacific, Micronesia) were replaced by this single global system in late 2020. The `etsrg` GRIB2 parameter label is a survival from that era.
-
----
-
-## Upcoming changes
-
-### STOFS v3.1 — effective 11 August 2026
-**SCN 26-51 (Updated)** announces an upgrade of the Surge and Tide Operational Forecast System to version 3.1. The notice was first issued 3 June 2026 with an effective date of 7 July 2026 and subsequently revised to **11 August 2026**.
-
-As of the 2026-07-23 00Z cycle the upgrade had **not** taken effect in production — operational files still stamp `STOFS_2D_GLOBAL.V2.1.0`. Everything above describes the v2.1 configuration.
-
-The upgrade covers all three STOFS components together, including the debut of **STOFS-3D-Pacific**. The parallel feed is public (see *Parallel (pre-implementation) feed* above), so the v3.1 changes can be inspected directly rather than inferred from the notice.
-
-**Live-verified differences, production vs. parallel, 2026-07-23 00Z cycle:**
-
-| Property | v2.1 (production) | v3.1 (parallel) |
-|---|---|---|
-| `title` attribute | `STOFS_2D_GLOBAL.V2.1.0` | `STOFS_2D_GLOBAL.V3.1.0` |
-| `version` attribute | `noaa.stofs.2d.glo.v2.1.0r1.v55.12` | `unknown` (not yet stamped) |
-| `runid` | `STOFS 2D GLOBAL v5.6.5` | `STOFS 2D GLOBAL v5.6.5` (unchanged) |
-| Mesh | 12,785,004 nodes / 24,875,336 elements | **unchanged** |
-| Verification sites | 1,688 | 1,687 |
-| Forecast length / cycles | −6 h nowcast + 180 h, 4× daily | **unchanged** |
-| GRIB2 regions | 7 | **unchanged** (same seven) |
-| GRIB2 parameter encoding | 10/3/250, 194, 193 | **unchanged** |
-| Gridded anomaly-corrected products | none | **new** — `fields.cwl.noanomaly.nc`, `fields.cwl.maxele.noanomaly.nc` |
-
-- **The GRIB2 trap survives the upgrade.** Decoding the parallel `conus.east.f012.grib2` gives the identical three-message structure, identical parameter numbers, identical `generatingProcessIdentifier = 14`, no bitmap, `missingValue = 9999`, and the same exact additivity (`250 − (194 + 193)` max residual 2 × 10⁻⁵ m). The caution in the Notes section above applies unchanged to v3.1.
-- **The anomaly correction appears to extend from stations to the gridded fields.** v3.1 introduces `fields.cwl.noanomaly.nc` and `fields.cwl.maxele.noanomaly.nc` on the native mesh — the same `noanomaly` naming convention used for the station files. The natural reading is that the bias correction currently applied only at stations is being applied to the gridded output too, with an uncorrected variant published alongside. **This would change the meaning of the primary gridded product** and should be confirmed against the SCN before the entry's *Data assimilation* section is finalised. (TBD)
-- **Station list churn is small and mostly cosmetic.** Net 1,688 → 1,687. The University of Hawai'i Sea Level Center sites (`UH***`) all gained a trailing short code in `station_name` — e.g. `UH002 SOUS00 GL113 Tarawa, Bairiki Kiribati` becomes `... Kiribati tara` — so naive string matching on station names will fail across the upgrade even where the site is unchanged. Genuine changes are confined to a handful of U.S. sites: **added** Bogue Sound at Emerald Isle NC (`EMDN7`), White Oak River at Swansboro NC (`SWBN7`), Kings Bay MSF Pier GA (`KBMG1`), TEMCO Kalama Terminal WA (`KLMW1`); **removed** Duck Pier NC (`DUKN7`), Money Point VA (`MNPV2`), Myrtle Beach Springmaid Pier SC (`MROS1`), South Amboy NJ (`SABN4`); **re-identified** New London CT (`NLNC3` → `NLHC3`) and Naples FL (NOS ID 8725110 → 8725114). Match on NOS station ID where possible, not on name or Handbook-5 ID.
-- **New barrier/weir variables on the native mesh.** The v3.1 field files add `barsp`, `barht`, `ibconn`, `barsb` and `nfaces` alongside the existing mesh topology arrays — ADCIRC internal barrier boundary parameters, absent from the v2.1 output. This suggests levee and weir structures have been added to the mesh even though the node and element counts are identical. (TBD — mechanism unconfirmed.)
-- **GFS forcing fields are published in the parallel stream.** `icec.nc`, `pressfc.nc` and `uvgrd10m.nc` (sea ice concentration, surface pressure, 10 m wind) appear in the parallel directories. Whether these persist into the operational feed is TBD.
 
 ---
 
@@ -247,7 +223,8 @@ The upgrade covers all three STOFS components together, including the debut of *
 
 | Version | Date | Notes |
 |---|---|---|
-| STOFS v2.1 (v2.1.4) | 2024 | Current operational release (SCN 23-124). In-file component stamp `STOFS_2D_GLOBAL.V2.1.0`, `runid` v5.6.5. |
+| STOFS v3.1 | 17 Aug 2026, 12Z (archive: from 16 Aug 00Z) | SCN 26-51 (Updated); first announced for 7 July 2026, then 11 August. Gridded bias correction by graph diffusion (GRIB2 and `fields.cwl.nc` now corrected; uncorrected `noanomaly` NetCDF added). Station list revised. Cold restart (new time epoch 2026-05-26). Barrier arrays in the native-mesh output. GFS forcing files and an autovalidation station subset published on S3. Mesh, GRIB2 grids and encoding unchanged. |
+| STOFS v2.1 (v2.1.4) | 2024 | SCN 23-124. In-file component stamp `STOFS_2D_GLOBAL.V2.1.0`, `runid` v5.6.5. Last v2.1 cycle in the S3 archive: 15 Aug 2026, 18Z. |
 | STOFS v2.0.0 | Dec 2023 / early 2024 | Station bias correction against NOS/CO-OPS observations introduced; GFS forcing improved to hourly through +120 h, 3-hourly to +180 h. (Exact implementation date TBD.) |
 | STOFS v1.1.1 | 10 Jan 2023 | PNS 23-01. STOFS-3D-Atlantic S3 bucket established; `stofs_2d_glo.YYYYMMDD` prefix begins 2023-01-08 on S3. |
 | STOFS v1.0.1 | Dec 2022 | ESTOFS renamed to STOFS; STOFS-3D-Atlantic component added; improved resolution for U.S. East Coast, U.S. West Coast, Alaska and Iceland. |
@@ -259,14 +236,15 @@ Earlier upgrades occurred in July 2021 and January 2023. (Full pre-2023 history 
 
 ## Official documentation
 - AWS Open Data Registry entry: https://registry.opendata.aws/noaa-gestofs/
-- Bucket README (authoritative file inventory): https://noaa-gestofs-pds.s3.amazonaws.com/README.html
+- Bucket README (file inventory; does not yet list the `noanomaly` or forcing files): https://noaa-gestofs-pds.s3.amazonaws.com/README.html
 - NOMADS production directory: https://nomads.ncep.noaa.gov/pub/data/nccf/com/stofs/prod/
 - NOS Office of Coast Survey storm surge modeling overview: https://nauticalcharts.noaa.gov/learn/storm-surge-modeling.html
 - ESTOFS/STOFS product pages: https://polar.ncep.noaa.gov/estofs/ and https://polar.ncep.noaa.gov/stofs/
-- SCN 26-51 (Updated) — STOFS v3.1, effective 11 August 2026: https://www.weather.gov/media/notification/pdf_2026/scn26-51_STOFS.v3.1.pdf
+- SCN 26-51 (Updated) — STOFS v3.1: https://www.weather.gov/media/notification/pdf_2026/SCN26-51_STOFS.v3.1_Updated.aaa.pdf
 - SCN 23-124 (aaf) — STOFS v2.1.4: https://www.weather.gov/media/notification/pdf_2023_24/scn23-124_stofs_upgrade_v2.1.4_aaf.pdf
 - PNS 23-43 — STOFS v2.0.0 proposal: https://www.weather.gov/media/notification/pdf_2023_24/pns23-43_stofs_2.0.0_upgrade.pdf
 - PNS 23-01 — STOFS v1.1.1 known issues: https://www.weather.gov/media/notification/pdf_2023_24/pns23-01_stofs_v1.1.1.pdf
 - PNS 22-37 — ESTOFS→STOFS transition: https://www.weather.gov/media/notification/pdf2/pns22-37_stofs_dec_2022_upgrade_aaa.pdf
+- NOAA InPort — STOFS: https://www.fisheries.noaa.gov/inport/item/79430
 - ADCIRC model documentation: http://www.adcirc.org
 - Citation DOI: https://doi.org/10.25923/ng4h-4b85
