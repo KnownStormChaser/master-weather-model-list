@@ -203,7 +203,7 @@ aws s3 ls --no-sign-request s3://noaa-nos-stofs3d-pds/STOFS-3D-Atl/
 - **Relationship to other systems:**
   - Sibling component: [STOFS-2D-Global](../../global/usa/stofs-2d-global.md) — same STOFS umbrella and version numbering, but a different model core (ADCIRC), global coverage, 2-D barotropic physics, four cycles daily, and a three-way tide/surge product split that this system does not offer.
   - Sibling component: [STOFS-3D-Pacific](./stofs-3d-pacific.md) — same SCHISM core, S3 bucket and version numbering, operational since 17 August 2026. Differences: a 48 h forecast against 96 h here, TPXO9 tides, an MHW land boundary over most of the U.S. coast, up to 84 layers, and LMSL across all of its gridded and station products.
-  - Driving hydrology: National Water Model (NOAA/NWS Office of Water Prediction) — not currently catalogued.
+  - Driving hydrology: [National Water Model](../../../hydrological_models/regional/usa/nwm.md) (NOAA/NWS Office of Water Prediction). NWM also runs its own SCHISM-based coastal total water level configurations for the same coast, hourly and on NAVD88, with STOFS-2D-Global at the ocean boundary. That is a separate product from this one, despite the shared core.
   - Atmospheric drivers: GFS and HRRR. Ocean boundary: G-RTOFS.
   - Comparable regional surge system: [RESPS](../canada/resps.md) (ECCC) — but RESPS is 2-D barotropic with no overland domain and no hydrological coupling, so the two are not equivalent products.
   - SCHISM model documentation: http://ccrm.vims.edu/schismweb/
