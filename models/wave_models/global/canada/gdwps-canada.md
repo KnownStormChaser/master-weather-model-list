@@ -85,36 +85,46 @@ Deterministic global wave forecasts (surface, GRIB2, one file per variable per t
   - Regional deterministic sibling: [RDWPS](../../regional/canada/rdwps-canada.md), which receives GDWPS boundary conditions.
   - Ensemble counterpart: [GEWPS](./gewps-canada.md) (Global Ensemble Wave Prediction System) — the ensemble sibling of this system, driven by the GEPS atmospheric ensemble.
   - Developed in partnership with NCEP/NOAA (GDWPS began as an experimental system in June 2015; declared operational November 2017).
+  - Before GDWPS, ECCC's wave guidance was regional only. It started with the CSOWM model in 1991, and the WAM model took over in 1996 (Bernier et al. 2016). See [RDWPS](../../regional/canada/rdwps-canada.md).
 
 ---
 
-## Recent version history
+## Version history
 
-Versions are implemented at the stated date's 12 UTC run.
+The list runs from the experimental start (June 2015) to the present, newest first. Unless noted, upgrades start at the 12 UTC run. Most GDWPS upgrades follow a change in its [GDPS](../../../nwp_models/global/canada/gem-global.md) driver.
 
 ### GDWPS 1.11.0 — operational 26 May 2026 (current)
-Single change: winds and ice moved to **GDPS version 10.0.0**.
+- Winds and ice now come from **GDPS version 10.0.0**, the hybrid physics–AI GDPS (the only listed change)
 
 ### GDWPS 1.10.0 — operational 14 April 2026
-Adaptation to ECCC's new High Performance Computing infrastructure. Infrastructure-only; no scientific or configuration changes.
+- Port of v1.9.0 to ECCC's new high-performance computing infrastructure. No science or configuration changes listed.
 
 ### GDWPS 1.9.0 — operational 11 June 2024
-Upgraded driving atmospheric model to GDPS version 9.0.0.
+- Driving atmospheric model upgraded to GDPS version 9.0.0 (the only listed change)
 
 ### GDWPS 1.8.0 — operational 28 June 2022
-Adaptation to the (then) new HPC infrastructure.
+- Port of v1.7.0 to ECCC's then-new HPC infrastructure. No science changes listed.
 
 ### GDWPS 1.7.0 — operational 1 December 2021
-GDPS v8.0.0 forcing with re-optimized parameterization; adoption of WAVEWATCH III v7 (same physics as v5.16, plus a negative-peak-period bugfix); activation of a Miche-style limiter for shallow-water wave breaking; hourly wind input extended past 144 h.
+- Forced by GDPS v8.0.0, with the wave-model parameterization re-optimized for it. ECCC has tuned its WW3 parameters with the Cyclops optimization tool since 2018; before that, tuning was by trial and error.
+- **WAVEWATCH III upgraded to v7**: same physics as v5.16, plus a fix for negative peak periods
+- **Miche-style limiter activated** to break unrealistically large waves in shallow water
+- Hourly wind input now used beyond 144 h, newly available from GDPS v8.0.0
 
 ### GDWPS 1.6.0 — operational 21 January 2020
-HPC-infrastructure adaptation.
+- Port to ECCC's then-new HPC infrastructure. No science changes listed.
+- *(No 1.4.0 or 1.5.0 entries exist. The changelog jumps from 1.3.0 in 2017 to 1.6.0, though GDPS was upgraded in September 2018 and July 2019.)*
 
 ### GDWPS 1.3.0 — declared operational 1 November 2017
-Declared operational after running experimentally since 2015.
+- Declared operational after more than two years as an experimental system. ECCC's changelog links to the technical specifications for v1.3.1.
 
-### Experimental — 23 June 2015
-Initial experimental implementation, developed in partnership with NCEP/NOAA.
+### GDWPS 1.0.0 — experimental 23 June 2015
+- New experimental global system, developed in partnership with NCEP/NOAA
+- As described by Bernier et al. (2016):
+  - WAVEWATCH III v4.18 on a ¼° grid
+  - Hourly GDPS 10 m winds; ice concentration from GIOPS every 3 hours
+  - 120 h forecasts twice daily (00 and 12 UTC), started from a 4×-daily pseudo-analysis
+- The forecast was later extended to today's 240 h. ECCC's changelog doesn't say when. *(TBD)*
 
 ---
 
