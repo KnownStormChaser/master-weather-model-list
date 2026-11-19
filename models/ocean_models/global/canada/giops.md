@@ -206,52 +206,63 @@ None distributed. No bathymetry, land-sea mask, or grid cell dimension files are
 
 ## Version history
 
-Two version lines run in parallel. The changelog below is the **analysis** line, which is what ECCC's GIOPS changelog documents. The forecast component's version history is the [GDPS](../../../nwp_models/global/canada/gem-global.md) history.
+Two version lines run in parallel. This section covers the **analysis** line, which is what ECCC's GIOPS changelog documents. The forecast component is versioned with [GDPS](../../../nwp_models/global/canada/gem-global.md), so its history is the GDPS history. Most GIOPS analysis upgrades have shipped on the same day as a GDPS upgrade; the matching GDPS version is noted in each section. The changelog gives a starting run (12 UTC) only for v3.5.0.
 
-### April 14, 2026 — GIOPS v3.6.0 (current documented version)
-- Migration to ECCC's new High Performance Computing infrastructure
-- Computational only; no scientific change to formulation, DA, or outputs
+### GIOPS v3.6.0 — operational April 14, 2026 (current documented version)
+- Port of v3.5.0 to ECCC's new high-performance computing infrastructure, alongside GDPS 9.1.0. No scientific change to formulation, DA or outputs.
 
-### May 26, 2026 — forecast component moves to GDPS 10.0.0 (undocumented in the GIOPS changelog)
+### Forecast component moves to GDPS 10.0.0 — May 26, 2026 (not in the GIOPS changelog)
 - Not a GIOPS changelog entry, but the forecast files' version stamp changes with it
 - GDPS 10.0.0 introduced hybrid physics-AI forecasting via spectral nudging toward [GEML](../../../nwp_models/global/canada/gdps-geml.md); the coupled ocean integrates against that atmosphere
 
-### June 11, 2024 — GIOPS v3.5.0
+### GIOPS v3.5.0 — operational June 11, 2024 (12 UTC run)
+- Released with GDPS 9.0.0, which moved its own initialization to GIOPS 3.5.0
 - Sea ice model upgraded from CICE 4.0 to **CICE 6.2.0**
 - Delta-Eddington radiation scheme for sea ice (Briegleb and Light, 2007)
 - "Bubbly" thermal conductivity scheme (Pringle et al., 2007)
 - New Mean Dynamic Topography field
 - Three new altimeters activated (CryoSat-2N, Jason-3N, Sentinel-6), roughly doubling assimilated altimetric observations
 
-### November 28, 2023 — GIOPS v3.4.1
-- Added DFOQC quality control for in-situ observations used in data assimilation
+### GIOPS v3.4.1 — operational November 28, 2023
+- Added DFOQC quality control for in-situ observations used in data assimilation (the only change). RIOPS 2.3.1 adopted the same in-situ feed the same day.
 
-### June 28, 2022 — GIOPS v3.4.0
-- HPC infrastructure migration (computational only)
+### GIOPS v3.4.0 — operational June 28, 2022
+- Port to ECCC's then-new HPC infrastructure, alongside GDPS 8.1.0. Computational only.
 
-### December 1, 2021 — GIOPS v3.3.0
-- Diurnal cycle included in atmospheric forcing
+### GIOPS v3.3.0 — operational December 1, 2021
+- Released with GDPS 8.0.0
+- Diurnal cycle added to the atmospheric forcing
 - Ice strength parameter updated; ice roughness adjusted to match the GEM value
-- Atmospheric forcing switched from the GDPS forecast run to the assimilation (delayed-mode G2) run
+- **Atmospheric forcing taken from the GDPS assimilation (delayed-mode G2) run instead of the forecast run**
 - New monitoring system
 
-### January 21, 2020 — GIOPS v3.2.1
-- HPC infrastructure migration (computational only)
+### GIOPS v3.2.1 — operational January 21, 2020
+- Port to ECCC's then-new HPC infrastructure, alongside GDPS 7.1.0. Computational only.
+- *(No 3.1.0 or 3.2.0 entries exist.)*
 
-### July 3, 2019 — GIOPS v3.0.0
-- Updated to SAM2
-- New SST and sea ice analyses at 0.1° (from 0.2°)
+### GIOPS v3.0.0 — operational July 3, 2019
+- Released with GDPS 7.0.0, whose changelog records the same upgrade ("GIOPS v2.3.0 to v3.0.0, SAM2 update")
+- **Assimilation updated to SAM2** (Système d'Assimilation Mercator)
+- New SST and sea-ice analyses at 0.1° (from 0.2°)
+- The changelog describes these changes as "mainly in the forecast component", although both are assimilation changes.
 
-### November 1, 2017 — GIOPS v2.3
-- **Two-way coupling with GDPS introduced**
+### GIOPS v2.3 — operational November 1, 2017
+- Released with GDPS 6.0.0
+- **Two-way coupling with GDPS introduced**: ocean conditions now affect the atmospheric forecast, and the atmosphere feeds back into the ocean forecast
+- No significant assimilation changes
+- *(No 2.2 entry exists.)*
 
-### June 21, 2016 — GIOPS v2.1
-- New assimilation code based on Mercator-Océan's 2015 SAM
-- 4D Incremental Analysis Update introduced
-- Improved Mean Dynamic Topography; bogus observations under sea ice; refined CMC SST and ice analyses
+### GIOPS v2.1 — operational June 21, 2016
+- New assimilation code based on Mercator-Océan's 2015 SAM, with the **4D Incremental Analysis Update** approach
+- Various small analysis kernel changes
+- Improved Mean Dynamic Topography; bogus observations in key regions such as under sea ice
+- Refined use of the operational CMC SST and sea-ice analyses
+- No significant forecast changes
+- *(No 2.0 entry exists.)*
 
-### August 20, 2015 — GIOPS v1.1.1
-- Declared operational by CMC
+### GIOPS v1.1.1 — declared operational August 20, 2015
+- Declared operational by CMC. No configuration changes listed.
+- Per Bernier et al. (2016), GIOPS was added to CMC's operational suite in **June 2014**. It later supplied the ice concentration for the experimental global wave system ([GDWPS](../../../wave_models/global/canada/gdwps-canada.md)), from June 2015.
 
 ---
 
@@ -281,6 +292,8 @@ Two version lines run in parallel. The changelog below is the **analysis** line,
 
 - **AI relationship.** GIOPS is not itself an AI system, but since GDPS 10.0.0 its forecast component has been coupled to a GEML-nudged atmosphere, making it a downstream AI-influenced product. [`AI_MODELS.md`](../../../../AI_MODELS.md) currently indexes GEML and GDPS but not the ocean systems that inherit the coupling. **Whether GIOPS, [RIOPS](../../regional/canada/riops.md) and [CIOPS](../../regional/canada/ciops.md) warrant entries in that index is an open scope question** — they are physics models whose forcing is partly AI-derived, which is a category the index does not currently have. Flagged for decision rather than resolved here.
 
+- **Version-history gaps (ECCC sources):** The GIOPS changelog has no entries for 2.0, 2.2, 3.1.0 or 3.2.0, and gives no pre-operational history. The June 2014 start comes from Bernier et al. (2016).
+
 - **Relative-link correction.** The previous revision of this entry linked GLO12 and RTOFS as `../../france/glo12.md` and `../../us/rtofs-global.md`, which resolve to `models/ocean_models/france/` and `models/ocean_models/us/` — neither exists. Corrected to `../france/` and `../us/`. `riops.md` has the reciprocal problem: it links GIOPS as `./giops.md` from `models/ocean_models/regional/canada/`. **Worth a repository-wide sweep.**
 
 ---
@@ -301,6 +314,7 @@ Two version lines run in parallel. The changelog below is the **analysis** line,
 - Discovery metadata: https://open.canada.ca/data/en/dataset/dc3a7022-95e8-45a7-bf63-3d45b6cda0dc
 
 ### Key references
+- Bernier, N. B., et al. (2016). Operational wave prediction system at Environment Canada: Going global to improve regional forecast skill. *Weather and Forecasting*, 31, 353–370. https://doi.org/10.1175/WAF-D-15-0087.1
 - Smith, G.C., Roy, F., Reszka, M., Surcel Colan, D., He, Z., Deacu, D., Belanger, J.M., Skachko, S., Liu, Y., Dupont, F., Lemieux, J.-F. (2016). Sea ice forecast verification in the Canadian global ice ocean prediction system. *Q. J. Roy. Meteor. Soc.*, 142(695), 659–671. https://doi.org/10.1002/qj.2555
 - Smith, G.C., Bélanger, J.M., Roy, F., Pellerin, P., Ritchie, H., Onu, K., Roch, M., Zadra, A., Surcel Colan, D., Winter, B., Fontecilla, J.S. (2018). Impact of coupling with an ice-ocean model on global medium-range NWP forecast skill. *Mon. Wea. Rev.*, 146, 1157–1180. https://doi.org/10.1175/MWR-D-17-0157.1
 - Smith, G.C., Liu, Y., Benkiran, M., Chikhar, K., Surcel Colan, D., Gauthier, A.A., Testut, C.E., Dupont, F., Lei, J., Roy, F., Lemieux, J.-F. (2021). The Regional Ice Ocean Prediction System v2: a pan-Canadian ocean analysis system using an online tidal harmonic analysis. *Geosci. Model Dev.*, 14(3), 1445–1467. https://doi.org/10.5194/gmd-14-1445-2021
