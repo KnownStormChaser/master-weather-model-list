@@ -234,6 +234,7 @@ P-Surge has its own directory, unlike [ETSS](etss.md) and [P-ETSS](petss.md) whi
   - P-ETSS covers weaker tropical systems as well as extra-tropical ones, so the two overlap for marginal cases; P-Surge is the product of record for named tropical cyclones.
   - Overlapping deterministic system: [STOFS-2D-Global](../../global/usa/stofs-2d-global.md), which runs continuously and covers tropical storms implicitly through its GFS forcing, without tropical-specific wind modelling.
   - Downstream: the [National Water Model](../../../hydrological_models/regional/usa/nwm.md) runs P-Surge-forced coastal total water level configurations (directories ending `_psurge`) when P-Surge is active. Live-verified on S3: Atlantic/Gulf P-Surge runs on 6 days between 18 August and 18 November 2026. The Puerto Rico P-Surge configuration added in NWM v3.1 had not yet appeared.
+  - Downstream: [NWPS](../../../wave_models/regional/usa/nwps.md) uses P-Surge water levels in place of STOFS under tropical conditions.
   - Viewers (not data sources): https://slosh.nws.noaa.gov/psurge/ and, for Puerto Rico, https://slosh.nws.noaa.gov/psurge/index.php?R=PR
 
 ---
