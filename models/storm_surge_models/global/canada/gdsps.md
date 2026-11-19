@@ -136,30 +136,39 @@ No currents, no inundation depth, no peak-envelope product, and no station time 
 
 ---
 
-## Recent version history
+## Version history
 
-All GDSPS versions have been implemented at the **12 UTC run** of the stated date.
+The list runs from the start of operations (December 2021) to the present, newest first. GDSPS went straight into operations with no experimental period in the changelog. Each science upgrade has followed a [GDPS](../../../nwp_models/global/canada/gem-global.md) upgrade. The changelog gives a 12 UTC starting run for every version except the two HPC ports (1.1.0 and 2.2.0), which list none.
 
-### GDSPS 2.3.0 — operational 26 May 2026 (current)
-Single change: atmospheric and oceanic forcing moved to **GDPS version 10.0.0**.
+### GDSPS 2.3.0 — operational 26 May 2026 (12 UTC run, current)
+- Atmospheric and oceanic forcing moved to **GDPS version 10.0.0**, the hybrid physics–AI GDPS (the only listed change)
 
 ### GDSPS 2.2.0 — operational 14 April 2026
-Adaptation to ECCC's **new High Performance Computing infrastructure**. Infrastructure-only; no scientific or configuration changes to the model, forcing, or outputs. Implemented as part of the same multi-system HPC migration that produced [RIOPS](../../../ocean_models/regional/canada/riops.md) v2.5.0 on the same date.
+- Port of v2.1.0 to ECCC's **new High Performance Computing infrastructure**, alongside GDPS 9.1.0, GIOPS 3.6.0 and [RIOPS](../../../ocean_models/regional/canada/riops.md) v2.5.0. Infrastructure-only; no scientific or configuration changes to the model, forcing or outputs.
 
-### GDSPS 2.1.0 — operational 11 June 2024
-- Upstream forcing moved to **GDPS 9.0.0** and **GIOPS 3.5.0** (wind, atmospheric pressure, ice concentration, ice velocity, surface currents, and salinity/temperature profiles)
+### GDSPS 2.1.0 — operational 11 June 2024 (12 UTC run)
+- Driven by wind, atmospheric pressure, ice concentration, ice velocities, surface currents, and salinity and temperature profiles from **GDPS 9.0.0** and **GIOPS 3.5.0**
 - Bathymetry updated to **exclude isolated lakes**, removing invalid output points
 - Reference atmospheric pressure **set to a constant 101,000 Pa**, improving run reproducibility
 - Net impact on water level forecast skill assessed as neutral
 
-### GDSPS 2.0.0 — operational 27 July 2023
-Introduced the **light baroclinic formulation** (9 vertical levels with 3D temperature and salinity nudged to GIOPS/GDPS) and **ice effects** via parameterized ice–ocean stress. Because baroclinicity and ice both introduce seasonal modulation of the tides, the de-tiding harmonic analysis window was extended from 180 to 366 days, and the SA and SSA constituents were retained rather than removed so that seasonal signals stay in `etas`.
+### GDSPS 2.0.0 — operational 27 July 2023 (12 UTC run)
+- ECCC's changelog lists no changes for this version and points to the innovations factsheet. The changes below come from that factsheet and the v2.0.0 technical specifications.
+- **Light baroclinic formulation** introduced: 9 vertical levels, with 3D temperature and salinity nudged to GIOPS/GDPS (Wang et al. 2022)
+- **Ice effects** added through a parameterized ice–ocean stress
+- Because baroclinicity and ice both modulate the tides seasonally, the de-tiding window was extended from 180 to 366 days, and the SA and SSA constituents were kept rather than removed so that seasonal signals stay in `etas`
+- Unusually, this upgrade came mid-cycle (July) rather than with a June or December suite upgrade
 
 ### GDSPS 1.1.0 — operational 28 June 2022
-Adaptation to ECCC's High Performance Computing infrastructure of the time. Infrastructure-only; no scientific changes.
+- Port of v1.0.0 to ECCC's then-new HPC infrastructure, alongside GDPS 8.1.0. Infrastructure-only.
 
-### GDSPS 1.0.0 — operational 1 December 2021
-Initial operational implementation of GDSPS at CMC. Tidal nudging to TPXO8 was documented in the technical specification revision of 2 December 2021, immediately following go-live. The system's scientific lineage traces to Bernier and Thompson's work on tide–surge interaction and ensemble surge prediction for Atlantic Canada (2007, 2015), and to Wang et al. (2021) for the global total water level formulation.
+### GDSPS 1.0.0 — operational 1 December 2021 (12 UTC run)
+- First implementation of GDSPS, which went straight to operational status. The changelog lists no further detail.
+- Barotropic global total-water-level NEMO configuration on ORCA12 (Wang et al. 2021), forced by GDPS 8.0.0, with explicit tides nudged to TPXO8 (documented in the 2 December 2021 technical-specification revision)
+- Implemented in ECCC's December 2021 suite upgrade (Innovation Cycle 3). The same release listed RESPS 1.5.0 and a **Regional Deterministic Storm-surge Prediction System (RDSPS) 1.9.0** (see [RESPS](../../regional/canada/resps.md))
+
+### Before GDSPS — regional surge systems
+- ECCC's operational surge forecasting before 2021 was regional only. It was based on the DalCoast model for Atlantic Canada, with a regional deterministic system (RDSPS) and an ensemble system (RESPS) described by Bernier and Thompson (2015). GDSPS's scientific lineage traces to that work (Bernier and Thompson 2007, 2015) and to Wang et al. (2021) for the global total-water-level formulation.
 
 > **Note on dating.** The technical specification PDF carries a document-history table whose dates are *document revision* dates, not implementation dates, and the two can diverge substantially — the v2.0.0 specification is dated 1 February 2023 while the system went operational on 27 July 2023. The changelog is the authoritative source for operational dates.
 
