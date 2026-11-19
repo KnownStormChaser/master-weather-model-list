@@ -178,11 +178,13 @@ None distributed in any domain. No bathymetry, land-sea mask, or cell-area files
 
 ## Version history
 
-### April 14, 2026 — CIOPS-East v2.4.0 and CIOPS-West v2.4.0 (current)
-- Migration to ECCC's new High Performance Computing infrastructure
-- Computational only. **Confirmed by the file version stamp**, which reads `240` across the current archive for all three distributed domains.
+The list runs from the operational start (December 2021) to the present, newest first. CIOPS-East and CIOPS-West share version numbers. The Salish Sea 500 m sub-domain is part of CIOPS-West and has no entries of its own. The changelog gives a starting run (12 UTC) only for v2.3.0.
 
-### June 11, 2024 — CIOPS-East v2.3.0 and CIOPS-West v2.3.0
+### CIOPS-East v2.4.0 and CIOPS-West v2.4.0 — operational April 14, 2026 (current)
+- Port to ECCC's new high-performance computing infrastructure, alongside RIOPS 2.5.0. Computational only.
+- **Confirmed by the file version stamp**, which reads `240` across the current archive for all three distributed domains.
+
+### CIOPS-East v2.3.0 and CIOPS-West v2.3.0 — operational June 11, 2024 (12 UTC run)
 **CIOPS-East:**
 - New region of increased mixing in the upper St. Lawrence estuary, reduced to better fit observations
 - Updated St. Lawrence River temperature climatology
@@ -195,16 +197,19 @@ None distributed in any domain. No bathymetry, land-sea mask, or cell-area files
 - `dfo_nemo` module updated in line with DFO port model versions; DFO boxes (XIOS output) and weight files adjusted
 - Same NEMO binary as CIOPS-East, with CICE 6.2.0 and Delta-Eddington — no impact, as no sea ice forms in the domain
 
-### Version 2.2.0 — undocumented
+### CIOPS v2.2.0 — undocumented
 Both v2.3.0 factsheets state the upgrade was "from version 2.2.0 to 2.3.0", but **the CIOPS changelog contains no v2.2.0 entry**, jumping directly from 2.1.0 (June 2022) to 2.3.0 (June 2024). The date and content of v2.2.0 are not published. **TBD.**
 
-### June 28, 2022 — CIOPS v2.1.0
-- HPC infrastructure migration (computational only)
+### CIOPS v2.1.0 — operational June 28, 2022
+- Port to ECCC's then-new HPC infrastructure. Computational only.
 
-### December 1, 2021 — CIOPS v2.0.0 (declared operational)
-- **CIOPS-East and CIOPS-West moved from experimental to operational status**
+### CIOPS v2.0.0 — declared operational December 1, 2021
+- **CIOPS-East and CIOPS-West moved from experimental to operational status**, in ECCC's December 2021 suite upgrade alongside RIOPS 2.2.0 and GIOPS 3.3.0
 - CIOPS-East: reduced bottom roughness; **vertical resolution in the upper water column increased from 75 to 100 levels**; reduced wave roughness parameter; new wave roughness formulation for wind stress; increased diffusivity in the upper St. Lawrence estuary west of Tadoussac
 - CIOPS-West: **addition of the Salish Sea sub-domain at 500 m resolution**
+
+### Experimental CIOPS (v1) — before December 2021
+- ECCC's changelog has no entries for the experimental period. The CIOPS-East system paper describes "version 1": a one-way downscaling of RIOPS on a 1/36° (~2 km) grid over the northwest Atlantic and the Gulf of St. Lawrence. It was evaluated with a pseudo-analysis from March 2019 to February 2020. *(TBD — experimental start dates for CIOPS-East and CIOPS-West)*
 
 ---
 
@@ -236,6 +241,8 @@ Both v2.3.0 factsheets state the upgrade was "from version 2.2.0 to 2.3.0", but 
 - **CIOPS-East is redistributed through Copernicus Marine, one version behind.** The COLAB-MFC product `NWATL_ANALYSISFORECAST_PHY_ICE_017_001` is a reformatting of CIOPS-East by NOW Systems (Spain), confirmed from its `source` attribute. Its files stamp **`CIOPSE_230_F`** — v2.3.0 — while this distribution has stamped `240` since 14 April 2026. Since that upgrade is documented as computational only, the scientific content should be identical, but the Copernicus copy went live in July 2026 still carrying the older stamp. The redistribution also carries a **continuous archive from 2025-05-21** against this channel's 30-day retention, so the two are complementary rather than one superseding the other. See [ciops-east-copernicus.md](./ciops-east-copernicus.md).
 
 - **Volume is concentrated in one domain.** CIOPS-East alone is 80% of the family's ~105 GiB/day, and its two 3D velocity files account for roughly two-thirds of that. Users needing surface fields only should filter on `_Sfc_` and `DBS-0.5m`, which reduces East from ~21 GiB to under 0.4 GiB per cycle.
+
+- **Version-history gaps (ECCC sources):** The changelog has no v2.2.0 entry (see Version history) and no experimental-period (v1) entries. The 75 → 100 level change in v2.0.0 implies that an experimental CIOPS-East with 75 levels existed before December 2021.
 
 - **Relative-link correction.** The previous revision linked GIOPS as `./giops.md` from `models/ocean_models/regional/canada/`, which does not resolve. Corrected to `../../global/canada/giops.md`. `./riops.md` was already correct. The repository-wide relative-link sweep remains outstanding.
 
