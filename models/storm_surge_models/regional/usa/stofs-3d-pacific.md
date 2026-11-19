@@ -201,7 +201,7 @@ aws s3 ls --no-sign-request s3://noaa-nos-stofs3d-pds/STOFS-3D-Pac/
 - **Relationship to other systems:**
   - Sibling component: [STOFS-3D-Atlantic](./stofs-3d-atlantic.md). Same SCHISM core, S3 bucket and version numbering. Differences: 48 h vs 96 h forecast, TPXO9 vs FES2014 tides, an MHW vs 10 m-contour land boundary, up to 84 vs up to 49 layers, and a single LMSL datum across products where the Atlantic component mixes datums.
   - Sibling component: [STOFS-2D-Global](../../global/usa/stofs-2d-global.md). Different core (ADCIRC), 2-D barotropic, four cycles daily, separate tide/surge products. It shares the five Pacific GRIB2 grids and the GRIB2 parameter, and covers the same U.S. Pacific coasts, so the two are alternative guidance for the same locations.
-  - River forcing: National Water Model (not currently catalogued) and [GloFAS Forecast](../../../hydrological_models/global/eu/cems-glofas-forecast.md)
+  - River forcing: [National Water Model](../../../hydrological_models/regional/usa/nwm.md) and [GloFAS Forecast](../../../hydrological_models/global/eu/cems-glofas-forecast.md). NWM's own coastal total water level configurations cover the U.S. West Coast, Hawaii and Puerto Rico with SCHISM too, but on separate meshes and datums.
   - Atmospheric drivers: GFS and HRRR. Ocean boundary: G-RTOFS.
   - SCHISM model documentation: http://ccrm.vims.edu/schismweb/
 
