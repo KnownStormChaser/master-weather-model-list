@@ -277,6 +277,7 @@ The public comment period closed on **April 15, 2026**. As of late July 2026, NO
 
 ### Downstream consumers
 - **[HAFS (Hurricane Analysis and Forecast System)](../../../tropical_cyclone_models/hafs.md):** Uses RTOFS as ocean initial conditions. HAFSv2.1 (July 2025) upgraded to use RTOFS v2.5.
+- **[NWPS (Nearshore Wave Prediction System)](../../../wave_models/regional/usa/nwps.md):** RTOFS surface currents from the 00Z run, staged 3-hourly for each of the 36 NWS coastal forecast-office domains, supply the wave–current interaction in the on-demand SWAN runs.
 - Various regional ocean downscaling applications use Global RTOFS as boundary conditions.
 
 ### AI-based counterparts
