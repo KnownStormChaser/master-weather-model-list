@@ -92,30 +92,36 @@ Probabilistic Great Lakes wave forecasts (surface, GRIB2, all 21 members per fil
 
 ---
 
-## Recent version history
+## Version history
 
-Versions are implemented at the stated date's 12 UTC run.
+The list runs from the start of operations (April 2018) to the present, newest first. Unless noted, upgrades start at the 12 UTC run. REWPS science changes have followed its [REPS](../../../ensemble_models/regional/canada/reps.md) wind driver and its WCPS ice driver.
 
 ### REWPS 1.8.0 — operational 14 April 2026 (current)
-Adaptation to ECCC's new High Performance Computing infrastructure. Infrastructure-only; no scientific or configuration changes. The v1.7.0 technical specification still describes the current scientific configuration.
+- Port of v1.7.0 to ECCC's new high-performance computing infrastructure. No science or configuration changes listed. The v1.7.0 technical specifications still describe the current configuration.
 
 ### REWPS 1.7.0 — operational 11 June 2024
-Wind forcing moved to REPS 5.0.0; ice forcing to WCPS 3.3.0; activated a Miche-style shallow-water limiter; **added the 06 and 18 UTC forecasts** (previously 2× daily).
+- Winds from REPS v5.0.0
+- Ice concentration from WCPS v3.3.0
+- Miche-style shallow-water limiter activated
+- **06 and 18 UTC forecasts added** (previously twice daily, 00 and 12 UTC)
 
 ### REWPS 1.6.0 — operational 28 June 2022
-HPC-infrastructure adaptation.
+- Port of v1.5.0 to ECCC's then-new HPC infrastructure. No science changes listed.
 
 ### REWPS 1.5.0 — operational 1 December 2021
-Adopted WAVEWATCH III v7; REPS 4.0.0 and WCPS 3.0.0 forcing.
+- **WAVEWATCH III upgraded to v7**
+- Forced by REPS v4.0.0 and WCPS v3.0.0
 
 ### REWPS 1.4.0 — operational 21 January 2020
-HPC-infrastructure adaptation.
+- Port to ECCC's then-new HPC infrastructure. No science changes listed.
+- *(No 1.3.0 entry exists.)*
 
 ### REWPS 1.2.0 — operational 4 March 2019
-Ice input switched from an analysis to a WCPS (v2.0.0) ice forecast.
+- Ice input switched from an analysis to an ice forecast from WCPS v2.0.0, declared operational the same day. This was the same change made in RDWPS 3.2.0.
+- *(No 1.1.0 entry exists.)*
 
 ### REWPS 1.0.0 — declared operational 4 April 2018
-Initial operational implementation at CMC.
+- New Great Lakes ensemble wave system declared operational, on the same day as the WW3-based RDWPS 3.0.0. No configuration details listed.
 
 ---
 
