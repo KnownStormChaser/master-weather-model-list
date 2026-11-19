@@ -92,24 +92,27 @@ Probabilistic global wave forecasts (surface, GRIB2, all 21 members per file). L
 
 ---
 
-## Recent version history
+## Version history
 
-Versions are implemented at the stated date's 12 UTC run.
+The list runs from the experimental start (November 2020) to the present, newest first. Unless noted, upgrades start at the 12 UTC run. Every science change so far has followed a change in its [GEPS](../../../ensemble_models/global/canada/geps.md) driver.
 
 ### GEWPS 1.4.0 — operational 14 April 2026 (current)
-Adaptation to ECCC's new High Performance Computing infrastructure. Infrastructure-only; no scientific or configuration changes. The v1.3.0 technical specification still describes the current scientific configuration.
+- Port of v1.3.0 to ECCC's new high-performance computing infrastructure. No science or configuration changes listed. The v1.3.0 technical specifications still describe the current configuration.
 
 ### GEWPS 1.3.0 — operational 11 June 2024
-Wind and ice forcing moved to GEPS version 8.0.0.
+- Winds and ice now come from GEPS v8.0.0 (25 km, previously 39 km) (the only listed change)
 
 ### GEWPS 1.2.0 — operational 28 June 2022
-HPC-infrastructure adaptation.
+- Port of v1.1.0 to ECCC's then-new HPC infrastructure. No science changes listed.
 
 ### GEWPS 1.1.0 — operational 1 December 2021
-Status changed from experimental to operational. Adopted GEPS v7.0.0 forcing and WAVEWATCH III v7 (with the negative-peak-period bugfix); hourly wind input extended past 168 h.
+- **Status changed from experimental to operational**
+- Forced by GEPS v7.0.0
+- **WAVEWATCH III upgraded to v7**, including the negative-peak-period fix
+- Hourly wind input used for the first 168 hours, newly available from GEPS v7.0.0
 
 ### GEWPS 1.0.0 — experimental 17 November 2020
-Initial experimental implementation at CMC.
+- First experimental implementation at CMC. No configuration details listed.
 
 ---
 
