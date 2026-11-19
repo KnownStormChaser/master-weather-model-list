@@ -104,7 +104,7 @@ The current operational version is **RESPS 1.8.0**, implemented **14 April 2026*
 - **Source of perturbations:** Two independent sources —
   1. **Meteorological:** members map one-to-one onto the 21 members of GEPS 8.0.0 (1 control + 20 perturbed), inheriting that system's initial-condition and stochastic physics perturbations
   2. **Tidal:** the tidal open-boundary conditions are perturbed separately for each member except the control
-- **Deterministic counterpart:** None at the regional scale. The nearest sibling is the global deterministic [GDSPS](../../global/canada/gdsps.md), which differs in domain, model core, and physics — RESPS is *not* an ensemble version of GDSPS.
+- **Deterministic counterpart:** None distributed on the MSC Datamart. ECCC has run a DalCoast-based **Regional Deterministic Storm-surge Prediction System (RDSPS)**, described by Bernier and Thompson (2015) and still listed at v1.9.0 in ECCC's December 2021 suite upgrade. Its current status and data availability are not documented in the open-data pages *(TBD)*. The nearest distributed sibling is the global deterministic [GDSPS](../../global/canada/gdsps.md), which differs in domain, model core, and physics — RESPS is *not* an ensemble version of GDSPS.
 - **Derived products distributed:** None. Raw members only; no ensemble mean, spread, percentile, or exceedance-probability fields are published on the Datamart. Users must compute these themselves across the `member` dimension.
 
 > **Live-verified caution — SSH spread is dominated by tidal perturbation at short and medium leads.** Because the tidal boundary conditions are perturbed per member, ensemble spread in `zos` is *not* a clean measure of meteorological forecast uncertainty. Measured on the 2026-07-22 12 UTC run (domain-mean across-member standard deviation, metres):
@@ -161,37 +161,44 @@ No currents, no inundation depth, no peak-envelope product, and no station time 
   - Global surge sibling: [GDSPS](../../global/canada/gdsps.md). The pair covers global deterministic and regional probabilistic surge respectively; they are **not** a deterministic/ensemble pair of one system.
   - Regional ocean physics for the same waters: [RIOPS](../../../ocean_models/regional/canada/riops.md), which is baroclinic and ice-coupled where RESPS is barotropic.
   - Shared lineage: both ECCC surge systems trace to Bernier and Thompson's Atlantic Canada surge work, and both use the same wind-stress drag formulation and bottom drag coefficient.
-- **Experimental history.** RESPS ran with experimental status until v1.5.0 (1 December 2021), when it was promoted to operational. Data from before that date should be treated accordingly.
+- **Experimental history.** RESPS ran with experimental status until v1.5.0 (1 December 2021), when it was promoted to operational. Data from before that date should be treated accordingly. The system itself predates the changelog: Bernier and Thompson (2015) describe it, so versions 1.0–1.1 ran before July 2019 without public changelog entries.
 
 ---
 
-## Recent version history
+## Version history
 
-All RESPS versions have been implemented at the **12 UTC run** of the stated date.
+The list runs from RESPS's experimental period to the present, newest first. ECCC's changelog starts at v1.2.0 (July 2019). Every science change so far has followed a [GEPS](../../../ensemble_models/global/canada/geps.md) upgrade, apart from v1.4.0. The changelog gives a 12 UTC starting run only for 1.5.0 and 1.7.0. It gives none for 1.2.0, 1.4.0 or the HPC ports.
 
 ### RESPS 1.8.0 — operational 14 April 2026 (current)
-Adaptation to ECCC's new High Performance Computing infrastructure. Infrastructure-only; no scientific or configuration changes. Part of the same multi-system migration that produced GDSPS 2.2.0 and [RIOPS](../../../ocean_models/regional/canada/riops.md) v2.5.0 on the same date.
+- Port of v1.7.0 to ECCC's new High Performance Computing infrastructure, alongside GEPS 8.1.0, GDSPS 2.2.0 and [RIOPS](../../../ocean_models/regional/canada/riops.md) v2.5.0. Infrastructure-only; no scientific or configuration changes.
 
-### RESPS 1.7.0 — operational 11 June 2024
-Single change: wind and sea level pressure forcing upgraded to **GEPS 8.0.0**. Storm surge CRPS improved at days 5–7 in the March–May 2024 parallel evaluation, though the improvement was not reproduced in the March–May 2022 final-cycle comparison; forecasts otherwise of equivalent quality.
+### RESPS 1.7.0 — operational 11 June 2024 (12 UTC run)
+- Wind and sea level pressure forcing upgraded to **GEPS 8.0.0** (25 km) (the only listed change)
+- Storm surge CRPS improved at days 5–7 in the March–May 2024 parallel evaluation, though the improvement was not reproduced in the March–May 2022 final-cycle comparison; forecasts otherwise of equivalent quality
 
 ### RESPS 1.6.0 — operational 28 June 2022
-Adaptation to the High Performance Computing infrastructure of the time. Infrastructure-only.
+- Port of v1.5.0 to ECCC's then-new HPC infrastructure, alongside GEPS 7.1.0. Infrastructure-only.
 
-### RESPS 1.5.0 — operational 1 December 2021
+### RESPS 1.5.0 — operational 1 December 2021 (12 UTC run)
+- **Status changed from experimental to operational**
 - Forcing upgraded to **GEPS 7.0.0**
 - Hourly forcing extended to lead times between 168 h and 384 h
-- **Status changed from experimental to operational**
+- Implemented in ECCC's December 2021 suite upgrade, which also listed GDSPS 1.0.0 and RDSPS 1.9.0
 
-### RESPS 1.4.0 — operational 24 November 2020
-- Added **total water level (`SSH`) forecasts based on perturbed tidal forcing** — the origin of the system's dual surge-only / surge-with-tide configuration and of the per-member tidal perturbation
-- Forecast range extended to **16 days**
+### RESPS 1.4.0 — 24 November 2020 (experimental)
+- Added **total water level (`SSH`) forecasts based on perturbed tidal forcing**. This is the origin of the system's dual surge-only / surge-with-tide configuration and of the per-member tidal perturbation.
+- **Forecast range extended to 16 days**
+- The only science upgrade so far not tied to a GEPS release
 
-### RESPS 1.3.0 — operational 21 January 2020
-Adaptation to the High Performance Computing infrastructure of the time. Infrastructure-only.
+### RESPS 1.3.0 — 21 January 2020 (experimental)
+- Port of v1.2.0 to ECCC's then-new HPC infrastructure, alongside GEPS 6.1.0. Infrastructure-only.
 
-### RESPS 1.2.0 — operational 3 July 2019
-Pilot system upgraded from GEPS 5.0.0 to **GEPS 6.0.0**. This is the earliest version covered by the published changelog; earlier versions ran with experimental status and are not documented in the open data record.
+### RESPS 1.2.0 — 3 July 2019 (experimental)
+- Pilot upgraded from GEPS 5.0.0 to **GEPS 6.0.0**
+- The earliest version in ECCC's changelog
+
+### Before 1.2.0 — experimental RESPS (by 2015)
+- Earlier versions (1.0, 1.1) are not in ECCC's changelog. Bernier and Thompson (2015) already describe RESPS as a regional ensemble surge system: DalCoast forced by GEPS winds, 1 control plus 20 perturbed members, with lead times up to ten days. It ran alongside a regional deterministic system (RDSPS) on the same model. *(TBD — first experimental implementation date)*
 
 > **Note on dating.** As with GDSPS, the technical specification's document-history table records *document revision* dates rather than implementation dates — its v1.3 entry is dated 8 December 2023 for a version implemented 11 June 2024. The changelog is the authoritative source for operational dates.
 
@@ -210,6 +217,7 @@ Pilot system upgraded from GEPS 5.0.0 to **GEPS 6.0.0**. This is the earliest ve
 - Factsheet (v1.7.0, version-pinned): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/fact_sheets/factsheet_resps-170_e.pdf
 - Diagram of system dependencies: https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwep-dependency-diagrams/system_RESPS_en.svg
 - RESPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_resps/changelog_resps_en/
+- ECCC NWP changelog (lists RDSPS 1.9.0 in December 2021): https://eccc-msc.github.io/open-data/msc-data/changelog_nwp_en/
 - RESPS grid figure: https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwp_resps/grille_resps.png
 - Open Government Portal metadata: https://open.canada.ca/data/en/dataset/2c2cadd7-5248-4764-bf88-5042b73465c3
 - Licence: https://eccc-msc.github.io/open-data/licence/readme_en/
