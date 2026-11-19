@@ -196,45 +196,69 @@ None distributed — no bathymetry, land-sea mask, or cell-area files. The domai
 
 ## Version history
 
-### April 14, 2026 — RIOPS v2.5.0 (current)
-- Migration to ECCC's new High Performance Computing infrastructure
-- Computational only; no scientific change. **Confirmed by the file version stamp**, which reads `2.5.0` across the current archive.
+The list runs from RIOPS's ice-only predecessor, the **Regional Ice Prediction System (RIPS)**, to the present, newest first. RIPS's analysis component lives on inside RIOPS as the RIPS ice analysis (see *Data assimilation*). ECCC still publishes a separate RIPS changelog, which covers 2013–2015.
 
-### June 11, 2024 — RIOPS v2.4.0
+### RIOPS v2.5.0 — operational April 14, 2026 (current)
+- Port of v2.4.0 to ECCC's new high-performance computing infrastructure, alongside GIOPS 3.6.0. Computational only.
+- **Confirmed by the file version stamp**, which reads `2.5.0` across the current archive.
+
+### RIOPS v2.4.0 — operational June 11, 2024 (12 UTC run)
 - Sea ice model upgraded from CICE 4.0 to **CICE 6.2.0**
 - Delta-Eddington radiation scheme introduced (`R_ice = 0.0; R_pnd = 0.0; R_snw = 1.0`)
 - "Bubbly" thermal conductivity scheme
-- **Atmospheric forcing switched from RDPS to GDPS-G0**; oceanic OBC from GDPS-G1
+- **Atmospheric forcing switched from RDPS to GDPS-G0**; oceanic OBC from GDPS-G1. This followed RDPS becoming a GDPS component in RDPS 9.0.0.
 - **St. Lawrence freshwater flux switched from the IML feed to the CanHys database**
 - New Mean Dynamic Topography reference
 - Three new altimeters activated (CryoSat-2N, Jason-3N, Sentinel-6), roughly doubling assimilated altimetry
 - **RCM-SAR data added to the RIPS ice analysis**; ORCA12 grid corrected around the North Pole
 
-### November 28, 2023 — RIOPS v2.3.1
-- No model or assimilation change. In-situ observations now supplied by the DFO-QC component introduced in GIOPS v3.4.1.
+### RIOPS v2.3.1 — operational November 28, 2023
+- No model or assimilation change. In-situ observations now come from the DFO-QC component introduced in GIOPS v3.4.1.
 
-### June 28, 2022 — RIOPS v2.3.0
-- HPC infrastructure migration (computational only)
+### RIOPS v2.3.0 — operational June 28, 2022
+- Port to ECCC's then-new HPC infrastructure. Computational only.
 
-### December 1, 2021 — RIOPS v2.2.0
-- New vertical blending schema
+### RIOPS v2.2.0 — operational December 1, 2021
+- New vertical blending scheme
 - 3D-Var bias correction for temperature and salinity profiles
 - Reduced TKE injection by wave breaking (Rascle et al., 2008)
-- Increased ice roughness; new diurnal cycle handling; new monitoring package
+- Increased ice roughness; new diurnal cycle; new monitoring package
 
-### January 21, 2020 — RIOPS v2.1.0
-- HPC infrastructure migration (computational only)
+### RIOPS v2.1.0 — operational January 21, 2020
+- Port to ECCC's then-new HPC infrastructure. Computational only.
 
-### July 3, 2019 — RIOPS v2.0.0 (declared operational)
+### RIOPS v2.0.0 — declared operational July 3, 2019
 - **Status changed from experimental to operational**
-- **Independent oceanic data assimilation component added, replacing the previous spectral nudging to GIOPS**
+- **Independent ocean data assimilation component added, replacing the previous spectral nudging to GIOPS**
 - **Domain extended to the North Pacific**
+- *(No 1.2–1.x entries exist between June 2016 and July 2019.)*
 
-### June 21, 2016 — RIOPS v1.1 (experimental)
-- First implementation, superseding the earlier experimental Regional Ice Prediction System (RIPS)
+### RIOPS v1.1 — experimental June 21, 2016
+- First implementation, superseding the experimental RIPS forecast component
 - 3D ocean component (NEMO-CICE) with tides added
-- Large-scale nudging to GIOPS analyses during the pseudo-analysis step, with forecast from 00 UTC
+- Large-scale nudging to GIOPS analyses during the pseudo-analysis step, before the 00 UTC forecast
+- The 00 UTC forecast starts from the pseudo-analysis, with the latest ice concentration analysis inserted
 - AVHRR added to the ice concentration analysis
+
+### RIPS 2.2 — September 17, 2015
+- AMSR2 satellite data and Canadian Ice Service regional weekly charts added to the ice analysis
+- SSMIS thinned along track (one scan line in three), with its observation error lowered from 0.1 to 0.05 to compensate
+- All data over lakes rejected, as in version 1.0
+- Wind filter added to remove spurious ice-concentration retrievals
+
+### RIPS-F 2.0.0 — first forecast component, July 23, 2013
+- First implementation of a RIPS forecast component, based on the Los Alamos sea-ice model CICE v4.1
+- Ice-only: 48 h forecasts every 6 h, forced by RDPS winds and monthly GLORYS1v1 surface-current climatology. No ocean model and no ice open boundary conditions.
+- Initial ice concentration from the analysis, SST from the 00Z CMC analysis, ice velocity from the previous forecast, and ice thickness and mixed-layer depth from GLORYS1v1 climatology
+
+### RIPS-A 2.0.0 — analysis upgrade, May 17, 2013 (experimental)
+- Passive-microwave data added from three more platforms, alongside the SSM/I already assimilated from one
+- Ice concentration derived from ASCAT scatterometer data added
+- Analysis-uncertainty estimate used to flag areas where ice concentration is replaced with interpolated values
+
+### RIPS 1.0 — ice analysis operational March 2011
+- North American 3D-Var (FGAT) ice-concentration analysis at 5 km, four times daily. Operational since March 2011, per a 2014 ECCC presentation.
+- Described by Buehner et al. (2013), *Atmosphere-Ocean*
 
 ---
 
@@ -260,6 +284,8 @@ None distributed — no bathymetry, land-sea mask, or cell-area files. The domai
 
 - **Volume is the practical constraint.** At ~218 GiB/day across 7,140 files, RIOPS is among the largest freely distributed operational ocean products in this catalog, and a full 30-day mirror would run to roughly 6.4 TiB. The 3D velocity fields alone account for over half of it. Users who need only surface fields should take the `2d/` tree, which is under 60 GiB/day for all four cycles combined.
 
+- **Version-history gaps (ECCC sources):** The RIOPS changelog has no entries between v1.1 (June 2016) and v2.0.0 (July 2019). The pre-2016 history is in ECCC's separate RIPS changelog, which isn't linked from the RIOPS pages.
+
 - **Relative-link correction.** The previous revision linked GIOPS as `./giops.md` and GLO12 as `../../france/glo12.md` from `models/ocean_models/regional/canada/`; neither path resolves. Corrected to `../../global/canada/giops.md` and `../../global/france/glo12.md`. The same class of error exists elsewhere in the repository — **a repository-wide relative-link sweep is still outstanding.**
 
 ---
@@ -272,12 +298,14 @@ None distributed — no bathymetry, land-sea mask, or cell-area files. The domai
 - Technical note: https://collaboration.cmc.ec.gc.ca/cmc/CMOI/product_guide/docs/tech_notes/technote_riops_e.pdf
 - Factsheet (v2.4.0): https://collaboration.cmc.ec.gc.ca/cmc/cmoi/product_guide/docs/fact_sheets/factsheet_riops_e.pdf
 - RIOPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_riops/changelog_riops_en/
+- RIPS changelog (predecessor, 2013–2015): https://eccc-msc.github.io/open-data/msc-data/nwp_rips/changelog_rips_en
 - ECCC multi-system changelog: https://eccc-msc.github.io/open-data/msc-data/changelog_multisystems_en/
 - System dependency diagram: https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/nwep-dependency-diagrams/system_RIOPS_en.svg
 - Licence: https://eccc-msc.github.io/open-data/licence/readme_en/
 - Discovery metadata: https://open.canada.ca/data/en/dataset/66caa8cc-0e9c-4fdb-ae40-fab9c255b811
 
 ### Key references
+- Lemieux, J.-F., et al. (2016). The Regional Ice Prediction System (RIPS): verification of forecast sea ice concentration. *Q. J. R. Meteorol. Soc.*, 142, 632–643. https://doi.org/10.1002/qj.2526
 - Smith, G.C., Liu, Y., Benkiran, M., Chikhar, K., Surcel Colan, D., Gauthier, A.A., Testut, C.E., Dupont, F., Lei, J., Roy, F., Lemieux, J.-F. (2021). The Regional Ice Ocean Prediction System v2: a pan-Canadian ocean analysis system using an online tidal harmonic analysis. *Geosci. Model Dev.*, 14(3), 1445–1467. https://doi.org/10.5194/gmd-14-1445-2021
 - Komarov, A.S., Caya, A., Buehner, M., Pogson, L. (2020). Assimilation of SAR ice and open water retrievals in Environment and Climate Change Canada Regional Ice-Ocean Prediction System. *IEEE Trans. Geosci. Remote Sens.*, 58(6), 4290–4303. https://doi.org/10.1109/TGRS.2019.2962656
 - Pham, D.T., Verron, J., Roubaud, M.C. (1998). A singular evolutive extended Kalman filter for data assimilation in oceanography. *J. Mar. Syst.*, 16, 323–340.
