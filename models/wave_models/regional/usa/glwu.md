@@ -68,7 +68,7 @@ The native NetCDF output (`glwu.glwu`, `glwu.glwu_lc`) carries the corresponding
   - **NOMADS** (real-time; ~2-day rolling window):
     https://nomads.ncep.noaa.gov/pub/data/nccf/com/glwu/prod/
   - NCEP production FTP (ftpprd) mirrors the same production tree.
-- **Not on cloud mirrors:** GLWU is **not** carried by the NODD AWS/Azure/GCP mirrors (live-verified: AWS/Azure paths 404, no GLWU S3 bucket). This is a genuine NOMADS-only system, unlike [GFS-Wave](../global/usa/ww3-noaa.md) and [GEFS-Wave](../global/usa/gefs-wave.md).
+- **Not on cloud mirrors:** GLWU is **not** carried by the NODD AWS/Azure/GCP mirrors (live-verified: AWS/Azure paths 404, no GLWU S3 bucket). This is a genuine NOMADS-only system, unlike [GFS-Wave](../../global/usa/ww3-noaa.md) and [GEFS-Wave](../../global/usa/gefs-wave.md).
 
 ---
 
@@ -79,7 +79,8 @@ The native NetCDF output (`glwu.glwu`, `glwu.glwu_lc`) carries the corresponding
 - **Short retention.** NOMADS carries only ~2 days of GLWU cycles, and there is no cloud archive — users needing history must harvest cycles as they are produced.
 - **Relationship to other systems:**
   - Canadian counterpart: [RDWPS](../canada/rdwps-canada.md) (Great Lakes domains) and its ensemble sibling [REWPS](../canada/rewps-canada.md).
-  - Same WW3 lineage as the U.S. global wave systems [GFS-Wave](../global/usa/ww3-noaa.md) and [GEFS-Wave](../global/usa/gefs-wave.md), but regional and unstructured rather than global.
+  - Coastal counterpart: [NWPS](./nwps.md) covers U.S. marine coastal waters (36 NWS forecast-office domains) but not the Great Lakes, which are left to GLWU.
+  - Same WW3 lineage as the U.S. global wave systems [GFS-Wave](../../global/usa/ww3-noaa.md) and [GEFS-Wave](../../global/usa/gefs-wave.md), but regional and unstructured rather than global.
 
 ---
 
