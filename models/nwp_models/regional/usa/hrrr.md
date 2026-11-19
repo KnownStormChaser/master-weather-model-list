@@ -9,7 +9,7 @@ HRRR is foundational infrastructure for several downstream NOAA products:
 - **National Blend of Models ([NBM](./nbm.md))** — HRRR is one of the highest-weighted inputs for short-range CONUS guidance
 - **Localized Aviation Model Output Statistics (LAMP)** — relies on HRRR cloud fields
 - **Real-Time Mesoscale Analysis (RTMA)** — uses HRRR near-surface fields as background
-- **National Water Model** — uses HRRR precipitation forecasts as forcing
+- **[National Water Model](../../../hydrological_models/regional/usa/nwm.md)** — uses HRRR forecasts as forcing
 - **[DAFS](./dafs.md)** — the Domestic Aviation Forecast System post-processes HRRR fields into icing and turbulence guidance
 
 The current operational version is **HRRRv4** (operational since 2 December 2020), which is the **final version** of HRRR. No further upgrades are planned; the system has been frozen since the joint RAPv5/HRRRv4 implementation. HRRR is expected to be retired alongside [RAP](./rap.md) with the eventual transition to RRFSv2 (see [Future outlook](#future-outlook)).
@@ -122,7 +122,7 @@ HRRR is primarily intended for **surface, boundary-layer, and storm-scale analys
 ### Downstream NOAA products that depend on HRRR
 - **Localized Aviation Model Output Statistics (LAMP)** — uses HRRR cloud fields
 - **Real-Time Mesoscale Analysis (RTMA)** — uses HRRR near-surface fields as background
-- **National Water Model** — uses HRRR precipitation forecasts as atmospheric forcing
+- **[National Water Model](../../../hydrological_models/regional/usa/nwm.md)** — uses HRRR (with RAP) as atmospheric forcing for its CONUS analysis and short-range configurations, and HRRR-Alaska for its Alaska domain, per OWP's documentation
 - **National Blend of Models ([NBM](./nbm.md))** — uses all HRRR fields as input
 - **HYSPLIT (former dependency)** — HRRR supplied two members to the regional-ensemble dispersion inputs as `hysplit.tCCz.rens.hrrr.m0M`. **That coupling has ended.** [NWS SCN 26-78](https://www.weather.gov/media/notification/pdf_2026/scn26_78_Updated_HYSPLIT_%20v9.1_aaa.pdf) upgraded HYSPLIT to 9.1, effective November 3, 2026, coupling RRFS in and removing the `rens.hrrr`, `rens.nam` and `rens.hiresw` input files. HYSPLIT does still use the HRRR, through its own `hysplit.tCCz.hrrrf` input files. HRRR itself is not retired; only the ensemble coupling was dropped. See the [HYSPLIT-Dust entry](../../../air_quality_models/regional/usa/hysplit-dust.md).
 
