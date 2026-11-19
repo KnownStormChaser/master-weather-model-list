@@ -133,6 +133,20 @@ It removes the full `hysplit.tCCz.nam*` set and the regional-ensemble inputs `hy
     So Alaska is carried only through `rrfsfHH` and the archive file, as the filename lines said.
   - The SCN's closing line, that Alaska and Hawaii "will continue using CMAQ v4", still reads as carried-over boilerplate. CMAQ belongs to the [AQM](./models/air_quality_models/regional/usa/aqm.md) component, and HYSPLIT-Dust is CONUS-only regardless.
 
+### NWPS v1.5 — operational November 9, 2026 (12 UTC)
+NOAA's Nearshore Wave Prediction System, the on-demand SWAN runs for 36 NWS coastal forecast offices, moved to v1.5.
+- **Hazard guidance:** probabilistic rip current and wave runup guidance (text files plus nine hazard fields in the CG1 GRIB2) extended to 11 more offices: LOX, MTR, EKA, MFR, PQR, SEW, SGX, BRO, LCH, LIX, CRP.
+- **Meshes:** 12 offices moved to unstructured meshes. For nine offices the separate nested-grid runs and nested spectra were dropped in favour of interpolation from the mesh.
+- **Nested grids:** Eureka gained a Humboldt Bay grid, and the Grays Harbor nest moved from Portland OR to Seattle.
+- **File names:** all files renamed to all-lowercase NCO-standard names (e.g. `nwps.tCCz.cg1.<wfo>.grib2`, formerly `<wfo>_nwps_CG1_YYYYMMDD_CC00.grib2`), and the forcing staging directory renamed from `estofs` to `stofs`.
+- **Entry:** [NWPS](./models/wave_models/regional/usa/nwps.md) (new)
+- **Authority:** [NWS SCN 26-91](https://www.weather.gov/media/notification/pdf_2026/scn26-91_nwps_1.5.0.pdf)
+- **Verification note:** Confirmed on NOMADS on 2026-11-19.
+  - **Rollout:** all 11 new offices publish rip and runup files and the new grids exist. 27 offices now have runup and 31 rip probability.
+  - **Feeds closed:** the parallel feed `nwps/para/` returns HTTP 403, and the polar.ncep.noaa.gov development feed is gone.
+  - **Naming discrepancy:** the tracking-file name differs from the SCN (`cg0_trkng`, not `cg0.trkng`).
+  - **No cloud archive:** NWPS has no cloud archive; NOMADS keeps about five days.
+
 ### NBM v5.1 — operational November 3, 2026 (12 UTC)
 The National Blend of Models moved to v5.1 on the RRFS/REFS cutover cycle. The release brings [RRFS](./models/nwp_models/regional/usa/rrfs.md) and the five RRFS ensemble members (labelled REFS) in as inputs, and drops the retired NAM (parent and nest) and the three HiResW members on the CONUS, Alaska, Hawaii and Puerto Rico domains. The formal notice, SCN 26-89, gives the change no version number; **the v5.1 label comes from MDL's NBM Versions page.** The planning decks had expected it as an interim "v5.0.1". Per MDL's v5.1 briefing:
 - **No REFS time-lagged members are used.** "REFS" here means the five RRFS members, and HRRR usage is unchanged.
