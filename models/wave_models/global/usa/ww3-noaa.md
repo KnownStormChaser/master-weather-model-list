@@ -93,6 +93,7 @@ The NODD cloud mirrors (AWS, Azure, GCP) carry the same production tree as NOMAD
 - **`global.0p16` is a mid-latitude grid, not a global one** — its coverage is 15°S–52.5°N (the native Global Core grid). For pole-to-pole global fields use `global.0p25`. This is a common point of confusion given the shared `global` prefix.
 - The `wave/` directory also contains a `station/` subdirectory holding spectral bulletins and point spectra (`bull`, `spec`). These are **station/point time-series products and fall outside this repository's gridded-data scope**; only the `gridded/` subtree is cataloged here.
 - **Coupling and family relationships:** GFS-Wave is one-way coupled to the GFS atmosphere and takes RTOFS currents as input. Its ensemble sibling is [GEFS-Wave](./gefs-wave.md), the [GEFS](../../../ensemble_models/global/usa/gefs.md)-coupled WAVEWATCH III ensemble. The broader GFS system is documented in the [GFS entry](../../../nwp_models/global/usa/gfs.md).
+- **Downstream nearshore system:** [NWPS](../../regional/usa/nwps.md) takes its wave boundary conditions for all 36 NWS coastal forecast-office domains from this WAVEWATCH III run, and nests SWAN inside it at up to about 50 m resolution.
 - WAVEWATCH III is developed at NOAA/NCEP and is the foundation for many national and international operational wave systems; a number of the regional WW3 entries in this repository (e.g. MET Norway, Météo-France, ItaliaMeteo) are independent configurations of the same core model.
 
 ---
