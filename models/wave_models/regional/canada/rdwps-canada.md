@@ -117,33 +117,49 @@ Deterministic regional wave forecasts (surface, GRIB2, one file per variable per
 
 ---
 
-## Recent version history
+## Version history
 
-Versions are implemented at the stated date's 12 UTC run unless noted.
+The list runs from the start of ECCC's regional wave forecasting (1991) to the present, newest first. Unless noted, upgrades start at the 12 UTC run. ECCC's RDWPS changelog begins with v2.0 (May 2012). The pre-2012 history comes from Bernier et al. (2016).
 
 ### RDWPS 4.3.0 — operational 14 April 2026 (current)
-Adaptation to ECCC's new High Performance Computing infrastructure. Infrastructure-only; no scientific or configuration changes to the model, forcing, or outputs. The v4.2.0 technical specification still describes the current scientific configuration.
+- Port of v4.2.0 to ECCC's new high-performance computing infrastructure. No science or configuration changes to the model, forcing or outputs. The v4.2.0 technical specifications still describe the current configuration.
 
 ### RDWPS 4.2.0 — operational 11 June 2024
-Wind forcing moved to HRDPS 7.0.0; ice forcing to WCPS 3.3.0 and RIOPS 2.4.0; corrected wind-to-grid interpolation on the ocean domains; activated a Miche-style shallow-water limiter on the Great Lakes.
+- Winds from HRDPS v7.0.0
+- Ice concentration from WCPS v3.3.0 (Great Lakes) and RIOPS v2.4.0 (ocean domains)
+- Ocean domains: wind now interpolated correctly to the model grid
+- Great Lakes domains: Miche-style shallow-water limiter activated
 
 ### RDWPS 4.1.0 — operational 28 June 2022
-HPC-infrastructure adaptation.
+- Port of v4.0.0 to ECCC's then-new HPC infrastructure. No science changes listed.
 
 ### RDWPS 4.0.0 — operational 1 December 2021
-Major upgrade: HRDPS 6.0.0 forcing; **added the pseudo-analysis cycle**; **added the Northeast Pacific and Northwest Atlantic ocean domains**; retired WAM Regional for the Gulf of St. Lawrence.
+- Winds from HRDPS v6.0.0
+- **Pseudo-analysis cycle added**
+- **Two ocean domains added: Northeast Pacific and Northwest Atlantic**, with wave boundary conditions from [GDWPS](../../global/canada/gdwps-canada.md)
+- **WAM Regional for the Gulf of St. Lawrence retired**. This ended ECCC's last WAM-based wave forecasts.
 
 ### RDWPS 3.4.0 — operational 21 January 2020
-HPC-infrastructure adaptation.
+- Port to ECCC's then-new HPC infrastructure. No science changes listed.
+- *(No 3.3.0 entry exists.)*
 
 ### RDWPS 3.2.0 — operational 4 March 2019
-Ice input switched from an analysis to a WCPS (v2.0.0) ice forecast.
+- Great Lakes ice input switched from an analysis to an ice forecast from WCPS v2.0.0, which was declared operational the same day
+- *(No 3.1.0 entry exists.)*
 
 ### RDWPS 3.0.0 — declared operational 4 April 2018
-New WW3-based RDWPS declared operational.
+- New WAVEWATCH III-based RDWPS for the Great Lakes declared operational. At the time the Gulf of St. Lawrence was still covered by a separate WAM-based system, driven by RDPS winds and RDPS-CGSL ice.
 
-### RDWPS 2.0 — 7 May 2012
-Earlier-generation regional wave system.
+### RDWPS 2.0 — operational 7 May 2012
+- Wave model upgraded; new products added to the production suite and existing ones changed. ECCC's changelog gives no further detail.
+- ECCC's Great Lakes RDWPS dataset records list 7 May 2012 as their start date
+
+### Before 2012 — WAM and CSOWM regional systems
+- 1991 — ECCC began producing regional numerical wave guidance with the first-generation Canadian Spectral Ocean Wave Model (CSOWM)
+- 1996 — WAM replaced CSOWM. It was later upgraded to WAM cycle 4.5.1; Great Lakes and Arctic domains were added, the northwest Atlantic and Gulf of St. Lawrence resolution was increased, and lead times reached 120 h.
+- By the mid-2010s (per Bernier et al. 2016), the WAM systems covered:
+  - Pacific: 120 h, twice daily, GDPS winds
+  - Atlantic and Arctic: 48 h, four times daily, RDPS winds, plus 120 h runs twice daily on GDPS winds
 
 ---
 
@@ -158,3 +174,6 @@ Earlier-generation regional wave system.
 - RDWPS changelog: https://eccc-msc.github.io/open-data/msc-data/nwp_rdwps/changelog_rdwps_en/
 - Open Government Portal metadata (National): https://open.canada.ca/data/en/dataset/9a6594f9-ad0e-4421-ba9d-16338e5a9cbe
 - Licence: https://eccc-msc.github.io/open-data/licence/readme_en/
+
+### Key reference
+- Bernier, N. B., and Coauthors, 2016: Operational wave prediction system at Environment Canada: Going global to improve regional forecast skill. *Weather and Forecasting*, 31, 353–370. https://doi.org/10.1175/WAF-D-15-0087.1
